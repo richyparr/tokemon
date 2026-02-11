@@ -119,13 +119,55 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| — | — | — |
+| DATA-01 | Phase 1 | Pending |
+| DATA-02 | Phase 1 | Pending |
+| DATA-03 | Phase 1 | Pending |
+| DATA-04 | Phase 1 | Pending |
+| DATA-05 | Phase 3 | Pending |
+| DATA-06 | Phase 1 | Pending |
+| MENU-01 | Phase 1 | Pending |
+| MENU-02 | Phase 1 | Pending |
+| MENU-03 | Phase 1 | Pending |
+| MENU-04 | Phase 1 | Pending |
+| MENU-05 | Phase 1 | Pending |
+| MENU-06 | Phase 1 | Pending |
+| FLOAT-01 | Phase 4 | Pending |
+| FLOAT-02 | Phase 4 | Pending |
+| FLOAT-03 | Phase 4 | Pending |
+| FLOAT-04 | Phase 4 | Pending |
+| FLOAT-05 | Phase 4 | Pending |
+| FLOAT-06 | Phase 4 | Pending |
+| USAGE-01 | Phase 1 | Pending |
+| USAGE-02 | Phase 1 | Pending |
+| USAGE-03 | Phase 1 | Pending |
+| USAGE-04 | Phase 1 | Pending |
+| USAGE-05 | Phase 1 | Pending |
+| ALERT-01 | Phase 2 | Pending |
+| ALERT-02 | Phase 2 | Pending |
+| ALERT-03 | Phase 2 | Pending |
+| ALERT-04 | Phase 2 | Pending |
+| ALERT-05 | Phase 2 | Pending |
+| TREND-01 | Phase 3 | Pending |
+| TREND-02 | Phase 3 | Pending |
+| TREND-03 | Phase 3 | Pending |
+| TREND-04 | Phase 3 | Pending |
+| TREND-05 | Phase 3 | Pending |
+| THEME-01 | Phase 5 | Pending |
+| THEME-02 | Phase 5 | Pending |
+| THEME-03 | Phase 5 | Pending |
+| THEME-04 | Phase 5 | Pending |
+| THEME-05 | Phase 5 | Pending |
+| SET-01 | Phase 1 | Pending |
+| SET-02 | Phase 2 | Pending |
+| SET-03 | Phase 1 | Pending |
+| SET-04 | Phase 2 | Pending |
+| SET-05 | Phase 1 | Pending |
 
 **Coverage:**
-- v1 requirements: 37 total
-- Mapped to phases: 0
-- Unmapped: 37 ⚠️
+- v1 requirements: 43 total
+- Mapped to phases: 43
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-11*
-*Last updated: 2026-02-11 after initial definition*
+*Last updated: 2026-02-11 after roadmap creation*
