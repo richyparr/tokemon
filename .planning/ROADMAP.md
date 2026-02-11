@@ -30,12 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Menu bar icon color reflects usage level (green/orange/red) so user can assess status without clicking
   4. Usage data refreshes automatically at a configurable interval and user can manually trigger a refresh
   5. User can enable/disable individual data sources in settings, and the app shows a clear message when a data source fails
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md -- Xcode project foundation, menu bar app shell with popover, data models, and mock polling
+- [ ] 01-02-PLAN.md -- Real data layer: OAuth client, Keychain token manager, JSONL parser, live data in UsageMonitor
+- [ ] 01-03-PLAN.md -- Popover UI polish, settings window, right-click context menu, error states, human verification
 
 ### Phase 2: Alerts & Notifications
 **Goal**: User receives timely warnings when approaching Claude usage limits, with configurable thresholds and delivery preferences
