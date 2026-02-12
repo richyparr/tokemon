@@ -50,11 +50,39 @@ struct UsageSnapshot: Codable, Sendable {
         model: nil
     )
 
-    /// Menu bar display text
+    /// Whether a valid percentage is available (OAuth provides this, JSONL does not)
+    var hasPercentage: Bool {
+        primaryPercentage >= 0
+    }
+
+    /// Total token count across all categories
+    var totalTokens: Int {
+        (inputTokens ?? 0) + (outputTokens ?? 0) + (cacheCreationTokens ?? 0) + (cacheReadTokens ?? 0)
+    }
+
+    /// Formatted total token count with appropriate suffix (e.g., "12.4k", "1.2M")
+    var formattedTokenCount: String {
+        let total = totalTokens
+        if total >= 1_000_000 {
+            let millions = Double(total) / 1_000_000
+            return String(format: "%.1fM", millions)
+        } else if total >= 1_000 {
+            let thousands = Double(total) / 1_000
+            return String(format: "%.1fk", thousands)
+        }
+        return "\(total)"
+    }
+
+    /// Menu bar display text.
+    /// Shows percentage when OAuth data is available, token count for JSONL fallback.
     var menuBarText: String {
         if source == .none {
-            return "--%"
+            return "--"
         }
-        return "\(Int(primaryPercentage))%"
+        if hasPercentage {
+            return "\(Int(primaryPercentage))%"
+        }
+        // JSONL fallback: show token count
+        return "\(formattedTokenCount) tok"
     }
 }

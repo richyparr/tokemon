@@ -3,6 +3,7 @@ import AppKit
 
 /// Central state manager for Claude usage monitoring.
 /// Manages polling, data source state, and the current usage snapshot.
+/// Implements the OAuth-primary / JSONL-fallback data chain with retry logic.
 /// Uses @Observable for fine-grained SwiftUI reactivity (macOS 14+).
 @Observable
 @MainActor
@@ -27,6 +28,21 @@ final class UsageMonitor {
 
     /// JSONL data source availability
     var jsonlState: DataSourceState = .available
+
+    // MARK: - Retry State
+
+    /// Number of consecutive OAuth failures (resets on success)
+    var oauthRetryCount: Int = 0
+
+    /// Number of consecutive total failures (both sources, resets on success)
+    var retryCount: Int = 0
+
+    /// Whether manual retry is required (after maxRetryAttempts consecutive failures)
+    var requiresManualRetry: Bool = false
+
+    /// Whether the user has been notified about OAuth failure (fire once)
+    @ObservationIgnored
+    var oauthFailureNotified: Bool = false
 
     // MARK: - Computed Properties
 
@@ -128,37 +144,110 @@ final class UsageMonitor {
         self.activity = nil
     }
 
+    // MARK: - Data Fetching
+
     /// Refresh usage data from configured sources.
-    /// For now uses mock data; real implementation comes in Plan 02.
+    ///
+    /// Priority chain:
+    /// 1. Try OAuth (if enabled) -- provides percentage utilization
+    /// 2. Fall back to JSONL (if enabled) -- provides token counts only
+    /// 3. Both failed: increment retry counter, stop auto-retry after 3 attempts
+    ///
+    /// Error notification: OAuth failure notifies user once, then goes silent.
     func refresh() async {
+        // Don't refresh if manual retry is required
+        guard !requiresManualRetry else { return }
+
         isRefreshing = true
         defer { isRefreshing = false }
 
-        // Simulate network delay
-        try? await Task.sleep(for: .milliseconds(500))
+        // Step 1: Try OAuth (primary source)
+        if oauthEnabled {
+            do {
+                let response = try await OAuthClient.fetchUsageWithTokenRefresh()
+                currentUsage = response.toSnapshot()
+                oauthState = .available
+                lastUpdated = Date()
+                error = nil
+                // Reset retry counters on success
+                oauthRetryCount = 0
+                retryCount = 0
+                // Notify status item
+                onUsageChanged?(currentUsage)
+                return
+            } catch {
+                oauthState = .failed(error.localizedDescription)
+                oauthRetryCount += 1
 
-        // Mock data: random percentage between 20-80
-        let mockPercentage = Double.random(in: 20...80)
-        let mockSevenDay = Double.random(in: 10...50)
+                // Notify user ONCE about OAuth failure
+                if !oauthFailureNotified {
+                    oauthFailureNotified = true
+                    print("[ClaudeMon] OAuth unavailable, switching to backup data source")
+                    self.error = .oauthFailed("Switching to backup data source")
+                }
+            }
+        }
 
-        currentUsage = UsageSnapshot(
-            primaryPercentage: mockPercentage,
-            fiveHourUtilization: mockPercentage,
-            sevenDayUtilization: mockSevenDay,
-            sevenDayOpusUtilization: 0,
-            resetsAt: Date().addingTimeInterval(3600 * 2), // 2 hours from now
-            source: .oauth,
-            inputTokens: nil,
-            outputTokens: nil,
-            cacheCreationTokens: nil,
-            cacheReadTokens: nil,
-            model: nil
-        )
-        lastUpdated = Date()
-        error = nil
+        // Step 2: Try JSONL fallback
+        if jsonlEnabled {
+            do {
+                // Use 5-hour window to match the OAuth endpoint's window
+                let fiveHoursAgo = Date().addingTimeInterval(-5 * 3600)
+                let aggregate = try JSONLParser.parseRecentUsage(since: fiveHoursAgo)
+                currentUsage = JSONLParser.toSnapshot(from: aggregate)
+                jsonlState = .available
+                lastUpdated = Date()
+                // Clear the error -- we have data, even if from fallback
+                if oauthEnabled {
+                    // Keep the informational message about fallback, but don't block
+                    error = .oauthFailed("Using backup data source (local session logs)")
+                } else {
+                    error = nil
+                }
+                // Reset total retry counter on any success
+                retryCount = 0
+                // Notify status item
+                onUsageChanged?(currentUsage)
+                return
+            } catch {
+                jsonlState = .failed(error.localizedDescription)
+            }
+        }
 
-        // Notify the status item manager to update the menu bar appearance
+        // Step 3: Both sources failed
+        let lastErrorMsg: String
+        if case .failed(let msg) = oauthState {
+            lastErrorMsg = msg
+        } else if case .failed(let msg) = jsonlState {
+            lastErrorMsg = msg
+        } else {
+            lastErrorMsg = "All data sources unavailable"
+        }
+
+        error = .bothSourcesFailed(lastErrorMsg)
+        retryCount += 1
+
+        if retryCount >= Constants.maxRetryAttempts {
+            // Stop auto-retrying after max attempts
+            stopPolling()
+            requiresManualRetry = true
+            print("[ClaudeMon] Max retry attempts (\(Constants.maxRetryAttempts)) reached. Manual retry required.")
+        }
+
+        // Still notify status item (error state may change display)
         onUsageChanged?(currentUsage)
+    }
+
+    /// Manual retry: resets counters and restarts polling.
+    /// Called from UI when the user taps a "Retry" button after auto-retry exhaustion.
+    func manualRefresh() {
+        retryCount = 0
+        oauthRetryCount = 0
+        requiresManualRetry = false
+        oauthFailureNotified = false
+        oauthState = .available
+        jsonlState = .available
+        startPolling()
     }
 
     // Note: No deinit needed -- the UsageMonitor lives for the lifetime of the app.
