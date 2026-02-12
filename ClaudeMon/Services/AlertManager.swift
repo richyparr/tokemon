@@ -1,4 +1,5 @@
 import Foundation
+import UserNotifications
 
 /// Manages alert thresholds and notification state for usage warnings.
 /// Tracks alert level (normal/warning/critical) based on usage percentage.
@@ -47,6 +48,12 @@ final class AlertManager {
 
     /// Whether we have notification permission (set after permission request)
     private(set) var notificationPermissionGranted: Bool = false
+
+    // MARK: - Initialization
+
+    init() {
+        requestNotificationPermission()
+    }
 
     // MARK: - Private State
 
@@ -113,10 +120,53 @@ final class AlertManager {
         return .normal
     }
 
-    /// Send system notification (stub - implemented in Plan 02)
+    /// Request notification permission from the system.
+    /// Called during initialization to prompt user for permission.
+    func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, _ in
+            Task { @MainActor in
+                self.notificationPermissionGranted = granted
+            }
+        }
+    }
+
+    /// Send macOS system notification for usage alerts.
+    ///
+    /// - Parameters:
+    ///   - level: The alert level (warning or critical)
+    ///   - percentage: Current usage percentage
+    ///
+    /// Uses fixed identifier per level to prevent duplicate notifications.
     private func sendNotification(level: AlertLevel, percentage: Int) {
-        // Notification implementation deferred to 02-02-PLAN.md
-        // This stub exists to show where notifications will be triggered
-        print("[AlertManager] Level changed to \(level) at \(percentage)%")
+        guard notificationsEnabled && notificationPermissionGranted else { return }
+        guard level != .normal else { return }
+
+        let content = UNMutableNotificationContent()
+
+        switch level {
+        case .warning:
+            content.title = "Claude Usage Warning"
+            content.body = "You've used \(percentage)% of your 5-hour limit."
+            content.sound = .default
+        case .critical:
+            content.title = "Claude Usage Limit Reached"
+            content.body = "You've reached your 5-hour usage limit."
+            content.sound = UNNotificationSound.defaultCritical
+        case .normal:
+            return
+        }
+
+        // Fixed identifier per level prevents duplicate notifications
+        let request = UNNotificationRequest(
+            identifier: "claudemon.alert.\(level)",
+            content: content,
+            trigger: nil  // Immediate delivery
+        )
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("[AlertManager] Notification error: \(error.localizedDescription)")
+            }
+        }
     }
 }
