@@ -76,6 +76,12 @@ final class UsageMonitor {
         set { UserDefaults.standard.set(newValue, forKey: "jsonlEnabled") }
     }
 
+    /// Whether to show extra usage (billing) section in popover
+    var showExtraUsage: Bool {
+        get { UserDefaults.standard.object(forKey: "showExtraUsage") as? Bool ?? true }
+        set { UserDefaults.standard.set(newValue, forKey: "showExtraUsage") }
+    }
+
     // MARK: - Callbacks
 
     /// Callback invoked when currentUsage changes, used to update NSStatusItem.

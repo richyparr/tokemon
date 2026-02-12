@@ -255,13 +255,20 @@ struct JSONLParser {
             fiveHourUtilization: nil,
             sevenDayUtilization: nil,
             sevenDayOpusUtilization: nil,
+            sevenDaySonnetUtilization: nil,
             resetsAt: nil,
+            sevenDayResetsAt: nil,
+            sevenDaySonnetResetsAt: nil,
             source: .jsonl,
             inputTokens: aggregate.inputTokens,
             outputTokens: aggregate.outputTokens,
             cacheCreationTokens: aggregate.cacheCreationTokens,
             cacheReadTokens: aggregate.cacheReadTokens,
-            model: nil
+            model: nil,
+            extraUsageEnabled: false,
+            extraUsageMonthlyLimitCents: nil,
+            extraUsageSpentCents: nil,
+            extraUsageUtilization: nil
         )
     }
 }

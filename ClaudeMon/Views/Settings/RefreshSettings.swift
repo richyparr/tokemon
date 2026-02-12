@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Settings tab for configuring the refresh interval.
+/// Settings tab for configuring the refresh interval and display options.
 /// Clean dropdown with preset intervals.
 struct RefreshSettings: View {
     @Environment(UsageMonitor.self) private var monitor
@@ -38,6 +38,19 @@ struct RefreshSettings: View {
                     .foregroundStyle(.secondary)
             } header: {
                 Text("Refresh Interval")
+            }
+
+            Section {
+                Toggle("Show extra usage", isOn: Binding(
+                    get: { monitor.showExtraUsage },
+                    set: { monitor.showExtraUsage = $0 }
+                ))
+
+                Text("Display billing information (spent, monthly limit) when available")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Display")
             }
         }
         .formStyle(.grouped)
