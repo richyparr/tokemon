@@ -12,7 +12,7 @@ ClaudeMon delivers a native macOS menu bar utility for monitoring Claude usage a
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation & Core Monitoring** - Working menu bar app with live usage data from OAuth/JSONL sources
+- [x] **Phase 1: Foundation & Core Monitoring** - Working menu bar app with live usage data from OAuth/JSONL sources
 - [ ] **Phase 2: Alerts & Notifications** - Warning system when approaching usage limits
 - [ ] **Phase 3: Usage Trends & API Integration** - Historical usage tracking, projections, and optional Admin API
 - [ ] **Phase 4: Floating Window** - Always-on-top compact usage display
@@ -33,9 +33,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Xcode project foundation, menu bar app shell with popover, data models, and mock polling
-- [ ] 01-02-PLAN.md -- Real data layer: OAuth client, Keychain token manager, JSONL parser, live data in UsageMonitor
-- [ ] 01-03-PLAN.md -- Popover UI polish, settings window, right-click context menu, error states, human verification
+- [x] 01-01-PLAN.md -- Xcode project foundation, menu bar app shell with popover, data models, and mock polling
+- [x] 01-02-PLAN.md -- Real data layer: OAuth client, Keychain token manager, JSONL parser, live data in UsageMonitor
+- [x] 01-03-PLAN.md -- Popover UI polish, settings window, right-click context menu, error states, human verification
 
 ### Phase 2: Alerts & Notifications
 **Goal**: User receives timely warnings when approaching Claude usage limits, with configurable thresholds and delivery preferences
@@ -103,7 +103,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Core Monitoring | 0/3 | Not started | - |
+| 1. Foundation & Core Monitoring | 3/3 | ✓ Complete | 2026-02-12 |
 | 2. Alerts & Notifications | 0/2 | Not started | - |
 | 3. Usage Trends & API Integration | 0/2 | Not started | - |
 | 4. Floating Window | 0/2 | Not started | - |
