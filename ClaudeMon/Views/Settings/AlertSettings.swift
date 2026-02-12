@@ -7,19 +7,16 @@ struct AlertSettings: View {
 
     private let thresholdOptions = [50, 60, 70, 80, 90]
 
-    // Read launch-at-login state directly from system (not UserDefaults)
-    private var launchAtLoginEnabled: Bool {
-        SMAppService.mainApp.status == .enabled
-    }
+    // State for launch at login (read from system on appear, updated on toggle)
+    @State private var launchAtLogin: Bool = SMAppService.mainApp.status == .enabled
 
     var body: some View {
+        @Bindable var alertManager = alertManager
+
         Form {
             // MARK: - Alert Threshold Section
             Section {
-                Picker("Warning threshold", selection: Binding(
-                    get: { alertManager.alertThreshold },
-                    set: { alertManager.alertThreshold = $0 }
-                )) {
+                Picker("Warning threshold", selection: $alertManager.alertThreshold) {
                     ForEach(thresholdOptions, id: \.self) { value in
                         Text("\(value)%").tag(value)
                     }
@@ -35,39 +32,24 @@ struct AlertSettings: View {
 
             // MARK: - Notifications Section
             Section {
-                Toggle("macOS notifications", isOn: Binding(
-                    get: { alertManager.notificationsEnabled },
-                    set: { alertManager.notificationsEnabled = $0 }
-                ))
+                Toggle("macOS notifications", isOn: $alertManager.notificationsEnabled)
+                    .onChange(of: alertManager.notificationsEnabled) { _, newValue in
+                        if newValue {
+                            alertManager.requestNotificationPermission()
+                        }
+                    }
 
                 Text("Send system notifications when approaching usage limits")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-
-                // Show warning if notifications enabled but permission denied
-                if alertManager.notificationsEnabled && !alertManager.notificationPermissionGranted {
-                    HStack(spacing: 8) {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundStyle(.orange)
-                        Text("Notifications not permitted")
-                            .font(.caption)
-                        Spacer()
-                        Button("Open Settings") {
-                            openNotificationSettings()
-                        }
-                        .font(.caption)
-                    }
-                    .padding(.top, 4)
-                }
             } header: {
                 Text("Notifications")
             }
 
             // MARK: - Startup Section
             Section {
-                Toggle("Launch at login", isOn: Binding(
-                    get: { launchAtLoginEnabled },
-                    set: { newValue in
+                Toggle("Launch at login", isOn: $launchAtLogin)
+                    .onChange(of: launchAtLogin) { _, newValue in
                         do {
                             if newValue {
                                 try SMAppService.mainApp.register()
@@ -76,9 +58,10 @@ struct AlertSettings: View {
                             }
                         } catch {
                             print("[AlertSettings] Login item error: \(error.localizedDescription)")
+                            // Revert on failure
+                            launchAtLogin = SMAppService.mainApp.status == .enabled
                         }
                     }
-                ))
 
                 Text("Start ClaudeMon automatically when you log in")
                     .font(.caption)
@@ -89,11 +72,9 @@ struct AlertSettings: View {
         }
         .formStyle(.grouped)
         .padding()
-    }
-
-    private func openNotificationSettings() {
-        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
-            NSWorkspace.shared.open(url)
+        .onAppear {
+            // Refresh launch at login state from system (user may have changed in System Settings)
+            launchAtLogin = SMAppService.mainApp.status == .enabled
         }
     }
 }

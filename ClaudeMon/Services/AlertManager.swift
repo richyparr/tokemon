@@ -26,33 +26,31 @@ final class AlertManager {
     /// Current alert level for UI binding (menu bar indicator, warning banner)
     var currentAlertLevel: AlertLevel = .normal
 
-    // MARK: - Settings (UserDefaults-backed)
+    // MARK: - Settings (stored properties that sync with UserDefaults)
 
     /// Alert threshold percentage (50-100). Warning fires at this level.
     var alertThreshold: Int {
-        get {
-            let stored = UserDefaults.standard.integer(forKey: "alertThreshold")
-            return stored > 0 ? min(100, max(50, stored)) : Constants.defaultAlertThreshold
-        }
-        set {
-            let clamped = min(100, max(50, newValue))
+        didSet {
+            let clamped = min(100, max(50, alertThreshold))
+            if alertThreshold != clamped { alertThreshold = clamped }
             UserDefaults.standard.set(clamped, forKey: "alertThreshold")
         }
     }
 
-    /// Whether system notifications are enabled (default false until permission granted)
+    /// Whether system notifications are enabled by user preference
     var notificationsEnabled: Bool {
-        get { UserDefaults.standard.bool(forKey: "notificationsEnabled") }
-        set { UserDefaults.standard.set(newValue, forKey: "notificationsEnabled") }
+        didSet {
+            UserDefaults.standard.set(notificationsEnabled, forKey: "notificationsEnabled")
+        }
     }
-
-    /// Whether we have notification permission (set after permission request)
-    private(set) var notificationPermissionGranted: Bool = false
 
     // MARK: - Initialization
 
     init() {
-        requestNotificationPermission()
+        // Load from UserDefaults
+        let stored = UserDefaults.standard.integer(forKey: "alertThreshold")
+        self.alertThreshold = stored > 0 ? min(100, max(50, stored)) : Constants.defaultAlertThreshold
+        self.notificationsEnabled = UserDefaults.standard.bool(forKey: "notificationsEnabled")
     }
 
     // MARK: - Private State
@@ -125,17 +123,19 @@ final class AlertManager {
     }
 
     /// Request notification permission from the system.
-    /// Called during initialization to prompt user for permission.
+    /// Called when user enables notifications - prompts for permission if needed.
     /// Requires a proper app bundle - no-op when running as SPM executable.
-    func requestNotificationPermission() {
-        guard hasAppBundle else {
-            print("[AlertManager] Notifications unavailable: no app bundle (run as .app for notifications)")
+    nonisolated func requestNotificationPermission() {
+        guard Bundle.main.bundleIdentifier != nil else {
+            print("[AlertManager] Notifications unavailable: no app bundle")
             return
         }
 
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, _ in
-            Task { @MainActor in
-                self.notificationPermissionGranted = granted
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
+            if let error = error {
+                print("[AlertManager] Permission error: \(error.localizedDescription)")
+            } else {
+                print("[AlertManager] Permission granted: \(granted)")
             }
         }
     }
@@ -148,9 +148,10 @@ final class AlertManager {
     ///
     /// Uses fixed identifier per level to prevent duplicate notifications.
     /// Requires a proper app bundle - no-op when running as SPM executable.
+    /// If permission not granted, notification silently fails (system behavior).
     private func sendNotification(level: AlertLevel, percentage: Int) {
         guard hasAppBundle else { return }
-        guard notificationsEnabled && notificationPermissionGranted else { return }
+        guard notificationsEnabled else { return }
         guard level != .normal else { return }
 
         let content = UNMutableNotificationContent()
