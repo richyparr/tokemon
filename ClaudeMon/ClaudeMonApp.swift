@@ -39,8 +39,9 @@ struct ClaudeMonApp: App {
             statusItemManager.statusItem = statusItem
             statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
 
-            // Initialize settings window controller with monitor reference
+            // Initialize settings window controller with monitor and alertManager references
             SettingsWindowController.shared.setMonitor(monitor)
+            SettingsWindowController.shared.setAlertManager(alertManager)
 
             // Enable right-click detection on the status item button
             statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
@@ -69,6 +70,7 @@ struct ClaudeMonApp: App {
         Settings {
             SettingsView()
                 .environment(monitor)
+                .environment(alertManager)
         }
     }
 }

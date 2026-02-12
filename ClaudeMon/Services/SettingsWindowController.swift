@@ -9,12 +9,18 @@ final class SettingsWindowController {
 
     private var window: NSWindow?
     private var monitor: UsageMonitor?
+    private var alertManager: AlertManager?
 
     private init() {}
 
     /// Set the monitor reference (call from app startup)
     func setMonitor(_ monitor: UsageMonitor) {
         self.monitor = monitor
+    }
+
+    /// Set the alert manager reference (call from app startup)
+    func setAlertManager(_ manager: AlertManager) {
+        self.alertManager = manager
     }
 
     /// Show the settings window, creating it if necessary
@@ -32,8 +38,14 @@ final class SettingsWindowController {
             return
         }
 
+        guard let alertManager = alertManager else {
+            print("[ClaudeMon] Error: AlertManager not set for settings window")
+            return
+        }
+
         let settingsView = SettingsView()
             .environment(monitor)
+            .environment(alertManager)
 
         let hostingController = NSHostingController(rootView: settingsView)
 
