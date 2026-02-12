@@ -1,6 +1,5 @@
 import SwiftUI
 import MenuBarExtraAccess
-import SettingsAccess
 import AppKit
 
 /// ClaudeMon - macOS menu bar app for monitoring Claude usage.
@@ -16,7 +15,6 @@ struct ClaudeMonApp: App {
             PopoverContentView()
                 .environment(monitor)
                 .frame(width: 320, height: 400)
-                .openSettingsAccess()
                 .onAppear {
                     // Ensure status item is updated when popover appears
                     statusItemManager.update(with: monitor.currentUsage, error: monitor.error)
@@ -30,6 +28,9 @@ struct ClaudeMonApp: App {
             // Called once during setup -- store the reference for future updates
             statusItemManager.statusItem = statusItem
             statusItemManager.update(with: monitor.currentUsage, error: monitor.error)
+
+            // Initialize settings window controller with monitor reference
+            SettingsWindowController.shared.setMonitor(monitor)
 
             // Enable right-click detection on the status item button
             statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
@@ -108,39 +109,48 @@ final class StatusItemManager {
             NSEvent.removeMonitor(existing)
         }
 
-        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: .rightMouseUp) { [weak self] event in
+        // Use global monitor to catch events in the menu bar area (system UI)
+        eventMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.rightMouseDown, .rightMouseUp]) { [weak self] event in
             guard let self,
                   let button = self.statusItem?.button,
-                  let window = button.window else {
-                return event
+                  let buttonWindow = button.window else {
+                return
             }
 
-            // Check if the right-click is within the status item button's bounds
-            let locationInWindow = event.locationInWindow
-            let buttonFrame = button.convert(button.bounds, to: nil)
+            // Get the button's frame in screen coordinates
+            let buttonFrameInWindow = button.convert(button.bounds, to: nil)
+            let buttonFrameOnScreen = buttonWindow.convertToScreen(buttonFrameInWindow)
 
-            // Only handle clicks that are within the button's window
-            guard event.window === window,
-                  buttonFrame.contains(locationInWindow) else {
-                return event
+            // Check if the click is within the status item's screen area
+            let clickLocation = event.locationInWindow // For global events, this is screen coordinates
+
+            // Add some tolerance for easier clicking
+            let expandedFrame = buttonFrameOnScreen.insetBy(dx: -5, dy: -5)
+
+            guard expandedFrame.contains(clickLocation) else {
+                return
             }
+
+            // Only act on mouseDown to show menu (more responsive)
+            guard event.type == .rightMouseDown else { return }
 
             // Dismiss the popover if it's showing
-            if isPopoverPresented.wrappedValue {
-                isPopoverPresented.wrappedValue = false
+            DispatchQueue.main.async {
+                if isPopoverPresented.wrappedValue {
+                    isPopoverPresented.wrappedValue = false
+                }
+
+                // Small delay to let popover dismiss
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.showContextMenu(monitor: monitor)
+                }
             }
-
-            // Build and show context menu
-            self.showContextMenu(monitor: monitor)
-
-            // Consume the event to prevent the popover from showing
-            return nil
         }
     }
 
     /// Build and display the right-click context menu.
     private func showContextMenu(monitor: UsageMonitor) {
-        guard let statusItem else { return }
+        guard let button = statusItem?.button else { return }
 
         let menu = NSMenu()
 
@@ -169,14 +179,13 @@ final class StatusItemManager {
         quitItem.target = actions
         menu.addItem(quitItem)
 
-        // Temporarily set the menu on the status item and trigger it
-        // We need to keep the actions object alive until the menu closes
+        // Keep the actions object alive until the menu closes
         objc_setAssociatedObject(menu, "contextMenuActions", actions, .OBJC_ASSOCIATION_RETAIN)
 
-        statusItem.menu = menu
-        statusItem.button?.performClick(nil)
-        // Clear the menu after it closes so left-click still shows the popover
-        statusItem.menu = nil
+        // Use popUp to show the menu at the button's location
+        // This properly displays the menu without needing to set statusItem.menu
+        let buttonBounds = button.bounds
+        menu.popUp(positioning: nil, at: NSPoint(x: 0, y: buttonBounds.height + 5), in: button)
     }
 }
 
@@ -198,11 +207,39 @@ final class ContextMenuActions: NSObject {
     }
 
     @objc func openSettings() {
-        // Use the legacy NSApp selector to open Settings window
-        if NSApp.responds(to: Selector(("showSettingsWindow:"))) {
+        // Activate the app first (important for LSUIElement apps)
+        NSApp.activate(ignoringOtherApps: true)
+
+        // Try multiple approaches to open settings
+        // Method 1: Modern macOS 14+ / Ventura+
+        if #available(macOS 14.0, *) {
             NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-        } else if NSApp.responds(to: Selector(("showPreferencesWindow:"))) {
+        }
+        // Method 2: macOS 13 Ventura
+        else if NSApp.responds(to: Selector(("showSettingsWindow:"))) {
+            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        }
+        // Method 3: Older macOS
+        else if NSApp.responds(to: Selector(("showPreferencesWindow:"))) {
             NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+        }
+        // Method 4: Keyboard shortcut simulation (Cmd+,)
+        else {
+            let event = NSEvent.keyEvent(
+                with: .keyDown,
+                location: .zero,
+                modifierFlags: .command,
+                timestamp: 0,
+                windowNumber: 0,
+                context: nil,
+                characters: ",",
+                charactersIgnoringModifiers: ",",
+                isARepeat: false,
+                keyCode: 43
+            )
+            if let event = event {
+                NSApp.sendEvent(event)
+            }
         }
     }
 
