@@ -6,6 +6,7 @@ import SwiftUI
 /// Comfortable density with breathing room.
 struct UsageDetailView: View {
     let usage: UsageSnapshot
+    let showExtraUsage: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -35,12 +36,48 @@ struct UsageDetailView: View {
             value: usage.sevenDayUtilization?.percentageFormatted ?? "--"
         )
 
+        // Show Sonnet row if non-nil and non-zero
+        if let sonnetUtil = usage.sevenDaySonnetUtilization, sonnetUtil > 0 {
+            detailRow(
+                label: "7-day Sonnet",
+                value: sonnetUtil.percentageFormatted
+            )
+        }
+
         // Only show Opus row if non-nil and non-zero
         if let opusUtil = usage.sevenDayOpusUtilization, opusUtil > 0 {
             detailRow(
                 label: "7-day Opus",
                 value: opusUtil.percentageFormatted
             )
+        }
+
+        // Extra usage section (if enabled and user wants to see it)
+        if showExtraUsage && usage.extraUsageEnabled {
+            Divider()
+                .padding(.vertical, 4)
+
+            Text("Extra Usage")
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundStyle(.secondary)
+
+            detailRow(
+                label: "Spent this month",
+                value: usage.formattedExtraUsageSpent
+            )
+
+            detailRow(
+                label: "Monthly limit",
+                value: usage.formattedMonthlyLimit
+            )
+
+            if let utilization = usage.extraUsageUtilization {
+                detailRow(
+                    label: "Limit used",
+                    value: utilization.percentageFormatted
+                )
+            }
         }
     }
 

@@ -15,7 +15,7 @@ struct PopoverContentView: View {
             Divider()
 
             // Detail breakdown: reset time, usage windows (OAuth) or token counts (JSONL)
-            UsageDetailView(usage: monitor.currentUsage)
+            UsageDetailView(usage: monitor.currentUsage, showExtraUsage: monitor.showExtraUsage)
 
             Spacer(minLength: 0)
 

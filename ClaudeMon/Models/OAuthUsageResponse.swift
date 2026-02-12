@@ -7,12 +7,16 @@ struct OAuthUsageResponse: Codable, Sendable {
     let sevenDay: UsageWindow?
     let sevenDayOauthApps: UsageWindow?
     let sevenDayOpus: UsageWindow?
+    let sevenDaySonnet: UsageWindow?
+    let extraUsage: ExtraUsage?
 
     enum CodingKeys: String, CodingKey {
         case fiveHour = "five_hour"
         case sevenDay = "seven_day"
         case sevenDayOauthApps = "seven_day_oauth_apps"
         case sevenDayOpus = "seven_day_opus"
+        case sevenDaySonnet = "seven_day_sonnet"
+        case extraUsage = "extra_usage"
     }
 
     /// A single usage time window with utilization percentage and reset time.
@@ -28,6 +32,25 @@ struct OAuthUsageResponse: Codable, Sendable {
         }
     }
 
+    /// Extra usage billing information for users who enabled pay-as-you-go.
+    struct ExtraUsage: Codable, Sendable {
+        /// Whether extra usage is enabled
+        let isEnabled: Bool
+        /// Monthly spending limit in cents (e.g., 5000 = $50)
+        let monthlyLimit: Int?
+        /// Credits used this month in cents
+        let usedCredits: Double?
+        /// Utilization percentage of monthly limit (0-100), nil if no limit
+        let utilization: Double?
+
+        enum CodingKeys: String, CodingKey {
+            case isEnabled = "is_enabled"
+            case monthlyLimit = "monthly_limit"
+            case usedCredits = "used_credits"
+            case utilization
+        }
+    }
+
     /// Convert this API response into a UsageSnapshot for display.
     /// Uses fiveHour.utilization as primaryPercentage (most relevant for real-time monitoring).
     func toSnapshot() -> UsageSnapshot {
@@ -39,18 +62,35 @@ struct OAuthUsageResponse: Codable, Sendable {
             resetsAtDate = iso8601Formatter.date(from: resetsAtString)
         }
 
+        var sevenDayResetsAt: Date?
+        if let resetsAtString = sevenDay?.resetsAt {
+            sevenDayResetsAt = iso8601Formatter.date(from: resetsAtString)
+        }
+
+        var sevenDaySonnetResetsAt: Date?
+        if let resetsAtString = sevenDaySonnet?.resetsAt {
+            sevenDaySonnetResetsAt = iso8601Formatter.date(from: resetsAtString)
+        }
+
         return UsageSnapshot(
             primaryPercentage: fiveHour?.utilization ?? 0,
             fiveHourUtilization: fiveHour?.utilization,
             sevenDayUtilization: sevenDay?.utilization,
             sevenDayOpusUtilization: sevenDayOpus?.utilization,
+            sevenDaySonnetUtilization: sevenDaySonnet?.utilization,
             resetsAt: resetsAtDate,
+            sevenDayResetsAt: sevenDayResetsAt,
+            sevenDaySonnetResetsAt: sevenDaySonnetResetsAt,
             source: .oauth,
             inputTokens: nil,
             outputTokens: nil,
             cacheCreationTokens: nil,
             cacheReadTokens: nil,
-            model: nil
+            model: nil,
+            extraUsageEnabled: extraUsage?.isEnabled ?? false,
+            extraUsageMonthlyLimitCents: extraUsage?.monthlyLimit,
+            extraUsageSpentCents: extraUsage?.usedCredits,
+            extraUsageUtilization: extraUsage?.utilization
         )
     }
 }
