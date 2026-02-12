@@ -70,9 +70,12 @@ struct TokenManager {
     static func getCredentials() throws -> ClaudeCredentials {
         let keychain = Keychain(service: Constants.keychainService)
 
+        // Claude Code stores credentials under the current user's username as account
+        let username = NSUserName()
+
         let credentialsJSON: String?
         do {
-            credentialsJSON = try keychain.getString("")
+            credentialsJSON = try keychain.getString(username)
         } catch {
             throw TokenError.decodingError(error)
         }
@@ -198,9 +201,10 @@ struct TokenManager {
             )
         }
 
-        // Write back to Keychain
+        // Write back to Keychain using the current username as account
         // WARNING: This may conflict with Claude Code's own Keychain access
+        let username = NSUserName()
         print("[ClaudeMon] Writing refreshed credentials back to Keychain (potential conflict with Claude Code)")
-        try keychain.set(jsonString, key: "")
+        try keychain.set(jsonString, key: username)
     }
 }
