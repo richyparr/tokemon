@@ -46,11 +46,11 @@ Plans:
   2. App sends a macOS system notification when approaching the limit, and user can enable/disable these notifications in settings
   3. App shows a distinct critical alert when the usage limit is fully reached
   4. User can configure the alert threshold percentage and the app can be set to launch at login
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md -- AlertManager service with threshold checking, visual warning indicators in menu bar and popover
+- [ ] 02-02-PLAN.md -- macOS system notifications, Alerts settings tab with threshold config, notification toggle, launch at login
 
 ### Phase 3: Usage Trends & API Integration
 **Goal**: User can understand their usage patterns over time and project when they will hit limits, with optional API-based cost tracking for org admins
@@ -103,8 +103,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Core Monitoring | 3/3 | ✓ Complete | 2026-02-12 |
-| 2. Alerts & Notifications | 0/2 | Not started | - |
+| 1. Foundation & Core Monitoring | 3/3 | Complete | 2026-02-12 |
+| 2. Alerts & Notifications | 0/2 | Planned | - |
 | 3. Usage Trends & API Integration | 0/2 | Not started | - |
 | 4. Floating Window | 0/2 | Not started | - |
 | 5. Theming & Design Polish | 0/2 | Not started | - |
