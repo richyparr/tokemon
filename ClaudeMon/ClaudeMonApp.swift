@@ -1,15 +1,23 @@
 import SwiftUI
 import MenuBarExtraAccess
 import AppKit
+import UserNotifications
 
 /// ClaudeMon - macOS menu bar app for monitoring Claude usage.
 /// Runs as a background process (LSUIElement) with no Dock icon.
 @main
 struct ClaudeMonApp: App {
+    @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
     @State private var monitor = UsageMonitor()
     @State private var alertManager = AlertManager()
     @State private var isPopoverPresented = false
     @State private var statusItemManager = StatusItemManager()
+
+    init() {
+        // Set notification delegate to handle notifications while app is "active"
+        // (Menu bar apps are always considered active)
+        UNUserNotificationCenter.current().delegate = AppDelegate.shared
+    }
 
     var body: some Scene {
         MenuBarExtra {
@@ -267,5 +275,43 @@ final class ContextMenuActions: NSObject {
 
     @objc func quitApp() {
         NSApplication.shared.terminate(nil)
+    }
+}
+
+// MARK: - App Delegate
+
+/// NSApplicationDelegate and UNUserNotificationCenterDelegate for handling
+/// notifications while the app is "active" (menu bar apps are always active).
+/// Uses a shared static instance because UNUserNotificationCenter.delegate is weak.
+@MainActor
+class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
+    static let shared = AppDelegate()
+
+    override init() {
+        super.init()
+    }
+
+    // MARK: - UNUserNotificationCenterDelegate
+
+    /// Show notification banner even when app is "active".
+    /// Menu bar apps are always considered active, so this is required.
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .sound])
+    }
+
+    /// Handle notification tap - activate the app.
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        Task { @MainActor in
+            NSApp.activate(ignoringOtherApps: true)
+        }
+        completionHandler()
     }
 }
