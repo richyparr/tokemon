@@ -60,6 +60,13 @@ final class UsageMonitor {
         set { UserDefaults.standard.set(newValue, forKey: "jsonlEnabled") }
     }
 
+    // MARK: - Callbacks
+
+    /// Callback invoked when currentUsage changes, used to update NSStatusItem.
+    /// Set by ClaudeMonApp after the status item is available.
+    @ObservationIgnored
+    var onUsageChanged: ((_ usage: UsageSnapshot) -> Void)?
+
     // MARK: - Private
 
     private var pollTimer: Timer?
@@ -149,6 +156,9 @@ final class UsageMonitor {
         )
         lastUpdated = Date()
         error = nil
+
+        // Notify the status item manager to update the menu bar appearance
+        onUsageChanged?(currentUsage)
     }
 
     // Note: No deinit needed -- the UsageMonitor lives for the lifetime of the app.
