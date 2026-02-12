@@ -22,4 +22,7 @@ enum Constants {
 
     /// Maximum number of retry attempts before requiring manual retry
     static let maxRetryAttempts = 3
+
+    /// Default alert threshold percentage (warning fires at this level)
+    static let defaultAlertThreshold = 80
 }
