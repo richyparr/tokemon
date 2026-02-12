@@ -1,12 +1,11 @@
 import SwiftUI
-import SettingsAccess
+import AppKit
 
 /// Main popover layout displayed when clicking the menu bar icon.
 /// Composes UsageHeaderView, UsageDetailView, ErrorBannerView, and RefreshStatusView
 /// into a cohesive popover with comfortable density.
 struct PopoverContentView: View {
     @Environment(UsageMonitor.self) private var monitor
-    @Environment(\.openSettingsLegacy) private var openSettingsLegacy
 
     var body: some View {
         VStack(spacing: 16) {
@@ -31,7 +30,7 @@ struct PopoverContentView: View {
 
             Divider()
 
-            // Footer: refresh status + settings gear
+            // Footer: refresh status + actions
             HStack {
                 RefreshStatusView(
                     isRefreshing: monitor.isRefreshing,
@@ -40,15 +39,44 @@ struct PopoverContentView: View {
 
                 Spacer()
 
+                // Refresh button
                 Button {
-                    try? openSettingsLegacy()
+                    Task { await monitor.refresh() }
                 } label: {
-                    Image(systemName: "gear")
+                    Image(systemName: "arrow.clockwise")
+                        .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
+                .help("Refresh Now")
+
+                // Settings/More menu - combines settings and quit
+                Menu {
+                    Button("Settings...") {
+                        openSettingsWindow()
+                    }
+                    .keyboardShortcut(",", modifiers: .command)
+
+                    Divider()
+
+                    Button("Quit ClaudeMon") {
+                        NSApplication.shared.terminate(nil)
+                    }
+                    .keyboardShortcut("q", modifiers: .command)
+                } label: {
+                    Image(systemName: "gear")
+                        .foregroundStyle(.secondary)
+                }
+                .menuStyle(.borderlessButton)
+                .frame(width: 20)
+                .help("Settings & Options")
             }
         }
         .padding(16)
         .frame(width: 320)
+    }
+
+    /// Open settings window using our custom controller
+    private func openSettingsWindow() {
+        SettingsWindowController.shared.showSettings()
     }
 }
