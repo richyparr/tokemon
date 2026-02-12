@@ -9,30 +9,30 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 
 ## Current Position
 
-Phase: 2 of 5 (Alerts & Notifications)
-Plan: 1 of 2 in current phase
-Status: Plan 02-01 complete, ready for Plan 02-02
-Last activity: 2026-02-12 -- Completed AlertManager service with visual indicators
+Phase: 2 of 5 (Alerts & Notifications) ✓ COMPLETE
+Plan: 2 of 2 in current phase
+Status: Phase complete, ready for Phase 3
+Last activity: 2026-02-13 -- Phase 2 complete and verified
 
-Progress: [###.......] 30%
+Progress: [####......] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 7min
-- Total execution time: 0.33 hours
+- Total plans completed: 4
+- Average duration: 8min
+- Total execution time: 0.55 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 2 | 17min | 9min |
-| 02-alerts-notifications | 1 | 3min | 3min |
+| 02-alerts-notifications | 2 | 18min | 9min |
 
 **Recent Trend:**
-- Last 5 plans: 14min, 3min, 3min
-- Trend: Accelerating
+- Last 5 plans: 14min, 3min, 3min, 15min
+- Trend: Stable
 
 *Updated after each plan completion*
 
@@ -57,6 +57,10 @@ Recent decisions affecting current work:
 - [02-01]: Notification sending stubbed for Plan 02 (separation of concerns)
 - [02-01]: Window reset detection via resetsAt timestamp comparison
 - [02-01]: AlertLevel as Comparable via Int rawValue for threshold crossing logic
+- [02-02]: Guard UNUserNotificationCenter with bundle check (SPM executables lack bundle)
+- [02-02]: Stored properties with didSet for UserDefaults sync (@Observable needs stored props)
+- [02-02]: @State for launchAtLogin toggle (SMAppService reads don't trigger view updates)
+- [02-02]: Simplified notification permission - fire and forget (avoid MainActor callback issues)
 
 ### Pending Todos
 
@@ -69,6 +73,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-12
-Stopped at: Plan 02-01 complete, ready for Plan 02-02 (System Notifications)
+Last session: 2026-02-13
+Stopped at: Phase 2 complete, ready for Phase 3 (Usage Trends & API Integration)
 Resume file: None

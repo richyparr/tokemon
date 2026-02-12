@@ -13,7 +13,7 @@ ClaudeMon delivers a native macOS menu bar utility for monitoring Claude usage a
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Core Monitoring** - Working menu bar app with live usage data from OAuth/JSONL sources
-- [ ] **Phase 2: Alerts & Notifications** - Warning system when approaching usage limits
+- [x] **Phase 2: Alerts & Notifications** - Warning system when approaching usage limits
 - [ ] **Phase 3: Usage Trends & API Integration** - Historical usage tracking, projections, and optional Admin API
 - [ ] **Phase 4: Floating Window** - Always-on-top compact usage display
 - [ ] **Phase 5: Theming & Design Polish** - Three themes with consistent visual refinement across all display modes
@@ -49,8 +49,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- AlertManager service with threshold checking, visual warning indicators in menu bar and popover
-- [ ] 02-02-PLAN.md -- macOS system notifications, Alerts settings tab with threshold config, notification toggle, launch at login
+- [x] 02-01-PLAN.md -- AlertManager service with threshold checking, visual warning indicators in menu bar and popover
+- [x] 02-02-PLAN.md -- macOS system notifications, Alerts settings tab with threshold config, notification toggle, launch at login
 
 ### Phase 3: Usage Trends & API Integration
 **Goal**: User can understand their usage patterns over time and project when they will hit limits, with optional API-based cost tracking for org admins
@@ -104,7 +104,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Core Monitoring | 3/3 | Complete | 2026-02-12 |
-| 2. Alerts & Notifications | 0/2 | Planned | - |
+| 2. Alerts & Notifications | 2/2 | Complete | 2026-02-13 |
 | 3. Usage Trends & API Integration | 0/2 | Not started | - |
 | 4. Floating Window | 0/2 | Not started | - |
 | 5. Theming & Design Polish | 0/2 | Not started | - |
