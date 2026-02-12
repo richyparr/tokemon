@@ -49,13 +49,20 @@ final class StatusItemManager {
     var statusItem: NSStatusItem?
 
     /// Update the status item button with the current usage data.
-    /// Renders a colored percentage string using monospaced digit font.
+    /// Renders a colored percentage string for OAuth, or token count for JSONL fallback.
     func update(with usage: UsageSnapshot) {
         guard let button = statusItem?.button else { return }
 
-        let percentage = Int(usage.primaryPercentage)
-        let text = usage.source == .none ? "--%" : "\(percentage)%"
-        let color = GradientColors.color(for: usage.primaryPercentage)
+        let text = usage.menuBarText
+        let color: NSColor
+        if usage.hasPercentage {
+            color = GradientColors.color(for: usage.primaryPercentage)
+        } else if usage.source == .jsonl {
+            // JSONL fallback: use a neutral color since we have no percentage
+            color = NSColor.secondaryLabelColor
+        } else {
+            color = NSColor.secondaryLabelColor
+        }
 
         let attributes: [NSAttributedString.Key: Any] = [
             .font: NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .medium),
