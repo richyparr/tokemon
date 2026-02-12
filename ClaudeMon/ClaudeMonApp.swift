@@ -15,6 +15,7 @@ struct ClaudeMonApp: App {
             PopoverContentView()
                 .environment(monitor)
                 .frame(width: 320, height: 400)
+                .openSettingsAccess()
                 .onAppear {
                     // Ensure status item is updated when popover appears
                     statusItemManager.update(with: monitor.currentUsage)
