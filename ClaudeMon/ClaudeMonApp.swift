@@ -7,6 +7,7 @@ import AppKit
 @main
 struct ClaudeMonApp: App {
     @State private var monitor = UsageMonitor()
+    @State private var alertManager = AlertManager()
     @State private var isPopoverPresented = false
     @State private var statusItemManager = StatusItemManager()
 
@@ -14,10 +15,11 @@ struct ClaudeMonApp: App {
         MenuBarExtra {
             PopoverContentView()
                 .environment(monitor)
+                .environment(alertManager)
                 .frame(width: 320, height: 400)
                 .onAppear {
                     // Ensure status item is updated when popover appears
-                    statusItemManager.update(with: monitor.currentUsage, error: monitor.error)
+                    statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
                 }
         } label: {
             // Fallback label -- the real rendering is done via NSStatusItem
@@ -27,7 +29,7 @@ struct ClaudeMonApp: App {
         .menuBarExtraAccess(isPresented: $isPopoverPresented) { statusItem in
             // Called once during setup -- store the reference for future updates
             statusItemManager.statusItem = statusItem
-            statusItemManager.update(with: monitor.currentUsage, error: monitor.error)
+            statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
 
             // Initialize settings window controller with monitor reference
             SettingsWindowController.shared.setMonitor(monitor)
@@ -36,9 +38,16 @@ struct ClaudeMonApp: App {
             statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
             // Register for monitor changes to keep the status item text current
-            monitor.onUsageChanged = { [statusItemManager] usage in
+            monitor.onUsageChanged = { [statusItemManager, alertManager] usage in
                 Task { @MainActor in
-                    statusItemManager.update(with: usage, error: monitor.error)
+                    statusItemManager.update(with: usage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
+                }
+            }
+
+            // Register for alert threshold checks
+            monitor.onAlertCheck = { [alertManager] usage in
+                Task { @MainActor in
+                    alertManager.checkUsage(usage)
                 }
             }
 
@@ -69,24 +78,37 @@ final class StatusItemManager {
 
     /// Update the status item button with the current usage data.
     /// Renders a colored percentage string for OAuth, or token count for JSONL fallback.
-    /// Shows error indicator when both sources have failed.
-    func update(with usage: UsageSnapshot, error: UsageMonitor.MonitorError?) {
+    /// Shows error indicator when both sources have failed, or alert indicator for critical usage.
+    func update(with usage: UsageSnapshot, error: UsageMonitor.MonitorError?, alertLevel: AlertManager.AlertLevel = .normal) {
         guard let button = statusItem?.button else { return }
 
         var text = usage.menuBarText
         let color: NSColor
 
-        // Check for error indicator (both sources failed)
+        // Priority 1: Error indicator (both sources failed) - orange with "!"
         if case .bothSourcesFailed = error {
-            // Append a subtle warning indicator
             text = "\(text) !"
             color = NSColor(calibratedRed: 0.9, green: 0.5, blue: 0.2, alpha: 1.0) // Warm orange -- obvious but not alarming
-        } else if usage.hasPercentage {
+        }
+        // Priority 2: Critical alert level (usage >= 100%) - red with "!"
+        else if alertLevel == .critical {
+            text = "\(text) !"
+            color = NSColor(calibratedRed: 0.85, green: 0.25, blue: 0.2, alpha: 1.0) // Red -- critical warning
+        }
+        // Priority 3: Warning alert level (usage >= threshold) - use gradient color, no extra indicator
+        else if alertLevel == .warning, usage.hasPercentage {
             color = GradientColors.color(for: usage.primaryPercentage)
-        } else if usage.source == .jsonl {
-            // JSONL fallback: use a neutral color since we have no percentage
+        }
+        // Priority 4: Normal OAuth percentage - gradient color
+        else if usage.hasPercentage {
+            color = GradientColors.color(for: usage.primaryPercentage)
+        }
+        // Priority 5: JSONL fallback - neutral color
+        else if usage.source == .jsonl {
             color = NSColor.secondaryLabelColor
-        } else {
+        }
+        // Priority 6: No data - neutral color
+        else {
             color = NSColor.secondaryLabelColor
         }
 

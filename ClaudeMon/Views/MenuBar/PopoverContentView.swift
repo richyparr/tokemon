@@ -6,11 +6,12 @@ import AppKit
 /// into a cohesive popover with comfortable density.
 struct PopoverContentView: View {
     @Environment(UsageMonitor.self) private var monitor
+    @Environment(AlertManager.self) private var alertManager
 
     var body: some View {
         VStack(spacing: 16) {
             // Big percentage number (dominant, first thing user sees)
-            UsageHeaderView(usage: monitor.currentUsage)
+            UsageHeaderView(usage: monitor.currentUsage, alertLevel: alertManager.currentAlertLevel)
 
             Divider()
 
