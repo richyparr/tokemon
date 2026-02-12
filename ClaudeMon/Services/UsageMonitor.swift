@@ -89,6 +89,11 @@ final class UsageMonitor {
     @ObservationIgnored
     var onUsageChanged: ((_ usage: UsageSnapshot) -> Void)?
 
+    /// Callback invoked to check alert thresholds after each refresh.
+    /// Set by ClaudeMonApp to wire AlertManager.checkUsage.
+    @ObservationIgnored
+    var onAlertCheck: ((_ usage: UsageSnapshot) -> Void)?
+
     // MARK: - Private
 
     private var pollTimer: Timer?
@@ -178,8 +183,9 @@ final class UsageMonitor {
                 // Reset retry counters on success
                 oauthRetryCount = 0
                 retryCount = 0
-                // Notify status item
+                // Notify status item and alert manager
                 onUsageChanged?(currentUsage)
+                onAlertCheck?(currentUsage)
                 return
             } catch {
                 oauthState = .failed(error.localizedDescription)
@@ -212,8 +218,9 @@ final class UsageMonitor {
                 }
                 // Reset total retry counter on any success
                 retryCount = 0
-                // Notify status item
+                // Notify status item and alert manager
                 onUsageChanged?(currentUsage)
+                onAlertCheck?(currentUsage)
                 return
             } catch {
                 jsonlState = .failed(error.localizedDescription)
@@ -240,8 +247,9 @@ final class UsageMonitor {
             print("[ClaudeMon] Max retry attempts (\(Constants.maxRetryAttempts)) reached. Manual retry required.")
         }
 
-        // Still notify status item (error state may change display)
+        // Still notify status item and alert manager (error state may change display)
         onUsageChanged?(currentUsage)
+        onAlertCheck?(currentUsage)
     }
 
     /// Manual retry: resets counters and restarts polling.

@@ -3,11 +3,27 @@ import SwiftUI
 /// Big usage percentage display at the top of the popover.
 /// Dominant, first thing the user sees. Shows colored percentage for OAuth,
 /// token count for JSONL, or "--%" for no data.
+/// Displays warning banner when alert level is critical.
 struct UsageHeaderView: View {
     let usage: UsageSnapshot
+    let alertLevel: AlertManager.AlertLevel
 
     var body: some View {
         VStack(spacing: 4) {
+            // Warning banner for critical alert level
+            if alertLevel == .critical {
+                HStack(spacing: 6) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                    Text("Usage limit reached")
+                }
+                .font(.caption)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(Color.red.opacity(0.9), in: Capsule())
+                .padding(.bottom, 8)
+            }
+
             // Large percentage (or token count) -- dominant, first thing user sees
             Text(headerText)
                 .font(.system(size: 52, weight: .bold, design: .rounded))
