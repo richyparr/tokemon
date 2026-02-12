@@ -16,7 +16,10 @@ struct ClaudeMonApp: App {
     init() {
         // Set notification delegate to handle notifications while app is "active"
         // (Menu bar apps are always considered active)
-        UNUserNotificationCenter.current().delegate = AppDelegate.shared
+        // Note: UNUserNotificationCenter requires a proper app bundle - skip when running as SPM executable
+        if Bundle.main.bundleIdentifier != nil {
+            UNUserNotificationCenter.current().delegate = AppDelegate.shared
+        }
     }
 
     var body: some Scene {

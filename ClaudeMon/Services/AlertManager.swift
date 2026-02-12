@@ -65,6 +65,10 @@ final class AlertManager {
     @ObservationIgnored
     private var lastResetsAt: Date?
 
+    /// Whether we're running as a proper app bundle (required for notifications)
+    @ObservationIgnored
+    private let hasAppBundle: Bool = Bundle.main.bundleIdentifier != nil
+
     // MARK: - Public Methods
 
     /// Check usage and update alert level. Called by UsageMonitor on each refresh.
@@ -122,7 +126,13 @@ final class AlertManager {
 
     /// Request notification permission from the system.
     /// Called during initialization to prompt user for permission.
+    /// Requires a proper app bundle - no-op when running as SPM executable.
     func requestNotificationPermission() {
+        guard hasAppBundle else {
+            print("[AlertManager] Notifications unavailable: no app bundle (run as .app for notifications)")
+            return
+        }
+
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, _ in
             Task { @MainActor in
                 self.notificationPermissionGranted = granted
@@ -137,7 +147,9 @@ final class AlertManager {
     ///   - percentage: Current usage percentage
     ///
     /// Uses fixed identifier per level to prevent duplicate notifications.
+    /// Requires a proper app bundle - no-op when running as SPM executable.
     private func sendNotification(level: AlertLevel, percentage: Int) {
+        guard hasAppBundle else { return }
         guard notificationsEnabled && notificationPermissionGranted else { return }
         guard level != .normal else { return }
 
