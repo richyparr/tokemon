@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Core Monitoring** - Working menu bar app with live usage data from OAuth/JSONL sources
 - [x] **Phase 2: Alerts & Notifications** - Warning system when approaching usage limits
-- [ ] **Phase 3: Usage Trends & API Integration** - Historical usage tracking, projections, and optional Admin API
+- [x] **Phase 3: Usage Trends & API Integration** - Historical usage tracking, projections, and optional Admin API
 - [ ] **Phase 4: Floating Window** - Always-on-top compact usage display
 - [ ] **Phase 5: Theming & Design Polish** - Three themes with consistent visual refinement across all display modes
 
@@ -64,9 +64,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md -- Historical data storage with HistoryStore actor, UsageDataPoint model, JSON persistence, wire to UsageMonitor
-- [ ] 03-02-PLAN.md -- Swift Charts visualization, BurnRateCalculator for pace/projection, UsageChartView and BurnRateView in popover
-- [ ] 03-03-PLAN.md -- Optional Admin API integration with AdminAPIClient, Keychain storage, AdminAPISettings tab
+- [x] 03-01-PLAN.md -- Historical data storage with HistoryStore actor, UsageDataPoint model, JSON persistence, wire to UsageMonitor
+- [x] 03-02-PLAN.md -- Swift Charts visualization, BurnRateCalculator for pace/projection, UsageChartView and BurnRateView in popover
+- [x] 03-03-PLAN.md -- Optional Admin API integration with AdminAPIClient, Keychain storage, AdminAPISettings tab
 
 ### Phase 4: Floating Window
 **Goal**: User can keep a compact, always-visible usage display on screen while working
@@ -106,6 +106,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Foundation & Core Monitoring | 3/3 | Complete | 2026-02-12 |
 | 2. Alerts & Notifications | 2/2 | Complete | 2026-02-13 |
-| 3. Usage Trends & API Integration | 0/3 | Ready | - |
+| 3. Usage Trends & API Integration | 3/3 | Complete | 2026-02-13 |
 | 4. Floating Window | 0/2 | Not started | - |
 | 5. Theming & Design Polish | 0/2 | Not started | - |
