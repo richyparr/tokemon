@@ -61,11 +61,12 @@ Plans:
   2. User can see their current burn rate (usage pace) and an estimate of when they will hit their limit at that pace
   3. Historical usage data persists across app launches (stored locally)
   4. User can optionally connect an Admin API organization key to access cost and usage data from the Anthropic API
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
+- [ ] 03-01-PLAN.md -- Historical data storage with HistoryStore actor, UsageDataPoint model, JSON persistence, wire to UsageMonitor
+- [ ] 03-02-PLAN.md -- Swift Charts visualization, BurnRateCalculator for pace/projection, UsageChartView and BurnRateView in popover
+- [ ] 03-03-PLAN.md -- Optional Admin API integration with AdminAPIClient, Keychain storage, AdminAPISettings tab
 
 ### Phase 4: Floating Window
 **Goal**: User can keep a compact, always-visible usage display on screen while working
@@ -105,6 +106,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Foundation & Core Monitoring | 3/3 | Complete | 2026-02-12 |
 | 2. Alerts & Notifications | 2/2 | Complete | 2026-02-13 |
-| 3. Usage Trends & API Integration | 0/2 | Not started | - |
+| 3. Usage Trends & API Integration | 0/3 | Ready | - |
 | 4. Floating Window | 0/2 | Not started | - |
 | 5. Theming & Design Polish | 0/2 | Not started | - |
