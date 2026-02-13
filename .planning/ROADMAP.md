@@ -107,5 +107,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Foundation & Core Monitoring | 3/3 | Complete | 2026-02-12 |
 | 2. Alerts & Notifications | 2/2 | Complete | 2026-02-13 |
 | 3. Usage Trends & API Integration | 3/3 | Complete | 2026-02-13 |
-| 4. Floating Window | 0/2 | Not started | - |
+| 4. Floating Window | 0/2 | Ready | - |
 | 5. Theming & Design Polish | 0/2 | Not started | - |
