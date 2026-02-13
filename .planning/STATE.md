@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-11)
 ## Current Position
 
 Phase: 3 of 5 (Usage Trends & API Integration)
-Plan: 1 of 3 in current phase (03-03 complete)
+Plan: 2 of 3 in current phase (03-01, 03-03 complete)
 Status: Executing Phase 3
-Last activity: 2026-02-13 -- Completed 03-03 Admin API Integration
+Last activity: 2026-02-13 -- Completed 03-01 Historical Data Persistence
 
-Progress: [#####.....] 50%
+Progress: [######....] 60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 7min
-- Total execution time: 0.58 hours
+- Total plans completed: 6
+- Average duration: 6min
+- Total execution time: 0.63 hours
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [#####.....] 50%
 |-------|-------|-------|----------|
 | 01-foundation | 2 | 17min | 9min |
 | 02-alerts-notifications | 2 | 18min | 9min |
-| 03-usage-trends-api | 1 | 2min | 2min |
+| 03-usage-trends-api | 2 | 5min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 14min, 3min, 3min, 15min, 2min
+- Last 5 plans: 3min, 3min, 15min, 2min, 3min
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -62,6 +62,9 @@ Recent decisions affecting current work:
 - [02-02]: Stored properties with didSet for UserDefaults sync (@Observable needs stored props)
 - [02-02]: @State for launchAtLogin toggle (SMAppService reads don't trigger view updates)
 - [02-02]: Simplified notification permission - fire and forget (avoid MainActor callback issues)
+- [03-01]: Actor isolation for HistoryStore (Swift concurrency native, no DispatchQueue needed)
+- [03-01]: Synchronous throws for HistoryStore methods (file I/O is sync; actor provides concurrency safety)
+- [03-01]: 30-day automatic trim on every append to prevent unbounded JSON growth
 - [03-03]: Separate Keychain service (com.claudemon.admin-api) from OAuth credentials to avoid conflicts
 - [03-03]: nonisolated hasAdminKey() for quick synchronous checks without actor isolation
 - [03-03]: Removed #Preview macro from plan code (incompatible with SPM builds without Xcode)
@@ -78,5 +81,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed 03-03-PLAN.md (Admin API Integration)
+Stopped at: Completed 03-01-PLAN.md (Historical Data Persistence)
 Resume file: None
