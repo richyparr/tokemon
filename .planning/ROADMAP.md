@@ -77,11 +77,11 @@ Plans:
   2. User can position the floating window in any screen corner and it remembers its position between sessions
   3. Floating window shows minimal usage info (percentage, limit status) drawn from the same live data as the menu bar
   4. User can close the floating window without quitting the app
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 04-01-PLAN.md -- FloatingPanel NSPanel subclass, FloatingWindowController service, NSWindow position extension
+- [ ] 04-02-PLAN.md -- FloatingWindowView UI with live data, context menu integration, human verification
 
 ### Phase 5: Theming & Design Polish
 **Goal**: App looks polished and professional with three distinct theme options applied consistently across all display modes
