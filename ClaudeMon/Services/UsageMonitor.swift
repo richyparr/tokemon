@@ -94,6 +94,15 @@ final class UsageMonitor {
     @ObservationIgnored
     var onAlertCheck: ((_ usage: UsageSnapshot) -> Void)?
 
+    // MARK: - History
+
+    /// History store for recording usage over time
+    @ObservationIgnored
+    private let historyStore = HistoryStore.shared
+
+    /// Historical usage data points for trend visualization
+    var usageHistory: [UsageDataPoint] = []
+
     // MARK: - Private
 
     private var pollTimer: Timer?
@@ -114,6 +123,16 @@ final class UsageMonitor {
 
     init() {
         startPolling()
+
+        // Load historical data
+        Task {
+            do {
+                try await historyStore.load()
+                self.usageHistory = await historyStore.getHistory()
+            } catch {
+                print("[ClaudeMon] Failed to load history: \(error)")
+            }
+        }
     }
 
     // MARK: - Polling
@@ -186,6 +205,8 @@ final class UsageMonitor {
                 // Notify status item and alert manager
                 onUsageChanged?(currentUsage)
                 onAlertCheck?(currentUsage)
+                // Record to history
+                await recordHistory(for: currentUsage)
                 return
             } catch {
                 oauthState = .failed(error.localizedDescription)
@@ -221,6 +242,8 @@ final class UsageMonitor {
                 // Notify status item and alert manager
                 onUsageChanged?(currentUsage)
                 onAlertCheck?(currentUsage)
+                // Record to history
+                await recordHistory(for: currentUsage)
                 return
             } catch {
                 jsonlState = .failed(error.localizedDescription)
@@ -262,6 +285,25 @@ final class UsageMonitor {
         oauthState = .available
         jsonlState = .available
         startPolling()
+    }
+
+    // MARK: - History Recording
+
+    /// Record a usage snapshot to the history store.
+    /// Errors are logged but do not interrupt the refresh flow.
+    private func recordHistory(for usage: UsageSnapshot) async {
+        let dataPoint = UsageDataPoint(from: usage)
+        do {
+            try await historyStore.append(dataPoint)
+            self.usageHistory = await historyStore.getHistory()
+        } catch {
+            print("[ClaudeMon] Failed to record history: \(error)")
+        }
+    }
+
+    /// Reload history from store (for UI refresh).
+    func reloadHistory() async {
+        usageHistory = await historyStore.getHistory()
     }
 
     // Note: No deinit needed -- the UsageMonitor lives for the lifetime of the app.
