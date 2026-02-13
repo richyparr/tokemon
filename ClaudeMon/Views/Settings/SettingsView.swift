@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Main settings window with four tabs: General, Data Sources, Appearance, and Alerts.
+/// Main settings window with five tabs: General, Data Sources, Appearance, Alerts, and Admin API.
 /// Uses native macOS TabView with automatic style for system-consistent settings.
 struct SettingsView: View {
     @Environment(UsageMonitor.self) private var monitor
@@ -31,7 +31,12 @@ struct SettingsView: View {
                 .tabItem {
                     Label("Alerts", systemImage: "bell.badge")
                 }
+
+            AdminAPISettings()
+                .tabItem {
+                    Label("Admin API", systemImage: "building.2")
+                }
         }
-        .frame(minWidth: 420, minHeight: 280)
+        .frame(minWidth: 420, minHeight: 320)
     }
 }
