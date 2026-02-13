@@ -18,6 +18,20 @@ struct PopoverContentView: View {
             // Detail breakdown: reset time, usage windows (OAuth) or token counts (JSONL)
             UsageDetailView(usage: monitor.currentUsage, showExtraUsage: monitor.showExtraUsage)
 
+            // Usage trends section (only show if we have OAuth data with percentage)
+            if monitor.currentUsage.hasPercentage {
+                Divider()
+
+                // Chart
+                UsageChartView(dataPoints: monitor.usageHistory)
+
+                // Burn rate
+                BurnRateView(
+                    currentUsage: monitor.currentUsage.primaryPercentage,
+                    dataPoints: monitor.usageHistory
+                )
+            }
+
             Spacer(minLength: 0)
 
             // Error banner (if error exists)
