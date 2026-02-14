@@ -73,32 +73,32 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ANALYTICS-01 | TBD | Pending |
-| ANALYTICS-02 | TBD | Pending |
-| ANALYTICS-03 | TBD | Pending |
-| ANALYTICS-04 | TBD | Pending |
-| ANALYTICS-05 | TBD | Pending |
-| ANALYTICS-06 | TBD | Pending |
-| ANALYTICS-07 | TBD | Pending |
-| ACCOUNT-01 | TBD | Pending |
-| ACCOUNT-02 | TBD | Pending |
-| ACCOUNT-03 | TBD | Pending |
-| ACCOUNT-04 | TBD | Pending |
-| ACCOUNT-05 | TBD | Pending |
-| LICENSE-01 | TBD | Pending |
-| LICENSE-02 | TBD | Pending |
-| LICENSE-03 | TBD | Pending |
-| LICENSE-04 | TBD | Pending |
-| LICENSE-05 | TBD | Pending |
-| SHARE-01 | TBD | Pending |
-| SHARE-02 | TBD | Pending |
-| SHARE-03 | TBD | Pending |
+| LICENSE-01 | Phase 6 | Pending |
+| LICENSE-02 | Phase 6 | Pending |
+| LICENSE-03 | Phase 6 | Pending |
+| LICENSE-04 | Phase 6 | Pending |
+| LICENSE-05 | Phase 6 | Pending |
+| ACCOUNT-01 | Phase 7 | Pending |
+| ACCOUNT-02 | Phase 7 | Pending |
+| ACCOUNT-03 | Phase 7 | Pending |
+| ACCOUNT-04 | Phase 7 | Pending |
+| ACCOUNT-05 | Phase 7 | Pending |
+| ANALYTICS-01 | Phase 8 | Pending |
+| ANALYTICS-02 | Phase 8 | Pending |
+| ANALYTICS-03 | Phase 8 | Pending |
+| ANALYTICS-04 | Phase 8 | Pending |
+| ANALYTICS-05 | Phase 8 | Pending |
+| ANALYTICS-06 | Phase 8 | Pending |
+| ANALYTICS-07 | Phase 8 | Pending |
+| SHARE-01 | Phase 9 | Pending |
+| SHARE-02 | Phase 9 | Pending |
+| SHARE-03 | Phase 9 | Pending |
 
 **Coverage:**
 - v2 requirements: 20 total
-- Mapped to phases: 0
-- Unmapped: 20
+- Mapped to phases: 20
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-14 after v2 milestone start*
+*Last updated: 2026-02-14 after v2 roadmap creation*
