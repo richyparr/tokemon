@@ -299,12 +299,19 @@ final class UsageMonitor {
     // MARK: - History Recording
 
     /// Record a usage snapshot to the history store.
+    /// Uses per-account storage when an active account is set.
     /// Errors are logged but do not interrupt the refresh flow.
     private func recordHistory(for usage: UsageSnapshot) async {
         let dataPoint = UsageDataPoint(from: usage)
         do {
-            try await historyStore.append(dataPoint)
-            self.usageHistory = await historyStore.getHistory()
+            if let accountId = currentAccount?.id {
+                try await historyStore.append(dataPoint, for: accountId)
+                self.usageHistory = await historyStore.getHistory(for: accountId)
+            } else {
+                // Legacy single-account behavior
+                try await historyStore.append(dataPoint)
+                self.usageHistory = await historyStore.getHistory()
+            }
         } catch {
             print("[ClaudeMon] Failed to record history: \(error)")
         }
