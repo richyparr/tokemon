@@ -3,11 +3,24 @@
 ## Current State
 
 **Version:** v1.0 shipped 2026-02-14
-**Status:** MVP complete, ready for user feedback
+**Status:** Planning v2
 
 Native macOS menu bar utility for monitoring Claude usage at a glance. Shows live data from OAuth endpoint with JSONL fallback, configurable alerts, usage trends, floating window, and three themes.
 
 **Codebase:** 3,948 LOC Swift | 5 phases | 12 plans
+
+## Current Milestone: v2 Pro Features & Monetization
+
+**Goal:** Transform ClaudeMon into a paid product with analytics, multi-account support, and viral sharing features.
+
+**Target features:**
+- Analytics & Reports (summaries, export PDF/CSV, 30d/90d history, project breakdown)
+- Multi-account (add/switch/manage multiple Claude accounts)
+- Licensing via LemonSqueezy (2-week trial, $3/mo or $29/yr)
+- Shareable Moments (generate usage card images for social sharing)
+
+**Pricing:** $3/month or $29/year subscription
+**Distribution:** GitHub (not App Store — preserves JSONL access)
 
 ## What This Is
 
@@ -30,7 +43,10 @@ A native macOS app for monitoring Claude usage across all your sources — Claud
 
 ### Active (v2)
 
-_Not yet defined. Run `/gsd:new-milestone` to plan v2._
+- Analytics & Reports (summaries, exports, extended history, project breakdown)
+- Multi-account support (add/switch/manage accounts)
+- LemonSqueezy licensing (trial, subscription, validation)
+- Shareable usage cards (viral marketing)
 
 ### Out of Scope
 
@@ -38,15 +54,18 @@ _Not yet defined. Run `/gsd:new-milestone` to plan v2._
 - Real-time Notification Center widget — WidgetKit refresh budget too limiting
 - Multi-provider monitoring — Claude-only for best-in-class experience
 - Claude.ai scraping — too fragile, using OAuth instead
-- iOS app — v2+ consideration
-- Web interface — v2+ consideration
+- iOS app — deferred to v3
+- Web interface — deferred to v3+
+- Raycast/Alfred extensions — deferred to v3
+- Open source — closed source for monetization
 
 ## Constraints
 
 - **Tech stack**: Native Swift/SwiftUI — no Electron or web wrappers
-- **Platform**: macOS only for v1 (iOS in v2)
-- **Distribution**: Open source on GitHub (not App Store)
+- **Platform**: macOS only for v2 (iOS in v3)
+- **Distribution**: Paid via GitHub + LemonSqueezy (not App Store)
 - **Performance**: Lightweight — minimal CPU/memory footprint for background monitoring
+- **Monetization**: $3/mo or $29/yr subscription with 2-week trial
 
 ## Key Decisions
 
@@ -62,4 +81,4 @@ _Not yet defined. Run `/gsd:new-milestone` to plan v2._
 | Three display modes (menu bar, floating, trends) | User requested all modes from start | Good |
 
 ---
-*Last updated: 2026-02-14 after v1.0 milestone*
+*Last updated: 2026-02-14 after v2 milestone start*
