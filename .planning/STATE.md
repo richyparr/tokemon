@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** Phase 3 - Usage Trends & API Integration
+**Current focus:** Phase 4 - Floating Window
 
 ## Current Position
 
-Phase: 3 of 5 (Usage Trends & API Integration) -- COMPLETE
-Plan: 3 of 3 in current phase (all complete)
-Status: Phase 3 Complete
-Last activity: 2026-02-13 -- Completed 03-02 Usage Trend Visualization
+Phase: 4 of 5 (Floating Window)
+Plan: 1 of 2 in current phase
+Status: Executing Phase 4
+Last activity: 2026-02-14 -- Completed 04-01 Floating Window Foundation
 
-Progress: [#######...] 70%
+Progress: [########..] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
-- Average duration: 6min
-- Total execution time: 0.66 hours
+- Total plans completed: 8
+- Average duration: 5min
+- Total execution time: 0.68 hours
 
 **By Phase:**
 
@@ -30,10 +30,11 @@ Progress: [#######...] 70%
 | 01-foundation | 2 | 17min | 9min |
 | 02-alerts-notifications | 2 | 18min | 9min |
 | 03-usage-trends-api | 3 | 7min | 2min |
+| 04-floating-window | 1 | 1min | 1min |
 
 **Recent Trend:**
-- Last 5 plans: 3min, 15min, 2min, 3min, 2min
-- Trend: Stable
+- Last 5 plans: 15min, 2min, 3min, 2min, 1min
+- Trend: Fast
 
 *Updated after each plan completion*
 
@@ -70,6 +71,10 @@ Recent decisions affecting current work:
 - [03-03]: Removed #Preview macro from plan code (incompatible with SPM builds without Xcode)
 - [03-02]: Conditional chart display gated on hasPercentage (JSONL fallback lacks meaningful percentage data)
 - [03-02]: Removed #Preview macros from chart views (consistent with 03-03 SPM precedent)
+- [04-01]: FloatingPanel uses .nonactivatingPanel styleMask to avoid stealing focus from user's work
+- [04-01]: hidesOnDeactivate=false ensures panel stays visible when app loses focus
+- [04-01]: setFrameAutosaveName for automatic position persistence via UserDefaults
+- [04-01]: canJoinAllSpaces+fullScreenAuxiliary for visibility across all Spaces and fullscreen apps
 
 ### Pending Todos
 
@@ -82,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-13
-Stopped at: Completed 03-02-PLAN.md (Usage Trend Visualization) -- Phase 3 fully complete
+Last session: 2026-02-14
+Stopped at: Completed 04-01-PLAN.md (Floating Window Foundation)
 Resume file: None
