@@ -94,15 +94,12 @@ final class FloatingWindowController {
             newPanel.setPosition(vertical: .top, horizontal: .right, padding: 20)
         }
 
-        // Placeholder content - will be replaced in Plan 04-02
-        let placeholderView = Text("Usage: --%")
-            .font(.system(size: 24, weight: .bold, design: .rounded))
-            .foregroundStyle(.secondary)
-            .frame(width: 140, height: 80)
+        // Real floating window content with live usage data
+        let contentView = FloatingWindowView()
             .environment(monitor)
             .environment(alertManager)
 
-        let hostingController = NSHostingController(rootView: placeholderView)
+        let hostingController = NSHostingController(rootView: contentView)
         newPanel.contentViewController = hostingController
 
         self.panel = newPanel
