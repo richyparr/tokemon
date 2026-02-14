@@ -10,6 +10,7 @@ struct PopoverContentView: View {
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LicenseManager.self) private var licenseManager
     @Environment(FeatureAccessManager.self) private var featureAccess
+    @Environment(AccountManager.self) private var accountManager
     @Environment(\.colorScheme) private var colorScheme
 
     // Setting for showing usage trend (stored in UserDefaults)
@@ -29,6 +30,12 @@ struct PopoverContentView: View {
 
     private var popoverContent: some View {
         VStack(spacing: 16) {
+            // Account switcher (Pro only, multiple accounts - view handles own visibility)
+            HStack {
+                AccountSwitcherView()
+                Spacer()
+            }
+
             // Big percentage number (dominant, first thing user sees)
             UsageHeaderView(usage: monitor.currentUsage, alertLevel: alertManager.currentAlertLevel)
 
