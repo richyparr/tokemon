@@ -64,7 +64,7 @@ final class SettingsWindowController {
         let newWindow = NSWindow(contentViewController: hostingController)
         newWindow.title = "ClaudeMon Settings"
         newWindow.styleMask = [.titled, .closable]
-        newWindow.setContentSize(NSSize(width: 450, height: 300))
+        newWindow.setContentSize(NSSize(width: 450, height: 400))
         newWindow.center()
         newWindow.isReleasedWhenClosed = false
 

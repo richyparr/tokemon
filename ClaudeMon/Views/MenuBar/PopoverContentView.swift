@@ -111,6 +111,8 @@ struct PopoverContentView: View {
         }
         .padding(16)
         .frame(width: 320)
+        .background(themeColors.primaryBackground)
+        .tint(themeColors.primaryAccent)
     }
 
     /// Open settings window using our custom controller
