@@ -33,6 +33,13 @@ enum ChartTimeRange: String, CaseIterable {
 struct UsageChartView: View {
     let dataPoints: [UsageDataPoint]
     @State private var selectedRange: ChartTimeRange = .day
+    @Environment(ThemeManager.self) private var themeManager
+    @Environment(\.colorScheme) private var colorScheme
+
+    /// Computed theme colors based on current theme and color scheme
+    private var themeColors: ThemeColors {
+        themeManager.colors(for: colorScheme)
+    }
 
     private var filteredPoints: [UsageDataPoint] {
         let cutoff = Date().addingTimeInterval(-selectedRange.interval)
@@ -71,26 +78,26 @@ struct UsageChartView: View {
                 // Chart
                 Chart {
                     ForEach(filteredPoints) { point in
-                        // Area fill (gradient)
+                        // Area fill (gradient) - uses theme colors
                         AreaMark(
                             x: .value("Time", point.timestamp),
                             y: .value("Usage", point.primaryPercentage)
                         )
                         .foregroundStyle(
                             LinearGradient(
-                                colors: [.blue.opacity(0.4), .blue.opacity(0.1)],
+                                colors: themeColors.chartGradientColors,
                                 startPoint: .top,
                                 endPoint: .bottom
                             )
                         )
                         .interpolationMethod(.catmullRom)
 
-                        // Line overlay
+                        // Line overlay - uses theme accent color
                         LineMark(
                             x: .value("Time", point.timestamp),
                             y: .value("Usage", point.primaryPercentage)
                         )
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(themeColors.primaryAccent)
                         .lineStyle(StrokeStyle(lineWidth: 2))
                         .interpolationMethod(.catmullRom)
                     }
