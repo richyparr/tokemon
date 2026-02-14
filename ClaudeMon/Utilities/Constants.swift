@@ -25,4 +25,30 @@ enum Constants {
 
     /// Default alert threshold percentage (warning fires at this level)
     static let defaultAlertThreshold = 80
+
+    // MARK: - LemonSqueezy Licensing
+
+    /// LemonSqueezy store ID (verify against API responses)
+    static let lemonSqueezyStoreId: Int = 0  // TODO: Replace with actual store ID
+
+    /// LemonSqueezy product ID for ClaudeMon Pro
+    static let lemonSqueezyProductId: Int = 0  // TODO: Replace with actual product ID
+
+    /// LemonSqueezy checkout URL for purchasing
+    static let lemonSqueezyCheckoutURL = "https://YOURSTORE.lemonsqueezy.com/buy/YOUR_PRODUCT_ID"
+
+    /// LemonSqueezy customer portal URL for subscription management
+    static let lemonSqueezyPortalURL = "https://YOURSTORE.lemonsqueezy.com/billing"
+
+    /// Trial duration in days
+    static let trialDurationDays: Int = 14
+
+    /// Grace period for subscription lapses in days
+    static let gracePeriodDays: Int = 7
+
+    /// Offline validation window in days
+    static let offlineValidationDays: Int = 7
+
+    /// Keychain service name for license storage (separate from OAuth credentials)
+    static let licenseKeychainService = "com.claudemon.license"
 }
