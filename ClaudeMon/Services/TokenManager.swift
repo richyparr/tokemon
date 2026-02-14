@@ -207,4 +207,83 @@ struct TokenManager {
         print("[ClaudeMon] Writing refreshed credentials back to Keychain (potential conflict with Claude Code)")
         try keychain.set(jsonString, key: username)
     }
+
+    // MARK: - Multi-Account Credential Access
+
+    /// Read credentials for a specific account by username.
+    /// - Parameter username: The Keychain account key for the target account.
+    /// - Returns: Decoded `ClaudeCredentials` for the specified account.
+    /// - Throws: `TokenError.noCredentials` if no entry found.
+    static func getCredentials(username: String) throws -> ClaudeCredentials {
+        let keychain = Keychain(service: Constants.keychainService)
+
+        guard let json = try keychain.getString(username) else {
+            throw TokenError.noCredentials
+        }
+
+        guard let data = json.data(using: .utf8) else {
+            throw TokenError.noCredentials
+        }
+
+        return try JSONDecoder().decode(ClaudeCredentials.self, from: data)
+    }
+
+    /// Get valid access token for a specific account, checking expiry with a 10-minute buffer.
+    /// - Parameter username: The Keychain account key for the target account.
+    /// - Returns: The OAuth access token string.
+    /// - Throws: `TokenError.expired` or `TokenError.insufficientScope`.
+    static func getAccessToken(for username: String) throws -> String {
+        let credentials = try getCredentials(username: username)
+        let oauth = credentials.claudeAiOauth
+
+        let expiresAtDate = Date(timeIntervalSince1970: Double(oauth.expiresAt) / 1000.0)
+        let bufferDate = Date().addingTimeInterval(10 * 60)
+
+        if expiresAtDate < bufferDate {
+            throw TokenError.expired
+        }
+
+        if !oauth.scopes.contains("user:profile") {
+            throw TokenError.insufficientScope
+        }
+
+        return oauth.accessToken
+    }
+
+    /// Get the refresh token for a specific account.
+    /// - Parameter username: The Keychain account key for the target account.
+    /// - Returns: The OAuth refresh token string.
+    /// - Throws: `TokenError.noCredentials` if credentials not found.
+    static func getRefreshToken(for username: String) throws -> String {
+        let credentials = try getCredentials(username: username)
+        return credentials.claudeAiOauth.refreshToken
+    }
+
+    /// Update Keychain credentials for a specific account after token refresh.
+    /// - Parameters:
+    ///   - response: The token refresh response containing new tokens.
+    ///   - username: The Keychain account key for the target account.
+    /// - Throws: `TokenError` if reading or writing the Keychain fails.
+    static func updateKeychainCredentials(response: OAuthTokenResponse, for username: String) throws {
+        let keychain = Keychain(service: Constants.keychainService)
+        var credentials = try getCredentials(username: username)
+
+        credentials.claudeAiOauth.accessToken = response.accessToken
+        credentials.claudeAiOauth.refreshToken = response.refreshToken
+
+        let newExpiresAt = Int64(Date().timeIntervalSince1970 * 1000) + Int64(response.expiresIn) * 1000
+        credentials.claudeAiOauth.expiresAt = newExpiresAt
+
+        let encoder = JSONEncoder()
+        let updatedData = try encoder.encode(credentials)
+        guard let jsonString = String(data: updatedData, encoding: .utf8) else {
+            throw TokenError.decodingError(
+                NSError(domain: "TokenManager", code: -1, userInfo: [
+                    NSLocalizedDescriptionKey: "Failed to encode credentials to JSON string"
+                ])
+            )
+        }
+
+        try keychain.set(jsonString, key: username)
+    }
 }

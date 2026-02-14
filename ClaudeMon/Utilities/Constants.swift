@@ -51,4 +51,9 @@ enum Constants {
 
     /// Keychain service name for license storage (separate from OAuth credentials)
     static let licenseKeychainService = "com.claudemon.license"
+
+    // MARK: - Multi-Account
+
+    /// Keychain service name for ClaudeMon account metadata (separate from Claude Code credentials)
+    static let accountsKeychainService = "com.claudemon.accounts"
 }
