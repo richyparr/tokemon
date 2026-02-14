@@ -30,19 +30,19 @@ enum Constants {
 
     /// Developer mode: bypass licensing and treat as Pro user
     /// Set to false before shipping!
-    static let developerModeProEnabled: Bool = true
+    static let developerModeProEnabled: Bool = false
 
     /// LemonSqueezy store ID (verify against API responses)
-    static let lemonSqueezyStoreId: Int = 0  // TODO: Replace with actual store ID
+    static let lemonSqueezyStoreId: Int = 292990
 
     /// LemonSqueezy product ID for ClaudeMon Pro
-    static let lemonSqueezyProductId: Int = 0  // TODO: Replace with actual product ID
+    static let lemonSqueezyProductId: Int = 830222
 
     /// LemonSqueezy checkout URL for purchasing
-    static let lemonSqueezyCheckoutURL = "https://YOURSTORE.lemonsqueezy.com/buy/YOUR_PRODUCT_ID"
+    static let lemonSqueezyCheckoutURL = "https://claudemon.lemonsqueezy.com/checkout/buy/c198c730-6f59-45e9-9735-50ae22a535c6"
 
     /// LemonSqueezy customer portal URL for subscription management
-    static let lemonSqueezyPortalURL = "https://YOURSTORE.lemonsqueezy.com/billing"
+    static let lemonSqueezyPortalURL = "https://claudemon.lemonsqueezy.com/billing"
 
     /// Trial duration in days
     static let trialDurationDays: Int = 14
