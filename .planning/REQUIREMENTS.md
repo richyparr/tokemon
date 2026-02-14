@@ -27,11 +27,11 @@ Requirements for v2 Pro release. Each maps to roadmap phases.
 
 ### Licensing
 
-- [ ] **LICENSE-01**: App shows trial status (X days remaining)
-- [ ] **LICENSE-02**: App prompts to purchase when trial expires
-- [ ] **LICENSE-03**: User can enter license key to activate
-- [ ] **LICENSE-04**: App validates license on launch
-- [ ] **LICENSE-05**: User can manage subscription (links to LemonSqueezy portal)
+- [x] **LICENSE-01**: App shows trial status (X days remaining)
+- [x] **LICENSE-02**: App prompts to purchase when trial expires
+- [x] **LICENSE-03**: User can enter license key to activate
+- [x] **LICENSE-04**: App validates license on launch
+- [x] **LICENSE-05**: User can manage subscription (links to LemonSqueezy portal)
 
 ### Shareable Moments
 
@@ -73,11 +73,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LICENSE-01 | Phase 6 | Pending |
-| LICENSE-02 | Phase 6 | Pending |
-| LICENSE-03 | Phase 6 | Pending |
-| LICENSE-04 | Phase 6 | Pending |
-| LICENSE-05 | Phase 6 | Pending |
+| LICENSE-01 | Phase 6 | Complete |
+| LICENSE-02 | Phase 6 | Complete |
+| LICENSE-03 | Phase 6 | Complete |
+| LICENSE-04 | Phase 6 | Complete |
+| LICENSE-05 | Phase 6 | Complete |
 | ACCOUNT-01 | Phase 7 | Pending |
 | ACCOUNT-02 | Phase 7 | Pending |
 | ACCOUNT-03 | Phase 7 | Pending |
