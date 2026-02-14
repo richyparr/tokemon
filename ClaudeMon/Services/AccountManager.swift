@@ -166,6 +166,38 @@ final class AccountManager {
         try await saveAccounts()
     }
 
+    /// Scan Claude Code's keychain for accounts not yet registered in ClaudeMon.
+    /// Users run `claude login` externally, then ClaudeMon detects and imports the new credentials.
+    /// - Returns: Array of newly added accounts.
+    @discardableResult
+    func checkForNewAccounts() async throws -> [Account] {
+        let claudeKeychain = Keychain(service: Constants.keychainService)
+
+        // Get all keys (usernames) from Claude Code's keychain
+        let allKeys = claudeKeychain.allKeys()
+
+        // Find keys not already in our accounts list
+        let existingUsernames = Set(accounts.map { $0.username })
+        let newUsernames = allKeys.filter { !existingUsernames.contains($0) }
+
+        var newAccounts: [Account] = []
+
+        for username in newUsernames {
+            // Verify credentials are valid (readable) before adding
+            do {
+                _ = try TokenManager.getCredentials(username: username)
+                let account = try await addAccount(username: username)
+                newAccounts.append(account)
+                print("[AccountManager] Discovered new account: \(username)")
+            } catch {
+                // Skip invalid/unreadable credentials
+                print("[AccountManager] Skipping \(username): \(error.localizedDescription)")
+            }
+        }
+
+        return newAccounts
+    }
+
     /// Get access token for the currently active account.
     /// - Returns: OAuth access token string
     /// - Throws: `AccountError.accountNotFound` if no active account
