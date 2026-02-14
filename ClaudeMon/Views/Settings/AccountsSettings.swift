@@ -15,6 +15,13 @@ struct AccountsSettings: View {
 
     var body: some View {
         Form {
+            // Combined usage view when multiple accounts exist
+            if accountManager.accounts.count > 1 {
+                Section {
+                    CombinedUsageView()
+                }
+            }
+
             Section("Accounts") {
                 if accountManager.accounts.isEmpty {
                     Text("No accounts configured")
