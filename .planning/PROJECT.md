@@ -1,5 +1,14 @@
 # ClaudeMon
 
+## Current State
+
+**Version:** v1.0 shipped 2026-02-14
+**Status:** MVP complete, ready for user feedback
+
+Native macOS menu bar utility for monitoring Claude usage at a glance. Shows live data from OAuth endpoint with JSONL fallback, configurable alerts, usage trends, floating window, and three themes.
+
+**Codebase:** 3,948 LOC Swift | 5 phases | 12 plans
+
 ## What This Is
 
 A native macOS app for monitoring Claude usage across all your sources — Claude Code CLI, Claude.ai, and the Claude API. Provides at-a-glance usage stats, limit warnings, and cost tracking through a lightweight, customizable interface. Open source for the Claude community.
@@ -10,54 +19,27 @@ A native macOS app for monitoring Claude usage across all your sources — Claud
 
 ## Requirements
 
-### Validated
+### Validated (v1.0)
 
-(None yet — ship to validate)
+- Menu bar app with live OAuth + JSONL data
+- Configurable alerts with macOS notifications
+- Usage trend visualization with burn rate projections
+- Always-on-top floating window
+- Three themes (Native, Minimal Dark, Anthropic)
+- Settings: refresh interval, data sources, thresholds, launch at login
 
-### Active
+### Active (v2)
 
-- [ ] Monitor usage from Claude Code CLI
-- [ ] Monitor usage from Claude.ai
-- [ ] Monitor usage from Claude API
-- [ ] Display in menu bar app (click to expand)
-- [ ] Display in Notification Center widget
-- [ ] Display as floating window
-- [ ] Show current usage (tokens/messages in period)
-- [ ] Show limits remaining
-- [ ] Show cost tracking (API usage)
-- [ ] Show usage trends over time
-- [ ] Theme: Native macOS
-- [ ] Theme: Minimal dark
-- [ ] Theme: Anthropic-inspired
-- [ ] Visual indicators when approaching limits (color change/warning icon)
-- [ ] macOS notifications when approaching limits (optional)
-- [ ] User can enable/disable each data source independently
+_Not yet defined. Run `/gsd:new-milestone` to plan v2._
 
 ### Out of Scope
 
-- Web interface — v2+
-- iOS app — v2+
-- Agent tracking — v2+ analytics
-- Per-call cost breakdown — v2+ analytics
-- Model suggestions — v2+ analytics
-- Tips for lowering usage — v2+ analytics
-- Mac App Store distribution — open source via GitHub
-
-## Context
-
-**Problem:** Claude users across CLI, web, and API have no unified way to see their usage. Limits get hit unexpectedly, costs accumulate invisibly, and there's no way to track patterns over time.
-
-**Target users:** Claude power users who use multiple interfaces (especially Claude Code developers) and want visibility into their usage.
-
-**Data sources to research:**
-- Claude Code CLI: Likely local logs/state files
-- Claude.ai: May require scraping or may have undocumented endpoints
-- Claude API: Has usage/billing endpoints via Anthropic API
-
-**macOS integration points:**
-- Menu bar: Standard status item pattern
-- Notification Center: WidgetKit (iOS 14+ / macOS 11+)
-- Floating window: NSPanel or NSWindow with appropriate level
+- Mac App Store distribution — sandbox blocks ~/.claude access
+- Real-time Notification Center widget — WidgetKit refresh budget too limiting
+- Multi-provider monitoring — Claude-only for best-in-class experience
+- Claude.ai scraping — too fragile, using OAuth instead
+- iOS app — v2+ consideration
+- Web interface — v2+ consideration
 
 ## Constraints
 
@@ -70,10 +52,14 @@ A native macOS app for monitoring Claude usage across all your sources — Claud
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Swift/SwiftUI over Electron | True native performance, proper widget support, macOS integration | — Pending |
-| Three display modes in v1 | User requested all modes from start | — Pending |
-| Core monitoring before analytics | Ship usable v1 faster, add analytics in v2 | — Pending |
-| Open source distribution | Community benefit, no App Store constraints | — Pending |
+| Swift/SwiftUI over Electron | True native performance, proper widget support, macOS integration | Good |
+| OAuth endpoint as primary | More reliable than scraping, provides percentage data | Good |
+| JSONL fallback | Works when OAuth unavailable, shows token counts | Good |
+| SPM executable target | Xcode not required for builds | Good |
+| Custom SettingsWindowController | SwiftUI Settings scene broken in LSUIElement apps | Good |
+| Actor for HistoryStore | Swift concurrency native, no DispatchQueue needed | Good |
+| ThemeColors semantic resolution | Themes can adapt to system light/dark mode | Good |
+| Three display modes (menu bar, floating, trends) | User requested all modes from start | Good |
 
 ---
-*Last updated: 2026-02-11 after initialization*
+*Last updated: 2026-02-14 after v1.0 milestone*
