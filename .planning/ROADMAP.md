@@ -58,12 +58,12 @@ Plans:
   3. User can remove an account from settings
   4. User can set different alert thresholds per account
   5. User can view combined usage summary across all accounts
-**Plans**: TBD
+**Plans**: 3 plans in 3 waves
 
 Plans:
-- [ ] 07-01: AccountManager and multi-credential Keychain storage
-- [ ] 07-02: Account switcher UI and per-account state
-- [ ] 07-03: Combined usage view and per-account alerts
+- [ ] 07-01-PLAN.md — Account/AccountSettings models, AccountManager service, TokenManager extensions (Wave 1)
+- [ ] 07-02-PLAN.md — AccountSwitcherView in popover, AccountsSettings tab, app integration (Wave 2)
+- [ ] 07-03-PLAN.md — Per-account alerts, CombinedUsageView, per-account HistoryStore (Wave 3)
 
 ### Phase 8: Analytics & Export
 **Goal**: Users can view extended usage history and export reports
@@ -106,7 +106,7 @@ Plans:
 | 4. Floating Window | v1.0 | 2/2 | Complete | 2026-02-14 |
 | 5. Theming & Design Polish | v1.0 | 2/2 | Complete | 2026-02-14 |
 | 6. Licensing Foundation | v2.0 | 3/3 | Complete | 2026-02-14 |
-| 7. Multi-Account | v2.0 | 0/3 | Not started | - |
+| 7. Multi-Account | v2.0 | 0/3 | Planned | - |
 | 8. Analytics & Export | v2.0 | 0/3 | Not started | - |
 | 9. Shareable Moments | v2.0 | 0/2 | Not started | - |
 
@@ -114,3 +114,4 @@ Plans:
 
 *v2 roadmap created: 2026-02-14*
 *Phase 6 completed: 2026-02-14*
+*Phase 7 planned: 2026-02-14*
