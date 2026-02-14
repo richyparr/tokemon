@@ -11,11 +11,17 @@ struct ClaudeMonApp: App {
     @State private var monitor = UsageMonitor()
     @State private var alertManager = AlertManager()
     @State private var themeManager = ThemeManager()
-    @State private var licenseManager = LicenseManager()
+    @State private var licenseManager: LicenseManager
+    @State private var featureAccess: FeatureAccessManager
     @State private var isPopoverPresented = false
     @State private var statusItemManager = StatusItemManager()
 
     init() {
+        // Initialize license and feature managers together (shared dependency)
+        let license = LicenseManager()
+        _licenseManager = State(initialValue: license)
+        _featureAccess = State(initialValue: FeatureAccessManager(licenseManager: license))
+
         // Set notification delegate to handle notifications while app is "active"
         // (Menu bar apps are always considered active)
         // Note: UNUserNotificationCenter requires a proper app bundle - skip when running as SPM executable
@@ -31,6 +37,7 @@ struct ClaudeMonApp: App {
                 .environment(alertManager)
                 .environment(themeManager)
                 .environment(licenseManager)
+                .environment(featureAccess)
                 .frame(width: 320, height: 400)
                 .onAppear {
                     // Ensure status item is updated when popover appears
@@ -51,6 +58,7 @@ struct ClaudeMonApp: App {
             SettingsWindowController.shared.setAlertManager(alertManager)
             SettingsWindowController.shared.setThemeManager(themeManager)
             SettingsWindowController.shared.setLicenseManager(licenseManager)
+            SettingsWindowController.shared.setFeatureAccessManager(featureAccess)
 
             // Initialize floating window controller with references
             FloatingWindowController.shared.setMonitor(monitor)
@@ -99,6 +107,7 @@ struct ClaudeMonApp: App {
                 .environment(alertManager)
                 .environment(themeManager)
                 .environment(licenseManager)
+                .environment(featureAccess)
         }
     }
 }
