@@ -4,6 +4,7 @@ import SwiftUI
 /// Phase 1: Percentage mode fully implemented; logo and gauge are future placeholders.
 struct AppearanceSettings: View {
     @Environment(UsageMonitor.self) private var monitor
+    @Environment(ThemeManager.self) private var themeManager
 
     /// Menu bar icon style options
     enum IconStyle: String, CaseIterable, Identifiable {
@@ -17,8 +18,37 @@ struct AppearanceSettings: View {
     @AppStorage("menuBarIconStyle") private var selectedStyle: String = IconStyle.percentage.rawValue
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
 
+    /// Description text for the currently selected theme
+    private var themeDescription: String {
+        switch themeManager.selectedTheme {
+        case .native:
+            return "Follows your macOS appearance settings"
+        case .minimalDark:
+            return "Always dark with muted accent colors"
+        case .anthropic:
+            return "Warm tones inspired by Anthropic's brand"
+        }
+    }
+
     var body: some View {
         Form {
+            Section {
+                @Bindable var manager = themeManager
+
+                Picker("Theme", selection: $manager.selectedTheme) {
+                    ForEach(AppTheme.allCases) { theme in
+                        Text(theme.rawValue).tag(theme)
+                    }
+                }
+                .pickerStyle(.radioGroup)
+
+                Text(themeDescription)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Theme")
+            }
+
             Section {
                 Picker("Menu bar display", selection: $selectedStyle) {
                     Text("Percentage").tag(IconStyle.percentage.rawValue)
