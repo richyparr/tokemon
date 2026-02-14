@@ -9,6 +9,7 @@ struct PopoverContentView: View {
     @Environment(AlertManager.self) private var alertManager
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LicenseManager.self) private var licenseManager
+    @Environment(FeatureAccessManager.self) private var featureAccess
     @Environment(\.colorScheme) private var colorScheme
 
     // Setting for showing usage trend (stored in UserDefaults)
@@ -79,6 +80,11 @@ struct PopoverContentView: View {
                 )
 
                 Spacer()
+
+                // Pro badge (shown when licensed)
+                if case .licensed = featureAccess.licenseState {
+                    ProBadge()
+                }
 
                 // Refresh button
                 Button {
