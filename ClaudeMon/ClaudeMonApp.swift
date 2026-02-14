@@ -98,10 +98,13 @@ struct ClaudeMonApp: App {
                 }
             }
 
-            // Register for alert threshold checks
-            monitor.onAlertCheck = { [alertManager] usage in
+            // Wire AlertManager to AccountManager for per-account thresholds
+            alertManager.setAccountManager(accountManager)
+
+            // Register for alert threshold checks (pass active account)
+            monitor.onAlertCheck = { [alertManager, accountManager] usage in
                 Task { @MainActor in
-                    alertManager.checkUsage(usage)
+                    alertManager.checkUsage(usage, for: accountManager.activeAccount)
                 }
             }
 
