@@ -42,6 +42,7 @@ final class FloatingWindowController {
     private var panel: FloatingPanel?
     private var monitor: UsageMonitor?
     private var alertManager: AlertManager?
+    private var themeManager: ThemeManager?
 
     /// Auto-save name for position persistence
     private let frameAutosaveName = "ClaudeMonFloatingWindow"
@@ -56,6 +57,11 @@ final class FloatingWindowController {
     /// Set the alert manager reference (call from app startup)
     func setAlertManager(_ manager: AlertManager) {
         self.alertManager = manager
+    }
+
+    /// Set the theme manager reference (call from app startup)
+    func setThemeManager(_ manager: ThemeManager) {
+        self.themeManager = manager
     }
 
     /// Show the floating window, creating it if necessary.
@@ -73,6 +79,11 @@ final class FloatingWindowController {
 
         guard let alertManager = alertManager else {
             print("[ClaudeMon] Error: AlertManager not set for floating window")
+            return
+        }
+
+        guard let themeManager = themeManager else {
+            print("[ClaudeMon] Error: ThemeManager not set for floating window")
             return
         }
 
@@ -98,6 +109,7 @@ final class FloatingWindowController {
         let contentView = FloatingWindowView()
             .environment(monitor)
             .environment(alertManager)
+            .environment(themeManager)
 
         let hostingController = NSHostingController(rootView: contentView)
         newPanel.contentViewController = hostingController

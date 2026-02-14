@@ -7,11 +7,23 @@ import AppKit
 struct PopoverContentView: View {
     @Environment(UsageMonitor.self) private var monitor
     @Environment(AlertManager.self) private var alertManager
+    @Environment(ThemeManager.self) private var themeManager
+    @Environment(\.colorScheme) private var colorScheme
 
     // Setting for showing usage trend (stored in UserDefaults)
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
 
+    /// Computed theme colors based on current theme and color scheme
+    private var themeColors: ThemeColors {
+        themeManager.colors(for: colorScheme)
+    }
+
     var body: some View {
+        popoverContent
+            .preferredColorScheme(themeColors.colorSchemeOverride)
+    }
+
+    private var popoverContent: some View {
         VStack(spacing: 16) {
             // Big percentage number (dominant, first thing user sees)
             UsageHeaderView(usage: monitor.currentUsage, alertLevel: alertManager.currentAlertLevel)

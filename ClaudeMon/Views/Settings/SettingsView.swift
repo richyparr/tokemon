@@ -5,6 +5,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(UsageMonitor.self) private var monitor
     @Environment(AlertManager.self) private var alertManager
+    @Environment(ThemeManager.self) private var themeManager
 
     var body: some View {
         TabView {
@@ -22,6 +23,7 @@ struct SettingsView: View {
 
             AppearanceSettings()
                 .environment(monitor)
+                .environment(themeManager)
                 .tabItem {
                     Label("Appearance", systemImage: "paintbrush")
                 }

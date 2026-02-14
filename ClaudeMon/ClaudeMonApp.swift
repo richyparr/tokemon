@@ -10,6 +10,7 @@ struct ClaudeMonApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
     @State private var monitor = UsageMonitor()
     @State private var alertManager = AlertManager()
+    @State private var themeManager = ThemeManager()
     @State private var isPopoverPresented = false
     @State private var statusItemManager = StatusItemManager()
 
@@ -27,6 +28,7 @@ struct ClaudeMonApp: App {
             PopoverContentView()
                 .environment(monitor)
                 .environment(alertManager)
+                .environment(themeManager)
                 .frame(width: 320, height: 400)
                 .onAppear {
                     // Ensure status item is updated when popover appears
@@ -49,6 +51,7 @@ struct ClaudeMonApp: App {
             // Initialize floating window controller with references
             FloatingWindowController.shared.setMonitor(monitor)
             FloatingWindowController.shared.setAlertManager(alertManager)
+            FloatingWindowController.shared.setThemeManager(themeManager)
 
             // Enable right-click detection on the status item button
             statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
@@ -78,6 +81,7 @@ struct ClaudeMonApp: App {
             SettingsView()
                 .environment(monitor)
                 .environment(alertManager)
+                .environment(themeManager)
         }
     }
 }

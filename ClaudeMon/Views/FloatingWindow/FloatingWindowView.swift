@@ -7,8 +7,20 @@ import AppKit
 struct FloatingWindowView: View {
     @Environment(UsageMonitor.self) private var monitor
     @Environment(AlertManager.self) private var alertManager
+    @Environment(ThemeManager.self) private var themeManager
+    @Environment(\.colorScheme) private var colorScheme
+
+    /// Computed theme colors based on current theme and color scheme
+    private var themeColors: ThemeColors {
+        themeManager.colors(for: colorScheme)
+    }
 
     var body: some View {
+        floatingContent
+            .preferredColorScheme(themeColors.colorSchemeOverride)
+    }
+
+    private var floatingContent: some View {
         VStack(spacing: 4) {
             // Big percentage number
             Text(percentageText)
