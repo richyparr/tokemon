@@ -91,11 +91,11 @@ Plans:
   1. User can choose between three themes in settings: Native macOS (follows system appearance), Minimal dark, and Anthropic-inspired (warm tones)
   2. Selected theme applies consistently to both the menu bar popover and the floating window
   3. Colors, spacing, typography, and component styling (gauges, charts, badges, buttons) are visually cohesive within each theme
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
+- [ ] 05-01-PLAN.md -- Theme infrastructure (AppTheme enum, ThemeColors, ThemeManager) and theme picker in AppearanceSettings
+- [ ] 05-02-PLAN.md -- Wire themes to PopoverContentView, FloatingWindowView, UsageChartView, visual verification
 
 ## Progress
 
