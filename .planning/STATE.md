@@ -5,37 +5,37 @@
 See: .planning/PROJECT.md (updated 2026-02-11)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** Phase 5 - Theming Polish
+**Current focus:** Milestone Complete!
 
 ## Current Position
 
-Phase: 5 of 5 (Theming Polish)
-Plan: 1 of 2 in current phase
-Status: Executing Phase 5
-Last activity: 2026-02-14 -- Completed 05-01 Theme Infrastructure
+Phase: 5 of 5 (Theming Polish) - COMPLETE
+Plan: 2 of 2 in current phase
+Status: v1.0 Milestone Complete
+Last activity: 2026-02-14 -- Completed Phase 5 Theming & Design Polish
 
-Progress: [#########.] 90%
+Progress: [##########] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: 4min
-- Total execution time: 0.77 hours
+- Total execution time: 0.92 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation | 2 | 17min | 9min |
+| 01-foundation | 3 | 17min | 6min |
 | 02-alerts-notifications | 2 | 18min | 9min |
 | 03-usage-trends-api | 3 | 7min | 2min |
 | 04-floating-window | 2 | 2min | 1min |
-| 05-theming-polish | 1 | 1min | 1min |
+| 05-theming-polish | 2 | 16min | 8min |
 
 **Recent Trend:**
-- Last 5 plans: 2min, 3min, 2min, 1min, 1min
-- Trend: Fast
+- Last 5 plans: 3min, 2min, 1min, 1min, 15min
+- Trend: Complete
 
 *Updated after each plan completion*
 
@@ -79,6 +79,9 @@ Recent decisions affecting current work:
 - [05-01]: ThemeColors struct for semantic color resolution instead of direct Color usage
 - [05-01]: colorSchemeOverride property for themes that enforce appearance (minimalDark always dark)
 - [05-01]: UserDefaults key "selectedTheme" for theme persistence
+- [05-02]: SettingsWindowController needs ThemeManager just like FloatingWindowController
+- [05-02]: Views must apply .background(themeColors.primaryBackground) for themes to be visually distinct
+- [05-02]: .tint(themeColors.primaryAccent) propagates accent color to interactive elements
 
 ### Pending Todos
 
@@ -92,5 +95,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-14
-Stopped at: Completed 05-01-PLAN.md (Theme Infrastructure)
+Stopped at: v1.0 Milestone Complete - All 5 phases executed
 Resume file: None
