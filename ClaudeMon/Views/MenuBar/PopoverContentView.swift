@@ -8,10 +8,13 @@ struct PopoverContentView: View {
     @Environment(UsageMonitor.self) private var monitor
     @Environment(AlertManager.self) private var alertManager
     @Environment(ThemeManager.self) private var themeManager
+    @Environment(LicenseManager.self) private var licenseManager
     @Environment(\.colorScheme) private var colorScheme
 
     // Setting for showing usage trend (stored in UserDefaults)
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
+
+    @State private var showingPurchasePrompt = false
 
     /// Computed theme colors based on current theme and color scheme
     private var themeColors: ThemeColors {
@@ -49,6 +52,13 @@ struct PopoverContentView: View {
             }
 
             Spacer(minLength: 0)
+
+            // Trial/License banner
+            if shouldShowTrialBanner {
+                TrialBannerView(state: licenseManager.state) {
+                    showingPurchasePrompt = true
+                }
+            }
 
             // Error banner (if error exists)
             if let error = monitor.error {
@@ -115,6 +125,20 @@ struct PopoverContentView: View {
         .frame(width: 320)
         .background(themeColors.primaryBackground)
         .tint(themeColors.primaryAccent)
+        .sheet(isPresented: $showingPurchasePrompt) {
+            PurchasePromptView()
+                .environment(licenseManager)
+        }
+    }
+
+    /// Whether to show the trial/license banner in the popover
+    private var shouldShowTrialBanner: Bool {
+        switch licenseManager.state {
+        case .onTrial, .trialExpired, .gracePeriod:
+            return true
+        default:
+            return false
+        }
     }
 
     /// Open settings window using our custom controller

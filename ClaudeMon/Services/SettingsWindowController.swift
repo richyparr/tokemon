@@ -11,6 +11,7 @@ final class SettingsWindowController {
     private var monitor: UsageMonitor?
     private var alertManager: AlertManager?
     private var themeManager: ThemeManager?
+    private var licenseManager: LicenseManager?
 
     private init() {}
 
@@ -27,6 +28,11 @@ final class SettingsWindowController {
     /// Set the theme manager reference (call from app startup)
     func setThemeManager(_ manager: ThemeManager) {
         self.themeManager = manager
+    }
+
+    /// Set the license manager reference (call from app startup)
+    func setLicenseManager(_ manager: LicenseManager) {
+        self.licenseManager = manager
     }
 
     /// Show the settings window, creating it if necessary
@@ -54,10 +60,16 @@ final class SettingsWindowController {
             return
         }
 
+        guard let licenseManager = licenseManager else {
+            print("[ClaudeMon] Error: LicenseManager not set for settings window")
+            return
+        }
+
         let settingsView = SettingsView()
             .environment(monitor)
             .environment(alertManager)
             .environment(themeManager)
+            .environment(licenseManager)
 
         let hostingController = NSHostingController(rootView: settingsView)
 
