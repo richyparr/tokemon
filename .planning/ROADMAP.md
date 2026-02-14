@@ -25,7 +25,7 @@ See [v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md) for full details.
 **Milestone Goal:** Transform ClaudeMon into a paid product with licensing, multi-account support, extended analytics, and viral sharing features.
 
 - [x] **Phase 6: Licensing Foundation** — LemonSqueezy integration with trial and Pro gating — completed 2026-02-14
-- [ ] **Phase 7: Multi-Account** — Multiple Claude accounts with per-account alerts
+- [x] **Phase 7: Multi-Account** — Multiple Claude accounts with per-account alerts — completed 2026-02-14
 - [ ] **Phase 8: Analytics & Export** — Extended history, summaries, PDF/CSV export
 - [ ] **Phase 9: Shareable Moments** — Usage card generation for social sharing
 
@@ -61,9 +61,9 @@ Plans:
 **Plans**: 3 plans in 3 waves
 
 Plans:
-- [ ] 07-01-PLAN.md — Account/AccountSettings models, AccountManager service, TokenManager extensions (Wave 1)
-- [ ] 07-02-PLAN.md — AccountSwitcherView in popover, AccountsSettings tab, app integration (Wave 2)
-- [ ] 07-03-PLAN.md — Per-account alerts, CombinedUsageView, per-account HistoryStore (Wave 3)
+- [x] 07-01-PLAN.md — Account/AccountSettings models, AccountManager service, TokenManager extensions (Wave 1)
+- [x] 07-02-PLAN.md — AccountSwitcherView in popover, AccountsSettings tab, app integration (Wave 2)
+- [x] 07-03-PLAN.md — Per-account alerts, CombinedUsageView, per-account HistoryStore (Wave 3)
 
 ### Phase 8: Analytics & Export
 **Goal**: Users can view extended usage history and export reports
@@ -106,7 +106,7 @@ Plans:
 | 4. Floating Window | v1.0 | 2/2 | Complete | 2026-02-14 |
 | 5. Theming & Design Polish | v1.0 | 2/2 | Complete | 2026-02-14 |
 | 6. Licensing Foundation | v2.0 | 3/3 | Complete | 2026-02-14 |
-| 7. Multi-Account | v2.0 | 0/3 | Planned | - |
+| 7. Multi-Account | v2.0 | 3/3 | Complete | 2026-02-14 |
 | 8. Analytics & Export | v2.0 | 0/3 | Not started | - |
 | 9. Shareable Moments | v2.0 | 0/2 | Not started | - |
 
@@ -114,4 +114,4 @@ Plans:
 
 *v2 roadmap created: 2026-02-14*
 *Phase 6 completed: 2026-02-14*
-*Phase 7 planned: 2026-02-14*
+*Phase 7 completed: 2026-02-14*

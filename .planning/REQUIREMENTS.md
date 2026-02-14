@@ -19,11 +19,11 @@ Requirements for v2 Pro release. Each maps to roadmap phases.
 
 ### Multi-Account
 
-- [ ] **ACCOUNT-01**: User can add multiple Claude accounts
-- [ ] **ACCOUNT-02**: User can switch between accounts
-- [ ] **ACCOUNT-03**: User can remove an account
-- [ ] **ACCOUNT-04**: User can set per-account alert thresholds
-- [ ] **ACCOUNT-05**: User can see combined usage across all accounts
+- [x] **ACCOUNT-01**: User can add multiple Claude accounts
+- [x] **ACCOUNT-02**: User can switch between accounts
+- [x] **ACCOUNT-03**: User can remove an account
+- [x] **ACCOUNT-04**: User can set per-account alert thresholds
+- [x] **ACCOUNT-05**: User can see combined usage across all accounts
 
 ### Licensing
 
@@ -78,11 +78,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LICENSE-03 | Phase 6 | Complete |
 | LICENSE-04 | Phase 6 | Complete |
 | LICENSE-05 | Phase 6 | Complete |
-| ACCOUNT-01 | Phase 7 | Pending |
-| ACCOUNT-02 | Phase 7 | Pending |
-| ACCOUNT-03 | Phase 7 | Pending |
-| ACCOUNT-04 | Phase 7 | Pending |
-| ACCOUNT-05 | Phase 7 | Pending |
+| ACCOUNT-01 | Phase 7 | Complete |
+| ACCOUNT-02 | Phase 7 | Complete |
+| ACCOUNT-03 | Phase 7 | Complete |
+| ACCOUNT-04 | Phase 7 | Complete |
+| ACCOUNT-05 | Phase 7 | Complete |
 | ANALYTICS-01 | Phase 8 | Pending |
 | ANALYTICS-02 | Phase 8 | Pending |
 | ANALYTICS-03 | Phase 8 | Pending |
