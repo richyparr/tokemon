@@ -94,6 +94,10 @@ final class UsageMonitor {
     @ObservationIgnored
     var onAlertCheck: ((_ usage: UsageSnapshot) -> Void)?
 
+    /// Current account for account-specific data fetching (set by account change callback)
+    @ObservationIgnored
+    var currentAccount: Account?
+
     // MARK: - History
 
     /// History store for recording usage over time
@@ -194,7 +198,12 @@ final class UsageMonitor {
         // Step 1: Try OAuth (primary source)
         if oauthEnabled {
             do {
-                let response = try await OAuthClient.fetchUsageWithTokenRefresh()
+                let response: OAuthUsageResponse
+                if let account = currentAccount {
+                    response = try await OAuthClient.fetchUsageWithTokenRefresh(for: account)
+                } else {
+                    response = try await OAuthClient.fetchUsageWithTokenRefresh()
+                }
                 currentUsage = response.toSnapshot()
                 oauthState = .available
                 lastUpdated = Date()

@@ -13,6 +13,7 @@ struct ClaudeMonApp: App {
     @State private var themeManager = ThemeManager()
     @State private var licenseManager: LicenseManager
     @State private var featureAccess: FeatureAccessManager
+    @State private var accountManager = AccountManager()
     @State private var isPopoverPresented = false
     @State private var statusItemManager = StatusItemManager()
 
@@ -38,6 +39,7 @@ struct ClaudeMonApp: App {
                 .environment(themeManager)
                 .environment(licenseManager)
                 .environment(featureAccess)
+                .environment(accountManager)
                 .frame(width: 320, height: 400)
                 .onAppear {
                     // Ensure status item is updated when popover appears
@@ -59,6 +61,15 @@ struct ClaudeMonApp: App {
             SettingsWindowController.shared.setThemeManager(themeManager)
             SettingsWindowController.shared.setLicenseManager(licenseManager)
             SettingsWindowController.shared.setFeatureAccessManager(featureAccess)
+            SettingsWindowController.shared.setAccountManager(accountManager)
+
+            // Wire account changes to trigger UsageMonitor refresh
+            accountManager.onActiveAccountChanged = { [monitor] account in
+                Task { @MainActor in
+                    monitor.currentAccount = account
+                    await monitor.refresh()
+                }
+            }
 
             // Initialize floating window controller with references
             FloatingWindowController.shared.setMonitor(monitor)
@@ -108,6 +119,7 @@ struct ClaudeMonApp: App {
                 .environment(themeManager)
                 .environment(licenseManager)
                 .environment(featureAccess)
+                .environment(accountManager)
         }
     }
 }
