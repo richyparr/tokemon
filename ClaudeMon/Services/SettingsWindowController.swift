@@ -12,6 +12,7 @@ final class SettingsWindowController {
     private var alertManager: AlertManager?
     private var themeManager: ThemeManager?
     private var licenseManager: LicenseManager?
+    private var featureAccess: FeatureAccessManager?
 
     private init() {}
 
@@ -33,6 +34,11 @@ final class SettingsWindowController {
     /// Set the license manager reference (call from app startup)
     func setLicenseManager(_ manager: LicenseManager) {
         self.licenseManager = manager
+    }
+
+    /// Set the feature access manager reference (call from app startup)
+    func setFeatureAccessManager(_ manager: FeatureAccessManager) {
+        self.featureAccess = manager
     }
 
     /// Show the settings window, creating it if necessary
@@ -65,11 +71,17 @@ final class SettingsWindowController {
             return
         }
 
+        guard let featureAccess = featureAccess else {
+            print("[ClaudeMon] Error: FeatureAccessManager not set for settings window")
+            return
+        }
+
         let settingsView = SettingsView()
             .environment(monitor)
             .environment(alertManager)
             .environment(themeManager)
             .environment(licenseManager)
+            .environment(featureAccess)
 
         let hostingController = NSHostingController(rootView: settingsView)
 
