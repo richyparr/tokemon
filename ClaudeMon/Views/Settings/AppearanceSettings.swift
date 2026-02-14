@@ -15,6 +15,7 @@ struct AppearanceSettings: View {
     }
 
     @AppStorage("menuBarIconStyle") private var selectedStyle: String = IconStyle.percentage.rawValue
+    @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
 
     var body: some View {
         Form {
@@ -33,6 +34,16 @@ struct AppearanceSettings: View {
                 }
             } header: {
                 Text("Menu Bar Display")
+            }
+
+            Section {
+                Toggle("Show usage trend chart", isOn: $showUsageTrend)
+
+                Text("Display a usage chart and burn rate in the popover")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Popover")
             }
         }
         .formStyle(.grouped)

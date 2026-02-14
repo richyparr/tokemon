@@ -8,6 +8,9 @@ struct PopoverContentView: View {
     @Environment(UsageMonitor.self) private var monitor
     @Environment(AlertManager.self) private var alertManager
 
+    // Setting for showing usage trend (stored in UserDefaults)
+    @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
+
     var body: some View {
         VStack(spacing: 16) {
             // Big percentage number (dominant, first thing user sees)
@@ -18,8 +21,8 @@ struct PopoverContentView: View {
             // Detail breakdown: reset time, usage windows (OAuth) or token counts (JSONL)
             UsageDetailView(usage: monitor.currentUsage, showExtraUsage: monitor.showExtraUsage)
 
-            // Usage trends section (only show if we have OAuth data with percentage)
-            if monitor.currentUsage.hasPercentage {
+            // Usage trends section (only show if enabled in settings AND we have OAuth data)
+            if showUsageTrend && monitor.currentUsage.hasPercentage {
                 Divider()
 
                 // Chart
@@ -66,6 +69,13 @@ struct PopoverContentView: View {
 
                 // Settings/More menu - combines settings and quit
                 Menu {
+                    Button(FloatingWindowController.shared.isVisible ? "Hide Floating Window" : "Show Floating Window") {
+                        FloatingWindowController.shared.toggleFloatingWindow()
+                    }
+                    .keyboardShortcut("f", modifiers: .command)
+
+                    Divider()
+
                     Button("Settings...") {
                         openSettingsWindow()
                     }
