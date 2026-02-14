@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Alerts & Notifications** - Warning system when approaching usage limits
 - [x] **Phase 3: Usage Trends & API Integration** - Historical usage tracking, projections, and optional Admin API
 - [x] **Phase 4: Floating Window** - Always-on-top compact usage display
-- [ ] **Phase 5: Theming & Design Polish** - Three themes with consistent visual refinement across all display modes
+- [x] **Phase 5: Theming & Design Polish** - Three themes with consistent visual refinement across all display modes
 
 ## Phase Details
 
@@ -94,8 +94,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md -- Theme infrastructure (AppTheme enum, ThemeColors, ThemeManager) and theme picker in AppearanceSettings
-- [ ] 05-02-PLAN.md -- Wire themes to PopoverContentView, FloatingWindowView, UsageChartView, visual verification
+- [x] 05-01-PLAN.md -- Theme infrastructure (AppTheme enum, ThemeColors, ThemeManager) and theme picker in AppearanceSettings
+- [x] 05-02-PLAN.md -- Wire themes to PopoverContentView, FloatingWindowView, UsageChartView, visual verification
 
 ## Progress
 
@@ -108,4 +108,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. Alerts & Notifications | 2/2 | Complete | 2026-02-13 |
 | 3. Usage Trends & API Integration | 3/3 | Complete | 2026-02-13 |
 | 4. Floating Window | 2/2 | Complete | 2026-02-14 |
-| 5. Theming & Design Polish | 0/2 | Not started | - |
+| 5. Theming & Design Polish | 2/2 | Complete | 2026-02-14 |
