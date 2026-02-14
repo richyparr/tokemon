@@ -72,6 +72,42 @@ struct AccountsSettings: View {
                     }
                 }
 
+                Section("Alert Settings for \(account.displayName)") {
+                    // Alert threshold slider
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Alert Threshold")
+                            Spacer()
+                            Text("\(account.settings.alertThreshold)%")
+                                .foregroundStyle(.secondary)
+                                .monospacedDigit()
+                        }
+
+                        Slider(
+                            value: Binding(
+                                get: { Double(account.settings.alertThreshold) },
+                                set: { newValue in
+                                    updateThreshold(for: account, value: Int(newValue))
+                                }
+                            ),
+                            in: 50...100,
+                            step: 5
+                        )
+
+                        Text("Get notified when this account reaches this usage percentage")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    // Notifications toggle
+                    Toggle("Enable Notifications", isOn: Binding(
+                        get: { account.settings.notificationsEnabled },
+                        set: { newValue in
+                            updateNotifications(for: account, enabled: newValue)
+                        }
+                    ))
+                }
+
                 Section {
                     Button("Remove Account", role: .destructive) {
                         showingRemoveConfirmation = true
@@ -180,6 +216,30 @@ struct AccountsSettings: View {
             try? await accountManager.updateDisplayName(account, displayName: trimmed)
             isEditingName = false
             // Update selectedAccount to reflect change
+            if let updated = accountManager.accounts.first(where: { $0.id == account.id }) {
+                selectedAccount = updated
+            }
+        }
+    }
+
+    private func updateThreshold(for account: Account, value: Int) {
+        var settings = account.settings
+        settings.alertThreshold = value
+        Task {
+            try? await accountManager.updateAccountSettings(account, settings: settings)
+            // Refresh selected account
+            if let updated = accountManager.accounts.first(where: { $0.id == account.id }) {
+                selectedAccount = updated
+            }
+        }
+    }
+
+    private func updateNotifications(for account: Account, enabled: Bool) {
+        var settings = account.settings
+        settings.notificationsEnabled = enabled
+        Task {
+            try? await accountManager.updateAccountSettings(account, settings: settings)
+            // Refresh selected account
             if let updated = accountManager.accounts.first(where: { $0.id == account.id }) {
                 selectedAccount = updated
             }
