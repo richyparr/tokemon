@@ -1,298 +1,638 @@
-# Pitfalls Research
+# Domain Pitfalls: v2 Pro Features
 
-**Domain:** macOS menu bar app for Claude usage monitoring (ClaudeMon)
-**Researched:** 2026-02-11
-**Confidence:** MEDIUM-HIGH (data source feasibility verified against official docs; macOS platform pitfalls verified across multiple sources)
+**Domain:** Adding licensing, multi-account, PDF reports, and trials to existing macOS menu bar app
+**Researched:** 2026-02-14
+**Confidence:** MEDIUM-HIGH (LemonSqueezy API verified against official docs; Keychain patterns verified across multiple Swift sources; trial/licensing patterns verified via community frameworks)
+
+---
 
 ## Critical Pitfalls
 
-### Pitfall 1: Admin API Key Requirement Blocks Individual Users
+Mistakes that cause rewrites, user trust issues, or feature failure.
+
+### Pitfall 1: LemonSqueezy License API is Separate from Main API
 
 **What goes wrong:**
-The Anthropic Usage and Cost API (`/v1/organizations/usage_report/messages`) and the Claude Code Analytics API (`/v1/organizations/usage_report/claude_code`) both require an Admin API key (`sk-ant-admin...`), which is only available to organization accounts with the admin role. Individual users -- the most likely audience for a personal usage monitor -- cannot access these endpoints at all.
+Developers assume LemonSqueezy has one unified API. In reality, the License API (`api.lemonsqueezy.com/v1/licenses/*`) is completely separate from the main Lemon Squeezy API and has different requirements. Using the wrong API, wrong auth method, or wrong Content-Type causes silent failures or cryptic errors.
 
 **Why it happens:**
-Developers assume "there's an API for usage data" and build the entire architecture around it, only to discover at integration time that the target user base cannot provision the required key type. The Anthropic docs are clear but easy to miss: "The Admin API is unavailable for individual accounts."
+The main Lemon Squeezy API uses Bearer token auth and JSON request bodies. The License API uses `Content-Type: application/x-www-form-urlencoded` and no auth header (the license key itself is the credential). Developers copy-paste patterns from the wrong API.
 
-**How to avoid:**
-- Design ClaudeMon's data source layer with three independent tiers: local JSONL parsing (works for everyone), Admin API (works for org admins only), and claude.ai web data (limited/manual).
-- The MVP MUST work without any API keys by parsing local `~/.claude/projects/` JSONL files. Admin API integration is a power-user feature, not a core dependency.
-- Surface clear messaging in the app when a data source is unavailable rather than silently failing.
+**Consequences:**
+- License validation always fails with 400/401 errors
+- Users cannot activate the app
+- Time wasted debugging auth when the issue is Content-Type
 
-**Warning signs:**
-- Architecture assumes a single unified data source
-- No fallback path when API credentials are missing
-- Feature planning treats API-only data (cost breakdowns, team metrics) as table-stakes
+**Prevention:**
+- Use the dedicated Swift package [swift-lemon-squeezy-license](https://github.com/kevinhermawan/swift-lemon-squeezy-license) which handles these differences
+- If implementing manually, explicitly set:
+  - `Content-Type: application/x-www-form-urlencoded`
+  - `Accept: application/json`
+  - No Authorization header (license key goes in request body)
+- Test against the actual License API endpoints, not the main API docs
 
-**Phase to address:**
-Phase 1 (Foundation) -- data source abstraction must be designed from day one with optional providers.
+**Detection:**
+- 400 Bad Request on license validation calls
+- JSON parsing errors (response format differs from main API)
+- Integration works in Postman but fails in app (Content-Type mismatch)
 
-**Confidence:** HIGH -- verified against official Anthropic docs at `platform.claude.com/docs/en/build-with-claude/usage-cost-api`
+**Phase to address:** Licensing Phase -- use the Swift package from day one; don't hand-roll the API client.
+
+**Confidence:** HIGH -- verified against [LemonSqueezy License API docs](https://docs.lemonsqueezy.com/api/license-api)
 
 ---
 
-### Pitfall 2: Claude Code JSONL Format Is Unstable and Undocumented
+### Pitfall 2: License Keys Tied to Subscription Status Without Grace Period Handling
 
 **What goes wrong:**
-ClaudeMon parses `~/.claude/projects/<project>/<session-id>.jsonl` files for token usage data. These files contain `usage` objects with `input_tokens`, `output_tokens`, `cache_creation_input_tokens`, and `cache_read_input_tokens`. However, this format is internal to Claude Code, has no stability guarantee, and has already changed between versions. Notably, the `costUSD` field was removed in Claude Code v1.0.9 for Max plan users, breaking tools that relied on it.
+With subscription-based licensing in LemonSqueezy, the license key expires the moment the subscription ends -- not when the user requests cancellation, but when the billing cycle ends or payment retries are exhausted. Developers assume there's a buffer period. There isn't. The user's app instantly downgrades to free tier.
 
 **Why it happens:**
-Third-party tools like ccusage, claude-code-log, and claude-code-usage-analyzer all parse these files, creating a false sense of stability. But Anthropic has never documented this as a public API. Any Claude Code update can change the schema without notice.
+LemonSqueezy's subscription-license coupling means "the license key will remain active as long as the subscription is active" and expires simultaneously when the subscription terminates. Unlike Apple's 16-day billing grace period for App Store subscriptions, LemonSqueezy has no built-in grace period.
 
-**How to avoid:**
-- Build a versioned JSONL parser with defensive field access -- never crash on missing fields.
-- Implement a `ClaudeCodeJSONLSchema` abstraction that can be updated independently of the rest of the app.
-- Store parsed/normalized data in ClaudeMon's own local database (SQLite via SwiftData) so the app does not re-parse on every access and historical data survives schema changes.
-- Include a schema version detector that identifies which Claude Code version produced the file based on field presence.
-- Calculate costs independently using known Anthropic pricing when `costUSD` is absent (ccusage already does this with cached pricing data).
+**Consequences:**
+- User forgets to update payment method, loses Pro features mid-work
+- User gets angry 1-star review because "app suddenly stopped working"
+- Support tickets flood in around billing dates
 
-**Warning signs:**
-- Parsing code directly accesses nested JSON fields without nil-coalescing
-- No unit tests with sample JSONL from different Claude Code versions
-- App crashes after a Claude Code update
+**Prevention:**
+- Implement your own grace period: when license validation returns expired, give users 3-7 days of continued access while showing a warning
+- Cache the last-known-valid license status locally (in Keychain, encrypted) with a "grace_until" timestamp
+- Send proactive notifications when subscription is about to expire (use webhook `subscription_payment_failed` event)
+- On grace period expiration, downgrade gracefully to free tier rather than hard-locking the app
 
-**Phase to address:**
-Phase 1 (Data Layer) -- the JSONL parser must be robust from the start, with test fixtures from multiple schema versions.
+**Detection:**
+- User reports "Pro features disappeared without warning"
+- Support tickets spike on 1st/15th of month (common billing dates)
+- Analytics show users churning immediately after payment failures
 
-**Confidence:** HIGH -- multiple community tools document these issues; JSONL structure verified via blog post analysis at `liambx.com/blog/claude-code-log-analysis-with-duckdb`
+**Phase to address:** Licensing Phase -- design grace period logic before implementing license checks.
+
+**Confidence:** HIGH -- verified via [LemonSqueezy License Keys and Subscriptions docs](https://docs.lemonsqueezy.com/help/licensing/license-keys-subscriptions)
 
 ---
 
-### Pitfall 3: Claude.ai Web Usage Data Has No Programmatic Access
+### Pitfall 3: Keychain Credential Update Fails Silently with errSecDuplicateItem
 
 **What goes wrong:**
-Developers assume they can read Claude.ai (web/desktop app) usage data programmatically. There is no public API for claude.ai subscription usage. The `claude.ai/settings/usage` page shows limited current-period info without history, and there is no export endpoint. Browser extensions like "Claude Usage Tracker" work by scraping the web interface, which is fragile and cannot be done from a native macOS app.
+When storing OAuth credentials for multiple accounts, `SecItemAdd` fails with `errSecDuplicateItem` (-25299) if an item already exists for that service+account combination. Developers don't handle this error, so credential updates silently fail. The user re-authenticates, but the old (possibly expired) token remains in Keychain. OAuth refreshes then fail repeatedly.
 
 **Why it happens:**
-ClaudeMon's value proposition includes monitoring "all three sources" of Claude usage. If one source (claude.ai web) is inaccessible, the product feels incomplete. Developers spend excessive time trying to reverse-engineer web session tokens or build browser automation.
+`SecItemAdd` is add-only. To update, you must catch `errSecDuplicateItem`, then call `SecItemUpdate` with a separate attributes dictionary. Many developers assume "add or update" is a single operation.
 
-**How to avoid:**
-- Accept this limitation upfront and design around it. Claude.ai web usage monitoring should be either:
-  (a) Deferred entirely with a "coming soon" placeholder, or
-  (b) Implemented as a manual import (user exports data from claude.ai if/when Anthropic adds export)
-- For Claude Code users on Pro/Max plans, the local JSONL files capture Claude Code usage (which shares the same usage pool). Focus here instead.
-- Monitor Anthropic's changelog for future usage export APIs -- there is an active feature request (GitHub issue #13892 on anthropics/claude-code).
+**Consequences:**
+- OAuth token refresh fails because old token is stuck in Keychain
+- Users must manually run `/login` multiple times per day (as seen in [claude-code issue #19456](https://github.com/anthropics/claude-code/issues/19456))
+- Multi-account switching appears to work but silently corrupts credentials
 
-**Warning signs:**
-- Sprint planning includes "Claude.ai integration" as a Phase 1 deliverable
-- Exploring web scraping, browser automation, or session cookie theft
-- No clear user-facing communication about which sources are available
+**Prevention:**
+```swift
+// Correct pattern: Add-or-Update
+let addStatus = SecItemAdd(query as CFDictionary, nil)
+if addStatus == errSecDuplicateItem {
+    let updateQuery: [String: Any] = [
+        kSecClass as String: kSecClassGenericPassword,
+        kSecAttrService as String: serviceName,
+        kSecAttrAccount as String: accountIdentifier
+    ]
+    let updateAttributes: [String: Any] = [
+        kSecValueData as String: tokenData
+    ]
+    let updateStatus = SecItemUpdate(updateQuery as CFDictionary, updateAttributes as CFDictionary)
+    // Handle updateStatus
+}
+```
+- Use a Keychain wrapper library like [KeychainAccess](https://github.com/kishikawakatsumi/KeychainAccess) that handles this automatically
+- Unit test credential update flows, not just initial storage
 
-**Phase to address:**
-Phase 1 (Scope definition) -- explicitly descope claude.ai web data and communicate this in the UI. Revisit in a later phase if Anthropic ships an export API.
+**Detection:**
+- OAuth refresh succeeds server-side but app still uses old token
+- Users report needing to re-authenticate repeatedly
+- Debug logs show `errSecDuplicateItem` being silently ignored
 
-**Confidence:** HIGH -- verified via official help center, GitHub feature requests, and absence of any documented API endpoint for claude.ai subscription usage data.
+**Phase to address:** Multi-Account Phase -- implement correct Keychain update pattern before any OAuth flow.
+
+**Confidence:** HIGH -- verified via [Apple Developer Forums thread on SecItemUpdate](https://developer.apple.com/forums/thread/107339) and [Swift Keychain examples](https://swiftsenpai.com/development/persist-data-using-keychain/)
 
 ---
 
-### Pitfall 4: macOS App Sandbox Blocks Access to ~/.claude
+### Pitfall 4: Multi-Account Keychain Items Collide Without Unique Account Identifiers
 
 **What goes wrong:**
-If ClaudeMon is distributed through the Mac App Store, the App Sandbox prevents reading `~/.claude/projects/` because it is outside the app's container. The `com.apple.security.files.user-selected.read-only` entitlement requires explicit user file selection via an open dialog, not silent background reading. This fundamentally breaks the core feature of automatic JSONL parsing.
+When adding multi-account support, developers use a single `kSecAttrAccount` value (like "oauth_token") for all accounts. Keychain items are uniquely identified by (service + account). With identical account values, the second account's credentials overwrite the first.
 
 **Why it happens:**
-Developers build and test without sandboxing (debug builds are unsandboxed by default), then discover the problem only when preparing for App Store submission.
+The app started as single-account, with hardcoded account identifiers. Adding multi-account without changing the Keychain schema causes collisions.
 
-**How to avoid:**
-- Distribute ClaudeMon outside the Mac App Store as a notarized DMG. Non-sandboxed apps distributed via Developer ID + notarization can freely read `~/.claude/` without user interaction.
-- If App Store distribution is desired later, use Security-Scoped Bookmarks: prompt the user once to select the `~/.claude` directory, then persist access via a security-scoped bookmark for future reads.
-- Never assume file system access will "just work" -- test with sandboxing enabled early.
+**Consequences:**
+- Only one account's credentials are stored at a time
+- Switching accounts appears to work but loads wrong credentials
+- Users lose access to their secondary accounts
 
-**Warning signs:**
-- Development only tested with Xcode debug builds (never sandboxed)
-- No distribution strategy decided before Phase 1
-- App requires reading files from user's home directory but targets Mac App Store
+**Prevention:**
+- Use a unique identifier per account in `kSecAttrAccount`: email, user ID, or a UUID assigned at auth time
+- Store a mapping of account identifiers separately (UserDefaults is fine for the ID list, not for credentials)
+- Migration: on first launch after update, detect single-account items and rename them with the user's identifier
 
-**Phase to address:**
-Phase 0 (Project Setup) -- decide distribution channel (DMG vs App Store) before writing any code, as it fundamentally affects the architecture.
+```swift
+// Multi-account pattern
+let keychainAccount = "oauth_\(user.id)"  // Unique per user
+let query: [String: Any] = [
+    kSecClass as String: kSecClassGenericPassword,
+    kSecAttrService as String: "com.yourapp.oauth",
+    kSecAttrAccount as String: keychainAccount,  // User-specific
+    kSecValueData as String: tokenData
+]
+```
 
-**Confidence:** HIGH -- verified against Apple Developer documentation on App Sandbox entitlements.
+**Detection:**
+- Adding second account "forgets" first account
+- Account list shows multiple accounts but all resolve to same credentials
+- OAuth errors reference wrong user after account switch
+
+**Phase to address:** Multi-Account Phase -- design Keychain schema for multi-account before implementing account list UI.
+
+**Confidence:** HIGH -- verified via [Medium article on multi-account Keychain](https://medium.com/@leekiereloo/seamlessly-manage-multiple-user-accounts-in-ios-with-keychain-9ed080638a25)
 
 ---
 
-### Pitfall 5: WidgetKit Refresh Budget Makes Real-Time Usage Monitoring Impossible
+### Pitfall 5: Trial Period Based on Local Clock is Trivially Bypassable
 
 **What goes wrong:**
-Developers build a WidgetKit widget expecting it to show "live" token usage that updates every few minutes. In reality, macOS widgets get 40-70 refreshes per day (roughly every 15-60 minutes), controlled entirely by the system. You cannot force a widget to refresh on demand. The widget will show stale data most of the time.
+Trial implementation stores the trial start date in UserDefaults or a local file and compares against `Date()`. Users bypass this by:
+1. Setting system clock back
+2. Deleting the app's container/preferences
+3. Using tools like "RunAsDate" that freeze the app's clock
 
 **Why it happens:**
-During development/debugging, WidgetKit imposes no refresh-rate limitations, so the widget appears to update instantly. The developer ships, and users see updates only every 30+ minutes.
+Server-side trial validation requires infrastructure. Local-only trials are easier to implement. Developers underestimate how many users will cheat.
 
-**How to avoid:**
-- Design the widget to show summary/aggregate data (daily totals, trend sparklines) rather than live counts. Aggregate data is still useful even when 30 minutes stale.
-- Use the main menu bar popover for real-time data and the widget for at-a-glance summaries.
-- Use `WidgetCenter.shared.reloadTimelines(ofKind:)` from the main app when new data is parsed -- this counts against the budget but ensures the widget updates when important changes occur.
-- Implement the `.never` refresh policy and trigger reloads only from the main app, preserving budget for meaningful updates.
-- Show timestamps ("Updated 23 min ago") on the widget so users understand data freshness.
+**Consequences:**
+- Unlimited free trials for savvy users
+- Paying users see non-paying users getting same features, feel cheated
+- Revenue loss
 
-**Warning signs:**
-- Widget design shows precise, real-time numbers
-- No "last updated" indicator on the widget
-- Testing only done in Xcode debug environment
-- Widget timeline entries are spaced less than 5 minutes apart
+**Prevention:**
+- **Hybrid validation**: Store trial start date locally AND validate against server (LemonSqueezy can track this via instance metadata)
+- **Hardware-anchored identifier**: Use a device identifier (serial number hash) that persists across reinstalls
+- **NTP-verified time**: Check against network time on first launch and when trial is about to expire; if system clock is more than 24 hours behind NTP time, flag as suspicious
+- **Grace, not hard block**: If clock manipulation is detected, don't accusatorily lock the app. Show "Unable to verify trial status -- please check your internet connection" and allow limited use
 
-**Phase to address:**
-Widget phase -- design the widget's information architecture around staleness constraints before building any UI.
+Example using TrialLicensing framework pattern:
+```swift
+// Store trial in Keychain (harder to delete than UserDefaults)
+// Include device identifier hash
+// Validate against NTP time periodically
+```
 
-**Confidence:** HIGH -- verified via Apple's official WidgetKit documentation and multiple developer resources.
+**Detection:**
+- Trial start date is in the future
+- System clock is significantly behind network time
+- User has "reinstalled" multiple times (tracked via hardware ID)
+
+**Phase to address:** Trial Phase -- implement server-validated trial from the start; don't add it later.
+
+**Confidence:** MEDIUM -- patterns verified via [TrialLicensing framework](https://github.com/CleanCocoa/TrialLicensing) and trial bypass tools like [RunAsDate](https://github.com/babysofthack/mac-trial-reset)
 
 ---
 
-### Pitfall 6: Menu Bar App Window/Lifecycle Mismanagement
+### Pitfall 6: Feature Gating Logic Scattered Throughout Codebase
 
 **What goes wrong:**
-The app launches with an unwanted main window, the popover has interaction bugs (doesn't dismiss on click-away, has visible delay), the app appears in the Dock when it should be background-only, or the app quits entirely when the user closes a settings window.
+Developers add `if isPro { ... }` checks in dozens of places: views, view models, services, and API calls. When licensing logic needs to change (new tier, grace period, feature unlock), every check must be found and updated. Bugs emerge from inconsistent checks.
 
 **Why it happens:**
-macOS menu bar apps fight against SwiftUI's default lifecycle, which assumes a windowed application. The `MenuBarExtra` API has known limitations: `SettingsLink` does not work reliably inside `MenuBarExtra`, and the default `.window` style creates popover-like behavior that lacks native menu feel.
+It's the path of least resistance when adding a single Pro feature. By the time there are 10 features, the pattern is established and hard to refactor.
 
-**How to avoid:**
-- Set `LSUIElement = true` in Info.plist to hide the app from the Dock and Cmd-Tab switcher.
-- Use the hybrid approach: SwiftUI for views/state (70%) + AppKit for system integration (30%). Specifically use `NSStatusItem` + `NSMenu` or `NSPopover` via AppKit for the menu bar, with SwiftUI views hosted inside.
-- Alternatively, use `MenuBarExtra` with the `.menu` style for a simple dropdown, switching to `.window` style only if rich content is needed (and accepting the tradeoffs).
-- Handle `applicationShouldTerminateAfterLastWindowClosed` returning `false` in the app delegate.
-- Use template images for the menu bar icon (SF Symbols work well for this).
+**Consequences:**
+- Grace period implemented in some checks but not others
+- New features forget to add Pro check
+- Subscription status cached differently in different places, causing inconsistent behavior
+- Testing requires manually checking every gated feature
 
-**Warning signs:**
-- App icon appears in the Dock
-- A main window opens on launch
-- Settings/preferences cannot be opened from the menu bar item
-- Popover doesn't dismiss when clicking elsewhere
-- App terminates when closing the settings window
+**Prevention:**
+- Create a centralized `FeatureAccessManager` that is the single source of truth:
+```swift
+enum Feature {
+    case multiAccount
+    case pdfReports
+    case prioritySupport
+    case advancedAnalytics
+}
 
-**Phase to address:**
-Phase 1 (App Shell) -- get the menu bar lifecycle correct before building any features inside it. This is structural and expensive to retrofit.
+class FeatureAccessManager {
+    static let shared = FeatureAccessManager()
 
-**Confidence:** HIGH -- verified across multiple developer blog posts, Apple Developer Forums threads, and a January 2026 post-mortem from a menu bar app developer.
+    func canAccess(_ feature: Feature) -> Bool {
+        let license = LicenseManager.shared.currentStatus
+        switch (feature, license) {
+        case (_, .pro): return true
+        case (_, .trial): return true  // All features in trial
+        case (_, .grace): return true  // Grace period = temporary pro
+        case (.multiAccount, .free): return false
+        // etc.
+        }
+    }
+
+    func gatedAction(_ feature: Feature, action: () -> Void, fallback: () -> Void) {
+        if canAccess(feature) { action() } else { fallback() }
+    }
+}
+```
+- Use SwiftUI environment injection for reactive updates
+- Views subscribe to feature access changes, not raw license status
+
+**Detection:**
+- Searching for "isPro" or license status finds 20+ call sites
+- Grace period works for some features but not others
+- QA reports "this feature is locked but that one isn't" after subscription change
+
+**Phase to address:** Licensing Phase -- implement `FeatureAccessManager` before adding any feature gates.
+
+**Confidence:** HIGH -- standard pattern from [Feature flags in Swift](https://www.swiftbysundell.com/articles/feature-flags-in-swift/)
 
 ---
 
-## Technical Debt Patterns
+### Pitfall 7: PDF Generation Fails on macOS Without UIKit
 
-Shortcuts that seem reasonable but create long-term problems.
+**What goes wrong:**
+Developers follow iOS PDF generation tutorials that use `UIGraphicsPDFRenderer` or `UIGraphicsBeginPDFContext`. These are UIKit APIs. On macOS, UIKit is not available. The code compiles against Catalyst but fails on native macOS, or doesn't compile at all.
 
-| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
-|----------|-------------------|----------------|-----------------|
-| Parsing JSONL directly without caching to local DB | Faster initial development | Every app launch re-parses all files; slow with many sessions; no historical data if Claude Code prunes files | Never -- always cache to SQLite/SwiftData |
-| Hardcoding Anthropic pricing for cost calculations | Quick cost estimates | Prices change with new models; wrong costs silently shown | MVP only -- must be updatable (remote config or bundled JSON) |
-| Using UserDefaults for widget data sharing | Simple API | 1MB size limit; no query capability; no conflict resolution | Only for small config data, not usage data |
-| Single-process architecture (no XPC/helper) | Simpler codebase | Cannot do background polling when popover is closed; menu bar app has no run loop when not visible | Acceptable if app uses Timer in the main process (menu bar apps DO keep running) |
-| Skipping App Groups for widget | Avoids entitlement complexity | Widget extension cannot read main app's data at all | Never -- App Groups are required for widget data sharing |
+**Why it happens:**
+Most Swift PDF tutorials target iOS. macOS has different APIs (`NSPrintOperation`, `PDFDocument`/`PDFPage` from PDFKit, or Core Graphics directly). Search results for "Swift PDF generation" are iOS-heavy.
 
-## Integration Gotchas
+**Consequences:**
+- Code that works in iOS mode fails when building for native macOS
+- Last-minute scramble to rewrite PDF generation
+- Charts and complex layouts are harder without UIKit's graphics context
 
-Common mistakes when connecting to external services.
+**Prevention:**
+- Use PDFKit's `PDFDocument` and `PDFPage` APIs which work on both platforms
+- For rendering SwiftUI views to PDF on macOS:
+  - Use `ImageRenderer` (macOS 13+) to render view to image, then add to PDF page
+  - Or use `NSHostingView` to render SwiftUI, then draw to Core Graphics PDF context
+- Use cross-platform library like [TPPDF](https://github.com/techprimate/TPPDF) for complex reports
 
-| Integration | Common Mistake | Correct Approach |
-|-------------|----------------|------------------|
-| Anthropic Admin API | Using standard API key (`sk-ant-api...`) instead of Admin key (`sk-ant-admin...`) | Validate key prefix on entry; show clear error distinguishing key types |
-| Anthropic Admin API | Polling too frequently for usage data | API supports once-per-minute polling. Data appears within 5 minutes of request completion. Cache results aggressively for dashboards |
-| Anthropic Admin API | Not handling pagination (`has_more` / `next_page`) | Always implement pagination loop; large orgs can have many pages of data |
-| Anthropic Cost API | Assuming Priority Tier costs are included | Priority Tier costs use different billing and are NOT in the cost endpoint; track via usage endpoint instead |
-| Claude Code JSONL | Assuming all sessions have cost data | Pro/Max plan sessions since v1.0.9 lack `costUSD`; calculate costs from token counts + pricing table |
-| Claude Code JSONL | Reading files while Claude Code is writing | Use file coordination or read-only snapshots; JSONL append-only format helps but partial last lines are possible |
-| WidgetKit App Groups | Main app and widget extension using different suite names | Define App Group ID as a shared constant; verify both targets have the entitlement enabled |
+Example macOS-native approach:
+```swift
+import PDFKit
 
-## Performance Traps
+func generateReport() -> PDFDocument {
+    let pdf = PDFDocument()
 
-Patterns that work at small scale but fail as usage grows.
+    // Create PDF page with content
+    let page = PDFPage()
+    // ... configure page
+    pdf.insert(page, at: 0)
 
-| Trap | Symptoms | Prevention | When It Breaks |
-|------|----------|------------|----------------|
-| Re-parsing all JSONL files on every refresh | App hangs on launch, high CPU | Parse incrementally (track file size/offset); store parsed data in SQLite | After ~50 sessions with large contexts |
-| Loading full session transcripts into memory | Memory spikes to 500MB+ | Only extract `usage` blocks; stream-parse JSONL line-by-line | Single session files can be 100MB+ with long conversations |
-| Polling Admin API every minute without caching | Unnecessary network traffic; hitting rate limits | Cache responses; respect the 5-minute data freshness window | Immediately with multiple data views refreshing independently |
-| SwiftUI view using NSViewRepresentable in menu bar | Memory leaks accumulating over days | Use pure SwiftUI views where possible; if AppKit views needed, verify deallocation in Instruments | After a few hours of opening/closing the popover |
-| Storing full parsed data in UserDefaults for widget | UserDefaults slow with large values; widget hangs | Use App Group shared SQLite/file; keep UserDefaults for config only | After a week of accumulated usage data |
+    return pdf
+}
+```
 
-## Security Mistakes
+**Detection:**
+- Build errors mentioning `UIGraphicsRenderer` unavailable on macOS
+- Crash at runtime when PDF generation runs on native macOS
+- PDF works in Catalyst but not native macOS target
 
-Domain-specific security issues beyond general web security.
+**Phase to address:** PDF Reports Phase -- choose macOS-native PDF approach before implementing.
 
-| Mistake | Risk | Prevention |
-|---------|------|------------|
-| Storing Admin API key in UserDefaults or plain text | Key leaked via backup, export, or other app reading preferences | Store in macOS Keychain using `Security.framework`; never log the key |
-| Logging full API responses including token content | Session content from JSONL files could contain sensitive code/data | Only log metadata (timestamps, token counts, session IDs); never log message content |
-| Shipping with Hardened Runtime disabled | Notarization fails; app feels untrustworthy | Enable Hardened Runtime from project creation; it is required for notarization |
-| Not validating Admin API key format before sending | Sending invalid keys leaks information about key format expectations | Validate `sk-ant-admin` prefix client-side before any API call |
-| Exposing JSONL file paths in crash reports | Reveals user's project directory structure | Sanitize file paths in error reporting; use relative paths or hashes |
+**Confidence:** HIGH -- verified via [Swift Forums discussion on macOS PDF generation](https://forums.swift.org/t/creating-pdfs-on-macos-without-uikit/54968) and [TPPDF library](https://github.com/techprimate/TPPDF)
 
-## UX Pitfalls
+---
 
-Common user experience mistakes in this domain.
+### Pitfall 8: Webhook-Based License Status is Unreliable Without Fallback
 
-| Pitfall | User Impact | Better Approach |
-|---------|-------------|-----------------|
-| Showing raw token counts without context | Users don't know if 50,000 tokens is a lot or a little | Show percentage of limit used, cost estimates, comparisons to yesterday |
-| Widget shows "No Data" when Claude Code hasn't been used today | User thinks app is broken | Show last known data with "No activity today" message and last-active timestamp |
-| Requiring API key setup before showing any data | Users abandon during onboarding if setup is complex | Show local JSONL data immediately (zero-config); API key is optional enhancement |
-| Menu bar icon doesn't indicate status | User must click to check usage | Use SF Symbol variations or a small badge/color to indicate usage level (green/yellow/red) |
-| Not explaining what each data source covers | Users confused about gaps in data | Clear labeling: "Claude Code (local)", "API Usage (org)", with help tooltips |
-| Settings window opens behind other apps | User thinks nothing happened | Bring settings window to front and activate the app temporarily using `NSApp.activate(ignoringOtherApps: true)` |
+**What goes wrong:**
+The app relies solely on LemonSqueezy webhooks to update license status. When a user upgrades/downgrades/renews, the webhook notifies the app's backend, which updates the user's status. But:
+- Webhooks can be blocked by firewalls (Cloudflare blocks LemonSqueezy IPs)
+- Webhooks can fail silently if endpoint returns non-200
+- Webhook retries only happen 3 times (5s, 25s, 125s), then give up
 
-## "Looks Done But Isn't" Checklist
+**Why it happens:**
+Webhooks feel like real-time updates. Developers assume they're reliable. They're not -- they're "mostly reliable with edge cases."
 
-Things that appear complete but are missing critical pieces.
+**Consequences:**
+- User pays, but app still shows "Free" tier
+- Subscription renewal not reflected for hours/days
+- Support tickets: "I paid but I don't have Pro"
 
-- [ ] **JSONL Parser:** Often missing handling for malformed/truncated last lines (Claude Code may be mid-write) -- verify with a file that has a partial final line
-- [ ] **Widget:** Often missing App Group entitlement on BOTH the main app target AND the widget extension target -- verify both in Signing & Capabilities
-- [ ] **Menu Bar Icon:** Often missing template image rendering (icon should be monochrome and adapt to light/dark menu bar) -- verify with both light and dark menu bar appearances
-- [ ] **Background Refresh:** Often missing handling for app nap (macOS will throttle timers in background apps) -- verify with `ProcessInfo.processInfo.disableAutomaticTermination("monitoring")` or by setting appropriate QoS
-- [ ] **API Polling:** Often missing error handling for 401 (expired/revoked key), 429 (rate limit), and network unreachable -- verify by testing with invalid key, rapid polling, and airplane mode
-- [ ] **Cost Calculation:** Often missing cache token pricing (cache creation and cache read have different per-token costs than standard input) -- verify cost calculations against Anthropic's pricing page
-- [ ] **Data Freshness:** Often missing "last updated" timestamps on displayed data -- verify every data view shows when it was last refreshed
-- [ ] **First Launch:** Often missing the security-scoped bookmark prompt for `~/.claude` access (if sandboxed) -- verify on a clean macOS user account
-- [ ] **Widget Timeline:** Often missing the `.never` reload policy consideration -- verify widget isn't burning through refresh budget with `atEnd` policy when the app can trigger reloads
+**Prevention:**
+- **Validate license on app launch**: Always call LemonSqueezy's `/validate` endpoint on startup
+- **Validate periodically**: Re-validate every 24 hours while app is running
+- **Validate on user action**: When user clicks "Restore Purchase" or opens Settings
+- **Webhook as optimization**: Use webhooks to push updates faster, but never trust them as the only source
+- **Local caching**: Cache the last validated status with a timestamp; show cached status if validation fails (network down)
+
+```swift
+// Layered license checking
+class LicenseManager {
+    func refreshStatus() async {
+        // Try API validation first
+        if let status = try? await validateWithLemonSqueezy() {
+            self.cachedStatus = status
+            self.cachedAt = Date()
+            return
+        }
+
+        // Fall back to cached status if recent enough
+        if let cached = cachedStatus,
+           let cachedAt = cachedAt,
+           Date().timeIntervalSince(cachedAt) < 86400 {
+            return  // Use cached status
+        }
+
+        // Grace: if we can't validate and cache is stale, assume valid temporarily
+        // (Better UX than locking out paying customer due to network issues)
+    }
+}
+```
+
+**Detection:**
+- User upgrades but status doesn't change
+- License status is inconsistent between devices
+- Backend logs show webhook delivery failures
+
+**Phase to address:** Licensing Phase -- design validate-on-launch from day one; don't rely solely on webhooks.
+
+**Confidence:** HIGH -- verified via [LemonSqueezy Webhook docs](https://docs.lemonsqueezy.com/help/webhooks) showing retry limits and [Cloudflare blocking issue](https://community.cloudflare.com/t/cloudflare-is-blocking-lemon-squeezy-webhook/807437)
+
+---
+
+### Pitfall 9: License Validation Rate Limits Block High-Usage Patterns
+
+**What goes wrong:**
+LemonSqueezy License API is rate limited to 60 requests per minute. If the app validates license on every feature access, or validates too frequently during debugging, the API returns 429 errors. The app interprets this as "license invalid" and downgrades the user.
+
+**Why it happens:**
+Rate limits aren't considered during development. Debugging involves rapid restarts. Production code validates too often "just to be safe."
+
+**Consequences:**
+- Users randomly lose Pro features during heavy use
+- Debug builds constantly downgrade to free tier
+- API integration appears unreliable when it's just rate-limited
+
+**Prevention:**
+- Cache license status locally for 24 hours minimum
+- Validate only on: app launch, user-initiated "Check License" action, and after purchase flow
+- Never validate on feature access -- use cached status
+- Handle 429 explicitly: don't treat as invalid license, retain current status, schedule retry with exponential backoff
+- Log rate limit hits for monitoring
+
+```swift
+// Rate limit handling
+if response.statusCode == 429 {
+    // DON'T invalidate license
+    // DO schedule retry in 60 seconds
+    // DO continue using cached status
+    scheduleRetry(delay: 60)
+    return .useCachedStatus
+}
+```
+
+**Detection:**
+- Users report "features flickering" between Pro and Free
+- Backend logs show 429 responses from LemonSqueezy
+- Issue happens more to power users who restart frequently
+
+**Phase to address:** Licensing Phase -- implement caching and rate limit handling before any license checks.
+
+**Confidence:** HIGH -- rate limit documented at [LemonSqueezy License API docs](https://docs.lemonsqueezy.com/api/license-api)
+
+---
+
+### Pitfall 10: Device Activation Limit UX is Hostile Without Deactivation Flow
+
+**What goes wrong:**
+LemonSqueezy licenses can have activation limits (e.g., 3 devices). Users hit the limit, get an error "Activation limit reached," and have no way to deactivate old devices from the app. They email support, who manually deactivates. This happens repeatedly.
+
+**Why it happens:**
+Developers implement activation but not deactivation. They assume users won't hit the limit, or that manual support intervention is acceptable.
+
+**Consequences:**
+- Frustrated users who just want to use the app they paid for
+- Support burden for trivial deactivation requests
+- Users creating multiple accounts to work around limits
+
+**Prevention:**
+- Implement in-app deactivation: show list of activated devices, allow user to deactivate old ones
+- Store instance IDs returned from activation to enable targeted deactivation
+- On activation failure, show which devices are active and offer to deactivate one
+- Consider "auto-deactivate oldest" option for users who frequently switch devices
+
+```swift
+// Activation response includes instance_id
+let activation = try await LemonSqueezy.activate(key: licenseKey, instanceName: "MacBook Pro (work)")
+// Store instance_id for later deactivation
+self.instanceId = activation.instanceId
+
+// Later, to deactivate:
+try await LemonSqueezy.deactivate(key: licenseKey, instanceId: oldInstanceId)
+```
+
+**Detection:**
+- Support emails about "can't activate, hit limit"
+- Users with 3+ accounts for same email
+- Activation success rate drops over time
+
+**Phase to address:** Licensing Phase -- implement deactivation UI alongside activation, not as an afterthought.
+
+**Confidence:** HIGH -- activation limits documented, patterns from [Keyforge licensing blog](https://keyforge.dev/blog/how-to-license-mac-app)
+
+---
+
+## Moderate Pitfalls
+
+Issues that cause friction but are recoverable.
+
+### Pitfall 11: PDF Reports Include Sensitive Session Content
+
+**What goes wrong:**
+PDF reports for usage analytics accidentally include session content (prompts, responses) from the JSONL parsing. User shares PDF with colleague, exposing proprietary code they were discussing with Claude.
+
+**Prevention:**
+- PDF reports show ONLY: token counts, timestamps, cost estimates, aggregate statistics
+- Never include message content, even truncated
+- Add a warning if any content fields are detected in the report data model
+
+**Phase to address:** PDF Reports Phase -- define report data model before building export.
+
+---
+
+### Pitfall 12: Multi-Account Picker Defaults to Wrong Account After Migration
+
+**What goes wrong:**
+Single-account users upgrade to multi-account version. The app migrates their credentials but doesn't set a default account. On next launch, no account is selected, and the app appears logged out.
+
+**Prevention:**
+- Migration sets the existing account as default/active
+- Account picker always has a selection (even if "none")
+- First account added is automatically set as default
+
+**Phase to address:** Multi-Account Phase -- include migration flow in acceptance criteria.
+
+---
+
+### Pitfall 13: Trial Start Timestamp Not Stored in Keychain
+
+**What goes wrong:**
+Trial start date stored in UserDefaults. User clears preferences (or clean installs macOS with same user account). Trial resets, giving unlimited trials.
+
+**Prevention:**
+- Store trial metadata in Keychain (survives preference resets)
+- Include a device-specific identifier that persists across reinstalls
+- Server-side trial tracking as ultimate source of truth
+
+**Phase to address:** Trial Phase -- design storage strategy before implementation.
+
+---
+
+### Pitfall 14: License Check Blocks App Launch
+
+**What goes wrong:**
+App validates license synchronously on launch. Network is slow or unavailable. App appears to hang for 30 seconds, then either crashes (timeout) or launches with wrong status.
+
+**Prevention:**
+- Launch with cached status immediately (show stale data)
+- Validate async in background
+- Update UI when validation completes
+- Never block main thread for network calls
+
+**Phase to address:** Licensing Phase -- design async validation from the start.
+
+---
+
+### Pitfall 15: No Offline License Validation Fallback
+
+**What goes wrong:**
+User has valid Pro subscription. They get on a flight (no internet). App tries to validate license, fails, downgrades to free tier. User can't use Pro features they paid for while offline.
+
+**Prevention:**
+- Cache validated license for 7+ days
+- Offline = use cached status
+- Only downgrade if cache is very stale (30+ days) AND user was online recently AND validation failed
+- Consider cryptographically signed license tokens that can be validated offline
+
+**Phase to address:** Licensing Phase -- define offline behavior in requirements.
+
+**Confidence:** MEDIUM -- patterns from [Keygen offline validation example](https://github.com/keygen-sh/example-python-offline-validation-caching)
+
+---
+
+## Minor Pitfalls
+
+Issues that are annoying but have straightforward fixes.
+
+### Pitfall 16: PDF Export Saves to Desktop Without Asking
+
+**What goes wrong:**
+User clicks "Export PDF" and file silently saves to ~/Desktop. User expects a save dialog.
+
+**Prevention:**
+- Always show `NSSavePanel` for user to choose location
+- Remember last-used location for convenience
+- Respect user's choice, don't assume Desktop
+
+---
+
+### Pitfall 17: Account Switcher Doesn't Update Menu Bar Display
+
+**What goes wrong:**
+User switches from Account A to Account B. Menu bar still shows Account A's stats until manual refresh or app restart.
+
+**Prevention:**
+- Account switch triggers full data refresh
+- Menu bar observes current account state reactively
+- Visual confirmation that account switched (brief indicator)
+
+---
+
+### Pitfall 18: Trial Countdown Shows Negative Days
+
+**What goes wrong:**
+Trial expired 3 days ago. UI shows "Trial: -3 days remaining" instead of "Trial Expired."
+
+**Prevention:**
+- Clamp countdown to minimum of 0
+- Distinct UI state for "expired" vs "active"
+- Test with expired trial dates, not just active ones
+
+---
+
+## Phase-Specific Warnings
+
+| Phase Topic | Likely Pitfall | Mitigation |
+|-------------|---------------|------------|
+| LemonSqueezy Integration | Wrong API (main vs license) | Use swift-lemon-squeezy-license package |
+| LemonSqueezy Integration | Rate limiting on validation | Cache status 24+ hours, handle 429 |
+| LemonSqueezy Integration | No grace period built-in | Implement your own 3-7 day grace |
+| Multi-Account OAuth | Keychain credential collision | Unique kSecAttrAccount per user |
+| Multi-Account OAuth | Update vs Add confusion | Use KeychainAccess wrapper or proper error handling |
+| Trial Implementation | Clock manipulation bypass | Server-side validation + NTP checks |
+| Trial Implementation | Preference deletion resets trial | Store in Keychain, not UserDefaults |
+| PDF Generation | UIKit APIs on macOS | Use PDFKit or TPPDF |
+| PDF Generation | Including sensitive content | Define data model with only metadata |
+| Feature Gating | Scattered isPro checks | Centralized FeatureAccessManager |
+| Feature Gating | Grace period inconsistency | Single source of truth for status |
+
+---
+
+## "Looks Done But Isn't" Checklist: v2 Features
+
+- [ ] **License Validation:** Handles 429 rate limit without downgrading user
+- [ ] **License Validation:** Works offline using cached status
+- [ ] **License Validation:** Grace period continues access after expiration
+- [ ] **Webhooks:** Fallback validation exists if webhook never arrives
+- [ ] **Device Activation:** Deactivation UI implemented, not just activation
+- [ ] **Multi-Account:** Keychain uses unique account identifier per user
+- [ ] **Multi-Account:** Credential update handles errSecDuplicateItem
+- [ ] **Multi-Account:** Migration from single-account sets default
+- [ ] **Trial:** Start date stored in Keychain, not just UserDefaults
+- [ ] **Trial:** Server-side or NTP validation prevents clock manipulation
+- [ ] **Trial:** Expired state handled distinctly from active
+- [ ] **Feature Gating:** Centralized FeatureAccessManager, not scattered checks
+- [ ] **Feature Gating:** Grace period applied consistently to all features
+- [ ] **PDF Export:** Uses macOS-native APIs (PDFKit), not UIKit
+- [ ] **PDF Export:** Contains only metadata, no session content
+- [ ] **PDF Export:** Shows NSSavePanel, doesn't auto-save to Desktop
+
+---
 
 ## Recovery Strategies
 
-When pitfalls occur despite prevention, how to recover.
-
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| JSONL schema changes break parser | LOW | Parser abstraction means only the schema adapter needs updating; cached data in local DB remains valid |
-| App Store submission rejected due to sandbox | MEDIUM | Switch to Developer ID + notarization distribution; requires changing signing config and building a DMG distribution pipeline |
-| Widget refresh budget exhausted | LOW | Switch to `.never` policy + app-triggered reloads; no data loss, just delayed updates until budget resets |
-| Admin API key stored insecurely | HIGH | Rotate the key immediately in Anthropic Console; migrate storage to Keychain; notify users to regenerate keys |
-| Memory leak in menu bar popover | MEDIUM | Profile with Instruments; likely NSViewRepresentable lifecycle issue; switch to pure SwiftUI views or ensure proper cleanup in `dismantleNSView` |
-| Claude.ai adds usage API later | LOW | Data source abstraction already in place; implement new provider; no architecture change needed |
+| Wrong LemonSqueezy API used | LOW | Swap to correct API endpoints; swift-lemon-squeezy-license handles this |
+| No grace period implemented | MEDIUM | Add grace logic to FeatureAccessManager; cache last-valid status with grace timestamp |
+| Keychain credentials colliding | HIGH | Migration to add user IDs to existing items; may need to prompt re-auth |
+| Trial stored in UserDefaults | MEDIUM | Migrate to Keychain on next launch; accept that some users got free resets |
+| Clock manipulation not prevented | LOW | Add NTP checks; server-side validation; accept this is anti-piracy theater |
+| Feature checks scattered | HIGH | Major refactor to centralize; add comprehensive tests to ensure consistency |
+| PDF uses UIKit | MEDIUM | Rewrite with PDFKit/TPPDF; same business logic, different rendering |
+| Webhook-only license updates | MEDIUM | Add validate-on-launch; implement local caching with timestamps |
+| Rate limit downgrades users | LOW | Add 429 handling to retain cached status; schedule retries |
+| Device limit blocks users | MEDIUM | Add deactivation UI; may need to increase limits for existing users |
 
-## Pitfall-to-Phase Mapping
-
-How roadmap phases should address these pitfalls.
-
-| Pitfall | Prevention Phase | Verification |
-|---------|------------------|--------------|
-| Admin API requires org account | Phase 0 (Scope) | App works fully with zero API keys, showing local JSONL data only |
-| JSONL format instability | Phase 1 (Data Layer) | Unit tests pass with JSONL fixtures from Claude Code v1.0.x, v1.x.x, and a file with missing `costUSD` |
-| Claude.ai has no usage API | Phase 0 (Scope) | UI clearly indicates which sources are active/unavailable; no dead "claude.ai" tab |
-| App Sandbox blocks ~/.claude access | Phase 0 (Project Setup) | Distribution decided; if non-sandboxed, notarization pipeline works; if sandboxed, security-scoped bookmark flow tested |
-| WidgetKit refresh budget | Widget Phase (Design) | Widget shows aggregate data with "updated X ago" timestamp; tested outside Xcode debugger |
-| Menu bar lifecycle issues | Phase 1 (App Shell) | App is Dock-less, no main window on launch, popover dismisses on click-away, settings window opens correctly |
-| Memory leaks in popover | Phase 1 (App Shell) | Instruments shows no leaks after 50 open/close cycles of the popover |
-| Insecure API key storage | Phase 1 (Settings) | API key stored in Keychain; not visible in UserDefaults plist; not logged anywhere |
-| JSONL read during write | Phase 1 (Data Layer) | Parser handles truncated last line gracefully; tested with concurrent write simulation |
-| Pricing data goes stale | Post-MVP | Pricing is loaded from updatable source (bundled JSON file or remote config); not hardcoded in Swift |
+---
 
 ## Sources
 
-- [Usage and Cost API - Claude API Docs](https://platform.claude.com/docs/en/build-with-claude/usage-cost-api) -- HIGH confidence
-- [Claude Code Analytics API - Claude API Docs](https://platform.claude.com/docs/en/build-with-claude/claude-code-analytics-api) -- HIGH confidence
-- [Analyzing Claude Code Interaction Logs with DuckDB](https://liambx.com/blog/claude-code-log-analysis-with-duckdb) -- MEDIUM confidence (JSONL structure details)
-- [ccusage - Claude Code Usage Analysis](https://github.com/ryoppippi/ccusage) -- MEDIUM confidence (third-party tool validating JSONL parsing approach)
-- [Claude Code Usage Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor) -- MEDIUM confidence (confirms 5-hour billing window tracking)
-- [Feature Request: Usage history tracking for Pro/Max users (GitHub #13892)](https://github.com/anthropics/claude-code/issues/13892) -- HIGH confidence (confirms no claude.ai usage API)
-- [How to Update or Refresh a Widget? - Swift Senpai](https://swiftsenpai.com/development/refreshing-widget/) -- MEDIUM confidence (WidgetKit refresh budget)
-- [Keeping a widget up to date - Apple Developer](https://developer.apple.com/documentation/widgetkit/keeping-a-widget-up-to-date) -- HIGH confidence
-- [Making network requests in a widget extension - Apple Developer](https://developer.apple.com/documentation/widgetkit/making-network-requests-in-a-widget-extension) -- HIGH confidence
-- [Accessing files from the macOS App Sandbox - Apple Developer](https://developer.apple.com/documentation/security/accessing-files-from-the-macos-app-sandbox) -- HIGH confidence
-- [What I Learned Building a Native macOS Menu Bar App (Jan 2026)](https://medium.com/@p_anhphong/what-i-learned-building-a-native-macos-menu-bar-app-eacbc16c2e14) -- MEDIUM confidence
-- [SwiftUI view in NSMenuItem memory leak (FB7539293)](https://github.com/feedback-assistant/reports/issues/84) -- HIGH confidence (Apple Feedback bug report)
-- [Showing Settings from macOS Menu Bar Items (Steipete)](https://steipete.me/posts/2025/showing-settings-from-macos-menu-bar-items) -- MEDIUM confidence
-- [Cost and Usage Reporting in the Claude Console - Help Center](https://support.anthropic.com/en/articles/9534590-cost-and-usage-reporting-in-the-claude-console) -- HIGH confidence
-- [Using Claude Code with Pro/Max plan - Help Center](https://support.claude.com/en/articles/11145838-using-claude-code-with-your-pro-or-max-plan) -- HIGH confidence
-- [Claude Code local storage design - Milvus Blog](https://milvus.io/blog/why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md) -- MEDIUM confidence
+- [LemonSqueezy License API](https://docs.lemonsqueezy.com/api/license-api) -- HIGH confidence
+- [LemonSqueezy License Keys and Subscriptions](https://docs.lemonsqueezy.com/help/licensing/license-keys-subscriptions) -- HIGH confidence
+- [LemonSqueezy Webhooks](https://docs.lemonsqueezy.com/help/webhooks) -- HIGH confidence
+- [swift-lemon-squeezy-license package](https://github.com/kevinhermawan/swift-lemon-squeezy-license) -- HIGH confidence
+- [Keychain SecItemUpdate pattern](https://developer.apple.com/forums/thread/107339) -- HIGH confidence
+- [Multi-account Keychain pattern](https://medium.com/@leekiereloo/seamlessly-manage-multiple-user-accounts-in-ios-with-keychain-9ed080638a25) -- MEDIUM confidence
+- [Claude Code OAuth Keychain issue #19456](https://github.com/anthropics/claude-code/issues/19456) -- HIGH confidence (real-world example of this pitfall)
+- [TrialLicensing Swift framework](https://github.com/CleanCocoa/TrialLicensing) -- MEDIUM confidence
+- [Trial bypass tools](https://github.com/babysofthack/mac-trial-reset) -- MEDIUM confidence (demonstrates vulnerability)
+- [Feature flags in Swift](https://www.swiftbysundell.com/articles/feature-flags-in-swift/) -- HIGH confidence
+- [macOS PDF generation without UIKit](https://forums.swift.org/t/creating-pdfs-on-macos-without-uikit/54968) -- HIGH confidence
+- [TPPDF library](https://github.com/techprimate/TPPDF) -- HIGH confidence
+- [Keygen offline validation](https://github.com/keygen-sh/example-python-offline-validation-caching) -- MEDIUM confidence
+- [Keyforge macOS licensing blog](https://keyforge.dev/blog/how-to-license-mac-app) -- MEDIUM confidence
+- [Cloudflare blocking LemonSqueezy webhooks](https://community.cloudflare.com/t/cloudflare-is-blocking-lemon-squeezy-webhook/807437) -- HIGH confidence
 
 ---
-*Pitfalls research for: ClaudeMon -- macOS Claude usage monitoring app*
-*Researched: 2026-02-11*
+*Pitfalls research for: ClaudeMon v2 Pro Features*
+*Domain: Adding licensing, multi-account, PDF reports, and trials to existing macOS menu bar app*
+*Researched: 2026-02-14*

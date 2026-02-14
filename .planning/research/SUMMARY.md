@@ -326,3 +326,65 @@ None of these gaps block roadmap creation or phase planning. They are implementa
 ---
 *Research completed: 2026-02-11*
 *Ready for roadmap: yes*
+
+---
+
+# v2 Pro Features Research Summary
+
+**Synthesized:** 2026-02-14
+**Scope:** Analytics, Multi-account, Licensing, Shareable Moments
+**Confidence:** HIGH
+
+## Key Findings
+
+### Stack Additions
+- **Only 1 new dependency:** `swift-lemon-squeezy-license` (v1.0.1) for licensing
+- **PDF/CSV/Images:** All use native `ImageRenderer` — no third-party libraries needed
+- **Multi-account:** Uses existing `KeychainAccess` with unique account identifiers
+
+### Build Order (Dependencies)
+1. **Licensing** — Foundation for all Pro features (must be first)
+2. **Multi-Account** — Depends on licensing for Pro gating
+3. **Extended Analytics** — Depends on licensing; extends HistoryStore
+4. **Export (PDF/CSV)** — Depends on analytics for aggregation
+5. **Shareable Images** — Can parallel with export
+
+### Critical Pitfalls
+| Pitfall | Prevention |
+|---------|------------|
+| LemonSqueezy License API is separate from main API | Use `swift-lemon-squeezy-license` package |
+| No built-in grace period for subscriptions | Implement 3-7 day grace with local caching |
+| Keychain credential collision in multi-account | Unique `kSecAttrAccount` per user ID |
+| Feature gating scattered throughout code | Centralized `FeatureAccessManager` |
+| PDF tutorials use UIKit (unavailable on macOS) | Use `ImageRenderer` or `PDFKit` |
+
+### New Components Needed
+- `LicenseManager` (@Observable) — License validation, caching, grace periods
+- `LemonSqueezyClient` — API wrapper (or use package)
+- `FeatureAccessManager` — Centralized Pro feature gating
+- `AccountManager` — Multi-account credential storage
+- `ExportManager` — PDF/CSV generation
+- `ShareableCardView` — Social card templates
+
+### Modified Components
+- `UsageMonitor` — Account-aware data fetching
+- `TokenManager` — Multi-credential support
+- `HistoryStore` — Extended retention (90 days for Pro)
+- `SettingsView` — License, accounts, export sections
+
+## Roadmap Implications
+
+**Recommended phase structure:**
+- Phase 6: Licensing Foundation (LemonSqueezy, trial, feature gating)
+- Phase 7: Multi-Account (Keychain expansion, account switcher)
+- Phase 8: Analytics & Export (extended history, PDF/CSV)
+- Phase 9: Shareable Moments (card templates, share sheet)
+
+**Estimated complexity:**
+- Licensing: MEDIUM (new integration, grace period logic)
+- Multi-Account: MEDIUM (Keychain schema, account-aware state)
+- Analytics/Export: LOW-MEDIUM (extends existing HistoryStore, ImageRenderer)
+- Shareable: LOW (template-based image generation)
+
+---
+*v2 Research completed: 2026-02-14*

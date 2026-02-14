@@ -270,5 +270,417 @@ dependencies: [
 - [Stats: macOS system monitor](https://github.com/exelban/stats) -- Reference architecture for menu bar monitoring apps
 
 ---
-*Stack research for: ClaudeMon -- macOS Claude usage monitoring app*
-*Researched: 2026-02-11*
+
+# v2 Pro Features: Stack Additions
+
+**Researched:** 2026-02-14
+**Scope:** Additions for v2 features (licensing, PDF export, CSV export, shareable images, multi-account)
+**Overall Confidence:** HIGH
+
+## Summary
+
+ClaudeMon v2 requires **only ONE new external dependency** (LemonSqueezy licensing). All other features use native Apple frameworks or the existing KeychainAccess dependency.
+
+| Feature | Approach | New Dependency? |
+|---------|----------|-----------------|
+| LemonSqueezy Licensing | Third-party Swift SDK | YES (1 package) |
+| PDF Export | Native ImageRenderer + CGContext | NO |
+| CSV Export | Native string manipulation | NO |
+| Shareable Images | Native ImageRenderer | NO |
+| Multi-Account | Existing KeychainAccess | NO |
+
+---
+
+## New Dependency: LemonSqueezy License Validation
+
+**Package:** [swift-lemon-squeezy-license](https://github.com/kevinhermawan/swift-lemon-squeezy-license)
+
+| Attribute | Value |
+|-----------|-------|
+| Version | 1.0.1 (October 2024) |
+| SPM URL | `https://github.com/kevinhermawan/swift-lemon-squeezy-license.git` |
+| Product Name | `LemonSqueezyLicense` |
+| Confidence | MEDIUM |
+
+**Why this library:**
+- Only Swift SDK available for LemonSqueezy License API
+- Covers all three required operations: activate, validate, deactivate
+- Clean async/await API matching ClaudeMon's existing patterns
+- Lightweight (single-purpose, minimal footprint)
+
+**API Requirements:**
+- Requests to `https://api.lemonsqueezy.com` over HTTPS
+- Headers: `Accept: application/json`, `Content-Type: application/x-www-form-urlencoded`
+- Rate limited: 60 requests/minute (sufficient for app usage)
+
+**License Status Values:**
+| Status | Meaning |
+|--------|---------|
+| `inactive` | Valid key with no activations |
+| `active` | Has one or more activations |
+| `expired` | Expiry date has passed |
+| `disabled` | Manually disabled by admin |
+
+**Implementation Strategy:**
+
+```swift
+// Store after activation
+struct LicenseInfo: Codable {
+    let licenseKey: String
+    let instanceId: String
+    let status: String
+    let validatedAt: Date
+}
+
+// Cache in UserDefaults
+UserDefaults.standard.set(encodedLicenseInfo, forKey: "licenseInfo")
+
+// Validation schedule:
+// 1. On app launch (if online)
+// 2. Every 24 hours while running
+// 3. 7-day grace period for offline users
+```
+
+**Fallback Plan:** If library becomes unmaintained, LemonSqueezy's License API is simple enough for direct URLSession implementation (~100 lines).
+
+**Confidence Rationale:** MEDIUM because community-maintained with modest activity (5 commits, 2 releases). API stability is good since it wraps LemonSqueezy's documented public API.
+
+---
+
+## Native Framework: PDF Export
+
+**Framework:** SwiftUI `ImageRenderer` + Core Graphics `CGContext`
+
+| Attribute | Value |
+|-----------|-------|
+| Min macOS | 13.0 (Ventura) |
+| ClaudeMon Target | 14.0 (exceeds requirement) |
+| Dependency | None |
+| Confidence | HIGH |
+
+**Why native over TPPDF:**
+- ImageRenderer directly renders SwiftUI views to PDF with vector quality
+- ClaudeMon already uses SwiftUI for all UI components (charts, layouts)
+- No third-party dependency needed
+- Consistent styling with app's existing views
+
+**Implementation Pattern:**
+
+```swift
+import SwiftUI
+
+struct PDFExporter {
+    static func exportReport(view: some View, to url: URL) throws {
+        let renderer = ImageRenderer(content: view)
+        renderer.scale = 2.0  // Retina quality
+
+        renderer.render { size, context in
+            var box = CGRect(origin: .zero, size: size)
+            guard let pdf = CGContext(url as CFURL, mediaBox: &box, nil) else { return }
+            pdf.beginPDFPage(nil)
+            context(pdf)
+            pdf.endPDFPage()
+            pdf.closePDF()
+        }
+    }
+}
+
+// Usage
+let reportView = UsageReportView(data: usageData, dateRange: selectedRange)
+let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+let pdfURL = documentsURL.appendingPathComponent("ClaudeMon-Report-\(Date().ISO8601Format()).pdf")
+try PDFExporter.exportReport(view: reportView, to: pdfURL)
+```
+
+**Considerations:**
+- ImageRenderer does NOT render WebViews or MapViews (not used in ClaudeMon)
+- Set `renderer.scale` to 2.0+ for high-resolution output
+- Swift Charts render correctly as vector graphics
+
+---
+
+## Native Framework: CSV Export
+
+**Framework:** Foundation (standard string manipulation)
+
+| Attribute | Value |
+|-----------|-------|
+| Dependency | None |
+| Confidence | HIGH |
+
+**Why no library:**
+- CSV generation is trivial string concatenation
+- ClaudeMon's usage data is simple tabular data (dates, numbers, model names)
+- No complex features needed (no reading, no custom delimiters)
+- Adding a library for <50 lines of code is over-engineering
+
+**Implementation Pattern:**
+
+```swift
+struct CSVExporter {
+    static func export(dataPoints: [UsageDataPoint]) -> String {
+        var csv = "Date,Model,Input Tokens,Output Tokens,Total Cost\n"
+
+        for point in dataPoints {
+            let row = [
+                point.date.ISO8601Format(),
+                escapeField(point.model),
+                String(point.inputTokens),
+                String(point.outputTokens),
+                String(format: "%.4f", point.cost)
+            ].joined(separator: ",")
+            csv += row + "\n"
+        }
+        return csv
+    }
+
+    private static func escapeField(_ field: String) -> String {
+        if field.contains(",") || field.contains("\"") || field.contains("\n") {
+            return "\"\(field.replacingOccurrences(of: "\"", with: "\"\""))\""
+        }
+        return field
+    }
+}
+
+// Usage with ShareLink
+let csvContent = CSVExporter.export(dataPoints: usageHistory)
+let csvURL = FileManager.default.temporaryDirectory.appendingPathComponent("usage.csv")
+try csvContent.write(to: csvURL, atomically: true, encoding: .utf8)
+```
+
+---
+
+## Native Framework: Shareable Usage Cards
+
+**Framework:** SwiftUI `ImageRenderer`
+
+| Attribute | Value |
+|-----------|-------|
+| Min macOS | 13.0 |
+| Dependency | None |
+| Confidence | HIGH |
+
+**Why native:**
+- ImageRenderer is purpose-built for this exact use case
+- Renders any SwiftUI view hierarchy to NSImage/CGImage
+- Maintains full fidelity of charts, gradients, and styled text
+- Already available (macOS 14 target exceeds macOS 13 requirement)
+
+**Implementation Pattern:**
+
+```swift
+struct ImageExporter {
+    static func captureCard(view: some View) -> NSImage? {
+        let renderer = ImageRenderer(content: view)
+        renderer.scale = NSScreen.main?.backingScaleFactor ?? 2.0
+        return renderer.nsImage
+    }
+
+    static func exportPNG(view: some View, to url: URL) throws {
+        guard let nsImage = captureCard(view: view) else {
+            throw ExportError.renderFailed
+        }
+        guard let tiffData = nsImage.tiffRepresentation,
+              let bitmap = NSBitmapImageRep(data: tiffData),
+              let pngData = bitmap.representation(using: .png, properties: [:]) else {
+            throw ExportError.encodingFailed
+        }
+        try pngData.write(to: url)
+    }
+}
+
+// Shareable card view
+struct ShareableUsageCard: View {
+    let usage: UsageSnapshot
+    let theme: Theme
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("Claude Usage")
+                .font(.headline)
+            UsageChartView(data: usage.history)
+                .frame(width: 400, height: 200)
+            HStack {
+                Text("Total: \(usage.totalTokens) tokens")
+                Spacer()
+                Text("Cost: $\(usage.totalCost, specifier: "%.2f")")
+            }
+            Text("Generated by ClaudeMon")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .background(theme.cardBackground)
+        .cornerRadius(12)
+    }
+}
+```
+
+**Features Supported:**
+- Swift Charts render correctly
+- Custom fonts and colors preserved
+- Gradients and shadows work
+- Scale factor configurable for high-resolution export
+
+---
+
+## Existing Dependency: Multi-Account Credentials
+
+**Library:** KeychainAccess (already in Package.swift)
+
+| Attribute | Value |
+|-----------|-------|
+| Version | 4.2.2 |
+| Status | Already a dependency |
+| Confidence | HIGH |
+
+**Why no changes needed:**
+- KeychainAccess already supports storing multiple items with different keys
+- ClaudeMon's `TokenManager` uses `kSecAttrService` + `kSecAttrAccount` pattern
+- Multi-account just requires different account keys per credential
+
+**Implementation Pattern:**
+
+```swift
+// Account list stored in UserDefaults (Keychain lacks list APIs)
+struct AccountManager {
+    private let keychain = Keychain(service: "ClaudeMon")
+
+    var accounts: [String] {
+        get { UserDefaults.standard.stringArray(forKey: "savedAccounts") ?? [] }
+        set { UserDefaults.standard.set(newValue, forKey: "savedAccounts") }
+    }
+
+    var currentAccountId: String? {
+        get { UserDefaults.standard.string(forKey: "currentAccount") }
+        set { UserDefaults.standard.set(newValue, forKey: "currentAccount") }
+    }
+
+    func saveCredentials(_ credentials: ClaudeCredentials, for accountId: String) throws {
+        let data = try JSONEncoder().encode(credentials)
+        let json = String(data: data, encoding: .utf8)!
+        try keychain.set(json, key: "\(accountId)-credentials")
+
+        if !accounts.contains(accountId) {
+            accounts.append(accountId)
+        }
+    }
+
+    func getCredentials(for accountId: String) throws -> ClaudeCredentials {
+        guard let json = try keychain.getString("\(accountId)-credentials"),
+              let data = json.data(using: .utf8) else {
+            throw TokenError.noCredentials
+        }
+        return try JSONDecoder().decode(ClaudeCredentials.self, from: data)
+    }
+
+    func removeAccount(_ accountId: String) throws {
+        try keychain.remove("\(accountId)-credentials")
+        accounts.removeAll { $0 == accountId }
+        if currentAccountId == accountId {
+            currentAccountId = accounts.first
+        }
+    }
+}
+```
+
+**Architecture Notes:**
+- Account identifiers stored in UserDefaults (Keychain lacks enumeration APIs)
+- Each account's OAuth credentials stored in Keychain with account-specific key
+- Current active account ID stored in UserDefaults
+- Extend existing `TokenManager` with account selection parameter
+
+---
+
+## Updated Package.swift
+
+```swift
+// swift-tools-version: 6.0
+import PackageDescription
+
+let package = Package(
+    name: "ClaudeMon",
+    platforms: [
+        .macOS(.v14)
+    ],
+    dependencies: [
+        // Existing dependencies
+        .package(url: "https://github.com/orchetect/MenuBarExtraAccess.git", from: "1.2.2"),
+        .package(url: "https://github.com/orchetect/SettingsAccess.git", from: "2.1.0"),
+        .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", from: "4.2.2"),
+
+        // NEW for v2: LemonSqueezy licensing
+        .package(url: "https://github.com/kevinhermawan/swift-lemon-squeezy-license.git", from: "1.0.0"),
+    ],
+    targets: [
+        .executableTarget(
+            name: "ClaudeMon",
+            dependencies: [
+                "MenuBarExtraAccess",
+                "SettingsAccess",
+                "KeychainAccess",
+                .product(name: "LemonSqueezyLicense", package: "swift-lemon-squeezy-license"),
+            ],
+            path: "ClaudeMon",
+            exclude: ["Info.plist"]
+        ),
+    ]
+)
+```
+
+---
+
+## Integration Points with Existing Code
+
+| Feature | Existing Code | Integration Approach |
+|---------|---------------|---------------------|
+| Licensing | N/A (new) | Create `LicenseManager` service alongside existing `TokenManager` |
+| PDF Export | `UsageChartView`, `UsageDetailView`, `Theme` | Create `ReportView` composing existing views; render with ImageRenderer |
+| CSV Export | `UsageDataPoint`, `UsageSnapshot` models | Add `CSVExporter` utility consuming existing models |
+| Image Cards | `Theme`, `GradientColors`, `UsageChartView` | Create `ShareableCardView` using existing theme system and chart views |
+| Multi-Account | `TokenManager`, `Constants.keychainService` | Add `AccountManager` for selection; extend `TokenManager` with account parameter |
+
+---
+
+## Dependencies NOT Recommended for v2
+
+| Library | Why Not |
+|---------|---------|
+| TPPDF | Overkill for usage reports; ImageRenderer handles SwiftUI views natively |
+| CSV.swift | Over-engineered for simple export; native string building sufficient |
+| SwiftCSVExport | Same reasoning; no complex features needed |
+| Custom LemonSqueezy client | LemonSqueezyLicense handles the API cleanly; fallback to URLSession only if unmaintained |
+
+---
+
+## Risk Assessment for v2 Additions
+
+| Risk | Severity | Mitigation |
+|------|----------|-----------|
+| LemonSqueezyLicense unmaintained | Low | API is simple; can reimplement with URLSession if needed (~100 lines) |
+| ImageRenderer limitations | Very Low | ClaudeMon doesn't use WebViews/Maps; all views are standard SwiftUI |
+| Keychain conflicts between accounts | Low | Use unique service+account keys; thorough testing of account switching |
+| Offline license validation | Medium | Cache license state; implement 7-day grace period before requiring re-validation |
+
+---
+
+## v2 Sources
+
+### LemonSqueezy
+- [swift-lemon-squeezy-license GitHub](https://github.com/kevinhermawan/swift-lemon-squeezy-license) - Swift SDK (v1.0.1) - MEDIUM confidence
+- [LemonSqueezy License API Docs](https://docs.lemonsqueezy.com/api/license-api) - Official API reference - HIGH confidence
+- [Validating License Keys Guide](https://docs.lemonsqueezy.com/guides/tutorials/license-keys) - Implementation guide - HIGH confidence
+
+### PDF/Image Export
+- [Apple ImageRenderer Documentation](https://developer.apple.com/documentation/swiftui/imagerenderer) - Official API - HIGH confidence
+- [Hacking with Swift - SwiftUI View to PDF](https://www.hackingwithswift.com/quick-start/swiftui/how-to-render-a-swiftui-view-to-a-pdf) - Implementation guide - MEDIUM confidence
+- [AppCoda - ImageRenderer PDF](https://www.appcoda.com/swiftui-imagerenderer-pdf/) - Practical examples - MEDIUM confidence
+- [Swift with Majid - ImageRenderer](https://swiftwithmajid.com/2023/04/18/imagerenderer-in-swiftui/) - Scale and quality settings - MEDIUM confidence
+
+### Multi-Account Keychain
+- [KeychainAccess GitHub](https://github.com/kishikawakatsumi/KeychainAccess) - Already in use (v4.2.2) - HIGH confidence
+- [Managing Multiple Accounts with Keychain](https://medium.com/@leekiereloo/seamlessly-manage-multiple-user-accounts-in-ios-with-keychain-9ed080638a25) - Pattern guidance - MEDIUM confidence
+
+---
+*Stack research for: ClaudeMon v2 Pro Features*
+*Updated: 2026-02-14*
