@@ -11,6 +11,7 @@ struct ClaudeMonApp: App {
     @State private var monitor = UsageMonitor()
     @State private var alertManager = AlertManager()
     @State private var themeManager = ThemeManager()
+    @State private var licenseManager = LicenseManager()
     @State private var isPopoverPresented = false
     @State private var statusItemManager = StatusItemManager()
 
@@ -29,10 +30,11 @@ struct ClaudeMonApp: App {
                 .environment(monitor)
                 .environment(alertManager)
                 .environment(themeManager)
+                .environment(licenseManager)
                 .frame(width: 320, height: 400)
                 .onAppear {
                     // Ensure status item is updated when popover appears
-                    statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
+                    statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel, licenseState: licenseManager.state)
                 }
         } label: {
             // Fallback label -- the real rendering is done via NSStatusItem
@@ -42,12 +44,13 @@ struct ClaudeMonApp: App {
         .menuBarExtraAccess(isPresented: $isPopoverPresented) { statusItem in
             // Called once during setup -- store the reference for future updates
             statusItemManager.statusItem = statusItem
-            statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
+            statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel, licenseState: licenseManager.state)
 
-            // Initialize settings window controller with monitor, alertManager, and themeManager references
+            // Initialize settings window controller with monitor, alertManager, themeManager, and licenseManager references
             SettingsWindowController.shared.setMonitor(monitor)
             SettingsWindowController.shared.setAlertManager(alertManager)
             SettingsWindowController.shared.setThemeManager(themeManager)
+            SettingsWindowController.shared.setLicenseManager(licenseManager)
 
             // Initialize floating window controller with references
             FloatingWindowController.shared.setMonitor(monitor)
@@ -58,9 +61,21 @@ struct ClaudeMonApp: App {
             statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
             // Register for monitor changes to keep the status item text current
-            monitor.onUsageChanged = { [statusItemManager, alertManager] usage in
+            monitor.onUsageChanged = { [statusItemManager, alertManager, licenseManager] usage in
                 Task { @MainActor in
-                    statusItemManager.update(with: usage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
+                    statusItemManager.update(with: usage, error: monitor.error, alertLevel: alertManager.currentAlertLevel, licenseState: licenseManager.state)
+                }
+            }
+
+            // Register for license state changes to update status item
+            licenseManager.onStateChanged = { [statusItemManager, alertManager] state in
+                Task { @MainActor in
+                    statusItemManager.update(
+                        with: monitor.currentUsage,
+                        error: monitor.error,
+                        alertLevel: alertManager.currentAlertLevel,
+                        licenseState: state
+                    )
                 }
             }
 
@@ -83,6 +98,7 @@ struct ClaudeMonApp: App {
                 .environment(monitor)
                 .environment(alertManager)
                 .environment(themeManager)
+                .environment(licenseManager)
         }
     }
 }
@@ -101,10 +117,17 @@ final class StatusItemManager {
     /// Update the status item button with the current usage data.
     /// Renders a colored percentage string for OAuth, or token count for JSONL fallback.
     /// Shows error indicator when both sources have failed, or alert indicator for critical usage.
-    func update(with usage: UsageSnapshot, error: UsageMonitor.MonitorError?, alertLevel: AlertManager.AlertLevel = .normal) {
+    /// Optionally appends license state suffix (trial days, expired badge).
+    func update(with usage: UsageSnapshot, error: UsageMonitor.MonitorError?, alertLevel: AlertManager.AlertLevel = .normal, licenseState: LicenseState? = nil) {
         guard let button = statusItem?.button else { return }
 
         var text = usage.menuBarText
+
+        // Append license state suffix if relevant (e.g., [3d] for trial, [!] for expired)
+        if let suffix = licenseState?.menuBarSuffix {
+            text = "\(text) \(suffix)"
+        }
+
         let color: NSColor
 
         // Priority 1: Error indicator (both sources failed) - orange with "!"
