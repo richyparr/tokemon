@@ -105,6 +105,8 @@ struct PopoverContentView: View {
                         .foregroundStyle(.secondary)
                 }
                 .menuStyle(.borderlessButton)
+                .menuIndicator(.hidden)
+                .tint(.secondary)
                 .frame(width: 20)
                 .help("Settings & Options")
             }
