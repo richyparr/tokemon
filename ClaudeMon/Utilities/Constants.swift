@@ -28,6 +28,10 @@ enum Constants {
 
     // MARK: - LemonSqueezy Licensing
 
+    /// Developer mode: bypass licensing and treat as Pro user
+    /// Set to false before shipping!
+    static let developerModeProEnabled: Bool = true
+
     /// LemonSqueezy store ID (verify against API responses)
     static let lemonSqueezyStoreId: Int = 0  // TODO: Replace with actual store ID
 
