@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation & Core Monitoring** - Working menu bar app with live usage data from OAuth/JSONL sources
 - [x] **Phase 2: Alerts & Notifications** - Warning system when approaching usage limits
 - [x] **Phase 3: Usage Trends & API Integration** - Historical usage tracking, projections, and optional Admin API
-- [ ] **Phase 4: Floating Window** - Always-on-top compact usage display
+- [x] **Phase 4: Floating Window** - Always-on-top compact usage display
 - [ ] **Phase 5: Theming & Design Polish** - Three themes with consistent visual refinement across all display modes
 
 ## Phase Details
@@ -80,8 +80,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md -- FloatingPanel NSPanel subclass, FloatingWindowController service, NSWindow position extension
-- [ ] 04-02-PLAN.md -- FloatingWindowView UI with live data, context menu integration, human verification
+- [x] 04-01-PLAN.md -- FloatingPanel NSPanel subclass, FloatingWindowController service, NSWindow position extension
+- [x] 04-02-PLAN.md -- FloatingWindowView UI with live data, context menu integration, human verification
 
 ### Phase 5: Theming & Design Polish
 **Goal**: App looks polished and professional with three distinct theme options applied consistently across all display modes
@@ -107,5 +107,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Foundation & Core Monitoring | 3/3 | Complete | 2026-02-12 |
 | 2. Alerts & Notifications | 2/2 | Complete | 2026-02-13 |
 | 3. Usage Trends & API Integration | 3/3 | Complete | 2026-02-13 |
-| 4. Floating Window | 0/2 | Ready | - |
+| 4. Floating Window | 2/2 | Complete | 2026-02-14 |
 | 5. Theming & Design Polish | 0/2 | Not started | - |
