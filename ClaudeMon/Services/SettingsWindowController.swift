@@ -10,6 +10,7 @@ final class SettingsWindowController {
     private var window: NSWindow?
     private var monitor: UsageMonitor?
     private var alertManager: AlertManager?
+    private var themeManager: ThemeManager?
 
     private init() {}
 
@@ -21,6 +22,11 @@ final class SettingsWindowController {
     /// Set the alert manager reference (call from app startup)
     func setAlertManager(_ manager: AlertManager) {
         self.alertManager = manager
+    }
+
+    /// Set the theme manager reference (call from app startup)
+    func setThemeManager(_ manager: ThemeManager) {
+        self.themeManager = manager
     }
 
     /// Show the settings window, creating it if necessary
@@ -43,9 +49,15 @@ final class SettingsWindowController {
             return
         }
 
+        guard let themeManager = themeManager else {
+            print("[ClaudeMon] Error: ThemeManager not set for settings window")
+            return
+        }
+
         let settingsView = SettingsView()
             .environment(monitor)
             .environment(alertManager)
+            .environment(themeManager)
 
         let hostingController = NSHostingController(rootView: settingsView)
 
