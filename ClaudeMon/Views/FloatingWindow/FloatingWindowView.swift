@@ -35,6 +35,8 @@ struct FloatingWindowView: View {
         }
         .padding(12)
         .frame(minWidth: 100, minHeight: 60)
+        .background(themeColors.primaryBackground)
+        .tint(themeColors.primaryAccent)
     }
 
     // MARK: - Computed Properties
