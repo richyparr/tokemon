@@ -44,9 +44,10 @@ struct ClaudeMonApp: App {
             statusItemManager.statusItem = statusItem
             statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
 
-            // Initialize settings window controller with monitor and alertManager references
+            // Initialize settings window controller with monitor, alertManager, and themeManager references
             SettingsWindowController.shared.setMonitor(monitor)
             SettingsWindowController.shared.setAlertManager(alertManager)
+            SettingsWindowController.shared.setThemeManager(themeManager)
 
             // Initialize floating window controller with references
             FloatingWindowController.shared.setMonitor(monitor)
