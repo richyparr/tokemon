@@ -37,8 +37,9 @@ struct PopoverContentView: View {
             if showUsageTrend && monitor.currentUsage.hasPercentage {
                 Divider()
 
-                // Chart
+                // Chart - pass theme environment for chart colors
                 UsageChartView(dataPoints: monitor.usageHistory)
+                    .environment(themeManager)
 
                 // Burn rate
                 BurnRateView(
