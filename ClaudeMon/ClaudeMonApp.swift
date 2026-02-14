@@ -46,6 +46,10 @@ struct ClaudeMonApp: App {
             SettingsWindowController.shared.setMonitor(monitor)
             SettingsWindowController.shared.setAlertManager(alertManager)
 
+            // Initialize floating window controller with references
+            FloatingWindowController.shared.setMonitor(monitor)
+            FloatingWindowController.shared.setAlertManager(alertManager)
+
             // Enable right-click detection on the status item button
             statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
@@ -197,9 +201,13 @@ final class StatusItemManager {
 
         menu.addItem(NSMenuItem.separator())
 
-        // Open Floating Window (disabled -- Phase 4)
-        let floatingItem = NSMenuItem(title: "Open Floating Window (Phase 4)", action: nil, keyEquivalent: "")
-        floatingItem.isEnabled = false
+        // Toggle Floating Window (Cmd+F)
+        let floatingItem = NSMenuItem(
+            title: FloatingWindowController.shared.isVisible ? "Hide Floating Window" : "Show Floating Window",
+            action: #selector(ContextMenuActions.toggleFloatingWindow),
+            keyEquivalent: "f"
+        )
+        floatingItem.target = actions
         menu.addItem(floatingItem)
 
         // Settings... (Cmd+,)
@@ -239,6 +247,10 @@ final class ContextMenuActions: NSObject {
         Task { @MainActor in
             await monitor.refresh()
         }
+    }
+
+    @objc func toggleFloatingWindow() {
+        FloatingWindowController.shared.toggleFloatingWindow()
     }
 
     @objc func openSettings() {
