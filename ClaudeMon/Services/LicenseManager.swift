@@ -209,6 +209,13 @@ final class LicenseManager {
 
     /// Load cached state on launch
     private func loadCachedState() async {
+        // Developer mode bypass - treat as licensed Pro user
+        if Constants.developerModeProEnabled {
+            state = .licensed(licenseKey: "DEV-MODE", instanceId: "dev", expiresAt: nil)
+            lastValidated = Date()
+            return
+        }
+
         // First check for existing license
         if let cached = try? await storage.getLicenseData() {
             state = cached.state
