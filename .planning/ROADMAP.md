@@ -24,7 +24,7 @@ See [v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md) for full details.
 
 **Milestone Goal:** Transform ClaudeMon into a paid product with licensing, multi-account support, extended analytics, and viral sharing features.
 
-- [ ] **Phase 6: Licensing Foundation** — LemonSqueezy integration with trial and Pro gating
+- [x] **Phase 6: Licensing Foundation** — LemonSqueezy integration with trial and Pro gating — completed 2026-02-14
 - [ ] **Phase 7: Multi-Account** — Multiple Claude accounts with per-account alerts
 - [ ] **Phase 8: Analytics & Export** — Extended history, summaries, PDF/CSV export
 - [ ] **Phase 9: Shareable Moments** — Usage card generation for social sharing
@@ -44,9 +44,9 @@ See [v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md) for full details.
 **Plans**: 3 plans in 3 waves
 
 Plans:
-- [ ] 06-01-PLAN.md — LemonSqueezy integration, LicenseState model, LicenseManager service (Wave 1)
-- [ ] 06-02-PLAN.md — Trial banner, purchase prompt, LicenseSettings tab (Wave 2)
-- [ ] 06-03-PLAN.md — FeatureAccessManager and Pro gating UI (Wave 3)
+- [x] 06-01-PLAN.md — LemonSqueezy integration, LicenseState model, LicenseManager service (Wave 1)
+- [x] 06-02-PLAN.md — Trial banner, purchase prompt, LicenseSettings tab (Wave 2)
+- [x] 06-03-PLAN.md — FeatureAccessManager and Pro gating UI (Wave 3)
 
 ### Phase 7: Multi-Account
 **Goal**: Users can manage multiple Claude accounts and see usage across all of them
@@ -105,7 +105,7 @@ Plans:
 | 3. Usage Trends & API Integration | v1.0 | 3/3 | Complete | 2026-02-13 |
 | 4. Floating Window | v1.0 | 2/2 | Complete | 2026-02-14 |
 | 5. Theming & Design Polish | v1.0 | 2/2 | Complete | 2026-02-14 |
-| 6. Licensing Foundation | v2.0 | 0/3 | Planned | - |
+| 6. Licensing Foundation | v2.0 | 3/3 | Complete | 2026-02-14 |
 | 7. Multi-Account | v2.0 | 0/3 | Not started | - |
 | 8. Analytics & Export | v2.0 | 0/3 | Not started | - |
 | 9. Shareable Moments | v2.0 | 0/2 | Not started | - |
@@ -113,4 +113,4 @@ Plans:
 ---
 
 *v2 roadmap created: 2026-02-14*
-*Phase 6 planned: 2026-02-14*
+*Phase 6 completed: 2026-02-14*
