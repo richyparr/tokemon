@@ -2,28 +2,24 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-14)
+See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** Phase 9 - Shareable Moments
+**Current focus:** v2.0 shipped — planning next milestone
 
 ## Current Position
 
-Phase: 9 of 9 (Shareable Moments) - COMPLETE
-Plan: 2 of 2 in current phase - COMPLETE
-Status: v2.0 feature complete
-Last activity: 2026-02-15 — Completed 09-02 (Dashboard Integration)
+Phase: 9 of 9 (all milestones complete)
+Plan: All plans complete
+Status: v2.0 shipped
+Last activity: 2026-02-15 — Archived v2.0 milestone
 
 Progress: [#######################] 100% (23/23 plans completed)
 
-## v2 Scope
+## Shipped Milestones
 
-- Phase 6: Licensing Foundation (5 requirements)
-- Phase 7: Multi-Account (5 requirements)
-- Phase 8: Analytics & Export (7 requirements)
-- Phase 9: Shareable Moments (3 requirements)
-
-**Total:** 20 requirements mapped to 4 phases
+- **v1.0 MVP** — 5 phases, 12 plans (shipped 2026-02-14)
+- **v2.0 Pro Features** — 4 phases, 11 plans (shipped 2026-02-15)
 
 ## Performance Metrics
 
@@ -34,72 +30,16 @@ Progress: [#######################] 100% (23/23 plans completed)
 - Timeline: 3 days (Feb 11-14, 2026)
 
 **v2.0 Milestone:**
-- Plans estimated: 11 (3+3+3+2)
-- Phases: 4
-- 06-01: 4min, 3 tasks, 6 files
-- 06-02: 3min, 3 tasks, 7 files
-- 06-03: 2min, 3 tasks, 6 files
-- 07-01: 2min, 3 tasks, 5 files
-- 07-02: 4min, 3 tasks, 9 files
-- 07-03: 3min, 3 tasks, 6 files
-- 08-01: 2min, 2 tasks, 2 files
-- 08-02: 3min, 2 tasks, 8 files
-- 08-03: 2min, 2 tasks, 3 files
-- 09-01: 1min, 2 tasks, 2 files
-- 09-02: 2min, 2 tasks, 1 file
+- Total plans completed: 11
+- Total phases: 4
+- Lines of code: 7,706 Swift
+- Timeline: 2 days (Feb 14-15, 2026)
 
 ## Accumulated Context
 
 ### Decisions
 
-- v2 pricing: $3/mo or $29/yr subscription
-- Distribution: GitHub + LemonSqueezy (not App Store)
-- iOS deferred to v3
-- Closed source (not open source)
-- Used @preconcurrency import for LemonSqueezyLicense (Swift 6 Sendable compliance)
-- Adapted LemonSqueezy error handling to match actual API (thrown errors, not response fields)
-- License suffix appended before color determination in StatusItemManager
-- TrialBannerView placed above error banner in popover for visual hierarchy
-- PurchasePromptView uses sheet presentation from popover for modal UX
-- FeatureAccessManager initialized via State(initialValue:) for shared LicenseManager dependency
-- ProBadge/ProLockOverlay placed in Views/Components for cross-phase reuse
-- ProGatedModifier auto-presents PurchasePromptView on locked feature tap
-- Separate keychain service (com.claudemon.accounts) for account metadata, never modifying Claude Code's credentials keychain
-- Account model uses Codable+Sendable for Keychain JSON storage and Swift 6 concurrency
-- Single-account migration runs once via UserDefaults flag, preserving existing alert settings
-- AccountSwitcherView handles own visibility (Pro check + accounts check) for clean composition
-- checkForNewAccounts uses KeychainAccess.allKeys() to scan Claude Code keychain without modifying it
-- SettingsWindowController extended with AccountManager for standalone settings window support
-- Per-account notification identifiers allow independent alert notifications per account
-- HistoryStore uses sentinel UUID for legacy single-account backward compatibility
-- CombinedUsageView shows highest usage as headline metric (not average)
-- Downsampling throttled to once per hour on append to avoid performance overhead
-- downsampleOldEntries left as func (not private) for testing access
-- AnalyticsEngine uses all static methods (no state, pure computation) for testability
-- ExtendedChartTimeRange enum with requiresPro property for clean Pro gating on 30d/90d
-- ProjectBreakdownView runs JSONL parsing in Task.detached to avoid blocking UI
-- AnalyticsDashboardView gates entire view at top level (not individual sub-views)
-- PDFReportView uses only solid colors (no gradients) to avoid ImageRenderer macOS rendering bugs
-- ExportManager uses static methods on @MainActor struct (matching AnalyticsEngine pattern)
-- NSSavePanel shown standalone (not beginSheetModal) since LSUIElement apps have no reliable key window
-- Export buttons individually Pro-gated with lock overlay and shared PurchasePromptView sheet
-- ShareableCardView uses solid colors only (no gradients) per ImageRenderer macOS bug
-- 320x200pt card size renders to 640x400px at 2x Retina scale
-- Viral marketing URL (claudemon.app) in footer for organic sharing
-- Weekly utilization average used for shareable card stats
-- Top project from last 7 days included in shareable card
-- Share Usage Card button shows 'Copied!' feedback for 2 seconds
-
-### Research Findings (v2)
-
-- Only 1 new dependency: swift-lemon-squeezy-license
-- Critical: LemonSqueezy License API is separate from main API
-- Critical: Must implement own grace period (no built-in)
-- Critical: Keychain needs unique account IDs
-- Use FeatureAccessManager for centralized Pro gating
-- Multi-account uses separate keychain service (com.claudemon.accounts) for metadata
-- Account detection via KeychainAccess.allKeys() scanning Claude Code's keychain
-- AccountManager wraps TokenManager with account-specific methods
+See PROJECT.md Key Decisions table for full list.
 
 ### Pending Todos
 
@@ -112,5 +52,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 09-02-PLAN.md (Dashboard Integration)
-Resume: v2.0 complete - all phases finished
+Stopped at: Archived v2.0 milestone
+Resume: `/gsd:new-milestone` to start v3 planning
