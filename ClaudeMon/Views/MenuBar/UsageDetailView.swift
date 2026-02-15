@@ -23,14 +23,7 @@ struct UsageDetailView: View {
 
     @ViewBuilder
     private var oauthRows: some View {
-        detailRow(
-            label: "Resets in",
-            value: usage.resetsAt?.formattedResetTime() ?? "--"
-        )
-        detailRow(
-            label: "5-hour usage",
-            value: usage.fiveHourUtilization?.percentageFormatted ?? "--"
-        )
+        // Note: 5-hour usage and reset timer are shown in UsageHeaderView
         detailRow(
             label: "7-day usage",
             value: usage.sevenDayUtilization?.percentageFormatted ?? "--"
