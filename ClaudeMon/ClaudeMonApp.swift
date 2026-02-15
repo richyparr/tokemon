@@ -17,6 +17,9 @@ struct ClaudeMonApp: App {
     @State private var isPopoverPresented = false
     @State private var statusItemManager = StatusItemManager()
 
+    // Track whether chart is shown to adjust popover height
+    @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
+
     init() {
         // Initialize license and feature managers together (shared dependency)
         let license = LicenseManager()
@@ -40,7 +43,7 @@ struct ClaudeMonApp: App {
                 .environment(licenseManager)
                 .environment(featureAccess)
                 .environment(accountManager)
-                .frame(width: 320, height: 440)
+                .frame(width: 320, height: showUsageTrend ? 600 : 440)
                 .onAppear {
                     // Ensure status item is updated when popover appears
                     statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel, licenseState: licenseManager.state)
