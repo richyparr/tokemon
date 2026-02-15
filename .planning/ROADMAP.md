@@ -90,11 +90,11 @@ Plans:
   1. User can generate a "usage card" image showing their stats
   2. User can copy the card image to clipboard with one click
   3. Usage card includes ClaudeMon branding (logo/URL)
-**Plans**: TBD
+**Plans**: 2 plans in 2 waves
 
 Plans:
-- [ ] 09-01: ShareableCardView templates
-- [ ] 09-02: Image generation and share sheet integration
+- [ ] 09-01-PLAN.md — ShareableCardView template and ExportManager clipboard methods (Wave 1)
+- [ ] 09-02-PLAN.md — Analytics dashboard integration with Pro gating (Wave 2)
 
 ## Progress
 
