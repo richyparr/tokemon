@@ -75,12 +75,12 @@ Plans:
   3. User can export raw usage data as CSV
   4. User can view 30-day and 90-day usage history graphs
   5. User can see which projects/folders consumed the most tokens
-**Plans**: TBD
+**Plans**: 3 plans in 3 waves
 
 Plans:
-- [ ] 08-01: Extended HistoryStore with 90-day retention
-- [ ] 08-02: Usage summaries and project breakdown
-- [ ] 08-03: PDF and CSV export with ExportManager
+- [ ] 08-01-PLAN.md — Extended HistoryStore with 90-day retention and hourly downsampling (Wave 1)
+- [ ] 08-02-PLAN.md — AnalyticsEngine, usage summaries, project breakdown, Analytics tab (Wave 2)
+- [ ] 08-03-PLAN.md — PDF and CSV export with ExportManager (Wave 3)
 
 ### Phase 9: Shareable Moments
 **Goal**: Users can generate and share branded usage cards for social engagement
@@ -107,7 +107,7 @@ Plans:
 | 5. Theming & Design Polish | v1.0 | 2/2 | Complete | 2026-02-14 |
 | 6. Licensing Foundation | v2.0 | 3/3 | Complete | 2026-02-14 |
 | 7. Multi-Account | v2.0 | 3/3 | Complete | 2026-02-14 |
-| 8. Analytics & Export | v2.0 | 0/3 | Not started | - |
+| 8. Analytics & Export | v2.0 | 0/3 | Planned | - |
 | 9. Shareable Moments | v2.0 | 0/2 | Not started | - |
 
 ---
@@ -115,3 +115,4 @@ Plans:
 *v2 roadmap created: 2026-02-14*
 *Phase 6 completed: 2026-02-14*
 *Phase 7 completed: 2026-02-14*
+*Phase 8 planned: 2026-02-15*
