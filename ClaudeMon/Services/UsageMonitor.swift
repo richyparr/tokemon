@@ -322,6 +322,11 @@ final class UsageMonitor {
         usageHistory = await historyStore.getHistory()
     }
 
+    /// Reload history for a specific account (for analytics views).
+    func reloadHistory(for accountId: UUID) async {
+        usageHistory = await historyStore.getHistory(for: accountId)
+    }
+
     // Note: No deinit needed -- the UsageMonitor lives for the lifetime of the app.
     // Swift 6 strict concurrency does not allow @MainActor property access in deinit.
 }
