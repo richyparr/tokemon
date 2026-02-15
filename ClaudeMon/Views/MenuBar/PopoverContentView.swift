@@ -59,8 +59,6 @@ struct PopoverContentView: View {
                 )
             }
 
-            Spacer(minLength: 0)
-
             // Trial/License banner
             if shouldShowTrialBanner {
                 TrialBannerView(state: licenseManager.state) {
