@@ -3,7 +3,7 @@
 ## Milestones
 
 - **v1.0 MVP** — Phases 1-5 (shipped 2026-02-14) — [Archive](milestones/v1.0-ROADMAP.md)
-- **v2.0 Pro Features** — Phases 6-9 (in progress)
+- **v2.0 Pro Features** — Phases 6-9 (shipped 2026-02-15)
 
 ## Phases
 
@@ -27,7 +27,7 @@ See [v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md) for full details.
 - [x] **Phase 6: Licensing Foundation** — LemonSqueezy integration with trial and Pro gating — completed 2026-02-14
 - [x] **Phase 7: Multi-Account** — Multiple Claude accounts with per-account alerts — completed 2026-02-14
 - [x] **Phase 8: Analytics & Export** — Extended history, summaries, PDF/CSV export — completed 2026-02-15
-- [ ] **Phase 9: Shareable Moments** — Usage card generation for social sharing
+- [x] **Phase 9: Shareable Moments** — Usage card generation for social sharing — completed 2026-02-15
 
 ## Phase Details
 
@@ -93,8 +93,8 @@ Plans:
 **Plans**: 2 plans in 2 waves
 
 Plans:
-- [ ] 09-01-PLAN.md — ShareableCardView template and ExportManager clipboard methods (Wave 1)
-- [ ] 09-02-PLAN.md — Analytics dashboard integration with Pro gating (Wave 2)
+- [x] 09-01-PLAN.md — ShareableCardView template and ExportManager clipboard methods (Wave 1)
+- [x] 09-02-PLAN.md — Analytics dashboard integration with Pro gating (Wave 2)
 
 ## Progress
 
@@ -108,7 +108,7 @@ Plans:
 | 6. Licensing Foundation | v2.0 | 3/3 | Complete | 2026-02-14 |
 | 7. Multi-Account | v2.0 | 3/3 | Complete | 2026-02-14 |
 | 8. Analytics & Export | v2.0 | 3/3 | Complete | 2026-02-15 |
-| 9. Shareable Moments | v2.0 | 0/2 | Not started | - |
+| 9. Shareable Moments | v2.0 | 2/2 | Complete | 2026-02-15 |
 
 ---
 
@@ -116,3 +116,5 @@ Plans:
 *Phase 6 completed: 2026-02-14*
 *Phase 7 completed: 2026-02-14*
 *Phase 8 completed: 2026-02-15*
+*Phase 9 completed: 2026-02-15*
+*v2.0 MILESTONE COMPLETE: 2026-02-15*
