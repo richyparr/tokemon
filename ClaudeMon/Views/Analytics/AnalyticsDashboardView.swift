@@ -64,6 +64,7 @@ struct AnalyticsDashboardView: View {
                 }
                 .padding()
             }
+            .scrollIndicators(.visible, axes: .vertical)
             .frame(minHeight: 400)
             .sheet(isPresented: $showingPurchasePrompt) {
                 PurchasePromptView()
