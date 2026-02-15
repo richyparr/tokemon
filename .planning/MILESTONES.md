@@ -21,6 +21,26 @@ Native macOS menu bar utility for monitoring Claude usage at a glance. Live data
 
 ---
 
+### v2.0 Pro Features (2026-02-15)
+
+**Phases:** 6-9 | **Plans:** 11 | **Requirements:** 20
+
+Transform ClaudeMon into a paid product with licensing, multi-account support, extended analytics, and viral sharing features.
+
+**Key Accomplishments:**
+- LemonSqueezy licensing integration with 2-week trial, Pro subscription, and offline/grace period support
+- Multi-account support with account CRUD, switching, and per-account alert settings
+- Extended analytics with 90-day history, hourly downsampling, weekly/monthly summaries, and project breakdown
+- PDF and CSV export functionality for usage reports
+- Shareable usage cards with ClaudeMon branding for viral marketing
+
+**Stats:** 7,706 LOC Swift | 2 days (Feb 14-15)
+
+**Archive:** [v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md) | [v2.0-REQUIREMENTS.md](milestones/v2.0-REQUIREMENTS.md)
+
+---
+
 ## Planned
 
 _Next milestone not yet defined. Run `/gsd:new-milestone` to start._
+
