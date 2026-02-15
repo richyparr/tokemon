@@ -38,32 +38,32 @@ struct AnalyticsDashboardView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
-            // Pro analytics dashboard
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+            // Pro analytics dashboard - use Form for consistent styling with other tabs
+            Form {
+                Section {
                     // 1. Extended History Chart
                     ExtendedHistoryChartView(dataPoints: monitor.usageHistory)
+                }
 
-                    Divider()
-
+                Section {
                     // 2. Usage Summaries (weekly/monthly)
                     UsageSummaryView(
                         weeklySummaries: AnalyticsEngine.weeklySummaries(from: monitor.usageHistory),
                         monthlySummaries: AnalyticsEngine.monthlySummaries(from: monitor.usageHistory)
                     )
+                }
 
-                    Divider()
-
+                Section {
                     // 3. Project Breakdown
                     ProjectBreakdownView()
+                }
 
-                    Divider()
-
+                Section {
                     // 4. Export section
                     exportSection
                 }
-                .padding()
             }
+            .formStyle(.grouped)
             .scrollIndicators(.visible, axes: .vertical)
             .sheet(isPresented: $showingPurchasePrompt) {
                 PurchasePromptView()
