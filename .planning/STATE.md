@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 ## Current Position
 
 Phase: 8 of 9 (Analytics & Export) -- IN PROGRESS
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: Executing Phase 8 plans
-Last activity: 2026-02-15 — Completed 08-01 (Extended History & Downsampling)
+Last activity: 2026-02-15 — Completed 08-02 (Analytics Dashboard & Engine)
 
-Progress: [###################░] 86% (19/22 plans completed)
+Progress: [####################] 91% (20/22 plans completed)
 
 ## v2 Scope
 
@@ -43,6 +43,7 @@ Progress: [###################░] 86% (19/22 plans completed)
 - 07-02: 4min, 3 tasks, 9 files
 - 07-03: 3min, 3 tasks, 6 files
 - 08-01: 2min, 2 tasks, 2 files
+- 08-02: 3min, 2 tasks, 8 files
 
 ## Accumulated Context
 
@@ -71,6 +72,10 @@ Progress: [###################░] 86% (19/22 plans completed)
 - CombinedUsageView shows highest usage as headline metric (not average)
 - Downsampling throttled to once per hour on append to avoid performance overhead
 - downsampleOldEntries left as func (not private) for testing access
+- AnalyticsEngine uses all static methods (no state, pure computation) for testability
+- ExtendedChartTimeRange enum with requiresPro property for clean Pro gating on 30d/90d
+- ProjectBreakdownView runs JSONL parsing in Task.detached to avoid blocking UI
+- AnalyticsDashboardView gates entire view at top level (not individual sub-views)
 
 ### Research Findings (v2)
 
@@ -94,5 +99,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 08-01-PLAN.md
-Resume: Continue with 08-02-PLAN.md (analytics views)
+Stopped at: Completed 08-02-PLAN.md
+Resume: Continue with 08-03-PLAN.md (export)
