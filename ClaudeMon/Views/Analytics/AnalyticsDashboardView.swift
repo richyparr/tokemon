@@ -10,6 +10,7 @@ struct AnalyticsDashboardView: View {
 
     @State private var isExporting = false
     @State private var showingPurchasePrompt = false
+    @State private var isCopied = false
 
     var body: some View {
         if !featureAccess.canAccess(.extendedHistory) {
@@ -97,6 +98,15 @@ struct AnalyticsDashboardView: View {
                     await performCSVExport()
                 }
 
+                // Share Card Button
+                exportButton(
+                    title: isCopied ? "Copied!" : "Share Usage Card",
+                    icon: isCopied ? "checkmark" : "photo.fill",
+                    feature: .usageCards
+                ) {
+                    await performCardCopy()
+                }
+
                 if isExporting {
                     ProgressView()
                         .controlSize(.small)
@@ -162,5 +172,31 @@ struct AnalyticsDashboardView: View {
         defer { isExporting = false }
 
         _ = await ExportManager.exportCSV(from: monitor.usageHistory)
+    }
+
+    private func performCardCopy() async {
+        // Get weekly summary for average utilization
+        let weeklySummaries = AnalyticsEngine.weeklySummaries(from: monitor.usageHistory, weeks: 1)
+        let avgUtilization = weeklySummaries.first?.averageUtilization ?? monitor.currentUsage.primaryPercentage
+
+        // Get top project from last 7 days
+        let topProject = AnalyticsEngine.projectBreakdown(since: Date().addingTimeInterval(-7 * 24 * 3600)).first
+
+        // Build card with computed data
+        let card = ShareableCardView(
+            periodLabel: "This Week",
+            utilizationPercentage: avgUtilization,
+            topProjectName: topProject?.projectName,
+            totalTokensUsed: topProject?.totalTokens,
+            generatedDate: Date()
+        )
+
+        // Copy to clipboard
+        if ExportManager.copyViewToClipboard(card) {
+            isCopied = true
+            // Reset after 2 seconds
+            try? await Task.sleep(for: .seconds(2))
+            isCopied = false
+        }
     }
 }
