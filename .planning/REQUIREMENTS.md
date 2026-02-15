@@ -9,13 +9,13 @@ Requirements for v2 Pro release. Each maps to roadmap phases.
 
 ### Analytics & Reports
 
-- [ ] **ANALYTICS-01**: User can view weekly usage summary
-- [ ] **ANALYTICS-02**: User can view monthly usage summary
-- [ ] **ANALYTICS-03**: User can export usage report as PDF
-- [ ] **ANALYTICS-04**: User can export usage data as CSV
-- [ ] **ANALYTICS-05**: User can view 30-day usage history
-- [ ] **ANALYTICS-06**: User can view 90-day usage history
-- [ ] **ANALYTICS-07**: User can see project/folder breakdown (which projects used most tokens)
+- [x] **ANALYTICS-01**: User can view weekly usage summary
+- [x] **ANALYTICS-02**: User can view monthly usage summary
+- [x] **ANALYTICS-03**: User can export usage report as PDF
+- [x] **ANALYTICS-04**: User can export usage data as CSV
+- [x] **ANALYTICS-05**: User can view 30-day usage history
+- [x] **ANALYTICS-06**: User can view 90-day usage history
+- [x] **ANALYTICS-07**: User can see project/folder breakdown (which projects used most tokens)
 
 ### Multi-Account
 
@@ -83,13 +83,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ACCOUNT-03 | Phase 7 | Complete |
 | ACCOUNT-04 | Phase 7 | Complete |
 | ACCOUNT-05 | Phase 7 | Complete |
-| ANALYTICS-01 | Phase 8 | Pending |
-| ANALYTICS-02 | Phase 8 | Pending |
-| ANALYTICS-03 | Phase 8 | Pending |
-| ANALYTICS-04 | Phase 8 | Pending |
-| ANALYTICS-05 | Phase 8 | Pending |
-| ANALYTICS-06 | Phase 8 | Pending |
-| ANALYTICS-07 | Phase 8 | Pending |
+| ANALYTICS-01 | Phase 8 | Complete |
+| ANALYTICS-02 | Phase 8 | Complete |
+| ANALYTICS-03 | Phase 8 | Complete |
+| ANALYTICS-04 | Phase 8 | Complete |
+| ANALYTICS-05 | Phase 8 | Complete |
+| ANALYTICS-06 | Phase 8 | Complete |
+| ANALYTICS-07 | Phase 8 | Complete |
 | SHARE-01 | Phase 9 | Pending |
 | SHARE-02 | Phase 9 | Pending |
 | SHARE-03 | Phase 9 | Pending |
