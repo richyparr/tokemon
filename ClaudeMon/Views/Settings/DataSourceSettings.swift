@@ -82,7 +82,6 @@ struct DataSourceSettings: View {
             }
         }
         .formStyle(.grouped)
-        .padding()
     }
 
     // MARK: - Status Indicator

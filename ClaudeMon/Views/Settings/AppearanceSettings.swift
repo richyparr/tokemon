@@ -77,6 +77,5 @@ struct AppearanceSettings: View {
             }
         }
         .formStyle(.grouped)
-        .padding()
     }
 }

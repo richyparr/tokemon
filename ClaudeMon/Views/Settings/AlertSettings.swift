@@ -71,7 +71,6 @@ struct AlertSettings: View {
             }
         }
         .formStyle(.grouped)
-        .padding()
         .onAppear {
             // Refresh launch at login state from system (user may have changed in System Settings)
             launchAtLogin = SMAppService.mainApp.status == .enabled
