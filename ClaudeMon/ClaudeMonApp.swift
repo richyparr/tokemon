@@ -43,7 +43,7 @@ struct ClaudeMonApp: App {
                 .environment(licenseManager)
                 .environment(featureAccess)
                 .environment(accountManager)
-                .frame(width: 320, height: showUsageTrend ? 600 : 440)
+                .frame(width: 320, height: showUsageTrend ? 660 : 440)
                 .onAppear {
                     // Ensure status item is updated when popover appears
                     statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel, licenseState: licenseManager.state)
