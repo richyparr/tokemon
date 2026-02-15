@@ -170,4 +170,46 @@ struct ExportManager {
         let escaped = field.replacingOccurrences(of: "\"", with: "\"\"")
         return "\"\(escaped)\""
     }
+
+    // MARK: - Image Rendering & Clipboard
+
+    /// Render a SwiftUI view to an NSImage.
+    /// - Parameters:
+    ///   - view: The SwiftUI view to render.
+    ///   - scale: The render scale (2.0 for Retina, default).
+    /// - Returns: An NSImage of the rendered view, or nil on failure.
+    static func renderToImage<V: View>(_ view: V, scale: CGFloat = 2.0) -> NSImage? {
+        let renderer = ImageRenderer(content: view)
+        renderer.scale = scale
+
+        guard let cgImage = renderer.cgImage else {
+            return nil
+        }
+
+        // Create NSImage with correct size (cgImage dimensions / scale)
+        let size = NSSize(
+            width: CGFloat(cgImage.width) / scale,
+            height: CGFloat(cgImage.height) / scale
+        )
+        return NSImage(cgImage: cgImage, size: size)
+    }
+
+    /// Copy an NSImage to the system clipboard.
+    /// - Parameter image: The image to copy.
+    /// - Returns: true if the copy succeeded, false otherwise.
+    static func copyImageToClipboard(_ image: NSImage) -> Bool {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents() // CRITICAL: must clear before write
+        return pasteboard.writeObjects([image])
+    }
+
+    /// Convenience method: render a SwiftUI view and copy to clipboard.
+    /// - Parameter view: The SwiftUI view to render and copy.
+    /// - Returns: true if render and copy both succeeded, false otherwise.
+    static func copyViewToClipboard<V: View>(_ view: V) -> Bool {
+        guard let image = renderToImage(view) else {
+            return false
+        }
+        return copyImageToClipboard(image)
+    }
 }
