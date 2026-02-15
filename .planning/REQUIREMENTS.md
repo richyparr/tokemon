@@ -35,9 +35,9 @@ Requirements for v2 Pro release. Each maps to roadmap phases.
 
 ### Shareable Moments
 
-- [ ] **SHARE-01**: User can generate "usage card" image showing their stats
-- [ ] **SHARE-02**: User can copy image to clipboard for sharing
-- [ ] **SHARE-03**: Usage card includes ClaudeMon branding (viral marketing)
+- [x] **SHARE-01**: User can generate "usage card" image showing their stats
+- [x] **SHARE-02**: User can copy image to clipboard for sharing
+- [x] **SHARE-03**: Usage card includes ClaudeMon branding (viral marketing)
 
 ## v3 Requirements
 
@@ -90,9 +90,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ANALYTICS-05 | Phase 8 | Complete |
 | ANALYTICS-06 | Phase 8 | Complete |
 | ANALYTICS-07 | Phase 8 | Complete |
-| SHARE-01 | Phase 9 | Pending |
-| SHARE-02 | Phase 9 | Pending |
-| SHARE-03 | Phase 9 | Pending |
+| SHARE-01 | Phase 9 | Complete |
+| SHARE-02 | Phase 9 | Complete |
+| SHARE-03 | Phase 9 | Complete |
 
 **Coverage:**
 - v2 requirements: 20 total
