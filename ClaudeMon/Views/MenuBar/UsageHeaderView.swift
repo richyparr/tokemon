@@ -30,7 +30,7 @@ struct UsageHeaderView: View {
                 .foregroundStyle(headerColor)
                 .contentTransition(.numericText())
 
-            // Context line below the number
+            // Context line: reset timer for OAuth, description for JSONL
             Text(subtitleText)
                 .font(.system(size: 13))
                 .foregroundStyle(.secondary)
@@ -55,7 +55,11 @@ struct UsageHeaderView: View {
             return "waiting for data"
         }
         if usage.hasPercentage {
-            return "of 5-hour limit used"
+            // Show reset timer as subtitle (more prominent than in detail view)
+            if let resetTime = usage.resetsAt?.formattedResetTime() {
+                return "resets in \(resetTime)"
+            }
+            return "of 5-hour limit"
         }
         return "tokens from local session logs"
     }
