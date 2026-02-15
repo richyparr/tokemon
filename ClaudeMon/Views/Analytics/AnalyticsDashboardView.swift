@@ -36,7 +36,7 @@ struct AnalyticsDashboardView: View {
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
             }
-            .frame(maxWidth: .infinity, minHeight: 400)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             // Pro analytics dashboard
             ScrollView {
@@ -65,7 +65,6 @@ struct AnalyticsDashboardView: View {
                 .padding()
             }
             .scrollIndicators(.visible, axes: .vertical)
-            .frame(minHeight: 400)
             .sheet(isPresented: $showingPurchasePrompt) {
                 PurchasePromptView()
             }
