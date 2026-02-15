@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 
 ## Current Position
 
-Phase: 8 of 9 (Analytics & Export) -- IN PROGRESS
-Plan: 2 of 3 in current phase
-Status: Executing Phase 8 plans
-Last activity: 2026-02-15 — Completed 08-02 (Analytics Dashboard & Engine)
+Phase: 8 of 9 (Analytics & Export) -- COMPLETE
+Plan: 3 of 3 in current phase
+Status: Phase 8 complete, ready for Phase 9
+Last activity: 2026-02-15 — Completed 08-03 (PDF & CSV Export)
 
-Progress: [####################] 91% (20/22 plans completed)
+Progress: [######################] 95% (21/22 plans completed)
 
 ## v2 Scope
 
@@ -44,6 +44,7 @@ Progress: [####################] 91% (20/22 plans completed)
 - 07-03: 3min, 3 tasks, 6 files
 - 08-01: 2min, 2 tasks, 2 files
 - 08-02: 3min, 2 tasks, 8 files
+- 08-03: 2min, 2 tasks, 3 files
 
 ## Accumulated Context
 
@@ -76,6 +77,10 @@ Progress: [####################] 91% (20/22 plans completed)
 - ExtendedChartTimeRange enum with requiresPro property for clean Pro gating on 30d/90d
 - ProjectBreakdownView runs JSONL parsing in Task.detached to avoid blocking UI
 - AnalyticsDashboardView gates entire view at top level (not individual sub-views)
+- PDFReportView uses only solid colors (no gradients) to avoid ImageRenderer macOS rendering bugs
+- ExportManager uses static methods on @MainActor struct (matching AnalyticsEngine pattern)
+- NSSavePanel shown standalone (not beginSheetModal) since LSUIElement apps have no reliable key window
+- Export buttons individually Pro-gated with lock overlay and shared PurchasePromptView sheet
 
 ### Research Findings (v2)
 
@@ -99,5 +104,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 08-02-PLAN.md
-Resume: Continue with 08-03-PLAN.md (export)
+Stopped at: Completed 08-03-PLAN.md (Phase 8 complete)
+Resume: Continue with Phase 9 (Shareable Moments)
