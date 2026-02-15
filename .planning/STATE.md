@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 
 ## Current Position
 
-Phase: 8 of 9 (Analytics & Export) -- PLANNED
-Plan: 0 of 3 in current phase
-Status: Phase 8 planned, ready to execute
-Last activity: 2026-02-15 — Phase 8 planning complete (3 plans verified)
+Phase: 8 of 9 (Analytics & Export) -- IN PROGRESS
+Plan: 1 of 3 in current phase
+Status: Executing Phase 8 plans
+Last activity: 2026-02-15 — Completed 08-01 (Extended History & Downsampling)
 
-Progress: [##################░░] 82% (18/22 plans completed)
+Progress: [###################░] 86% (19/22 plans completed)
 
 ## v2 Scope
 
@@ -42,6 +42,7 @@ Progress: [##################░░] 82% (18/22 plans completed)
 - 07-01: 2min, 3 tasks, 5 files
 - 07-02: 4min, 3 tasks, 9 files
 - 07-03: 3min, 3 tasks, 6 files
+- 08-01: 2min, 2 tasks, 2 files
 
 ## Accumulated Context
 
@@ -68,6 +69,8 @@ Progress: [##################░░] 82% (18/22 plans completed)
 - Per-account notification identifiers allow independent alert notifications per account
 - HistoryStore uses sentinel UUID for legacy single-account backward compatibility
 - CombinedUsageView shows highest usage as headline metric (not average)
+- Downsampling throttled to once per hour on append to avoid performance overhead
+- downsampleOldEntries left as func (not private) for testing access
 
 ### Research Findings (v2)
 
@@ -91,5 +94,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Phase 8 planned (3 plans, verified)
-Resume: Run `/gsd:execute-phase 8` to execute Analytics & Export
+Stopped at: Completed 08-01-PLAN.md
+Resume: Continue with 08-02-PLAN.md (analytics views)
