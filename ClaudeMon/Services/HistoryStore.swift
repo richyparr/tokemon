@@ -9,7 +9,9 @@ actor HistoryStore {
 
     private var fileURLs: [UUID: URL] = [:]  // Account ID -> history file
     private var caches: [UUID: [UsageDataPoint]] = [:]  // Account ID -> cached points
-    private let maxAgeDays: Int = 30
+    private let maxAgeDays: Int = 90
+    private let recentWindowDays: Int = 7
+    private var lastDownsampleDates: [UUID: Date] = [:]  // Track last downsample per account
 
     /// Legacy file URL for single-account storage
     private var legacyFileURL: URL {
@@ -56,6 +58,8 @@ actor HistoryStore {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         caches[accountId] = try decoder.decode([UsageDataPoint].self, from: data)
+        // Always downsample on load
+        try downsampleOldEntries(for: accountId)
     }
 
     /// Append a data point for a specific account
@@ -64,12 +68,22 @@ actor HistoryStore {
         cache.append(point)
         caches[accountId] = cache
         trimOldEntries(for: accountId)
+        // Downsample at most once per hour on append
+        if shouldDownsample(for: accountId) {
+            try downsampleOldEntries(for: accountId)
+        }
         try save(for: accountId)
     }
 
     /// Get history for a specific account
     func getHistory(for accountId: UUID) -> [UsageDataPoint] {
         return caches[accountId] ?? []
+    }
+
+    /// Get data points within a time range for a specific account
+    func getHistory(for accountId: UUID, since cutoff: Date) -> [UsageDataPoint] {
+        let cache = caches[accountId] ?? []
+        return cache.filter { $0.timestamp > cutoff }
     }
 
     /// Clear history for a specific account
@@ -90,6 +104,8 @@ actor HistoryStore {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         caches[legacyUUID] = try decoder.decode([UsageDataPoint].self, from: data)
+        // Always downsample on load
+        try downsampleOldEntries(for: legacyUUID)
     }
 
     /// Append a new data point and persist (legacy single-account).
@@ -99,6 +115,10 @@ actor HistoryStore {
         cache.append(point)
         caches[legacyUUID] = cache
         trimOldEntries(for: legacyUUID)
+        // Downsample at most once per hour on append
+        if shouldDownsample(for: legacyUUID) {
+            try downsampleOldEntries(for: legacyUUID)
+        }
 
         // Legacy: write to single file
         let encoder = JSONEncoder()
@@ -133,6 +153,70 @@ actor HistoryStore {
             cache = cache.filter { $0.timestamp > cutoff }
             caches[accountId] = cache
         }
+    }
+
+    /// Check whether downsampling should run (at most once per hour on append)
+    private func shouldDownsample(for accountId: UUID) -> Bool {
+        guard let lastDate = lastDownsampleDates[accountId] else { return true }
+        return Date().timeIntervalSince(lastDate) >= 3600
+    }
+
+    /// Downsample data points older than recentWindowDays to hourly averages.
+    /// Points within the recent window keep full resolution.
+    /// Reduces storage from ~25MB to ~2.4MB for 90 days of data.
+    func downsampleOldEntries(for accountId: UUID) throws {
+        guard var cache = caches[accountId], !cache.isEmpty else { return }
+
+        let recentCutoff = Date().addingTimeInterval(-Double(recentWindowDays) * 24 * 3600)
+        let calendar = Calendar.current
+
+        // Split into recent (full resolution) and old (to be downsampled)
+        let recentPoints = cache.filter { $0.timestamp > recentCutoff }
+        let oldPoints = cache.filter { $0.timestamp <= recentCutoff }
+
+        guard !oldPoints.isEmpty else {
+            lastDownsampleDates[accountId] = Date()
+            return
+        }
+
+        // Group old points by hour
+        var hourGroups: [Date: [UsageDataPoint]] = [:]
+        for point in oldPoints {
+            guard let hourInterval = calendar.dateInterval(of: .hour, for: point.timestamp) else {
+                continue
+            }
+            let hourStart = hourInterval.start
+            hourGroups[hourStart, default: []].append(point)
+        }
+
+        // Create one averaged point per hour
+        var downsampledPoints: [UsageDataPoint] = []
+        for (hourStart, points) in hourGroups {
+            let avgPrimary = points.map(\.primaryPercentage).reduce(0, +) / Double(points.count)
+
+            // Average non-nil sevenDayPercentage values; nil if all are nil
+            let sevenDayValues = points.compactMap(\.sevenDayPercentage)
+            let avgSevenDay: Double? = sevenDayValues.isEmpty
+                ? nil
+                : sevenDayValues.reduce(0, +) / Double(sevenDayValues.count)
+
+            let source = points.first?.source ?? "oauth"
+
+            let averaged = UsageDataPoint(
+                id: UUID(),
+                timestamp: hourStart,
+                primaryPercentage: avgPrimary,
+                sevenDayPercentage: avgSevenDay,
+                source: source
+            )
+            downsampledPoints.append(averaged)
+        }
+
+        // Combine downsampled + recent, sorted by timestamp
+        cache = (downsampledPoints + recentPoints).sorted { $0.timestamp < $1.timestamp }
+        caches[accountId] = cache
+        lastDownsampleDates[accountId] = Date()
+        try save(for: accountId)
     }
 
     private func save(for accountId: UUID) throws {
