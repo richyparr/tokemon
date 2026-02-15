@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Main settings window with seven tabs: General, Data Sources, Appearance, Alerts, Accounts, License, and Admin API.
+/// Main settings window with eight tabs: General, Data Sources, Appearance, Alerts, Accounts, Analytics, License, and Admin API.
 /// Uses native macOS TabView with automatic style for system-consistent settings.
 struct SettingsView: View {
     @Environment(UsageMonitor.self) private var monitor
@@ -41,6 +41,11 @@ struct SettingsView: View {
                     Label("Accounts", systemImage: "person.2.fill")
                 }
 
+            AnalyticsDashboardView()
+                .tabItem {
+                    Label("Analytics", systemImage: "chart.bar.xaxis")
+                }
+
             LicenseSettings()
                 .environment(licenseManager)
                 .tabItem {
@@ -52,6 +57,6 @@ struct SettingsView: View {
                     Label("Admin API", systemImage: "building.2")
                 }
         }
-        .frame(minWidth: 420, minHeight: 320)
+        .frame(minWidth: 420, minHeight: 400)
     }
 }
