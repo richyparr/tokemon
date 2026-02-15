@@ -54,7 +54,6 @@ struct RefreshSettings: View {
             }
         }
         .formStyle(.grouped)
-        .padding()
     }
 
     private var currentIntervalLabel: String {

@@ -103,7 +103,6 @@ struct AdminAPISettings: View {
             }
         }
         .formStyle(.grouped)
-        .padding()
         .onAppear {
             checkConnection()
         }
