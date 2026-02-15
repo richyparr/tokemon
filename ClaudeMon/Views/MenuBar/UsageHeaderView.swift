@@ -57,7 +57,7 @@ struct UsageHeaderView: View {
         if usage.hasPercentage {
             // Show reset timer as subtitle (more prominent than in detail view)
             if let resetTime = usage.resetsAt?.formattedResetTime() {
-                return "resets in \(resetTime)"
+                return "resets \(resetTime)"
             }
             return "of 5-hour limit"
         }
