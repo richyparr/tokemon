@@ -45,17 +45,28 @@ See [v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md) for full details.
 | 7. Multi-Account | v2.0 | 3/3 | Complete | 2026-02-14 |
 | 8. Analytics & Export | v2.0 | 3/3 | Complete | 2026-02-15 |
 | 9. Shareable Moments | v2.0 | 2/2 | Complete | 2026-02-15 |
+| 10. Enhanced Export | Post-v2.0 | 3/3 | Complete | 2026-02-16 |
 
 ### Phase 10: Enhanced Export
 
 **Goal:** Expanded date range options for PDF/CSV export with Admin API data
 **Depends on:** Phase 9
-**Plans:** 3 plans
+**Plans:** 3 plans — **COMPLETE**
 
 Plans:
-- [ ] 10-01-PLAN.md — Export config model, API pagination, cost bug fix
-- [ ] 10-02-PLAN.md — Two-step export dialog UI and dashboard wiring
-- [ ] 10-03-PLAN.md — Enhanced CSV (7 columns) and multi-page adaptive PDF
+- [x] 10-01-PLAN.md — Export config model, API pagination, cost bug fix
+- [x] 10-02-PLAN.md — Two-step export dialog UI and dashboard wiring
+- [x] 10-03-PLAN.md — Enhanced CSV (7 columns) and multi-page adaptive PDF
+
+Completed: 2026-02-16
+
+---
+
+## Future Backlog
+
+Ideas discussed but deferred for future milestones:
+
+- **User Accounts + Insights Platform** — Full account system with rich profile data, telemetry with consent, benchmarks & personalized insights, potentially monetizable data asset. Requires: auth system, backend infrastructure, GDPR compliance. (Discussed 2026-02-16, deferred in favor of shipping clean)
 
 ---
 
