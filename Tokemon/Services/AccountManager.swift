@@ -218,7 +218,19 @@ final class AccountManager {
             if let data = try accountsKeychain.getData(accountsKey) {
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = .iso8601
-                accounts = try decoder.decode([Account].self, from: data)
+                var loaded = try decoder.decode([Account].self, from: data)
+
+                // Deduplicate by username (keep the first/oldest one)
+                var seen = Set<String>()
+                loaded = loaded.filter { account in
+                    if seen.contains(account.username) {
+                        return false
+                    }
+                    seen.insert(account.username)
+                    return true
+                }
+
+                accounts = loaded
             }
 
             // Restore active account
@@ -230,6 +242,9 @@ final class AccountManager {
                 // Default to first account
                 activeAccount = accounts.first
             }
+
+            // Save if deduplication changed anything
+            try? await saveAccounts()
         } catch {
             self.error = .keychainError(error.localizedDescription)
         }
@@ -250,6 +265,12 @@ final class AccountManager {
 
         // Check for existing Claude Code credentials (current user)
         let username = NSUserName()
+
+        // Skip if account with this username already exists (prevents duplicates)
+        guard !accounts.contains(where: { $0.username == username }) else {
+            UserDefaults.standard.set(true, forKey: migrationKey)
+            return
+        }
 
         do {
             _ = try TokenManager.getCredentials(username: username)
