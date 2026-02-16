@@ -111,38 +111,6 @@ struct OAuthClient {
         }
     }
 
-    // MARK: - Account-Specific API Methods
-
-    /// Fetch usage data for a specific account.
-    /// - Parameter account: The account to fetch usage for.
-    /// - Returns: The decoded `OAuthUsageResponse`.
-    /// - Throws: `OAuthError` or `TokenManager.TokenError` if fetch fails.
-    static func fetchUsage(for account: Account) async throws -> OAuthUsageResponse {
-        let accessToken = try TokenManager.getAccessToken(for: account.username)
-        return try await fetchUsage(accessToken: accessToken)
-    }
-
-    /// Fetch usage data with automatic token refresh for a specific account.
-    /// - Parameter account: The account to fetch usage for.
-    /// - Returns: The decoded `OAuthUsageResponse`.
-    /// - Throws: `OAuthError` or `TokenManager.TokenError` if all attempts fail.
-    static func fetchUsageWithTokenRefresh(for account: Account) async throws -> OAuthUsageResponse {
-        do {
-            let accessToken = try TokenManager.getAccessToken(for: account.username)
-            do {
-                return try await fetchUsage(accessToken: accessToken)
-            } catch OAuthError.tokenExpired {
-                // Server returned 401 -- attempt refresh once
-                let refreshedToken = try await performTokenRefresh(for: account.username)
-                return try await fetchUsage(accessToken: refreshedToken)
-            }
-        } catch TokenManager.TokenError.expired {
-            // Token expired locally -- attempt refresh
-            let refreshedToken = try await performTokenRefresh(for: account.username)
-            return try await fetchUsage(accessToken: refreshedToken)
-        }
-    }
-
     // MARK: - Private Helpers
 
     /// Perform the full token refresh cycle: get refresh token, refresh, update Keychain.
@@ -155,17 +123,6 @@ struct OAuthClient {
         // Update the Keychain with new credentials
         try TokenManager.updateKeychainCredentials(response: tokenResponse)
 
-        return tokenResponse.accessToken
-    }
-
-    /// Perform the full token refresh cycle for a specific account.
-    /// - Parameter username: The Keychain account key for the target account.
-    /// - Returns: The new access token string.
-    /// - Throws: Token or network errors if refresh fails.
-    private static func performTokenRefresh(for username: String) async throws -> String {
-        let refreshToken = try TokenManager.getRefreshToken(for: username)
-        let tokenResponse = try await TokenManager.refreshAccessToken(refreshToken: refreshToken)
-        try TokenManager.updateKeychainCredentials(response: tokenResponse, for: username)
         return tokenResponse.accessToken
     }
 }

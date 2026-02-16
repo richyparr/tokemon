@@ -2,6 +2,7 @@ import SwiftUI
 import MenuBarExtraAccess
 import AppKit
 import UserNotifications
+import ServiceManagement
 
 /// Tokemon - macOS menu bar app for monitoring Claude usage.
 /// Runs as a background process (LSUIElement) with no Dock icon.
@@ -13,7 +14,6 @@ struct TokemonApp: App {
     @State private var themeManager = ThemeManager()
     @State private var licenseManager: LicenseManager
     @State private var featureAccess: FeatureAccessManager
-    @State private var accountManager = AccountManager()
     @State private var isPopoverPresented = false
     @State private var statusItemManager = StatusItemManager()
 
@@ -78,6 +78,23 @@ struct TokemonApp: App {
         if Bundle.main.bundleIdentifier != nil {
             UNUserNotificationCenter.current().delegate = AppDelegate.shared
         }
+
+        // Auto-register for launch at login on first run
+        Self.setupLaunchAtLoginIfNeeded()
+    }
+
+    /// On first launch, automatically register for launch at login.
+    private static func setupLaunchAtLoginIfNeeded() {
+        let key = "didSetupLaunchAtLogin"
+        guard !UserDefaults.standard.bool(forKey: key) else { return }
+        UserDefaults.standard.set(true, forKey: key)
+
+        do {
+            try SMAppService.mainApp.register()
+            print("[TokemonApp] Auto-registered for launch at login")
+        } catch {
+            print("[TokemonApp] Failed to auto-register for launch at login: \(error)")
+        }
     }
 
     var body: some Scene {
@@ -88,7 +105,6 @@ struct TokemonApp: App {
                 .environment(themeManager)
                 .environment(licenseManager)
                 .environment(featureAccess)
-                .environment(accountManager)
                 .frame(width: 320, height: popoverHeight)
                 .onAppear {
                     // Ensure status item is updated when popover appears
@@ -110,15 +126,6 @@ struct TokemonApp: App {
             SettingsWindowController.shared.setThemeManager(themeManager)
             SettingsWindowController.shared.setLicenseManager(licenseManager)
             SettingsWindowController.shared.setFeatureAccessManager(featureAccess)
-            SettingsWindowController.shared.setAccountManager(accountManager)
-
-            // Wire account changes to trigger UsageMonitor refresh
-            accountManager.onActiveAccountChanged = { [monitor] account in
-                Task { @MainActor in
-                    monitor.currentAccount = account
-                    await monitor.refresh()
-                }
-            }
 
             // Initialize floating window controller with references
             FloatingWindowController.shared.setMonitor(monitor)
@@ -147,13 +154,10 @@ struct TokemonApp: App {
                 }
             }
 
-            // Wire AlertManager to AccountManager for per-account thresholds
-            alertManager.setAccountManager(accountManager)
-
-            // Register for alert threshold checks (pass active account)
-            monitor.onAlertCheck = { [alertManager, accountManager] usage in
+            // Register for alert threshold checks
+            monitor.onAlertCheck = { [alertManager] usage in
                 Task { @MainActor in
-                    alertManager.checkUsage(usage, for: accountManager.activeAccount)
+                    alertManager.checkUsage(usage)
                 }
             }
 
@@ -171,7 +175,6 @@ struct TokemonApp: App {
                 .environment(themeManager)
                 .environment(licenseManager)
                 .environment(featureAccess)
-                .environment(accountManager)
         }
     }
 }

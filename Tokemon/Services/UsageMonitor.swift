@@ -94,10 +94,6 @@ final class UsageMonitor {
     @ObservationIgnored
     var onAlertCheck: ((_ usage: UsageSnapshot) -> Void)?
 
-    /// Current account for account-specific data fetching (set by account change callback)
-    @ObservationIgnored
-    var currentAccount: Account?
-
     // MARK: - History
 
     /// History store for recording usage over time
@@ -198,12 +194,7 @@ final class UsageMonitor {
         // Step 1: Try OAuth (primary source)
         if oauthEnabled {
             do {
-                let response: OAuthUsageResponse
-                if let account = currentAccount {
-                    response = try await OAuthClient.fetchUsageWithTokenRefresh(for: account)
-                } else {
-                    response = try await OAuthClient.fetchUsageWithTokenRefresh()
-                }
+                let response = try await OAuthClient.fetchUsageWithTokenRefresh()
                 currentUsage = response.toSnapshot()
                 oauthState = .available
                 lastUpdated = Date()
@@ -299,19 +290,12 @@ final class UsageMonitor {
     // MARK: - History Recording
 
     /// Record a usage snapshot to the history store.
-    /// Uses per-account storage when an active account is set.
     /// Errors are logged but do not interrupt the refresh flow.
     private func recordHistory(for usage: UsageSnapshot) async {
         let dataPoint = UsageDataPoint(from: usage)
         do {
-            if let accountId = currentAccount?.id {
-                try await historyStore.append(dataPoint, for: accountId)
-                self.usageHistory = await historyStore.getHistory(for: accountId)
-            } else {
-                // Legacy single-account behavior
-                try await historyStore.append(dataPoint)
-                self.usageHistory = await historyStore.getHistory()
-            }
+            try await historyStore.append(dataPoint)
+            self.usageHistory = await historyStore.getHistory()
         } catch {
             print("[Tokemon] Failed to record history: \(error)")
         }
@@ -320,11 +304,6 @@ final class UsageMonitor {
     /// Reload history from store (for UI refresh).
     func reloadHistory() async {
         usageHistory = await historyStore.getHistory()
-    }
-
-    /// Reload history for a specific account (for analytics views).
-    func reloadHistory(for accountId: UUID) async {
-        usageHistory = await historyStore.getHistory(for: accountId)
     }
 
     // Note: No deinit needed -- the UsageMonitor lives for the lifetime of the app.

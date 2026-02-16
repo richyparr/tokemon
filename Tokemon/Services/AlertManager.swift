@@ -67,30 +67,18 @@ final class AlertManager {
     @ObservationIgnored
     private let hasAppBundle: Bool = Bundle.main.bundleIdentifier != nil
 
-    /// Reference to AccountManager for per-account threshold lookups
-    @ObservationIgnored
-    private var accountManager: AccountManager?
-
-    /// Set account manager reference for per-account thresholds
-    func setAccountManager(_ manager: AccountManager) {
-        self.accountManager = manager
-    }
-
     // MARK: - Public Methods
 
     /// Check usage and update alert level. Called by UsageMonitor on each refresh.
-    /// If account is provided, uses per-account threshold. Otherwise falls back to global.
     ///
-    /// - Parameters:
-    ///   - usage: Current usage snapshot from OAuth or JSONL
-    ///   - account: Optional account for per-account threshold lookup
+    /// - Parameter usage: Current usage snapshot from OAuth or JSONL
     ///
     /// Behavior:
     /// - Only processes snapshots with valid percentage
     /// - Detects window reset (resetsAt changed) and resets notification state
     /// - Updates currentAlertLevel for UI binding
     /// - Only fires notifications when crossing INTO a higher level
-    func checkUsage(_ usage: UsageSnapshot, for account: Account? = nil) {
+    func checkUsage(_ usage: UsageSnapshot) {
         // Guard: only process OAuth snapshots with percentage
         guard usage.hasPercentage else { return }
 
@@ -100,23 +88,8 @@ final class AlertManager {
             lastResetsAt = resetsAt
         }
 
-        // Get threshold: per-account if available, otherwise global
-        let threshold: Int
-        let effectiveNotificationsEnabled: Bool
-
-        if let account = account {
-            threshold = account.settings.alertThreshold
-            effectiveNotificationsEnabled = account.settings.notificationsEnabled
-        } else if let activeAccount = accountManager?.activeAccount {
-            threshold = activeAccount.settings.alertThreshold
-            effectiveNotificationsEnabled = activeAccount.settings.notificationsEnabled
-        } else {
-            threshold = alertThreshold  // Global fallback
-            effectiveNotificationsEnabled = self.notificationsEnabled
-        }
-
         let percentage = Int(usage.primaryPercentage)
-        let newLevel = alertLevel(for: percentage, threshold: threshold)
+        let newLevel = alertLevel(for: percentage)
 
         // Update current level for UI (always)
         if newLevel != currentAlertLevel {
@@ -124,9 +97,9 @@ final class AlertManager {
         }
 
         // Only notify when crossing INTO a higher level
-        if newLevel > lastNotifiedLevel && effectiveNotificationsEnabled {
+        if newLevel > lastNotifiedLevel && notificationsEnabled {
             lastNotifiedLevel = newLevel
-            sendNotification(level: newLevel, percentage: percentage, accountName: account?.displayName)
+            sendNotification(level: newLevel, percentage: percentage)
         }
     }
 
@@ -139,11 +112,10 @@ final class AlertManager {
     // MARK: - Private Methods
 
     /// Calculate alert level for a given percentage
-    private func alertLevel(for percentage: Int, threshold: Int? = nil) -> AlertLevel {
-        let effectiveThreshold = threshold ?? alertThreshold
+    private func alertLevel(for percentage: Int) -> AlertLevel {
         if percentage >= 100 {
             return .critical
-        } else if percentage >= effectiveThreshold {
+        } else if percentage >= alertThreshold {
             return .warning
         }
         return .normal
@@ -172,35 +144,30 @@ final class AlertManager {
     /// - Parameters:
     ///   - level: The alert level (warning or critical)
     ///   - percentage: Current usage percentage
-    ///   - accountName: Optional account name to include in notification
     ///
-    /// Uses identifier per level and account to allow per-account notifications.
     /// Requires a proper app bundle - no-op when running as SPM executable.
     /// If permission not granted, notification silently fails (system behavior).
-    private func sendNotification(level: AlertLevel, percentage: Int, accountName: String? = nil) {
+    private func sendNotification(level: AlertLevel, percentage: Int) {
         guard hasAppBundle else { return }
         guard level != .normal else { return }
 
         let content = UNMutableNotificationContent()
-        let accountPrefix = accountName.map { "[\($0)] " } ?? ""
 
         switch level {
         case .warning:
-            content.title = "\(accountPrefix)Claude Usage Warning"
+            content.title = "Claude Usage Warning"
             content.body = "You've used \(percentage)% of your 5-hour limit."
             content.sound = .default
         case .critical:
-            content.title = "\(accountPrefix)Claude Usage Limit Reached"
+            content.title = "Claude Usage Limit Reached"
             content.body = "You've reached your 5-hour usage limit."
             content.sound = UNNotificationSound.defaultCritical
         case .normal:
             return
         }
 
-        // Include account in identifier to allow per-account notifications
-        let accountSuffix = accountName ?? "default"
         let request = UNNotificationRequest(
-            identifier: "tokemon.alert.\(level).\(accountSuffix)",
+            identifier: "tokemon.alert.\(level)",
             content: content,
             trigger: nil  // Immediate delivery
         )

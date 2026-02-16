@@ -6,11 +6,11 @@ import SwiftUI
 struct AnalyticsDashboardView: View {
     @Environment(FeatureAccessManager.self) private var featureAccess
     @Environment(UsageMonitor.self) private var monitor
-    @Environment(AccountManager.self) private var accountManager
 
     @State private var isExporting = false
     @State private var showingPurchasePrompt = false
     @State private var isCopied = false
+    @State private var pendingExportFormat: ExportFormat?
 
     var body: some View {
         if !featureAccess.canAccess(.extendedHistory) {
@@ -40,6 +40,13 @@ struct AnalyticsDashboardView: View {
         } else {
             // Pro analytics dashboard - use Form for consistent styling with other tabs
             Form {
+                // Organization Usage (only if Admin API connected)
+                if AdminAPIClient.shared.hasAdminKey() {
+                    Section {
+                        OrgUsageView()
+                    }
+                }
+
                 Section {
                     // 1. Extended History Chart
                     ExtendedHistoryChartView(dataPoints: monitor.usageHistory)
@@ -68,6 +75,21 @@ struct AnalyticsDashboardView: View {
             .sheet(isPresented: $showingPurchasePrompt) {
                 PurchasePromptView()
             }
+            .sheet(item: $pendingExportFormat) { format in
+                ExportDialogView(
+                    format: format,
+                    onExport: { config in
+                        let success = await performConfiguredExport(config)
+                        if success {
+                            pendingExportFormat = nil
+                        }
+                        return success
+                    },
+                    onCancel: {
+                        pendingExportFormat = nil
+                    }
+                )
+            }
         }
     }
 
@@ -84,28 +106,25 @@ struct AnalyticsDashboardView: View {
                 exportButton(
                     title: "Export PDF Report",
                     icon: "doc.richtext",
-                    feature: .exportPDF
-                ) {
-                    await performPDFExport()
-                }
+                    feature: .exportPDF,
+                    format: .pdf
+                )
 
                 // CSV Export Button
                 exportButton(
                     title: "Export CSV Data",
                     icon: "tablecells",
-                    feature: .exportCSV
-                ) {
-                    await performCSVExport()
-                }
+                    feature: .exportCSV,
+                    format: .csv
+                )
 
                 // Share Card Button
                 exportButton(
                     title: isCopied ? "Copied!" : "Share Usage Card",
                     icon: isCopied ? "checkmark" : "photo.fill",
-                    feature: .usageCards
-                ) {
-                    await performCardCopy()
-                }
+                    feature: .usageCards,
+                    format: .card
+                )
 
                 if isExporting {
                     ProgressView()
@@ -117,10 +136,10 @@ struct AnalyticsDashboardView: View {
 
     /// A single export button with Pro gating.
     @ViewBuilder
-    private func exportButton(title: String, icon: String, feature: ProFeature, action: @escaping () async -> Void) -> some View {
+    private func exportButton(title: String, icon: String, feature: ProFeature, format: ExportFormat) -> some View {
         if featureAccess.canAccess(feature) {
             Button {
-                Task { await action() }
+                pendingExportFormat = format
             } label: {
                 Label(title, systemImage: icon)
             }
@@ -147,56 +166,188 @@ struct AnalyticsDashboardView: View {
 
     // MARK: - Export Actions
 
-    private func performPDFExport() async {
+    private func performConfiguredExport(_ config: ExportConfig) async -> Bool {
+        switch config.format {
+        case .pdf:
+            return await performPDFExport(config: config)
+        case .csv:
+            return await performCSVExport(config: config)
+        case .card:
+            return await performCardCopy(config: config)
+        }
+    }
+
+    private func performPDFExport(config: ExportConfig) async -> Bool {
         isExporting = true
         defer { isExporting = false }
 
-        let weeklySummaries = AnalyticsEngine.weeklySummaries(from: monitor.usageHistory)
-        let monthlySummaries = AnalyticsEngine.monthlySummaries(from: monitor.usageHistory)
-        let projectBreakdown = AnalyticsEngine.projectBreakdown(since: Date().addingTimeInterval(-30 * 24 * 3600))
+        let range = config.dateRange
 
-        let reportView = PDFReportView(
-            accountName: accountManager.activeAccount?.username ?? "Default",
-            generatedDate: Date(),
-            weeklySummaries: weeklySummaries,
-            monthlySummaries: monthlySummaries,
-            projectBreakdown: projectBreakdown,
-            totalDataPoints: monitor.usageHistory.count
-        )
+        if config.source == .organization {
+            do {
+                // Use paginated fetch for large date ranges
+                let usageResponse = try await AdminAPIClient.shared.fetchAllUsageData(
+                    startingAt: range.start,
+                    endingAt: range.end,
+                    bucketWidth: "1d"
+                )
+                let costResponse = try await AdminAPIClient.shared.fetchAllCostData(
+                    startingAt: range.start,
+                    endingAt: range.end,
+                    bucketWidth: "1d"
+                )
 
-        _ = await ExportManager.exportPDF(reportView: reportView)
+                let reportView = PDFReportView(
+                    accountName: "Organization",
+                    generatedDate: Date(),
+                    adminUsageData: usageResponse,
+                    adminCostData: costResponse
+                )
+
+                return await ExportManager.exportPDF(
+                    reportView: reportView,
+                    suggestedFilename: config.suggestedFilename
+                )
+            } catch {
+                print("[Export] Failed to fetch Admin API data: \(error)")
+                return false
+            }
+        } else {
+            // Local data export - filter to date range
+            let filteredHistory = monitor.usageHistory.filter { point in
+                point.timestamp >= range.start && point.timestamp <= range.end
+            }
+
+            let weeklySummaries = AnalyticsEngine.weeklySummaries(from: filteredHistory)
+            let monthlySummaries = AnalyticsEngine.monthlySummaries(from: filteredHistory)
+            let projectBreakdown = AnalyticsEngine.projectBreakdown(since: range.start)
+
+            let reportView = PDFReportView(
+                accountName: NSUserName(),
+                generatedDate: Date(),
+                weeklySummaries: weeklySummaries,
+                monthlySummaries: monthlySummaries,
+                projectBreakdown: projectBreakdown,
+                totalDataPoints: filteredHistory.count
+            )
+
+            return await ExportManager.exportPDF(
+                reportView: reportView,
+                suggestedFilename: config.suggestedFilename
+            )
+        }
     }
 
-    private func performCSVExport() async {
+    private func performCSVExport(config: ExportConfig) async -> Bool {
         isExporting = true
         defer { isExporting = false }
 
-        _ = await ExportManager.exportCSV(from: monitor.usageHistory)
+        let range = config.dateRange
+
+        if config.source == .organization {
+            do {
+                // Use paginated fetch for large date ranges
+                let usageResponse = try await AdminAPIClient.shared.fetchAllUsageData(
+                    startingAt: range.start,
+                    endingAt: range.end,
+                    bucketWidth: "1d"
+                )
+                let costResponse = try await AdminAPIClient.shared.fetchAllCostData(
+                    startingAt: range.start,
+                    endingAt: range.end,
+                    bucketWidth: "1d"
+                )
+
+                return await ExportManager.exportAdminCSV(
+                    from: usageResponse,
+                    cost: costResponse,
+                    config: config
+                )
+            } catch {
+                print("[Export] Failed to fetch Admin API data: \(error)")
+                return false
+            }
+        } else {
+            // Local data export - filter to date range
+            let filteredHistory = monitor.usageHistory.filter { point in
+                point.timestamp >= range.start && point.timestamp <= range.end
+            }
+            return await ExportManager.exportCSV(
+                from: filteredHistory,
+                suggestedFilename: config.suggestedFilename
+            )
+        }
     }
 
-    private func performCardCopy() async {
-        // Get weekly summary for average utilization
-        let weeklySummaries = AnalyticsEngine.weeklySummaries(from: monitor.usageHistory, weeks: 1)
-        let avgUtilization = weeklySummaries.first?.averageUtilization ?? monitor.currentUsage.primaryPercentage
+    private func performCardCopy(config: ExportConfig) async -> Bool {
+        let range = config.dateRange
 
-        // Get top project from last 7 days
-        let topProject = AnalyticsEngine.projectBreakdown(since: Date().addingTimeInterval(-7 * 24 * 3600)).first
+        if config.source == .organization {
+            do {
+                let usageResponse = try await AdminAPIClient.shared.fetchAllUsageData(
+                    startingAt: range.start,
+                    endingAt: range.end,
+                    bucketWidth: "1d"
+                )
 
-        // Build card with computed data
-        let card = ShareableCardView(
-            periodLabel: "This Week",
-            utilizationPercentage: avgUtilization,
-            topProjectName: topProject?.projectName,
-            totalTokensUsed: topProject?.totalTokens,
-            generatedDate: Date()
-        )
+                let periodLabel = "\(config.datePreset.rawValue) (Org)"
+                let card = ShareableCardView(
+                    periodLabel: periodLabel,
+                    totalTokens: usageResponse.totalTokens,
+                    inputTokens: usageResponse.totalInputTokens,
+                    outputTokens: usageResponse.totalOutputTokens,
+                    generatedDate: Date()
+                )
 
-        // Copy to clipboard
-        if ExportManager.copyViewToClipboard(card) {
-            isCopied = true
-            // Reset after 2 seconds
-            try? await Task.sleep(for: .seconds(2))
-            isCopied = false
+                let success = ExportManager.copyViewToClipboard(card)
+                if success {
+                    isCopied = true
+                    try? await Task.sleep(for: .seconds(2))
+                    isCopied = false
+                }
+                return success
+            } catch {
+                print("[Export] Failed to fetch Admin API data: \(error)")
+                return false
+            }
+        } else {
+            // Use insight-based cards for local data (auto-selects best card)
+            let filteredHistory = monitor.usageHistory.filter { point in
+                point.timestamp >= range.start && point.timestamp <= range.end
+            }
+
+            // Try to get the best insight card
+            if let insight = InsightCalculator.bestInsight(from: filteredHistory) {
+                let card = ShareableCardView(insight: insight)
+                let success = ExportManager.copyViewToClipboard(card)
+                if success {
+                    isCopied = true
+                    try? await Task.sleep(for: .seconds(2))
+                    isCopied = false
+                }
+                return success
+            } else {
+                // Fallback to legacy card if no insights available (new user)
+                let weeklySummaries = AnalyticsEngine.weeklySummaries(from: filteredHistory, weeks: 1)
+                let avgUtilization = weeklySummaries.first?.averageUtilization ?? monitor.currentUsage.primaryPercentage
+                let topProject = AnalyticsEngine.projectBreakdown(since: range.start).first
+
+                let card = ShareableCardView(
+                    periodLabel: config.datePreset.rawValue,
+                    utilizationPercentage: avgUtilization,
+                    topProjectName: topProject?.projectName,
+                    totalTokensUsed: topProject?.totalTokens,
+                    generatedDate: Date()
+                )
+
+                let success = ExportManager.copyViewToClipboard(card)
+                if success {
+                    isCopied = true
+                    try? await Task.sleep(for: .seconds(2))
+                    isCopied = false
+                }
+                return success
+            }
         }
     }
 }

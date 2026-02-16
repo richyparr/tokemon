@@ -13,7 +13,6 @@ final class SettingsWindowController {
     private var themeManager: ThemeManager?
     private var licenseManager: LicenseManager?
     private var featureAccess: FeatureAccessManager?
-    private var accountManager: AccountManager?
 
     private init() {}
 
@@ -40,11 +39,6 @@ final class SettingsWindowController {
     /// Set the feature access manager reference (call from app startup)
     func setFeatureAccessManager(_ manager: FeatureAccessManager) {
         self.featureAccess = manager
-    }
-
-    /// Set the account manager reference (call from app startup)
-    func setAccountManager(_ manager: AccountManager) {
-        self.accountManager = manager
     }
 
     /// Show the settings window, creating it if necessary
@@ -82,18 +76,12 @@ final class SettingsWindowController {
             return
         }
 
-        guard let accountManager = accountManager else {
-            print("[Tokemon] Error: AccountManager not set for settings window")
-            return
-        }
-
         let settingsView = SettingsView()
             .environment(monitor)
             .environment(alertManager)
             .environment(themeManager)
             .environment(licenseManager)
             .environment(featureAccess)
-            .environment(accountManager)
 
         let hostingController = NSHostingController(rootView: settingsView)
 
