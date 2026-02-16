@@ -33,7 +33,7 @@ struct FloatingWindowView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .padding(12)
+        .padding(EdgeInsets(top: 12, leading: 12, bottom: 16, trailing: 12))
         .frame(minWidth: 100, minHeight: 60)
         .background(themeColors.primaryBackground)
         .tint(themeColors.primaryAccent)
