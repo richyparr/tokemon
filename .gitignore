@@ -16,3 +16,6 @@ xcuserdata/
 
 # Build artifacts
 build/
+
+# App bundle (build artifact)
+*.app/
