@@ -46,6 +46,15 @@ See [v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md) for full details.
 | 8. Analytics & Export | v2.0 | 3/3 | Complete | 2026-02-15 |
 | 9. Shareable Moments | v2.0 | 2/2 | Complete | 2026-02-15 |
 
+### Phase 10: Enhanced Export
+
+**Goal:** Expanded date range options for PDF/CSV export with Admin API data
+**Depends on:** Phase 9
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 10 to break down)
+
 ---
 
 *v1.0 shipped: 2026-02-14*
