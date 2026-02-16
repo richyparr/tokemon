@@ -20,6 +20,8 @@
     <string>14.0</string>
     <key>LSUIElement</key>
     <true/>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
     <key>NSHumanReadableCopyright</key>
     <string>Copyright 2026 Tokemon contributors</string>
 </dict>

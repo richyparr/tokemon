@@ -34,6 +34,9 @@ final class AlertManager {
             let clamped = min(100, max(50, alertThreshold))
             if alertThreshold != clamped { alertThreshold = clamped }
             UserDefaults.standard.set(clamped, forKey: "alertThreshold")
+            // Reset notification state when threshold changes so user gets notified at new level
+            hasNotifiedWarning = false
+            hasNotifiedCritical = false
         }
     }
 
@@ -55,13 +58,17 @@ final class AlertManager {
 
     // MARK: - Private State
 
-    /// Last level we notified about (prevents duplicate notifications)
+    /// Whether we've notified about warning level this usage window
     @ObservationIgnored
-    private var lastNotifiedLevel: AlertLevel = .normal
+    private var hasNotifiedWarning: Bool = false
 
-    /// Tracks the window reset timestamp to detect new windows
+    /// Whether we've notified about critical level this usage window
     @ObservationIgnored
-    private var lastResetsAt: Date?
+    private var hasNotifiedCritical: Bool = false
+
+    /// Tracks the window reset timestamp (rounded to minute) to detect new windows
+    @ObservationIgnored
+    private var lastResetsAtMinute: Int = 0
 
     /// Whether we're running as a proper app bundle (required for notifications)
     @ObservationIgnored
@@ -75,17 +82,22 @@ final class AlertManager {
     ///
     /// Behavior:
     /// - Only processes snapshots with valid percentage
-    /// - Detects window reset (resetsAt changed) and resets notification state
+    /// - Detects window reset (resetsAt changed significantly) and resets notification state
     /// - Updates currentAlertLevel for UI binding
-    /// - Only fires notifications when crossing INTO a higher level
+    /// - Fires notifications ONCE per level per usage window
     func checkUsage(_ usage: UsageSnapshot) {
         // Guard: only process OAuth snapshots with percentage
         guard usage.hasPercentage else { return }
 
-        // Detect window reset
-        if let resetsAt = usage.resetsAt, resetsAt != lastResetsAt {
-            resetNotificationState()
-            lastResetsAt = resetsAt
+        // Detect window reset by comparing reset time rounded to minutes
+        // This prevents false resets from sub-second timestamp differences
+        if let resetsAt = usage.resetsAt {
+            let resetsAtMinute = Int(resetsAt.timeIntervalSince1970 / 60)
+            if resetsAtMinute != lastResetsAtMinute {
+                print("[AlertManager] Usage window reset detected, clearing notification state")
+                resetNotificationState()
+                lastResetsAtMinute = resetsAtMinute
+            }
         }
 
         let percentage = Int(usage.primaryPercentage)
@@ -96,16 +108,22 @@ final class AlertManager {
             currentAlertLevel = newLevel
         }
 
-        // Only notify when crossing INTO a higher level
-        if newLevel > lastNotifiedLevel && notificationsEnabled {
-            lastNotifiedLevel = newLevel
-            sendNotification(level: newLevel, percentage: percentage)
+        // Only notify ONCE per level per usage window
+        guard notificationsEnabled else { return }
+
+        if newLevel == .critical && !hasNotifiedCritical {
+            hasNotifiedCritical = true
+            sendNotification(level: .critical, percentage: percentage)
+        } else if newLevel == .warning && !hasNotifiedWarning {
+            hasNotifiedWarning = true
+            sendNotification(level: .warning, percentage: percentage)
         }
     }
 
     /// Reset notification state (called when window resets or manually)
     func resetNotificationState() {
-        lastNotifiedLevel = .normal
+        hasNotifiedWarning = false
+        hasNotifiedCritical = false
         currentAlertLevel = .normal
     }
 
@@ -130,7 +148,7 @@ final class AlertManager {
             return
         }
 
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let error = error {
                 print("[AlertManager] Permission error: \(error.localizedDescription)")
             } else {
@@ -148,33 +166,47 @@ final class AlertManager {
     /// Requires a proper app bundle - no-op when running as SPM executable.
     /// If permission not granted, notification silently fails (system behavior).
     private func sendNotification(level: AlertLevel, percentage: Int) {
-        guard hasAppBundle else { return }
+        guard hasAppBundle else {
+            print("[AlertManager] No app bundle, skipping notification")
+            return
+        }
         guard level != .normal else { return }
 
         let content = UNMutableNotificationContent()
 
         switch level {
         case .warning:
-            content.title = "Claude Usage Warning"
-            content.body = "You've used \(percentage)% of your 5-hour limit."
+            content.title = "Usage Warning"
+            content.subtitle = "Claude Code"
+            content.body = "You've used \(percentage)% of your 5-hour limit. Consider pacing yourself."
             content.sound = .default
+            content.interruptionLevel = .timeSensitive
         case .critical:
-            content.title = "Claude Usage Limit Reached"
-            content.body = "You've reached your 5-hour usage limit."
+            content.title = "Usage Limit Reached"
+            content.subtitle = "Claude Code"
+            content.body = "You've hit 100% of your 5-hour usage limit. Wait for reset or use a different account."
             content.sound = UNNotificationSound.defaultCritical
+            content.interruptionLevel = .critical
         case .normal:
             return
         }
 
+        // Use unique identifier to prevent notification replacement issues
+        let uniqueId = "tokemon.alert.\(level).\(Date().timeIntervalSince1970)"
+
         let request = UNNotificationRequest(
-            identifier: "tokemon.alert.\(level)",
+            identifier: uniqueId,
             content: content,
             trigger: nil  // Immediate delivery
         )
 
+        print("[AlertManager] Sending notification: \(content.title) - \(content.body)")
+
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("[AlertManager] Notification error: \(error.localizedDescription)")
+            } else {
+                print("[AlertManager] Notification sent successfully")
             }
         }
     }
