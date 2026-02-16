@@ -26,14 +26,14 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Views/Licensing/TrialBannerView.swift
-    - ClaudeMon/Views/Licensing/PurchasePromptView.swift
-    - ClaudeMon/Views/Settings/LicenseSettings.swift
+    - Tokemon/Views/Licensing/TrialBannerView.swift
+    - Tokemon/Views/Licensing/PurchasePromptView.swift
+    - Tokemon/Views/Settings/LicenseSettings.swift
   modified:
-    - ClaudeMon/Views/Settings/SettingsView.swift
-    - ClaudeMon/ClaudeMonApp.swift
-    - ClaudeMon/Views/MenuBar/PopoverContentView.swift
-    - ClaudeMon/Services/SettingsWindowController.swift
+    - Tokemon/Views/Settings/SettingsView.swift
+    - Tokemon/TokemonApp.swift
+    - Tokemon/Views/MenuBar/PopoverContentView.swift
+    - Tokemon/Services/SettingsWindowController.swift
 
 key-decisions:
   - "License suffix appended before color determination in StatusItemManager to keep priority logic intact"
@@ -78,13 +78,13 @@ Each task was committed atomically:
 3. **Task 3: Integrate LicenseManager in app and popover** - `3262c8a` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Views/Licensing/TrialBannerView.swift` - Banner showing trial status (onTrial, trialExpired, gracePeriod) with upgrade/renew buttons
-- `ClaudeMon/Views/Licensing/PurchasePromptView.swift` - Modal purchase prompt with feature list, pricing, and expandable license key entry
-- `ClaudeMon/Views/Settings/LicenseSettings.swift` - License settings tab with status display, activation form, portal links, deactivation
-- `ClaudeMon/Views/Settings/SettingsView.swift` - Added License tab (6 tabs total), added LicenseManager environment
-- `ClaudeMon/ClaudeMonApp.swift` - Added LicenseManager @State, environment injection, onStateChanged callback, StatusItemManager licenseState parameter
-- `ClaudeMon/Views/MenuBar/PopoverContentView.swift` - Added TrialBannerView, purchase prompt sheet, LicenseManager environment
-- `ClaudeMon/Services/SettingsWindowController.swift` - Added LicenseManager property, setter, and environment injection in settings view
+- `Tokemon/Views/Licensing/TrialBannerView.swift` - Banner showing trial status (onTrial, trialExpired, gracePeriod) with upgrade/renew buttons
+- `Tokemon/Views/Licensing/PurchasePromptView.swift` - Modal purchase prompt with feature list, pricing, and expandable license key entry
+- `Tokemon/Views/Settings/LicenseSettings.swift` - License settings tab with status display, activation form, portal links, deactivation
+- `Tokemon/Views/Settings/SettingsView.swift` - Added License tab (6 tabs total), added LicenseManager environment
+- `Tokemon/TokemonApp.swift` - Added LicenseManager @State, environment injection, onStateChanged callback, StatusItemManager licenseState parameter
+- `Tokemon/Views/MenuBar/PopoverContentView.swift` - Added TrialBannerView, purchase prompt sheet, LicenseManager environment
+- `Tokemon/Services/SettingsWindowController.swift` - Added LicenseManager property, setter, and environment injection in settings view
 
 ## Decisions Made
 - License suffix appended before color determination in StatusItemManager to keep the existing priority logic (error > critical > warning > normal) intact

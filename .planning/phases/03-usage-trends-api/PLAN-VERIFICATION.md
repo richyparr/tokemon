@@ -33,7 +33,7 @@ All four success criteria have explicit covering tasks:
 
 - **Criterion 1 (Usage graph):** 03-02 Task 2 creates `UsageChartView.swift` with Swift Charts visualization, time range picker (24h/7d), area+line chart with catmullRom interpolation
 - **Criterion 2 (Burn rate):** 03-02 Task 1 creates `BurnRateCalculator.swift` with `calculateBurnRate()` and `projectTimeToLimit()` methods; Task 3 creates `BurnRateView.swift` displaying these values
-- **Criterion 3 (Persistence):** 03-01 Task 2 creates `HistoryStore.swift` actor with JSON file persistence to `Application Support/ClaudeMon/usage_history.json`, including `load()` and `save()` methods
+- **Criterion 3 (Persistence):** 03-01 Task 2 creates `HistoryStore.swift` actor with JSON file persistence to `Application Support/Tokemon/usage_history.json`, including `load()` and `save()` methods
 - **Criterion 4 (Admin API):** 03-03 creates complete flow: AdminUsageResponse model, AdminAPIClient with Keychain storage, AdminAPISettings UI tab
 
 ### 2. Task Completeness: PASS
@@ -140,7 +140,7 @@ Reviewed existing code to verify integration points:
 
 ### Chart Directory
 
-`ClaudeMon/Views/Charts/` does not currently exist. Plan 03-02 Task 2 action notes "Create a new Charts folder under Views if needed" - this is correctly handled.
+`Tokemon/Views/Charts/` does not currently exist. Plan 03-02 Task 2 action notes "Create a new Charts folder under Views if needed" - this is correctly handled.
 
 ### Admin API Independence
 

@@ -29,12 +29,12 @@
 ## Key Files
 
 ### Created
-- `ClaudeMon/Views/Settings/AlertSettings.swift` - Alerts settings tab
+- `Tokemon/Views/Settings/AlertSettings.swift` - Alerts settings tab
 
 ### Modified
-- `ClaudeMon/Services/AlertManager.swift` - Added notification sending, stored properties for settings
-- `ClaudeMon/ClaudeMonApp.swift` - Added AppDelegate, notification center delegate setup
-- `ClaudeMon/Views/Settings/SettingsView.swift` - Added Alerts tab
+- `Tokemon/Services/AlertManager.swift` - Added notification sending, stored properties for settings
+- `Tokemon/TokemonApp.swift` - Added AppDelegate, notification center delegate setup
+- `Tokemon/Views/Settings/SettingsView.swift` - Added Alerts tab
 
 ## Issues Encountered & Resolved
 

@@ -25,11 +25,11 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Services/BurnRateCalculator.swift
-    - ClaudeMon/Views/Charts/UsageChartView.swift
-    - ClaudeMon/Views/Charts/BurnRateView.swift
+    - Tokemon/Services/BurnRateCalculator.swift
+    - Tokemon/Views/Charts/UsageChartView.swift
+    - Tokemon/Views/Charts/BurnRateView.swift
   modified:
-    - ClaudeMon/Views/MenuBar/PopoverContentView.swift
+    - Tokemon/Views/MenuBar/PopoverContentView.swift
 
 key-decisions:
   - "Removed #Preview macros from chart views (incompatible with SPM builds, per 03-03 precedent)"
@@ -71,10 +71,10 @@ Each task was committed atomically:
 3. **Task 3: Create BurnRateView and integrate into popover** - `1ea7d9d` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Services/BurnRateCalculator.swift` - Burn rate calculation with rolling window, time-to-limit projection, formatting, and level classification
-- `ClaudeMon/Views/Charts/UsageChartView.swift` - Swift Charts area+line visualization with 24h/7d toggle and empty state
-- `ClaudeMon/Views/Charts/BurnRateView.swift` - Burn rate display with flame icon and time-to-limit with clock icon
-- `ClaudeMon/Views/MenuBar/PopoverContentView.swift` - Added UsageChartView and BurnRateView sections after usage detail
+- `Tokemon/Services/BurnRateCalculator.swift` - Burn rate calculation with rolling window, time-to-limit projection, formatting, and level classification
+- `Tokemon/Views/Charts/UsageChartView.swift` - Swift Charts area+line visualization with 24h/7d toggle and empty state
+- `Tokemon/Views/Charts/BurnRateView.swift` - Burn rate display with flame icon and time-to-limit with clock icon
+- `Tokemon/Views/MenuBar/PopoverContentView.swift` - Added UsageChartView and BurnRateView sections after usage detail
 
 ## Decisions Made
 - Removed #Preview macros from all new views since SPM builds without Xcode don't support the Preview macro (consistent with 03-03 precedent)

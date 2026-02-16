@@ -23,8 +23,8 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - "ClaudeMon/Services/HistoryStore.swift"
-    - "ClaudeMon/Services/UsageMonitor.swift"
+    - "Tokemon/Services/HistoryStore.swift"
+    - "Tokemon/Services/UsageMonitor.swift"
 
 key-decisions:
   - "Downsampling throttled to once per hour on append to avoid performance overhead"
@@ -65,8 +65,8 @@ Each task was committed atomically:
 2. **Task 2: Ensure UsageMonitor loads extended history correctly** - `75ea868` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Services/HistoryStore.swift` - 90-day retention, recentWindowDays, downsampleOldEntries method, getHistory(for:since:) overload, shouldDownsample throttle
-- `ClaudeMon/Services/UsageMonitor.swift` - reloadHistory(for:) per-account overload
+- `Tokemon/Services/HistoryStore.swift` - 90-day retention, recentWindowDays, downsampleOldEntries method, getHistory(for:since:) overload, shouldDownsample throttle
+- `Tokemon/Services/UsageMonitor.swift` - reloadHistory(for:) per-account overload
 
 ## Decisions Made
 - Downsampling throttled to once per hour on append via `lastDownsampleDates` dictionary to avoid performance overhead on frequent polling
@@ -90,8 +90,8 @@ None - no external service configuration required.
 
 ## Self-Check: PASSED
 
-- FOUND: ClaudeMon/Services/HistoryStore.swift
-- FOUND: ClaudeMon/Services/UsageMonitor.swift
+- FOUND: Tokemon/Services/HistoryStore.swift
+- FOUND: Tokemon/Services/UsageMonitor.swift
 - FOUND: 08-01-SUMMARY.md
 - FOUND: commit 2931826
 - FOUND: commit 75ea868

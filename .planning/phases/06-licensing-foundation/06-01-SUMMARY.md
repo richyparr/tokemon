@@ -23,13 +23,13 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Models/LicenseState.swift
-    - ClaudeMon/Services/LicenseStorage.swift
-    - ClaudeMon/Services/LicenseManager.swift
+    - Tokemon/Models/LicenseState.swift
+    - Tokemon/Services/LicenseStorage.swift
+    - Tokemon/Services/LicenseManager.swift
   modified:
     - Package.swift
     - Package.resolved
-    - ClaudeMon/Utilities/Constants.swift
+    - Tokemon/Utilities/Constants.swift
 
 key-decisions:
   - "Used @preconcurrency import for LemonSqueezyLicense to handle Swift 6 Sendable compliance"
@@ -77,10 +77,10 @@ Each task was committed atomically:
 ## Files Created/Modified
 - `Package.swift` - Added swift-lemon-squeezy-license v1.0.1 dependency
 - `Package.resolved` - Updated with LemonSqueezy package resolution
-- `ClaudeMon/Utilities/Constants.swift` - Added LemonSqueezy licensing constants (store ID, product ID, checkout URL, portal URL, trial/grace/offline durations, Keychain service)
-- `ClaudeMon/Models/LicenseState.swift` - License state machine enum with 5 states, isProEnabled, displayText, menuBarSuffix
-- `ClaudeMon/Services/LicenseStorage.swift` - Actor-based secure Keychain storage with HMAC trial verification
-- `ClaudeMon/Services/LicenseManager.swift` - Central licensing service with activation, validation, deactivation, offline fallback
+- `Tokemon/Utilities/Constants.swift` - Added LemonSqueezy licensing constants (store ID, product ID, checkout URL, portal URL, trial/grace/offline durations, Keychain service)
+- `Tokemon/Models/LicenseState.swift` - License state machine enum with 5 states, isProEnabled, displayText, menuBarSuffix
+- `Tokemon/Services/LicenseStorage.swift` - Actor-based secure Keychain storage with HMAC trial verification
+- `Tokemon/Services/LicenseManager.swift` - Central licensing service with activation, validation, deactivation, offline fallback
 
 ## Decisions Made
 - Used `@preconcurrency import LemonSqueezyLicense` to handle Swift 6 strict concurrency (response types lack Sendable conformance)
@@ -104,7 +104,7 @@ Each task was committed atomically:
 - **Found during:** Task 3 (Create LicenseManager)
 - **Issue:** Plan referenced `response.error` on ActivateResponse, but the actual API throws LemonSqueezyLicenseError instead
 - **Fix:** Catch `LemonSqueezyLicenseError` and map to `LicenseError.activationFailed` with extracted error message
-- **Files modified:** ClaudeMon/Services/LicenseManager.swift
+- **Files modified:** Tokemon/Services/LicenseManager.swift
 - **Verification:** `swift build` succeeds, all error paths handled
 - **Committed in:** b39893c (Task 3 commit)
 
@@ -112,7 +112,7 @@ Each task was committed atomically:
 - **Found during:** Task 3 (Create LicenseManager)
 - **Issue:** Plan used `response.licenseKey?.status == "expired"` but status is `Status` enum type
 - **Fix:** Changed to `response.licenseKey?.status == .expired`
-- **Files modified:** ClaudeMon/Services/LicenseManager.swift
+- **Files modified:** Tokemon/Services/LicenseManager.swift
 - **Verification:** `swift build` succeeds with type-safe comparison
 - **Committed in:** b39893c (Task 3 commit)
 
@@ -120,7 +120,7 @@ Each task was committed atomically:
 - **Found during:** Task 3 (Create LicenseManager)
 - **Issue:** LemonSqueezyLicense response types don't conform to Sendable, causing errors with @MainActor isolation
 - **Fix:** Used `@preconcurrency import LemonSqueezyLicense` to suppress Sendable warnings for known-safe immutable structs
-- **Files modified:** ClaudeMon/Services/LicenseManager.swift
+- **Files modified:** Tokemon/Services/LicenseManager.swift
 - **Verification:** `swift build` succeeds with zero errors
 - **Committed in:** b39893c (Task 3 commit)
 

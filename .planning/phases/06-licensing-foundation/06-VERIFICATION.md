@@ -31,23 +31,23 @@ re_verification: false
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `ClaudeMon/Models/LicenseState.swift` | License state machine enum | VERIFIED | 5 cases (onTrial, licensed, trialExpired, gracePeriod, unlicensed), isProEnabled, displayText, menuBarSuffix; 63 lines |
-| `ClaudeMon/Services/LicenseStorage.swift` | Secure Keychain storage for license data | VERIFIED | Actor with HMAC-signed trial data, Keychain with .afterFirstUnlockThisDeviceOnly, startTrial/getTrialState/storeLicense/getLicenseData/clearLicense; 117 lines |
-| `ClaudeMon/Services/LicenseManager.swift` | Core licensing logic | VERIFIED | @Observable @MainActor, activateLicense/validateLicense/deactivateLicense, openPurchasePage/openCustomerPortal, loadCachedState/validateOnLaunch, offline fallback, grace period; 297 lines |
-| `ClaudeMon/Views/Licensing/TrialBannerView.swift` | Trial status banner for popover | VERIFIED | Handles onTrial (blue), trialExpired (orange), gracePeriod (yellow) with upgrade/renew buttons; 107 lines |
-| `ClaudeMon/Views/Licensing/PurchasePromptView.swift` | Purchase prompt modal | VERIFIED | Feature list, pricing, purchase button via openPurchasePage(), expandable license key entry with activation; 139 lines |
-| `ClaudeMon/Views/Settings/LicenseSettings.swift` | License settings tab | VERIFIED | Status with icon, activation form, deactivation with confirmation dialog, "Manage Subscription" portal link; 146 lines |
-| `ClaudeMon/Services/FeatureAccessManager.swift` | Centralized Pro feature gating | VERIFIED | @Observable @MainActor, isPro delegates to licenseManager.state.isProEnabled, ProFeature enum with 11 features, canAccess/requiresPurchase; 129 lines |
-| `ClaudeMon/Views/Components/ProBadge.swift` | Pro badge and lock overlay components | VERIFIED | ProBadge (orange gradient), ProLockOverlay (lock icon), ProGatedModifier with .proGated() extension; 67 lines |
+| `Tokemon/Models/LicenseState.swift` | License state machine enum | VERIFIED | 5 cases (onTrial, licensed, trialExpired, gracePeriod, unlicensed), isProEnabled, displayText, menuBarSuffix; 63 lines |
+| `Tokemon/Services/LicenseStorage.swift` | Secure Keychain storage for license data | VERIFIED | Actor with HMAC-signed trial data, Keychain with .afterFirstUnlockThisDeviceOnly, startTrial/getTrialState/storeLicense/getLicenseData/clearLicense; 117 lines |
+| `Tokemon/Services/LicenseManager.swift` | Core licensing logic | VERIFIED | @Observable @MainActor, activateLicense/validateLicense/deactivateLicense, openPurchasePage/openCustomerPortal, loadCachedState/validateOnLaunch, offline fallback, grace period; 297 lines |
+| `Tokemon/Views/Licensing/TrialBannerView.swift` | Trial status banner for popover | VERIFIED | Handles onTrial (blue), trialExpired (orange), gracePeriod (yellow) with upgrade/renew buttons; 107 lines |
+| `Tokemon/Views/Licensing/PurchasePromptView.swift` | Purchase prompt modal | VERIFIED | Feature list, pricing, purchase button via openPurchasePage(), expandable license key entry with activation; 139 lines |
+| `Tokemon/Views/Settings/LicenseSettings.swift` | License settings tab | VERIFIED | Status with icon, activation form, deactivation with confirmation dialog, "Manage Subscription" portal link; 146 lines |
+| `Tokemon/Services/FeatureAccessManager.swift` | Centralized Pro feature gating | VERIFIED | @Observable @MainActor, isPro delegates to licenseManager.state.isProEnabled, ProFeature enum with 11 features, canAccess/requiresPurchase; 129 lines |
+| `Tokemon/Views/Components/ProBadge.swift` | Pro badge and lock overlay components | VERIFIED | ProBadge (orange gradient), ProLockOverlay (lock icon), ProGatedModifier with .proGated() extension; 67 lines |
 | `Package.swift` | LemonSqueezyLicense dependency | VERIFIED | swift-lemon-squeezy-license v1.0.1 added, .product(name:package:) in target deps |
-| `ClaudeMon/Utilities/Constants.swift` | LemonSqueezy constants | VERIFIED | storeId, productId, checkoutURL, portalURL, trialDurationDays (14), gracePeriodDays (7), offlineValidationDays (7), licenseKeychainService |
+| `Tokemon/Utilities/Constants.swift` | LemonSqueezy constants | VERIFIED | storeId, productId, checkoutURL, portalURL, trialDurationDays (14), gracePeriodDays (7), offlineValidationDays (7), licenseKeychainService |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
-| ClaudeMonApp.swift | LicenseManager.swift | @State property and environment | WIRED | `@State private var licenseManager: LicenseManager` initialized in init(); `.environment(licenseManager)` passed to MenuBarExtra content, Settings scene |
-| ClaudeMonApp.swift | FeatureAccessManager.swift | @State property and environment | WIRED | `@State private var featureAccess: FeatureAccessManager` initialized in init() with shared licenseManager; `.environment(featureAccess)` passed to all views |
+| TokemonApp.swift | LicenseManager.swift | @State property and environment | WIRED | `@State private var licenseManager: LicenseManager` initialized in init(); `.environment(licenseManager)` passed to MenuBarExtra content, Settings scene |
+| TokemonApp.swift | FeatureAccessManager.swift | @State property and environment | WIRED | `@State private var featureAccess: FeatureAccessManager` initialized in init() with shared licenseManager; `.environment(featureAccess)` passed to all views |
 | PopoverContentView.swift | TrialBannerView.swift | Conditional rendering | WIRED | `@Environment(LicenseManager.self)` consumed; `shouldShowTrialBanner` computed property gates display; `TrialBannerView(state: licenseManager.state)` rendered |
 | PopoverContentView.swift | PurchasePromptView.swift | Sheet presentation | WIRED | `.sheet(isPresented: $showingPurchasePrompt)` presents PurchasePromptView with licenseManager environment |
 | LicenseSettings.swift | LicenseManager | Environment injection | WIRED | `@Environment(LicenseManager.self) private var licenseManager`; calls activateLicense, openPurchasePage, openCustomerPortal, deactivateLicense |
@@ -58,7 +58,7 @@ re_verification: false
 | StatusItemManager | LicenseState | Menu bar suffix | WIRED | `update(with:error:alertLevel:licenseState:)` accepts optional LicenseState; appends menuBarSuffix to menu bar text |
 | SettingsWindowController | LicenseManager + FeatureAccess | Setter + environment | WIRED | setLicenseManager/setFeatureAccessManager called in menuBarExtraAccess; both guard-checked and injected via .environment() in showSettings() |
 | DataSourceSettings | FeatureAccessManager | Environment injection | WIRED | `@Environment(FeatureAccessManager.self) private var featureAccess`; Pro Features section with ProBadge |
-| ClaudeMonApp.swift | StatusItemManager (license callback) | onStateChanged callback | WIRED | `licenseManager.onStateChanged = { ... statusItemManager.update(..., licenseState: state) }` |
+| TokemonApp.swift | StatusItemManager (license callback) | onStateChanged callback | WIRED | `licenseManager.onStateChanged = { ... statusItemManager.update(..., licenseState: state) }` |
 
 ### Requirements Coverage
 
@@ -87,7 +87,7 @@ re_verification: false
 ### 2. Purchase Prompt Modal Flow
 
 **Test:** Click "Upgrade" in the trial banner.
-**Expected:** A modal sheet slides in showing "Unlock ClaudeMon Pro" with feature list, pricing ($3/month or $29/year), "Purchase License" button, and expandable "I have a license key" section.
+**Expected:** A modal sheet slides in showing "Unlock Tokemon Pro" with feature list, pricing ($3/month or $29/year), "Purchase License" button, and expandable "I have a license key" section.
 **Why human:** Sheet presentation behavior, animation smoothness, and visual layout need human eyes.
 
 ### 3. License Key Activation End-to-End

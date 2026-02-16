@@ -30,22 +30,22 @@ score: 5/5 must-haves verified
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `ClaudeMon/Models/Account.swift` | Account struct with ID, username, displayName, settings | VERIFIED | 41 lines. `struct Account: Identifiable, Codable, Sendable` with all required properties. |
-| `ClaudeMon/Models/AccountSettings.swift` | Per-account preferences | VERIFIED | 23 lines. `struct AccountSettings: Codable, Sendable` with alertThreshold, notificationsEnabled, monthlyBudgetCents. |
-| `ClaudeMon/Services/AccountManager.swift` | Central account coordination service | VERIFIED | 281 lines. Full CRUD, active account tracking, migration, `checkForNewAccounts()` with keychain scanning. |
-| `ClaudeMon/Utilities/Constants.swift` | accountsKeychainService constant | VERIFIED | Line 58: `static let accountsKeychainService = "com.claudemon.accounts"` |
-| `ClaudeMon/Services/TokenManager.swift` | Username-parameterized overloads | VERIFIED | Lines 211-288: `getCredentials(username:)`, `getAccessToken(for:)`, `getRefreshToken(for:)`, `updateKeychainCredentials(response:for:)` |
-| `ClaudeMon/Views/MenuBar/AccountSwitcherView.swift` | Account picker dropdown in popover header | VERIFIED | 52 lines. Menu with per-account buttons, checkmark on active, "Manage Accounts..." link. Pro-gated. |
-| `ClaudeMon/Views/Settings/AccountsSettings.swift` | Accounts management settings tab | VERIFIED | 280 lines. Account list, detail editing, rename, remove, per-account alert settings, "Check for New Accounts" button, CombinedUsageView integration. Pro-gated via `.proGated(.multiAccount)`. |
-| `ClaudeMon/Views/Settings/CombinedUsageView.swift` | Aggregated usage view | VERIFIED | 123 lines. Parallel TaskGroup fetch, per-account percentage breakdown, color-coded dots, "Highest" summary row. |
-| `ClaudeMon/Services/AlertManager.swift` | Per-account alert threshold support | VERIFIED | `checkUsage(_:for:)` accepts optional Account, reads per-account threshold/notifications. Notifications include account name prefix. |
-| `ClaudeMon/Services/HistoryStore.swift` | Per-account history storage | VERIFIED | 146 lines. Per-account files in `ClaudeMon/history/{uuid}.json` with backward-compatible legacy methods. |
+| `Tokemon/Models/Account.swift` | Account struct with ID, username, displayName, settings | VERIFIED | 41 lines. `struct Account: Identifiable, Codable, Sendable` with all required properties. |
+| `Tokemon/Models/AccountSettings.swift` | Per-account preferences | VERIFIED | 23 lines. `struct AccountSettings: Codable, Sendable` with alertThreshold, notificationsEnabled, monthlyBudgetCents. |
+| `Tokemon/Services/AccountManager.swift` | Central account coordination service | VERIFIED | 281 lines. Full CRUD, active account tracking, migration, `checkForNewAccounts()` with keychain scanning. |
+| `Tokemon/Utilities/Constants.swift` | accountsKeychainService constant | VERIFIED | Line 58: `static let accountsKeychainService = "com.tokemon.accounts"` |
+| `Tokemon/Services/TokenManager.swift` | Username-parameterized overloads | VERIFIED | Lines 211-288: `getCredentials(username:)`, `getAccessToken(for:)`, `getRefreshToken(for:)`, `updateKeychainCredentials(response:for:)` |
+| `Tokemon/Views/MenuBar/AccountSwitcherView.swift` | Account picker dropdown in popover header | VERIFIED | 52 lines. Menu with per-account buttons, checkmark on active, "Manage Accounts..." link. Pro-gated. |
+| `Tokemon/Views/Settings/AccountsSettings.swift` | Accounts management settings tab | VERIFIED | 280 lines. Account list, detail editing, rename, remove, per-account alert settings, "Check for New Accounts" button, CombinedUsageView integration. Pro-gated via `.proGated(.multiAccount)`. |
+| `Tokemon/Views/Settings/CombinedUsageView.swift` | Aggregated usage view | VERIFIED | 123 lines. Parallel TaskGroup fetch, per-account percentage breakdown, color-coded dots, "Highest" summary row. |
+| `Tokemon/Services/AlertManager.swift` | Per-account alert threshold support | VERIFIED | `checkUsage(_:for:)` accepts optional Account, reads per-account threshold/notifications. Notifications include account name prefix. |
+| `Tokemon/Services/HistoryStore.swift` | Per-account history storage | VERIFIED | 146 lines. Per-account files in `Tokemon/history/{uuid}.json` with backward-compatible legacy methods. |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
-| `ClaudeMonApp.swift` | `AccountManager` | `@State private var accountManager` | WIRED | Line 16: initialized. Lines 42, 64, 125: passed via `.environment()` to PopoverContentView, SettingsWindowController, Settings scene. |
+| `TokemonApp.swift` | `AccountManager` | `@State private var accountManager` | WIRED | Line 16: initialized. Lines 42, 64, 125: passed via `.environment()` to PopoverContentView, SettingsWindowController, Settings scene. |
 | `AccountSwitcherView.swift` | `AccountManager` | `@Environment(AccountManager.self)` | WIRED | Line 6: environment injection. Used throughout body to read accounts, active account, and call setActiveAccount. |
 | `PopoverContentView.swift` | `AccountSwitcherView` | Composition in VStack | WIRED | Line 13: `@Environment(AccountManager.self)`. Line 35: `AccountSwitcherView()` in header. |
 | `SettingsView.swift` | `AccountsSettings` | TabView tab | WIRED | Line 10: `@Environment(AccountManager.self)`. Lines 39-42: `AccountsSettings()` tab with "Accounts" label. |
@@ -54,8 +54,8 @@ score: 5/5 must-haves verified
 | `OAuthClient.swift` | Account-specific fetch | `fetchUsageWithTokenRefresh(for:)` | WIRED | Lines 129-144: account-specific fetch with per-account token refresh. Lines 165-170: `performTokenRefresh(for:)` with username-specific credential update. |
 | `AlertManager.swift` | `Account.settings.alertThreshold` | `checkUsage(_:for:)` | WIRED | Lines 107-109: reads `account.settings.alertThreshold` and `account.settings.notificationsEnabled`. |
 | `AccountManager.swift` | KeychainAccess `allKeys()` | `checkForNewAccounts()` | WIRED | Line 177: `claudeKeychain.allKeys()` scans Claude Code keychain for new usernames. |
-| `ClaudeMonApp.swift` | `onActiveAccountChanged` callback | Account switch -> refresh | WIRED | Lines 67-72: callback sets `monitor.currentAccount = account` and calls `await monitor.refresh()`. |
-| `ClaudeMonApp.swift` | AlertManager per-account | `checkUsage(usage, for:)` | WIRED | Lines 105-108: `monitor.onAlertCheck` passes `accountManager.activeAccount` to `alertManager.checkUsage`. Line 102: `alertManager.setAccountManager(accountManager)`. |
+| `TokemonApp.swift` | `onActiveAccountChanged` callback | Account switch -> refresh | WIRED | Lines 67-72: callback sets `monitor.currentAccount = account` and calls `await monitor.refresh()`. |
+| `TokemonApp.swift` | AlertManager per-account | `checkUsage(usage, for:)` | WIRED | Lines 105-108: `monitor.onAlertCheck` passes `accountManager.activeAccount` to `alertManager.checkUsage`. Line 102: `alertManager.setAccountManager(accountManager)`. |
 | `CombinedUsageView.swift` | `AccountManager` + parallel fetch | `withTaskGroup` | WIRED | Line 97: `withTaskGroup` iterates accounts, calls `OAuthClient.fetchUsageWithTokenRefresh(for: account)` for each. |
 | `AccountsSettings.swift` | `CombinedUsageView` | Conditional section | WIRED | Lines 19-23: renders `CombinedUsageView()` when `accountManager.accounts.count > 1`. |
 

@@ -21,8 +21,8 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Services/FloatingWindowController.swift
-    - ClaudeMon/Utilities/NSWindow+Position.swift
+    - Tokemon/Services/FloatingWindowController.swift
+    - Tokemon/Utilities/NSWindow+Position.swift
   modified: []
 
 key-decisions:
@@ -66,8 +66,8 @@ Each task was committed atomically:
 2. **Task 2: Create FloatingPanel and FloatingWindowController** - `6a04785` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Utilities/NSWindow+Position.swift` - NSWindow extension with Position struct (Horizontal/Vertical enums) and setPosition() for corner placement
-- `ClaudeMon/Services/FloatingWindowController.swift` - FloatingPanel NSPanel subclass + FloatingWindowController singleton for lifecycle management
+- `Tokemon/Utilities/NSWindow+Position.swift` - NSWindow extension with Position struct (Horizontal/Vertical enums) and setPosition() for corner placement
+- `Tokemon/Services/FloatingWindowController.swift` - FloatingPanel NSPanel subclass + FloatingWindowController singleton for lifecycle management
 
 ## Decisions Made
 - FloatingPanel uses `.nonactivatingPanel` styleMask to prevent stealing focus from user's current work

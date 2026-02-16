@@ -48,7 +48,7 @@ The app architecture is well-suited for licensing integration. The existing `Usa
 
 ### Recommended Project Structure
 ```
-ClaudeMon/
+Tokemon/
 ├── Services/
 │   ├── LicenseManager.swift       # Core licensing logic, API calls, state management
 │   ├── FeatureAccessManager.swift # Centralized Pro gating, trial checking
@@ -192,7 +192,7 @@ enum ProFeature {
 ```swift
 // Source: Best practices from Keychain security patterns
 struct TrialStorage {
-    private let keychain = Keychain(service: "com.yourapp.ClaudeMon-license")
+    private let keychain = Keychain(service: "com.yourapp.Tokemon-license")
         .accessibility(.afterFirstUnlockThisDeviceOnly)  // Device-specific, no sync
 
     private let hmacKey = Data([/* compile-time secret bytes */])
@@ -611,7 +611,7 @@ extension StatusItemManager {
 
 ## Integration Points with Existing Codebase
 
-### ClaudeMonApp.swift
+### TokemonApp.swift
 - Add `LicenseManager` and `FeatureAccessManager` as `@State` properties alongside `UsageMonitor`
 - Pass to views via `.environment()`
 - Wire `onStateChanged` callback similar to `onUsageChanged`

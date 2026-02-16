@@ -21,8 +21,8 @@ re_verification: false
 |---|-------|--------|----------|
 | 1 | User can view a usage graph showing daily and weekly trends with clear visualization | VERIFIED | `UsageChartView.swift` (127 lines) uses Swift Charts with `AreaMark` + `LineMark` combo, catmullRom interpolation, segmented `Picker` for 24h/7d toggle, Y-axis 0-100%, and empty state. Wired into `PopoverContentView.swift` line 26. |
 | 2 | User can see their current burn rate (usage pace) and an estimate of when they will hit their limit at that pace | VERIFIED | `BurnRateCalculator.swift` (83 lines) implements `calculateBurnRate()` with 2-hour rolling window and `projectTimeToLimit()` projection. `BurnRateView.swift` (87 lines) displays burn rate as "X.X%/hr" with flame icon and time-to-limit as "Xh Xm" with clock icon. Color-coded by severity. Wired into `PopoverContentView.swift` lines 29-32. |
-| 3 | Historical usage data persists across app launches (stored locally) | VERIFIED | `HistoryStore.swift` (73 lines) is an actor with JSON persistence to `~/Library/Application Support/ClaudeMon/usage_history.json`. ISO8601 date encoding, 30-day auto-trim. `UsageMonitor.swift` loads history on init (line 129), records after every successful refresh via `recordHistory()` (lines 294-302), and exposes `usageHistory` property (line 104). |
-| 4 | User can optionally connect an Admin API organization key to access cost and usage data from the Anthropic API | VERIFIED | `AdminAPIClient.swift` (139 lines) is an actor with Keychain storage (`com.claudemon.admin-api`), `sk-ant-admin` prefix validation, `fetchUsageReport()` with proper HTTP headers and error handling. `AdminAPISettings.swift` (156 lines) provides connect/disconnect UI with SecureField, validation spinner, and error display. Wired into `SettingsView.swift` as fifth tab (line 35). |
+| 3 | Historical usage data persists across app launches (stored locally) | VERIFIED | `HistoryStore.swift` (73 lines) is an actor with JSON persistence to `~/Library/Application Support/Tokemon/usage_history.json`. ISO8601 date encoding, 30-day auto-trim. `UsageMonitor.swift` loads history on init (line 129), records after every successful refresh via `recordHistory()` (lines 294-302), and exposes `usageHistory` property (line 104). |
+| 4 | User can optionally connect an Admin API organization key to access cost and usage data from the Anthropic API | VERIFIED | `AdminAPIClient.swift` (139 lines) is an actor with Keychain storage (`com.tokemon.admin-api`), `sk-ant-admin` prefix validation, `fetchUsageReport()` with proper HTTP headers and error handling. `AdminAPISettings.swift` (156 lines) provides connect/disconnect UI with SecureField, validation spinner, and error display. Wired into `SettingsView.swift` as fifth tab (line 35). |
 
 **Score:** 4/4 truths verified
 
@@ -30,14 +30,14 @@ re_verification: false
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `ClaudeMon/Models/UsageDataPoint.swift` | Time-series data point model | VERIFIED | 29 lines. Codable, Identifiable, Sendable struct with `init(from: UsageSnapshot)` and test/preview init. Contains `struct UsageDataPoint`. |
-| `ClaudeMon/Services/HistoryStore.swift` | Thread-safe JSON persistence | VERIFIED | 73 lines. Actor with `load()`, `append()`, `getHistory()`, `getHistory(since:)`, `clear()`, 30-day trim, ISO8601 encoding. Contains `actor HistoryStore`. |
-| `ClaudeMon/Services/BurnRateCalculator.swift` | Burn rate calculation and time-to-limit projection | VERIFIED | 83 lines. Static methods `calculateBurnRate()`, `projectTimeToLimit()`, `formatTimeRemaining()`, `burnRateColor()`. Contains `struct BurnRateCalculator`. |
-| `ClaudeMon/Views/Charts/UsageChartView.swift` | Swift Charts line/area visualization | VERIFIED | 127 lines. `import Charts` present. AreaMark + LineMark with catmullRom, segmented picker for 24h/7d, Y-axis 0-100%. Contains `struct UsageChartView`. |
-| `ClaudeMon/Views/Charts/BurnRateView.swift` | Burn rate and projection display | VERIFIED | 87 lines. Displays burn rate with flame icon and time-to-limit with clock icon. Color-coded by severity level. Contains `struct BurnRateView`. |
-| `ClaudeMon/Services/AdminAPIClient.swift` | Admin API key management and usage fetching | VERIFIED | 139 lines. Actor with `setAdminKey()`, `clearAdminKey()`, `hasAdminKey()`, `getMaskedKey()`, `fetchUsageReport()`, `validateKey()`. Keychain storage. Contains `actor AdminAPIClient`. |
-| `ClaudeMon/Models/AdminUsageResponse.swift` | Response model for Admin API | VERIFIED | 52 lines. Codable struct with `UsageBucket` nested type, `CodingKeys` for snake_case mapping, token aggregation computed properties. Contains `struct AdminUsageResponse`. |
-| `ClaudeMon/Views/Settings/AdminAPISettings.swift` | Admin API configuration UI | VERIFIED | 156 lines. Form with connect/disconnect flow, SecureField, validation spinner, error message, helper text. Contains `struct AdminAPISettings`. |
+| `Tokemon/Models/UsageDataPoint.swift` | Time-series data point model | VERIFIED | 29 lines. Codable, Identifiable, Sendable struct with `init(from: UsageSnapshot)` and test/preview init. Contains `struct UsageDataPoint`. |
+| `Tokemon/Services/HistoryStore.swift` | Thread-safe JSON persistence | VERIFIED | 73 lines. Actor with `load()`, `append()`, `getHistory()`, `getHistory(since:)`, `clear()`, 30-day trim, ISO8601 encoding. Contains `actor HistoryStore`. |
+| `Tokemon/Services/BurnRateCalculator.swift` | Burn rate calculation and time-to-limit projection | VERIFIED | 83 lines. Static methods `calculateBurnRate()`, `projectTimeToLimit()`, `formatTimeRemaining()`, `burnRateColor()`. Contains `struct BurnRateCalculator`. |
+| `Tokemon/Views/Charts/UsageChartView.swift` | Swift Charts line/area visualization | VERIFIED | 127 lines. `import Charts` present. AreaMark + LineMark with catmullRom, segmented picker for 24h/7d, Y-axis 0-100%. Contains `struct UsageChartView`. |
+| `Tokemon/Views/Charts/BurnRateView.swift` | Burn rate and projection display | VERIFIED | 87 lines. Displays burn rate with flame icon and time-to-limit with clock icon. Color-coded by severity level. Contains `struct BurnRateView`. |
+| `Tokemon/Services/AdminAPIClient.swift` | Admin API key management and usage fetching | VERIFIED | 139 lines. Actor with `setAdminKey()`, `clearAdminKey()`, `hasAdminKey()`, `getMaskedKey()`, `fetchUsageReport()`, `validateKey()`. Keychain storage. Contains `actor AdminAPIClient`. |
+| `Tokemon/Models/AdminUsageResponse.swift` | Response model for Admin API | VERIFIED | 52 lines. Codable struct with `UsageBucket` nested type, `CodingKeys` for snake_case mapping, token aggregation computed properties. Contains `struct AdminUsageResponse`. |
+| `Tokemon/Views/Settings/AdminAPISettings.swift` | Admin API configuration UI | VERIFIED | 156 lines. Form with connect/disconnect flow, SecureField, validation spinner, error message, helper text. Contains `struct AdminAPISettings`. |
 
 ### Key Link Verification
 
@@ -49,7 +49,7 @@ re_verification: false
 | `BurnRateView.swift` | `BurnRateCalculator.swift` | burn rate calculation | WIRED | Lines 9, 14, 17-18, 66: Five calls to `BurnRateCalculator.calculateBurnRate()`, `.projectTimeToLimit()`, `.burnRateColor()`, `.formatTimeRemaining()`. |
 | `PopoverContentView.swift` | `UsageChartView.swift` | embedded chart view | WIRED | Line 26: `UsageChartView(dataPoints: monitor.usageHistory)`. Conditionally shown when `hasPercentage` is true. |
 | `AdminAPISettings.swift` | `AdminAPIClient.swift` | setAdminKey/clearAdminKey calls | WIRED | Lines 113, 116, 128, 131, 142, 151: Six calls to `AdminAPIClient.shared.*` methods for key management and validation. |
-| `AdminAPIClient.swift` | Keychain | KeychainAccess library | WIRED | Lines 10, 27: `Keychain(service: "com.claudemon.admin-api")`. Uses `keychain.set()`, `keychain.get()`, `keychain.remove()`. |
+| `AdminAPIClient.swift` | Keychain | KeychainAccess library | WIRED | Lines 10, 27: `Keychain(service: "com.tokemon.admin-api")`. Uses `keychain.set()`, `keychain.get()`, `keychain.remove()`. |
 | `SettingsView.swift` | `AdminAPISettings.swift` | settings tab | WIRED | Line 35: `AdminAPISettings()` with `.tabItem { Label("Admin API", systemImage: "building.2") }`. |
 
 ### Requirements Coverage
@@ -111,7 +111,7 @@ All 9 task commits verified in git history (10 total commits including docs):
 ### 3. Data Persistence Across Restarts
 
 **Test:** Run app for several minutes, quit, then relaunch.
-**Expected:** Chart shows previously recorded data points immediately on relaunch. Verify `~/Library/Application Support/ClaudeMon/usage_history.json` exists and contains JSON array with timestamp and percentage entries.
+**Expected:** Chart shows previously recorded data points immediately on relaunch. Verify `~/Library/Application Support/Tokemon/usage_history.json` exists and contains JSON array with timestamp and percentage entries.
 **Why human:** Requires actual app lifecycle testing (quit and relaunch) which cannot be done programmatically.
 
 ### 4. Admin API Key Flow
@@ -122,7 +122,7 @@ All 9 task commits verified in git history (10 total commits including docs):
 
 ### 5. Empty State Handling
 
-**Test:** Delete `~/Library/Application Support/ClaudeMon/usage_history.json` and relaunch app.
+**Test:** Delete `~/Library/Application Support/Tokemon/usage_history.json` and relaunch app.
 **Expected:** Chart shows "No data yet" empty state with chart icon. Burn rate shows "--" for both values. No crashes or layout issues.
 **Why human:** Requires file system manipulation and visual verification of empty state rendering.
 

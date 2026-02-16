@@ -46,7 +46,7 @@ No additional packages needed. Swift Charts and Codable are part of the Swift st
 
 ### Recommended Project Structure
 ```
-ClaudeMon/
+Tokemon/
 ├── Models/
 │   └── UsageHistory.swift          # Historical data point model
 ├── Services/
@@ -99,7 +99,7 @@ actor HistoryStore {
             for: .applicationSupportDirectory,
             in: .userDomainMask
         ).first!
-        let appDir = appSupport.appendingPathComponent("ClaudeMon", isDirectory: true)
+        let appDir = appSupport.appendingPathComponent("Tokemon", isDirectory: true)
         try? FileManager.default.createDirectory(at: appDir, withIntermediateDirectories: true)
         self.fileURL = appDir.appendingPathComponent("usage_history.json")
     }
@@ -467,7 +467,7 @@ import KeychainAccess
 actor AdminAPIClient {
     static let shared = AdminAPIClient()
 
-    private let keychain = Keychain(service: "ClaudeMon-AdminAPI")
+    private let keychain = Keychain(service: "Tokemon-AdminAPI")
     private let baseURL = "https://api.anthropic.com/v1/organizations"
 
     /// Store Admin API key securely

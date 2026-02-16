@@ -26,16 +26,16 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Services/FeatureAccessManager.swift
-    - ClaudeMon/Views/Components/ProBadge.swift
+    - Tokemon/Services/FeatureAccessManager.swift
+    - Tokemon/Views/Components/ProBadge.swift
   modified:
-    - ClaudeMon/ClaudeMonApp.swift
-    - ClaudeMon/Services/SettingsWindowController.swift
-    - ClaudeMon/Views/MenuBar/PopoverContentView.swift
-    - ClaudeMon/Views/Settings/DataSourceSettings.swift
+    - Tokemon/TokemonApp.swift
+    - Tokemon/Services/SettingsWindowController.swift
+    - Tokemon/Views/MenuBar/PopoverContentView.swift
+    - Tokemon/Views/Settings/DataSourceSettings.swift
 
 key-decisions:
-  - "FeatureAccessManager initialized via State(initialValue:) in ClaudeMonApp init() for shared LicenseManager dependency"
+  - "FeatureAccessManager initialized via State(initialValue:) in TokemonApp init() for shared LicenseManager dependency"
   - "ProBadge and ProLockOverlay placed in Views/Components for reuse across phases"
   - "ProGatedModifier wires to PurchasePromptView for automatic purchase prompting on locked features"
 
@@ -77,15 +77,15 @@ Each task was committed atomically:
 3. **Task 3: Add Pro badges and lock indicators to UI** - `01291b7` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Services/FeatureAccessManager.swift` - Centralized Pro feature access manager with ProFeature enum, isPro, canAccess(), lockedFeatures/availableFeatures
-- `ClaudeMon/Views/Components/ProBadge.swift` - ProBadge, ProLockOverlay, ProGatedModifier, and .proGated() extension
-- `ClaudeMon/ClaudeMonApp.swift` - Added FeatureAccessManager @State with init() initialization, environment injection
-- `ClaudeMon/Services/SettingsWindowController.swift` - Added featureAccess property, setter, and environment injection
-- `ClaudeMon/Views/MenuBar/PopoverContentView.swift` - Added FeatureAccessManager environment, Pro badge in footer when licensed
-- `ClaudeMon/Views/Settings/DataSourceSettings.swift` - Added FeatureAccessManager environment, Pro Features teaser section
+- `Tokemon/Services/FeatureAccessManager.swift` - Centralized Pro feature access manager with ProFeature enum, isPro, canAccess(), lockedFeatures/availableFeatures
+- `Tokemon/Views/Components/ProBadge.swift` - ProBadge, ProLockOverlay, ProGatedModifier, and .proGated() extension
+- `Tokemon/TokemonApp.swift` - Added FeatureAccessManager @State with init() initialization, environment injection
+- `Tokemon/Services/SettingsWindowController.swift` - Added featureAccess property, setter, and environment injection
+- `Tokemon/Views/MenuBar/PopoverContentView.swift` - Added FeatureAccessManager environment, Pro badge in footer when licensed
+- `Tokemon/Views/Settings/DataSourceSettings.swift` - Added FeatureAccessManager environment, Pro Features teaser section
 
 ## Decisions Made
-- FeatureAccessManager initialized via `State(initialValue:)` in `ClaudeMonApp.init()` to share the same LicenseManager instance (avoids creating duplicate instances)
+- FeatureAccessManager initialized via `State(initialValue:)` in `TokemonApp.init()` to share the same LicenseManager instance (avoids creating duplicate instances)
 - ProBadge and ProLockOverlay placed in new `Views/Components/` directory for cross-cutting reuse across phases
 - ProGatedModifier automatically presents PurchasePromptView when user taps a locked feature
 

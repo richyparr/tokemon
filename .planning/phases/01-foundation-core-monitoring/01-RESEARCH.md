@@ -69,9 +69,9 @@ dependencies: [
 
 ### Recommended Project Structure (Phase 1 Scope)
 ```
-ClaudeMon/
-├── ClaudeMon/                        # Main app target
-│   ├── ClaudeMonApp.swift            # @main, MenuBarExtra scene + Settings scene
+Tokemon/
+├── Tokemon/                        # Main app target
+│   ├── TokemonApp.swift            # @main, MenuBarExtra scene + Settings scene
 │   ├── Info.plist                    # LSUIElement = YES (no Dock icon)
 │   │
 │   ├── Models/
@@ -112,7 +112,7 @@ ClaudeMon/
 │   ├── AppGroupConstants.swift       # Group ID, container URLs
 │   └── UsageSnapshot.swift           # Shared Codable model (both targets)
 │
-└── ClaudeMon.xcodeproj
+└── Tokemon.xcodeproj
 ```
 
 ### Pattern 1: Hybrid MenuBarExtra with NSStatusItem Access
@@ -121,7 +121,7 @@ ClaudeMon/
 **Example:**
 ```swift
 @main
-struct ClaudeMonApp: App {
+struct TokemonApp: App {
     @State private var monitor = UsageMonitor()
     @State private var isPopoverPresented = false
 
@@ -205,7 +205,7 @@ func buildContextMenu() -> NSMenu {
     menu.addItem(NSMenuItem(title: "Open Floating Window", action: #selector(openFloat), keyEquivalent: ""))
     menu.addItem(NSMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ","))
     menu.addItem(NSMenuItem.separator())
-    menu.addItem(NSMenuItem(title: "Quit ClaudeMon", action: #selector(quitApp), keyEquivalent: "q"))
+    menu.addItem(NSMenuItem(title: "Quit Tokemon", action: #selector(quitApp), keyEquivalent: "q"))
     return menu
 }
 ```
@@ -358,8 +358,8 @@ struct PopoverFooterView: View {
 
 ### Pitfall 2: OAuth Token Expired / Refresh Not Working
 **What goes wrong:** The OAuth access token expires (~8 hours), API calls return 401, and the app shows perpetual errors.
-**Why it happens:** Claude Code's own token refresh has known bugs (multiple GitHub issues open). ClaudeMon reads the token from Keychain but cannot rely on Claude Code keeping it fresh.
-**How to avoid:** Implement token refresh within ClaudeMon itself using the refresh token and `POST https://console.anthropic.com/v1/oauth/token`. Update the Keychain entry after refresh. Check `expiresAt` before each API call; proactively refresh when within 10 minutes of expiry.
+**Why it happens:** Claude Code's own token refresh has known bugs (multiple GitHub issues open). Tokemon reads the token from Keychain but cannot rely on Claude Code keeping it fresh.
+**How to avoid:** Implement token refresh within Tokemon itself using the refresh token and `POST https://console.anthropic.com/v1/oauth/token`. Update the Keychain entry after refresh. Check `expiresAt` before each API call; proactively refresh when within 10 minutes of expiry.
 **Warning signs:** App works initially but fails after ~8 hours of continuous use.
 
 ### Pitfall 3: OAuth Token Requires user:profile Scope
@@ -429,7 +429,7 @@ func fetchOAuthUsage(accessToken: String) async throws -> OAuthUsageResponse {
     request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
     request.setValue("application/json", forHTTPHeaderField: "Accept")
     request.setValue("oauth-2025-04-20", forHTTPHeaderField: "anthropic-beta")
-    request.setValue("ClaudeMon/1.0", forHTTPHeaderField: "User-Agent")
+    request.setValue("Tokemon/1.0", forHTTPHeaderField: "User-Agent")
 
     let (data, response) = try await URLSession.shared.data(for: request)
     guard let httpResponse = response as? HTTPURLResponse else {
@@ -536,7 +536,7 @@ struct JSONLParser {
 - Top-level types: `assistant`, `user`, `system`, `progress`, `queue-operation`, `file-history-snapshot`
 - Usage fields: `input_tokens`, `output_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`, `cache_creation` (nested), `service_tier`, `inference_geo`
 - Models: `claude-opus-4-5-20251101` (observed)
-- Project directories: URL-encoded path with dashes (e.g., `-Users-richardparr-ClaudeMon`)
+- Project directories: URL-encoded path with dashes (e.g., `-Users-richardparr-Tokemon`)
 - Session files: `{uuid}.jsonl`
 - Session index: `sessions-index.json` (contains session metadata)
 
@@ -557,7 +557,7 @@ final class UsageMonitor {
         // Prevent App Nap
         activity = ProcessInfo.processInfo.beginActivity(
             options: [.background, .idleSystemSleepDisabled],
-            reason: "ClaudeMon usage monitoring"
+            reason: "Tokemon usage monitoring"
         )
 
         // Schedule repeating timer
@@ -655,7 +655,7 @@ import MenuBarExtraAccess
 import SettingsAccess
 
 @main
-struct ClaudeMonApp: App {
+struct TokemonApp: App {
     @State private var monitor = UsageMonitor()
     @State private var isPopoverPresented = false
 
@@ -726,8 +726,8 @@ struct ClaudeMonApp: App {
    - What's unclear: Whether `KeychainAccess` library uses the same key path convention (service name vs. account name)
    - Recommendation: Test with `Keychain(service: "Claude Code-credentials")` and iterate. The actual Keychain item may use an empty account name.
 
-3. **Token refresh: can ClaudeMon write updated tokens back to Keychain?**
-   - What we know: ClaudeMon can read from Keychain. The refresh endpoint works. Claude Code's own refresh has bugs.
+3. **Token refresh: can Tokemon write updated tokens back to Keychain?**
+   - What we know: Tokemon can read from Keychain. The refresh endpoint works. Claude Code's own refresh has bugs.
    - What's unclear: Whether writing updated tokens back would conflict with Claude Code's Keychain access. Claude Code expects to own this entry.
    - Recommendation: On first iteration, only read from Keychain and handle 401 by notifying user to re-authenticate Claude Code. Add token refresh in a follow-up if reading is reliable. Flag this as a v1.1 enhancement if conflicts arise.
 
@@ -776,5 +776,5 @@ struct ClaudeMonApp: App {
 **Valid until:** ~2026-03-15 (30 days; OAuth endpoint is undocumented and could change)
 
 ---
-*Phase research for: ClaudeMon Phase 1 -- Foundation & Core Monitoring*
+*Phase research for: Tokemon Phase 1 -- Foundation & Core Monitoring*
 *Researched: 2026-02-12*

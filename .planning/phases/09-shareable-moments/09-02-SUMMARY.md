@@ -21,7 +21,7 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - ClaudeMon/Views/Analytics/AnalyticsDashboardView.swift
+    - Tokemon/Views/Analytics/AnalyticsDashboardView.swift
 
 key-decisions:
   - "Weekly utilization average used for card stats (not daily)"
@@ -63,7 +63,7 @@ Each task was committed atomically:
 2. **Task 2: Verify shareable card workflow** - checkpoint approved
 
 ## Files Created/Modified
-- `ClaudeMon/Views/Analytics/AnalyticsDashboardView.swift` - Added isCopied state, Share Usage Card button in exportSection, performCardCopy() method
+- `Tokemon/Views/Analytics/AnalyticsDashboardView.swift` - Added isCopied state, Share Usage Card button in exportSection, performCardCopy() method
 
 ## Decisions Made
 - Weekly utilization average (from AnalyticsEngine.weeklySummaries) used for card stats
@@ -89,7 +89,7 @@ None - no external service configuration required.
 
 ## Self-Check: PASSED
 
-- FOUND: ClaudeMon/Views/Analytics/AnalyticsDashboardView.swift
+- FOUND: Tokemon/Views/Analytics/AnalyticsDashboardView.swift
 - FOUND: fa52421 (Task 1 commit)
 
 ---

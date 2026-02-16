@@ -1,4 +1,4 @@
-# Feature Landscape: ClaudeMon v2 Pro Features
+# Feature Landscape: Tokemon v2 Pro Features
 
 **Domain:** macOS menu bar app monetization (licensing, analytics, export, sharing, multi-account)
 **Researched:** 2026-02-14
@@ -16,7 +16,7 @@
 |---------|--------------|------------|-------|
 | License key entry dialog | Standard for paid desktop apps. Users expect a clean place to enter their key | LOW | Simple text field + "Activate" button. Show in Settings or on first launch |
 | Online activation/validation | LemonSqueezy requires internet to validate license keys. Users expect this | LOW | POST to `https://api.lemonsqueezy.com/v1/licenses/activate`. Store `instance_id` for deactivation |
-| Subscription status display | Users need to see "Pro" badge and expiration date. Builds confidence purchase worked | LOW | Show in Settings: "ClaudeMon Pro - Active until [date]" or "Free version" |
+| Subscription status display | Users need to see "Pro" badge and expiration date. Builds confidence purchase worked | LOW | Show in Settings: "Tokemon Pro - Active until [date]" or "Free version" |
 | Graceful degradation when expired | When subscription lapses, app should keep working in free mode, not crash or nag constantly | MEDIUM | Lock pro features, keep core monitoring. One tasteful "Renew" nudge per session max |
 | License deactivation (for device transfer) | Users switch machines. Must be able to deactivate and reactivate elsewhere | LOW | Call LemonSqueezy deactivate endpoint with stored `instance_id` |
 
@@ -167,7 +167,7 @@
 | Anti-Feature | Why Avoid | What to Do Instead |
 |--------------|-----------|-------------------|
 | Unlimited accounts | Supporting 10+ accounts adds complexity for marginal use case | Limit to 5 accounts. Covers 99% of use cases (work, personal, client1, client2, client3) |
-| Team account sharing | "Share this account with your team". Security nightmare, credential sharing | Each user has their own ClaudeMon + credentials. This is a personal tool |
+| Team account sharing | "Share this account with your team". Security nightmare, credential sharing | Each user has their own Tokemon + credentials. This is a personal tool |
 | Account sync across devices | "Your accounts sync via iCloud". Syncing credentials is risky, iCloud Keychain issues | Each device configured independently. Simple, safe |
 
 ### Dependencies
@@ -313,5 +313,5 @@
 - [Account Switching UX (UX Power Tools)](https://medium.com/ux-power-tools/breaking-down-the-ux-of-switching-accounts-in-web-apps-501813a5908b) - Detailed UX analysis, MEDIUM confidence
 
 ---
-*Feature research for: ClaudeMon v2 Pro Features*
+*Feature research for: Tokemon v2 Pro Features*
 *Researched: 2026-02-14*

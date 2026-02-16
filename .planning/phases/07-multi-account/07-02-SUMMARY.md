@@ -25,16 +25,16 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Views/MenuBar/AccountSwitcherView.swift
-    - ClaudeMon/Views/Settings/AccountsSettings.swift
+    - Tokemon/Views/MenuBar/AccountSwitcherView.swift
+    - Tokemon/Views/Settings/AccountsSettings.swift
   modified:
-    - ClaudeMon/ClaudeMonApp.swift
-    - ClaudeMon/Services/UsageMonitor.swift
-    - ClaudeMon/Services/OAuthClient.swift
-    - ClaudeMon/Services/AccountManager.swift
-    - ClaudeMon/Services/SettingsWindowController.swift
-    - ClaudeMon/Views/MenuBar/PopoverContentView.swift
-    - ClaudeMon/Views/Settings/SettingsView.swift
+    - Tokemon/TokemonApp.swift
+    - Tokemon/Services/UsageMonitor.swift
+    - Tokemon/Services/OAuthClient.swift
+    - Tokemon/Services/AccountManager.swift
+    - Tokemon/Services/SettingsWindowController.swift
+    - Tokemon/Views/MenuBar/PopoverContentView.swift
+    - Tokemon/Views/Settings/SettingsView.swift
 
 key-decisions:
   - "AccountSwitcherView handles own visibility (Pro check + accounts check) for clean composition"
@@ -64,7 +64,7 @@ completed: 2026-02-14
 - **Files modified:** 9
 
 ## Accomplishments
-- AccountManager integrated into ClaudeMonApp with environment injection throughout all views
+- AccountManager integrated into TokemonApp with environment injection throughout all views
 - AccountSwitcherView in popover header showing active account with dropdown picker (Pro-gated)
 - AccountsSettings tab in Settings for account list, detail editing, rename, remove, and keychain scanning
 - Account-aware OAuthClient with per-account token refresh for multi-account data fetching
@@ -79,15 +79,15 @@ Each task was committed atomically:
 3. **Task 3: Create AccountsSettings tab with checkForNewAccounts** - `996bf73` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Views/MenuBar/AccountSwitcherView.swift` - Compact account picker dropdown for popover header
-- `ClaudeMon/Views/Settings/AccountsSettings.swift` - Full account management settings tab with CRUD operations
-- `ClaudeMon/ClaudeMonApp.swift` - AccountManager initialization and environment injection
-- `ClaudeMon/Services/UsageMonitor.swift` - currentAccount property for account-aware refresh
-- `ClaudeMon/Services/OAuthClient.swift` - Account-specific fetchUsage and token refresh methods
-- `ClaudeMon/Services/AccountManager.swift` - checkForNewAccounts() keychain scanning method
-- `ClaudeMon/Services/SettingsWindowController.swift` - AccountManager pass-through and environment
-- `ClaudeMon/Views/MenuBar/PopoverContentView.swift` - AccountSwitcherView integration in header
-- `ClaudeMon/Views/Settings/SettingsView.swift` - Accounts tab added between Alerts and License
+- `Tokemon/Views/MenuBar/AccountSwitcherView.swift` - Compact account picker dropdown for popover header
+- `Tokemon/Views/Settings/AccountsSettings.swift` - Full account management settings tab with CRUD operations
+- `Tokemon/TokemonApp.swift` - AccountManager initialization and environment injection
+- `Tokemon/Services/UsageMonitor.swift` - currentAccount property for account-aware refresh
+- `Tokemon/Services/OAuthClient.swift` - Account-specific fetchUsage and token refresh methods
+- `Tokemon/Services/AccountManager.swift` - checkForNewAccounts() keychain scanning method
+- `Tokemon/Services/SettingsWindowController.swift` - AccountManager pass-through and environment
+- `Tokemon/Views/MenuBar/PopoverContentView.swift` - AccountSwitcherView integration in header
+- `Tokemon/Views/Settings/SettingsView.swift` - Accounts tab added between Alerts and License
 
 ## Decisions Made
 - AccountSwitcherView handles its own visibility check (Pro + has accounts) for clean composability in PopoverContentView
@@ -100,9 +100,9 @@ Each task was committed atomically:
 
 **1. [Rule 3 - Blocking] Added SettingsWindowController changes in Task 1 instead of Task 3**
 - **Found during:** Task 1 (AccountManager integration)
-- **Issue:** ClaudeMonApp called setAccountManager() but SettingsWindowController didn't have it yet, causing build failure
+- **Issue:** TokemonApp called setAccountManager() but SettingsWindowController didn't have it yet, causing build failure
 - **Fix:** Added accountManager property, setter, guard, and environment injection to SettingsWindowController in Task 1
-- **Files modified:** ClaudeMon/Services/SettingsWindowController.swift
+- **Files modified:** Tokemon/Services/SettingsWindowController.swift
 - **Verification:** Build succeeds after change
 - **Committed in:** c968230 (Task 1 commit)
 

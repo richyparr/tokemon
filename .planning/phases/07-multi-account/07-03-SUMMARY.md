@@ -24,13 +24,13 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Views/Settings/CombinedUsageView.swift
+    - Tokemon/Views/Settings/CombinedUsageView.swift
   modified:
-    - ClaudeMon/Views/Settings/AccountsSettings.swift
-    - ClaudeMon/Services/AlertManager.swift
-    - ClaudeMon/Services/HistoryStore.swift
-    - ClaudeMon/Services/UsageMonitor.swift
-    - ClaudeMon/ClaudeMonApp.swift
+    - Tokemon/Views/Settings/AccountsSettings.swift
+    - Tokemon/Services/AlertManager.swift
+    - Tokemon/Services/HistoryStore.swift
+    - Tokemon/Services/UsageMonitor.swift
+    - Tokemon/TokemonApp.swift
 
 key-decisions:
   - "Per-account notification identifiers allow independent alert notifications per account"
@@ -40,7 +40,7 @@ key-decisions:
 patterns-established:
   - "Per-account settings pattern: Binding wrapping AccountManager.updateAccountSettings"
   - "Parallel fetch pattern: withTaskGroup for concurrent per-account API calls"
-  - "Per-account history pattern: separate JSON files in ClaudeMon/history/{uuid}.json"
+  - "Per-account history pattern: separate JSON files in Tokemon/history/{uuid}.json"
 
 # Metrics
 duration: 3min
@@ -74,15 +74,15 @@ Each task was committed atomically:
 3. **Task 3: Create CombinedUsageView and update HistoryStore for per-account** - `1f5fed9` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Views/Settings/CombinedUsageView.swift` - Aggregated usage view across all accounts with parallel fetch
-- `ClaudeMon/Views/Settings/AccountsSettings.swift` - Per-account alert threshold slider, notifications toggle, CombinedUsageView integration
-- `ClaudeMon/Services/AlertManager.swift` - Per-account threshold support, account-aware notifications
-- `ClaudeMon/Services/HistoryStore.swift` - Per-account history files with legacy backward compatibility
-- `ClaudeMon/Services/UsageMonitor.swift` - Per-account history recording
-- `ClaudeMon/ClaudeMonApp.swift` - AlertManager wired to AccountManager
+- `Tokemon/Views/Settings/CombinedUsageView.swift` - Aggregated usage view across all accounts with parallel fetch
+- `Tokemon/Views/Settings/AccountsSettings.swift` - Per-account alert threshold slider, notifications toggle, CombinedUsageView integration
+- `Tokemon/Services/AlertManager.swift` - Per-account threshold support, account-aware notifications
+- `Tokemon/Services/HistoryStore.swift` - Per-account history files with legacy backward compatibility
+- `Tokemon/Services/UsageMonitor.swift` - Per-account history recording
+- `Tokemon/TokemonApp.swift` - AlertManager wired to AccountManager
 
 ## Decisions Made
-- Per-account notification identifiers (claudemon.alert.{level}.{accountName}) allow independent alerts per account without deduplication conflicts
+- Per-account notification identifiers (tokemon.alert.{level}.{accountName}) allow independent alerts per account without deduplication conflicts
 - HistoryStore uses a sentinel UUID (all zeros) for legacy single-account data to maintain backward compatibility without migration
 - CombinedUsageView shows highest usage as the headline metric rather than average, since the highest is most actionable
 

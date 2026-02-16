@@ -23,10 +23,10 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Utilities/Theme.swift
-    - ClaudeMon/Utilities/Color+Hex.swift
+    - Tokemon/Utilities/Theme.swift
+    - Tokemon/Utilities/Color+Hex.swift
   modified:
-    - ClaudeMon/Views/Settings/AppearanceSettings.swift
+    - Tokemon/Views/Settings/AppearanceSettings.swift
 
 key-decisions:
   - "ThemeColors struct for semantic color resolution instead of direct Color usage"
@@ -71,9 +71,9 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `ClaudeMon/Utilities/Theme.swift` - AppTheme enum, ThemeColors struct, ThemeManager @Observable
-- `ClaudeMon/Utilities/Color+Hex.swift` - Hex color extensions for Color and NSColor
-- `ClaudeMon/Views/Settings/AppearanceSettings.swift` - Theme section with radio picker and descriptions
+- `Tokemon/Utilities/Theme.swift` - AppTheme enum, ThemeColors struct, ThemeManager @Observable
+- `Tokemon/Utilities/Color+Hex.swift` - Hex color extensions for Color and NSColor
+- `Tokemon/Views/Settings/AppearanceSettings.swift` - Theme section with radio picker and descriptions
 
 ## Decisions Made
 
@@ -101,9 +101,9 @@ None - no external service configuration required.
 
 ## Self-Check: PASSED
 
-- FOUND: ClaudeMon/Utilities/Theme.swift
-- FOUND: ClaudeMon/Utilities/Color+Hex.swift
-- FOUND: ClaudeMon/Views/Settings/AppearanceSettings.swift
+- FOUND: Tokemon/Utilities/Theme.swift
+- FOUND: Tokemon/Utilities/Color+Hex.swift
+- FOUND: Tokemon/Views/Settings/AppearanceSettings.swift
 - FOUND: commit b4c23f2
 - FOUND: commit 734fea3
 

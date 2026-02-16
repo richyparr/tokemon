@@ -42,7 +42,7 @@ No additional dependencies required - uses native SwiftUI and AppKit.
 
 ### Recommended Project Structure
 ```
-ClaudeMon/
+Tokemon/
 ├── Utilities/
 │   ├── Theme.swift           # Theme enum, ThemeColors, ThemeManager
 │   ├── GradientColors.swift  # (existing) - update to be theme-aware
@@ -55,7 +55,7 @@ ClaudeMon/
 │   │   └── FloatingWindowView.swift  # Add .environment(themeManager)
 │   └── Settings/
 │       └── AppearanceSettings.swift  # Theme picker UI
-└── ClaudeMonApp.swift        # Root theme manager injection
+└── TokemonApp.swift        # Root theme manager injection
 ```
 
 ### Pattern 1: Observable Theme Manager

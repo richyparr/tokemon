@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implementing a floating window for ClaudeMon requires bridging SwiftUI views with AppKit's NSPanel for always-on-top behavior. While macOS 15 introduced native SwiftUI `.windowLevel(.floating)` support, ClaudeMon targets macOS 14+ where the NSPanel approach is required. The existing codebase already demonstrates this pattern in `SettingsWindowController.swift`, which uses `NSWindow` with `level = .floating`.
+Implementing a floating window for Tokemon requires bridging SwiftUI views with AppKit's NSPanel for always-on-top behavior. While macOS 15 introduced native SwiftUI `.windowLevel(.floating)` support, Tokemon targets macOS 14+ where the NSPanel approach is required. The existing codebase already demonstrates this pattern in `SettingsWindowController.swift`, which uses `NSWindow` with `level = .floating`.
 
 The recommended approach uses a custom `NSPanel` subclass hosted via `NSHostingController`, with `hidesOnDeactivate = false` for persistent visibility. Position persistence uses `NSWindow.setFrameAutosaveName()` which automatically stores/restores position in UserDefaults. The existing `UsageMonitor` service already provides all required usage data through its `@Observable` pattern.
 
@@ -29,7 +29,7 @@ The recommended approach uses a custom `NSPanel` subclass hosted via `NSHostingC
 ### Alternatives Considered
 | Instead of | Could Use | Tradeoff |
 |------------|-----------|----------|
-| NSPanel subclass | SwiftUI Window + .windowLevel | Only works on macOS 15+, ClaudeMon targets 14+ |
+| NSPanel subclass | SwiftUI Window + .windowLevel | Only works on macOS 15+, Tokemon targets 14+ |
 | setFrameAutosaveName | Manual UserDefaults | Extra code, same result |
 | Custom drag handling | isMovableByWindowBackground | Extra complexity, not needed with titlebar |
 
@@ -39,14 +39,14 @@ The recommended approach uses a custom `NSPanel` subclass hosted via `NSHostingC
 
 ### Recommended Project Structure
 ```
-ClaudeMon/
+Tokemon/
 ├── Services/
 │   ├── FloatingWindowController.swift  # NSPanel management (new)
 │   └── SettingsWindowController.swift  # Existing pattern to follow
 ├── Views/
 │   └── FloatingWindow/
 │       └── FloatingWindowView.swift    # Compact usage display (new)
-└── ClaudeMonApp.swift                  # Wire up menu item + controller
+└── TokemonApp.swift                  # Wire up menu item + controller
 ```
 
 ### Pattern 1: NSPanel Subclass for Floating Window
@@ -91,7 +91,7 @@ class FloatingPanel: NSPanel {
 **When to use:** Single-instance utility windows
 **Example:**
 ```swift
-// Source: ClaudeMon/Services/SettingsWindowController.swift (existing pattern)
+// Source: Tokemon/Services/SettingsWindowController.swift (existing pattern)
 @MainActor
 final class FloatingWindowController {
     static let shared = FloatingWindowController()
@@ -125,7 +125,7 @@ final class FloatingWindowController {
         newPanel.contentViewController = hostingController
 
         // Position persistence - stores in UserDefaults automatically
-        newPanel.setFrameAutosaveName("ClaudeMonFloatingWindow")
+        newPanel.setFrameAutosaveName("TokemonFloatingWindow")
 
         // Position in corner if no saved position
         if newPanel.frame.origin == .zero {
@@ -251,10 +251,10 @@ struct FloatingWindowView: View {
 **What goes wrong:** Floating window vanishes when user clicks on other apps
 **Why it happens:** NSPanel's default `hidesOnDeactivate = true`
 **How to avoid:** Explicitly set `hidesOnDeactivate = false` in panel initialization
-**Warning signs:** Window only visible while ClaudeMon is active
+**Warning signs:** Window only visible while Tokemon is active
 
 ### Pitfall 2: Window Steals Focus From User's Work
-**What goes wrong:** Clicking floating window activates ClaudeMon, interrupting workflow
+**What goes wrong:** Clicking floating window activates Tokemon, interrupting workflow
 **Why it happens:** Not using `.nonactivatingPanel` style mask
 **How to avoid:** Include `.nonactivatingPanel` in styleMask, or use `becomesKeyOnlyIfNeeded = true`
 **Warning signs:** Clicking panel changes which app is active
@@ -268,7 +268,7 @@ struct FloatingWindowView: View {
 ### Pitfall 4: App Quits When Floating Window Closed
 **What goes wrong:** Closing floating window terminates the entire app
 **Why it happens:** `applicationShouldTerminateAfterLastWindowClosed` returning true by default
-**How to avoid:** ClaudeMon is already an LSUIElement app (no dock icon), so this shouldn't happen. But ensure `isReleasedWhenClosed = false` to keep panel in memory.
+**How to avoid:** Tokemon is already an LSUIElement app (no dock icon), so this shouldn't happen. But ensure `isReleasedWhenClosed = false` to keep panel in memory.
 **Warning signs:** App terminates unexpectedly when closing floating window
 
 ### Pitfall 5: Observable Not Updating in NSPanel
@@ -279,11 +279,11 @@ struct FloatingWindowView: View {
 
 ## Code Examples
 
-Verified patterns from official sources and existing ClaudeMon code:
+Verified patterns from official sources and existing Tokemon code:
 
 ### Opening Floating Window from Menu Bar Context Menu
 ```swift
-// Source: ClaudeMon/ClaudeMonApp.swift (existing context menu pattern)
+// Source: Tokemon/TokemonApp.swift (existing context menu pattern)
 // Update the disabled menu item in showContextMenu():
 let floatingItem = NSMenuItem(
     title: "Open Floating Window",
@@ -331,19 +331,19 @@ panel.isReleasedWhenClosed = false        // Keep in memory for reopening
 // Source: https://developer.apple.com/documentation/appkit/nswindow/setframeautosavename(_:)
 
 // Set autosave name - must be called before showing window
-panel.setFrameAutosaveName("ClaudeMonFloatingWindow")
+panel.setFrameAutosaveName("TokemonFloatingWindow")
 
 // Position is automatically:
 // - Saved to UserDefaults when window moves/resizes
 // - Restored on next app launch
-// - Key format: "NSWindow Frame ClaudeMonFloatingWindow"
+// - Key format: "NSWindow Frame TokemonFloatingWindow"
 ```
 
 ### Wiring UsageMonitor to Floating Window
 ```swift
-// Source: Existing pattern in ClaudeMonApp.swift
+// Source: Existing pattern in TokemonApp.swift
 
-// In ClaudeMonApp, where monitor is available:
+// In TokemonApp, where monitor is available:
 FloatingWindowController.shared.setMonitor(monitor)
 
 // The controller passes monitor to SwiftUI view:
@@ -402,7 +402,7 @@ WindowGroup(id: "floating-usage") {
 - [NSWindow.Level Apple Documentation](https://developer.apple.com/documentation/appkit/nswindow/level-swift.struct) - Window level enumeration
 - [becomesKeyOnlyIfNeeded Apple Documentation](https://developer.apple.com/documentation/appkit/nspanel/becomeskeyonlyifneeded) - Panel key behavior
 - [setFrameAutosaveName Apple Documentation](https://developer.apple.com/documentation/appkit/nswindow/setframeautosavename(_:)?language=objc) - Position persistence
-- ClaudeMon/Services/SettingsWindowController.swift - Existing pattern in codebase
+- Tokemon/Services/SettingsWindowController.swift - Existing pattern in codebase
 
 ### Secondary (MEDIUM confidence)
 - [Cindori: Make a floating panel in SwiftUI for macOS](https://cindori.com/developer/floating-panel) - Complete FloatingPanel implementation

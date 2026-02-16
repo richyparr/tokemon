@@ -43,7 +43,7 @@
 | URLSession | Built-in (Foundation) | HTTP API calls to Anthropic | Built-in, zero dependencies. async/await support since Swift 5.5. Handles all HTTP methods, authentication headers, JSON encoding/decoding natively. No reason to use Alamofire or similar for this project's simple API needs. |
 | JSONDecoder/JSONEncoder | Built-in (Foundation) | API response parsing | Codable protocol with Anthropic's JSON API responses. Custom CodingKeys for snake_case mapping. |
 
-### Data APIs (What ClaudeMon Monitors)
+### Data APIs (What Tokemon Monitors)
 
 | Data Source | API/Method | Authentication | Refresh Strategy |
 |-------------|-----------|---------------|------------------|
@@ -77,7 +77,7 @@
 | Technology | Version | Purpose | Why Recommended |
 |------------|---------|---------|-----------------|
 | @Observable macro | macOS 14+ (Observation framework) | Reactive state for all view models | Replaces @ObservableObject/@StateObject/@ObservedObject with cleaner, more performant pull-based tracking. Views only re-render when properties they actually read change. Use @State for ownership, plain properties for injection. |
-| @AppStorage | Built-in (SwiftUI) | User preferences (theme selection, refresh interval, notification thresholds) | Simple key-value persistence for settings. For App Group sharing with widget, use `@AppStorage("key", store: UserDefaults(suiteName: "group.com.yourteam.claudemon"))`. |
+| @AppStorage | Built-in (SwiftUI) | User preferences (theme selection, refresh interval, notification thresholds) | Simple key-value persistence for settings. For App Group sharing with widget, use `@AppStorage("key", store: UserDefaults(suiteName: "group.com.yourteam.tokemon"))`. |
 
 ### Development Tools
 
@@ -96,12 +96,12 @@ Use **MenuBarExtra** with `.menuBarExtraStyle(.window)` for the popover-style ex
 
 ```swift
 @main
-struct ClaudeMonApp: App {
+struct TokemonApp: App {
     var body: some Scene {
         MenuBarExtra {
             ContentView()
         } label: {
-            Label("ClaudeMon", systemImage: "chart.bar")
+            Label("Tokemon", systemImage: "chart.bar")
         }
         .menuBarExtraStyle(.window)
     }
@@ -119,7 +119,7 @@ For macOS 14 (minimum target), use an **NSPanel subclass** wrapped for SwiftUI. 
 ```swift
 // macOS 15+ path
 if #available(macOS 15.0, *) {
-    UtilityWindow("ClaudeMon", id: "floating") {
+    UtilityWindow("Tokemon", id: "floating") {
         FloatingView()
     }
     .windowLevel(.floating)
@@ -155,7 +155,7 @@ Main App → WidgetCenter.shared.reloadAllTimelines() → Widget refreshes
 | Recommended | Alternative | When to Use Alternative |
 |-------------|-------------|-------------------------|
 | SwiftData | Core Data | Only if you need to support macOS 13 or earlier, or need heavyweight migration support. SwiftData is built on Core Data internally but provides dramatically simpler API. |
-| Swift Charts | DGCharts (formerly ios-charts) | Only if you need chart types Swift Charts doesn't support (candlestick, radar, bubble). Swift Charts covers all ClaudeMon needs (line, bar, area). |
+| Swift Charts | DGCharts (formerly ios-charts) | Only if you need chart types Swift Charts doesn't support (candlestick, radar, bubble). Swift Charts covers all Tokemon needs (line, bar, area). |
 | MenuBarExtra (.window style) | NSStatusItem + NSPopover | Only if targeting macOS 12 or earlier. MenuBarExtra is the modern replacement and handles lifecycle correctly. |
 | KeychainAccess | Raw Security framework | Only if you want zero dependencies at all costs. The raw Keychain API is verbose and error-prone with its C-style API. |
 | @Observable | @ObservableObject | Only if targeting macOS 13. For macOS 14+, @Observable is strictly better (finer-grained updates, less boilerplate). |
@@ -220,9 +220,9 @@ Main App → WidgetCenter.shared.reloadAllTimelines() → Widget refreshes
 # No npm -- this is a native Swift project
 
 # Clone and open in Xcode
-git clone https://github.com/youruser/ClaudeMon.git
-cd ClaudeMon
-open ClaudeMon.xcodeproj
+git clone https://github.com/youruser/Tokemon.git
+cd Tokemon
+open Tokemon.xcodeproj
 
 # Or if using Swift Package structure:
 swift build  # for CLI components if any
@@ -279,7 +279,7 @@ dependencies: [
 
 ## Summary
 
-ClaudeMon v2 requires **only ONE new external dependency** (LemonSqueezy licensing). All other features use native Apple frameworks or the existing KeychainAccess dependency.
+Tokemon v2 requires **only ONE new external dependency** (LemonSqueezy licensing). All other features use native Apple frameworks or the existing KeychainAccess dependency.
 
 | Feature | Approach | New Dependency? |
 |---------|----------|-----------------|
@@ -305,7 +305,7 @@ ClaudeMon v2 requires **only ONE new external dependency** (LemonSqueezy licensi
 **Why this library:**
 - Only Swift SDK available for LemonSqueezy License API
 - Covers all three required operations: activate, validate, deactivate
-- Clean async/await API matching ClaudeMon's existing patterns
+- Clean async/await API matching Tokemon's existing patterns
 - Lightweight (single-purpose, minimal footprint)
 
 **API Requirements:**
@@ -354,13 +354,13 @@ UserDefaults.standard.set(encodedLicenseInfo, forKey: "licenseInfo")
 | Attribute | Value |
 |-----------|-------|
 | Min macOS | 13.0 (Ventura) |
-| ClaudeMon Target | 14.0 (exceeds requirement) |
+| Tokemon Target | 14.0 (exceeds requirement) |
 | Dependency | None |
 | Confidence | HIGH |
 
 **Why native over TPPDF:**
 - ImageRenderer directly renders SwiftUI views to PDF with vector quality
-- ClaudeMon already uses SwiftUI for all UI components (charts, layouts)
+- Tokemon already uses SwiftUI for all UI components (charts, layouts)
 - No third-party dependency needed
 - Consistent styling with app's existing views
 
@@ -388,12 +388,12 @@ struct PDFExporter {
 // Usage
 let reportView = UsageReportView(data: usageData, dateRange: selectedRange)
 let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-let pdfURL = documentsURL.appendingPathComponent("ClaudeMon-Report-\(Date().ISO8601Format()).pdf")
+let pdfURL = documentsURL.appendingPathComponent("Tokemon-Report-\(Date().ISO8601Format()).pdf")
 try PDFExporter.exportReport(view: reportView, to: pdfURL)
 ```
 
 **Considerations:**
-- ImageRenderer does NOT render WebViews or MapViews (not used in ClaudeMon)
+- ImageRenderer does NOT render WebViews or MapViews (not used in Tokemon)
 - Set `renderer.scale` to 2.0+ for high-resolution output
 - Swift Charts render correctly as vector graphics
 
@@ -410,7 +410,7 @@ try PDFExporter.exportReport(view: reportView, to: pdfURL)
 
 **Why no library:**
 - CSV generation is trivial string concatenation
-- ClaudeMon's usage data is simple tabular data (dates, numbers, model names)
+- Tokemon's usage data is simple tabular data (dates, numbers, model names)
 - No complex features needed (no reading, no custom delimiters)
 - Adding a library for <50 lines of code is over-engineering
 
@@ -505,7 +505,7 @@ struct ShareableUsageCard: View {
                 Spacer()
                 Text("Cost: $\(usage.totalCost, specifier: "%.2f")")
             }
-            Text("Generated by ClaudeMon")
+            Text("Generated by Tokemon")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -536,7 +536,7 @@ struct ShareableUsageCard: View {
 
 **Why no changes needed:**
 - KeychainAccess already supports storing multiple items with different keys
-- ClaudeMon's `TokenManager` uses `kSecAttrService` + `kSecAttrAccount` pattern
+- Tokemon's `TokenManager` uses `kSecAttrService` + `kSecAttrAccount` pattern
 - Multi-account just requires different account keys per credential
 
 **Implementation Pattern:**
@@ -544,7 +544,7 @@ struct ShareableUsageCard: View {
 ```swift
 // Account list stored in UserDefaults (Keychain lacks list APIs)
 struct AccountManager {
-    private let keychain = Keychain(service: "ClaudeMon")
+    private let keychain = Keychain(service: "Tokemon")
 
     var accounts: [String] {
         get { UserDefaults.standard.stringArray(forKey: "savedAccounts") ?? [] }
@@ -599,7 +599,7 @@ struct AccountManager {
 import PackageDescription
 
 let package = Package(
-    name: "ClaudeMon",
+    name: "Tokemon",
     platforms: [
         .macOS(.v14)
     ],
@@ -614,14 +614,14 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "ClaudeMon",
+            name: "Tokemon",
             dependencies: [
                 "MenuBarExtraAccess",
                 "SettingsAccess",
                 "KeychainAccess",
                 .product(name: "LemonSqueezyLicense", package: "swift-lemon-squeezy-license"),
             ],
-            path: "ClaudeMon",
+            path: "Tokemon",
             exclude: ["Info.plist"]
         ),
     ]
@@ -658,7 +658,7 @@ let package = Package(
 | Risk | Severity | Mitigation |
 |------|----------|-----------|
 | LemonSqueezyLicense unmaintained | Low | API is simple; can reimplement with URLSession if needed (~100 lines) |
-| ImageRenderer limitations | Very Low | ClaudeMon doesn't use WebViews/Maps; all views are standard SwiftUI |
+| ImageRenderer limitations | Very Low | Tokemon doesn't use WebViews/Maps; all views are standard SwiftUI |
 | Keychain conflicts between accounts | Low | Use unique service+account keys; thorough testing of account switching |
 | Offline license validation | Medium | Cache license state; implement 7-day grace period before requiring re-validation |
 
@@ -682,5 +682,5 @@ let package = Package(
 - [Managing Multiple Accounts with Keychain](https://medium.com/@leekiereloo/seamlessly-manage-multiple-user-accounts-in-ios-with-keychain-9ed080638a25) - Pattern guidance - MEDIUM confidence
 
 ---
-*Stack research for: ClaudeMon v2 Pro Features*
+*Stack research for: Tokemon v2 Pro Features*
 *Updated: 2026-02-14*

@@ -1,4 +1,4 @@
-# Requirements: ClaudeMon
+# Requirements: Tokemon
 
 **Defined:** 2026-02-14
 **Core Value:** Know your Claude usage at a glance before hitting limits.
@@ -37,7 +37,7 @@ Requirements for v2 Pro release. Each maps to roadmap phases.
 
 - [ ] **SHARE-01**: User can generate "usage card" image showing their stats
 - [ ] **SHARE-02**: User can copy image to clipboard for sharing
-- [ ] **SHARE-03**: Usage card includes ClaudeMon branding (viral marketing)
+- [ ] **SHARE-03**: Usage card includes Tokemon branding (viral marketing)
 
 ## v3 Requirements
 

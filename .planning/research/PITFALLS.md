@@ -633,6 +633,6 @@ Trial expired 3 days ago. UI shows "Trial: -3 days remaining" instead of "Trial 
 - [Cloudflare blocking LemonSqueezy webhooks](https://community.cloudflare.com/t/cloudflare-is-blocking-lemon-squeezy-webhook/807437) -- HIGH confidence
 
 ---
-*Pitfalls research for: ClaudeMon v2 Pro Features*
+*Pitfalls research for: Tokemon v2 Pro Features*
 *Domain: Adding licensing, multi-account, PDF reports, and trials to existing macOS menu bar app*
 *Researched: 2026-02-14*

@@ -22,16 +22,16 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/ClaudeMonApp.swift
-    - ClaudeMon/Info.plist
-    - ClaudeMon/Models/UsageSnapshot.swift
-    - ClaudeMon/Models/OAuthUsageResponse.swift
-    - ClaudeMon/Models/DataSourceState.swift
-    - ClaudeMon/Services/UsageMonitor.swift
-    - ClaudeMon/Utilities/Constants.swift
-    - ClaudeMon/Utilities/GradientColors.swift
-    - ClaudeMon/Views/MenuBar/PopoverContentView.swift
-    - ClaudeMon/Views/Settings/SettingsView.swift
+    - Tokemon/TokemonApp.swift
+    - Tokemon/Info.plist
+    - Tokemon/Models/UsageSnapshot.swift
+    - Tokemon/Models/OAuthUsageResponse.swift
+    - Tokemon/Models/DataSourceState.swift
+    - Tokemon/Services/UsageMonitor.swift
+    - Tokemon/Utilities/Constants.swift
+    - Tokemon/Utilities/GradientColors.swift
+    - Tokemon/Views/MenuBar/PopoverContentView.swift
+    - Tokemon/Views/Settings/SettingsView.swift
     - Package.swift
     - Package.resolved
     - .gitignore
@@ -84,16 +84,16 @@ Each task was committed atomically:
 - `Package.swift` - SPM manifest with three dependencies, macOS 14+ target
 - `Package.resolved` - Locked dependency versions for reproducible builds
 - `.gitignore` - Excludes .build/, .swiftpm/, DerivedData, .DS_Store
-- `ClaudeMon/ClaudeMonApp.swift` - @main entry point with MenuBarExtra, Settings scene, StatusItemManager
-- `ClaudeMon/Info.plist` - LSUIElement=YES, bundle ID com.claudemon.app, macOS 14.0 minimum
-- `ClaudeMon/Models/UsageSnapshot.swift` - Central usage state with all fields, .empty factory, menuBarText
-- `ClaudeMon/Models/OAuthUsageResponse.swift` - Codable model for /api/oauth/usage with toSnapshot()
-- `ClaudeMon/Models/DataSourceState.swift` - Enum: available, failed, disabled, notConfigured
-- `ClaudeMon/Services/UsageMonitor.swift` - @Observable state manager with polling, App Nap prevention, mock data
-- `ClaudeMon/Utilities/Constants.swift` - API URLs, Keychain service name, OAuth client ID, defaults
-- `ClaudeMon/Utilities/GradientColors.swift` - Subtle 5-level color gradient (secondary label -> muted red)
-- `ClaudeMon/Views/MenuBar/PopoverContentView.swift` - Main popover layout with percentage, details, footer
-- `ClaudeMon/Views/Settings/SettingsView.swift` - Placeholder settings (built in Plan 03)
+- `Tokemon/TokemonApp.swift` - @main entry point with MenuBarExtra, Settings scene, StatusItemManager
+- `Tokemon/Info.plist` - LSUIElement=YES, bundle ID com.tokemon.app, macOS 14.0 minimum
+- `Tokemon/Models/UsageSnapshot.swift` - Central usage state with all fields, .empty factory, menuBarText
+- `Tokemon/Models/OAuthUsageResponse.swift` - Codable model for /api/oauth/usage with toSnapshot()
+- `Tokemon/Models/DataSourceState.swift` - Enum: available, failed, disabled, notConfigured
+- `Tokemon/Services/UsageMonitor.swift` - @Observable state manager with polling, App Nap prevention, mock data
+- `Tokemon/Utilities/Constants.swift` - API URLs, Keychain service name, OAuth client ID, defaults
+- `Tokemon/Utilities/GradientColors.swift` - Subtle 5-level color gradient (secondary label -> muted red)
+- `Tokemon/Views/MenuBar/PopoverContentView.swift` - Main popover layout with percentage, details, footer
+- `Tokemon/Views/Settings/SettingsView.swift` - Placeholder settings (built in Plan 03)
 
 ## Decisions Made
 - **SPM over .xcodeproj:** Xcode.app is not installed on this machine. SPM provides clean builds via `swift build` and proper dependency management. An .xcodeproj can be generated later with `swift package generate-xcodeproj` or by opening Package.swift in Xcode.
@@ -117,7 +117,7 @@ Each task was committed atomically:
 - **Found during:** Task 1
 - **Issue:** Plan's code example used `MenuBarExtra(isPresented:)` which is not a valid initializer
 - **Fix:** Changed to `MenuBarExtra { content } label: { label }` (standard API)
-- **Files modified:** ClaudeMon/ClaudeMonApp.swift
+- **Files modified:** Tokemon/TokemonApp.swift
 - **Verification:** Build succeeds
 - **Committed in:** 7e47c7a (Task 1 commit)
 
@@ -125,7 +125,7 @@ Each task was committed atomically:
 - **Found during:** Task 1
 - **Issue:** `.frame(width:minHeight:maxHeight:)` is not a valid overload
 - **Fix:** Changed to `.frame(minWidth:maxWidth:minHeight:maxHeight:)`
-- **Files modified:** ClaudeMon/Views/MenuBar/PopoverContentView.swift
+- **Files modified:** Tokemon/Views/MenuBar/PopoverContentView.swift
 - **Verification:** Build succeeds
 - **Committed in:** 7e47c7a (Task 1 commit)
 
@@ -133,7 +133,7 @@ Each task was committed atomically:
 - **Found during:** Task 1
 - **Issue:** @MainActor class cannot access isolated properties from deinit in Swift 6
 - **Fix:** Removed deinit (unnecessary for app-lifetime object)
-- **Files modified:** ClaudeMon/Services/UsageMonitor.swift
+- **Files modified:** Tokemon/Services/UsageMonitor.swift
 - **Verification:** Build succeeds without concurrency errors
 - **Committed in:** 7e47c7a (Task 1 commit)
 
@@ -141,7 +141,7 @@ Each task was committed atomically:
 - **Found during:** Task 2
 - **Issue:** Research pitfall #1 warns that MenuBarExtra label may not re-render on state changes. The menuBarExtraAccess callback fires once.
 - **Fix:** Created StatusItemManager to store NSStatusItem reference and added onUsageChanged callback to UsageMonitor for persistent updates
-- **Files modified:** ClaudeMon/ClaudeMonApp.swift, ClaudeMon/Services/UsageMonitor.swift
+- **Files modified:** Tokemon/TokemonApp.swift, Tokemon/Services/UsageMonitor.swift
 - **Verification:** Build succeeds; callback wired in menuBarExtraAccess setup
 - **Committed in:** 58d14c2 (Task 2 commit)
 

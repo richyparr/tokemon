@@ -1,13 +1,13 @@
 # Project Research Summary
 
-**Project:** ClaudeMon
+**Project:** Tokemon
 **Domain:** Native macOS monitoring utility (menu bar + widget + floating window)
 **Researched:** 2026-02-11
 **Confidence:** HIGH
 
 ## Executive Summary
 
-ClaudeMon is a native macOS menu bar utility for monitoring Claude API usage across multiple sources (Claude Code local logs, Claude API, and potentially claude.ai web). The research reveals this is a crowded but underserved niche with 8+ existing competitors, most of which are basic percentage-in-menu-bar apps that lack sophisticated trend analysis and unified monitoring across Claude's multiple access methods. The key opportunity is building a **best-in-class Claude-only monitor** with rich visualization and actionable intelligence (burn rate projections, smart model switching suggestions), rather than a mediocre multi-provider tool.
+Tokemon is a native macOS menu bar utility for monitoring Claude API usage across multiple sources (Claude Code local logs, Claude API, and potentially claude.ai web). The research reveals this is a crowded but underserved niche with 8+ existing competitors, most of which are basic percentage-in-menu-bar apps that lack sophisticated trend analysis and unified monitoring across Claude's multiple access methods. The key opportunity is building a **best-in-class Claude-only monitor** with rich visualization and actionable intelligence (burn rate projections, smart model switching suggestions), rather than a mediocre multi-provider tool.
 
 The recommended technical approach is Swift 6.1+ with SwiftUI for UI (targeting macOS 14+), SwiftData for persistence, and a modular data source architecture that prioritizes local JSONL parsing (works for all users) over API-dependent features (requires admin keys that individual users cannot obtain). The architecture must handle three display modes (menu bar popover, WidgetKit extension in Notification Center, and floating window) across two separate processes with App Group shared container communication.
 
@@ -35,7 +35,7 @@ Swift 6.1+ with SwiftUI is the only viable approach for native macOS menu bar de
 
 ### Expected Features
 
-ClaudeMon enters a crowded competitive space where table stakes are well-established and differentiation is critical. Almost every competitor offers menu bar percentage display, 5-hour/7-day usage tracking, and threshold alerts. The gap in the market is **unified monitoring with rich visualization and actionable intelligence** — moving beyond "what percent am I at" to "should I switch models, and when will I run out at this rate?"
+Tokemon enters a crowded competitive space where table stakes are well-established and differentiation is critical. Almost every competitor offers menu bar percentage display, 5-hour/7-day usage tracking, and threshold alerts. The gap in the market is **unified monitoring with rich visualization and actionable intelligence** — moving beyond "what percent am I at" to "should I switch models, and when will I run out at this rate?"
 
 **Must have (table stakes):**
 - Menu bar icon with color-coded usage percentage (green <50%, orange 50-80%, red >80%)
@@ -61,7 +61,7 @@ ClaudeMon enters a crowded competitive space where table stakes are well-establi
 - Multi-provider monitoring (Codex, Gemini, Copilot) — ClaudeBar proves this splits focus and dilutes quality
 - Conversation content access — massive privacy concern; show token/cost only, never content
 - Real-time token streaming — impossible without IDE extension architecture
-- Automatic model switching — ClaudeMon is a monitor, not a proxy; suggest only
+- Automatic model switching — Tokemon is a monitor, not a proxy; suggest only
 - Team/org dashboard — Anthropic already provides this; focus on individual Pro/Max users
 
 ### Architecture Approach

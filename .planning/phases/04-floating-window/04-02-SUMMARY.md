@@ -24,13 +24,13 @@
 ## Key Files
 
 ### Created
-- `ClaudeMon/Views/FloatingWindow/FloatingWindowView.swift` - Compact usage display
+- `Tokemon/Views/FloatingWindow/FloatingWindowView.swift` - Compact usage display
 
 ### Modified
-- `ClaudeMon/Services/FloatingWindowController.swift` - Wired SwiftUI view with environment
-- `ClaudeMon/ClaudeMonApp.swift` - Context menu toggle, controller initialization
-- `ClaudeMon/Views/MenuBar/PopoverContentView.swift` - Gear menu floating window option, usage trend toggle
-- `ClaudeMon/Views/Settings/AppearanceSettings.swift` - Usage trend toggle setting
+- `Tokemon/Services/FloatingWindowController.swift` - Wired SwiftUI view with environment
+- `Tokemon/TokemonApp.swift` - Context menu toggle, controller initialization
+- `Tokemon/Views/MenuBar/PopoverContentView.swift` - Gear menu floating window option, usage trend toggle
+- `Tokemon/Views/Settings/AppearanceSettings.swift` - Usage trend toggle setting
 
 ## Commits
 

@@ -21,10 +21,10 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Models/UsageDataPoint.swift
-    - ClaudeMon/Services/HistoryStore.swift
+    - Tokemon/Models/UsageDataPoint.swift
+    - Tokemon/Services/HistoryStore.swift
   modified:
-    - ClaudeMon/Services/UsageMonitor.swift
+    - Tokemon/Services/UsageMonitor.swift
 
 key-decisions:
   - "Actor isolation for HistoryStore instead of DispatchQueue (Swift concurrency native)"
@@ -55,7 +55,7 @@ completed: 2026-02-13
 
 ## Accomplishments
 - UsageDataPoint Codable struct that captures essential metrics from UsageSnapshot for time-series storage
-- HistoryStore actor with JSON persistence to ~/Library/Application Support/ClaudeMon/usage_history.json
+- HistoryStore actor with JSON persistence to ~/Library/Application Support/Tokemon/usage_history.json
 - UsageMonitor integration that records every successful OAuth and JSONL refresh to history
 
 ## Task Commits
@@ -67,9 +67,9 @@ Each task was committed atomically:
 3. **Task 3: Wire HistoryStore to UsageMonitor** - `2c1050f` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Models/UsageDataPoint.swift` - Time-series data point model with Codable, Identifiable, Sendable conformance
-- `ClaudeMon/Services/HistoryStore.swift` - Actor-isolated JSON persistence with 30-day trim and ISO8601 encoding
-- `ClaudeMon/Services/UsageMonitor.swift` - Added historyStore integration, usageHistory property, and recordHistory() method
+- `Tokemon/Models/UsageDataPoint.swift` - Time-series data point model with Codable, Identifiable, Sendable conformance
+- `Tokemon/Services/HistoryStore.swift` - Actor-isolated JSON persistence with 30-day trim and ISO8601 encoding
+- `Tokemon/Services/UsageMonitor.swift` - Added historyStore integration, usageHistory property, and recordHistory() method
 
 ## Decisions Made
 - Used synchronous `throws` instead of `async throws` for HistoryStore methods since the underlying file I/O is synchronous; actor isolation provides the concurrency safety

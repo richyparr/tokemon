@@ -22,20 +22,20 @@ Built the complete popover UI with usage header, detail breakdown, refresh statu
 ## Key Files
 
 ### Created
-- `ClaudeMon/Views/MenuBar/UsageHeaderView.swift` - Big percentage/token display
-- `ClaudeMon/Views/MenuBar/UsageDetailView.swift` - Reset time, usage breakdown
-- `ClaudeMon/Views/MenuBar/RefreshStatusView.swift` - Spinner + last updated
-- `ClaudeMon/Views/MenuBar/ErrorBannerView.swift` - Error with Show details
-- `ClaudeMon/Views/Settings/DataSourceSettings.swift` - OAuth/JSONL toggles
-- `ClaudeMon/Views/Settings/RefreshSettings.swift` - Interval picker
-- `ClaudeMon/Views/Settings/AppearanceSettings.swift` - Icon style selector
-- `ClaudeMon/Utilities/Extensions.swift` - Date/number formatting
-- `ClaudeMon/Services/SettingsWindowController.swift` - Manual NSWindow for settings
+- `Tokemon/Views/MenuBar/UsageHeaderView.swift` - Big percentage/token display
+- `Tokemon/Views/MenuBar/UsageDetailView.swift` - Reset time, usage breakdown
+- `Tokemon/Views/MenuBar/RefreshStatusView.swift` - Spinner + last updated
+- `Tokemon/Views/MenuBar/ErrorBannerView.swift` - Error with Show details
+- `Tokemon/Views/Settings/DataSourceSettings.swift` - OAuth/JSONL toggles
+- `Tokemon/Views/Settings/RefreshSettings.swift` - Interval picker
+- `Tokemon/Views/Settings/AppearanceSettings.swift` - Icon style selector
+- `Tokemon/Utilities/Extensions.swift` - Date/number formatting
+- `Tokemon/Services/SettingsWindowController.swift` - Manual NSWindow for settings
 
 ### Modified
-- `ClaudeMon/Views/MenuBar/PopoverContentView.swift` - Composed all views, gear menu
-- `ClaudeMon/Views/Settings/SettingsView.swift` - Three-tab layout
-- `ClaudeMon/ClaudeMonApp.swift` - SettingsWindowController init
+- `Tokemon/Views/MenuBar/PopoverContentView.swift` - Composed all views, gear menu
+- `Tokemon/Views/Settings/SettingsView.swift` - Three-tab layout
+- `Tokemon/TokemonApp.swift` - SettingsWindowController init
 
 ## Commits
 
@@ -49,7 +49,7 @@ Built the complete popover UI with usage header, detail breakdown, refresh statu
 
 2. **SettingsLink/SettingsAccess didn't work**: SwiftUI's Settings scene and SettingsAccess library both failed to open settings in MenuBarExtra context. Created custom SettingsWindowController with manual NSWindow management.
 
-3. **Gear icon changed to menu**: Instead of a button that opens settings, gear is now a dropdown menu with "Settings..." and "Quit ClaudeMon" options.
+3. **Gear icon changed to menu**: Instead of a button that opens settings, gear is now a dropdown menu with "Settings..." and "Quit Tokemon" options.
 
 4. **Added refresh button**: Added explicit refresh button (↻) to popover footer for quick manual refresh.
 
@@ -64,7 +64,7 @@ Human verification completed successfully:
 5. ✓ Settings window opens with 3 tabs (General, Data Sources, Appearance)
 6. ✓ General tab - refresh interval picker works
 7. ✓ Data Sources tab - OAuth/JSONL toggles work
-8. ✓ Quit ClaudeMon terminates the app
+8. ✓ Quit Tokemon terminates the app
 9. ✓ Background refresh updates menu bar automatically
 
 ## Phase 1 Success Criteria

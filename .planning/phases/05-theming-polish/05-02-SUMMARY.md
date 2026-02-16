@@ -7,7 +7,7 @@
 ## What Was Built
 
 ### ThemeManager Wiring
-- Added `@State private var themeManager = ThemeManager()` to ClaudeMonApp
+- Added `@State private var themeManager = ThemeManager()` to TokemonApp
 - Injected via `.environment(themeManager)` to PopoverContentView, SettingsView
 - Added setThemeManager() to FloatingWindowController and SettingsWindowController
 - Passed themeManager to floating window and settings window hosting controllers
@@ -20,19 +20,19 @@
 
 ### Bug Fixes During Verification
 - SettingsWindowController was missing ThemeManager - caused crash when opening Appearance settings
-- ClaudeMonApp wasn't calling `SettingsWindowController.shared.setThemeManager()`
+- TokemonApp wasn't calling `SettingsWindowController.shared.setThemeManager()`
 - Views had ThemeColors computed but weren't applying backgrounds - themes had no visual effect
 
 ## Key Files
 
 ### Modified
-- `ClaudeMon/ClaudeMonApp.swift` - ThemeManager @State, environment injection, setThemeManager calls
-- `ClaudeMon/Services/FloatingWindowController.swift` - themeManager property and setter, environment injection
-- `ClaudeMon/Services/SettingsWindowController.swift` - themeManager property and setter, environment injection
-- `ClaudeMon/Views/MenuBar/PopoverContentView.swift` - ThemeManager environment, themed background/tint
-- `ClaudeMon/Views/FloatingWindow/FloatingWindowView.swift` - ThemeManager environment, themed background/tint
-- `ClaudeMon/Views/Charts/UsageChartView.swift` - Theme-aware chart colors
-- `ClaudeMon/Views/Settings/SettingsView.swift` - ThemeManager environment passthrough
+- `Tokemon/TokemonApp.swift` - ThemeManager @State, environment injection, setThemeManager calls
+- `Tokemon/Services/FloatingWindowController.swift` - themeManager property and setter, environment injection
+- `Tokemon/Services/SettingsWindowController.swift` - themeManager property and setter, environment injection
+- `Tokemon/Views/MenuBar/PopoverContentView.swift` - ThemeManager environment, themed background/tint
+- `Tokemon/Views/FloatingWindow/FloatingWindowView.swift` - ThemeManager environment, themed background/tint
+- `Tokemon/Views/Charts/UsageChartView.swift` - Theme-aware chart colors
+- `Tokemon/Views/Settings/SettingsView.swift` - ThemeManager environment passthrough
 
 ## Commits
 

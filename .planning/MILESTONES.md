@@ -1,4 +1,4 @@
-# Milestones: ClaudeMon
+# Milestones: Tokemon
 
 ## Shipped
 
@@ -25,14 +25,14 @@ Native macOS menu bar utility for monitoring Claude usage at a glance. Live data
 
 **Phases:** 6-9 | **Plans:** 11 | **Requirements:** 20
 
-Transform ClaudeMon into a paid product with licensing, multi-account support, extended analytics, and viral sharing features.
+Transform Tokemon into a paid product with licensing, multi-account support, extended analytics, and viral sharing features.
 
 **Key Accomplishments:**
 - LemonSqueezy licensing integration with 2-week trial, Pro subscription, and offline/grace period support
 - Multi-account support with account CRUD, switching, and per-account alert settings
 - Extended analytics with 90-day history, hourly downsampling, weekly/monthly summaries, and project breakdown
 - PDF and CSV export functionality for usage reports
-- Shareable usage cards with ClaudeMon branding for viral marketing
+- Shareable usage cards with Tokemon branding for viral marketing
 
 **Stats:** 7,706 LOC Swift | 2 days (Feb 14-15)
 

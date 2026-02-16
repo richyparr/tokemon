@@ -40,7 +40,7 @@ The existing Phase 1 foundation provides the `UsageMonitor` which already tracks
 
 ### Recommended Project Structure (Phase 2 Additions)
 ```
-ClaudeMon/
+Tokemon/
 ├── Services/
 │   ├── AlertManager.swift          # NEW: Threshold checking, notification firing
 │   └── UsageMonitor.swift          # MODIFY: Add alert callback integration
@@ -176,7 +176,7 @@ extension AlertManager {
 
         // Use fixed identifier to prevent duplicate notifications
         // Same identifier = replaces previous notification instead of stacking
-        let identifier = "claudemon.alert.\(level)"
+        let identifier = "tokemon.alert.\(level)"
         let request = UNNotificationRequest(
             identifier: identifier,
             content: content,
@@ -284,7 +284,7 @@ struct AlertSettings: View {
                     }
                 ))
 
-                Text("Start ClaudeMon automatically when you log in")
+                Text("Start Tokemon automatically when you log in")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -397,7 +397,7 @@ struct AlertSettings: View {
 **Warning signs:** UI toggle is out of sync with actual behavior.
 
 ### Pitfall 3: Notification Permission Denied Silently
-**What goes wrong:** User enables notifications in ClaudeMon but never receives them.
+**What goes wrong:** User enables notifications in Tokemon but never receives them.
 **Why it happens:** User denied notification permission at the system prompt, or denied it later in System Settings.
 **How to avoid:** Check `UNUserNotificationCenter.current().getNotificationSettings()` and show UI guidance when denied. Provide button to open System Settings > Notifications.
 **Warning signs:** `notificationsEnabled` is true but no notifications appear.
@@ -537,7 +537,7 @@ final class AlertManager {
         }
 
         let request = UNNotificationRequest(
-            identifier: "claudemon.alert.\(level)",
+            identifier: "tokemon.alert.\(level)",
             content: content,
             trigger: nil
         )
@@ -549,11 +549,11 @@ final class AlertManager {
 
 ### Notification Delegate Setup
 ```swift
-// In ClaudeMonApp.swift
+// In TokemonApp.swift
 import UserNotifications
 
 @main
-struct ClaudeMonApp: App {
+struct TokemonApp: App {
     @State private var monitor = UsageMonitor()
     @State private var alertManager = AlertManager()
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
@@ -674,7 +674,7 @@ struct AlertSettings: View {
                     }
                 ))
 
-                Text("Start ClaudeMon automatically when you log in")
+                Text("Start Tokemon automatically when you log in")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } header: {
@@ -694,7 +694,7 @@ onUsageChanged?(currentUsage)
 // Also call alert manager
 onAlertCheck?(currentUsage)  // New callback for AlertManager
 
-// In ClaudeMonApp.swift - wire up the callback
+// In TokemonApp.swift - wire up the callback
 monitor.onAlertCheck = { [alertManager] usage in
     Task { @MainActor in
         alertManager.checkUsage(usage)
@@ -763,5 +763,5 @@ monitor.onAlertCheck = { [alertManager] usage in
 **Valid until:** ~2026-03-15 (30 days; APIs are stable)
 
 ---
-*Phase research for: ClaudeMon Phase 2 -- Alerts & Notifications*
+*Phase research for: Tokemon Phase 2 -- Alerts & Notifications*
 *Researched: 2026-02-13*

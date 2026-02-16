@@ -19,7 +19,7 @@ re_verification: false
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | AlertManager exists as observable service tracking alert level | VERIFIED | `ClaudeMon/Services/AlertManager.swift` - 185 lines, @Observable @MainActor class with AlertLevel enum |
+| 1 | AlertManager exists as observable service tracking alert level | VERIFIED | `Tokemon/Services/AlertManager.swift` - 185 lines, @Observable @MainActor class with AlertLevel enum |
 | 2 | UsageMonitor notifies AlertManager on each usage update | VERIFIED | `onAlertCheck` callback in UsageMonitor.swift lines 95, 188, 223, 252 |
 | 3 | Alert level changes to warning when crossing threshold | VERIFIED | `alertLevel(for:)` method returns .warning at >= alertThreshold |
 | 4 | Alert level changes to critical at 100% | VERIFIED | `alertLevel(for:)` method returns .critical at >= 100 |
@@ -42,31 +42,31 @@ re_verification: false
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `ClaudeMon/Services/AlertManager.swift` | Alert threshold checking, level tracking, notifications | VERIFIED | 185 lines, AlertLevel enum, checkUsage(), sendNotification(), UserDefaults persistence |
-| `ClaudeMon/Utilities/Constants.swift` | defaultAlertThreshold constant | VERIFIED | Line 27: `static let defaultAlertThreshold = 80` |
-| `ClaudeMon/Views/Settings/AlertSettings.swift` | Threshold picker, notification toggle, launch at login | VERIFIED | 80 lines, three sections with Picker and Toggles |
-| `ClaudeMon/Views/Settings/SettingsView.swift` | Fourth tab for Alerts | VERIFIED | Lines 29-33: AlertSettings with bell.badge icon |
+| `Tokemon/Services/AlertManager.swift` | Alert threshold checking, level tracking, notifications | VERIFIED | 185 lines, AlertLevel enum, checkUsage(), sendNotification(), UserDefaults persistence |
+| `Tokemon/Utilities/Constants.swift` | defaultAlertThreshold constant | VERIFIED | Line 27: `static let defaultAlertThreshold = 80` |
+| `Tokemon/Views/Settings/AlertSettings.swift` | Threshold picker, notification toggle, launch at login | VERIFIED | 80 lines, three sections with Picker and Toggles |
+| `Tokemon/Views/Settings/SettingsView.swift` | Fourth tab for Alerts | VERIFIED | Lines 29-33: AlertSettings with bell.badge icon |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
 | UsageMonitor.swift | AlertManager.checkUsage | onAlertCheck callback | WIRED | Lines 95, 188, 223, 252 |
-| ClaudeMonApp.swift | AlertManager | environment injection | WIRED | Lines 29, 76 |
+| TokemonApp.swift | AlertManager | environment injection | WIRED | Lines 29, 76 |
 | UsageHeaderView.swift | AlertManager.AlertLevel | alertLevel parameter | WIRED | Line 9: `let alertLevel: AlertManager.AlertLevel` |
 | AlertManager.swift | UNUserNotificationCenter | sendNotification method | WIRED | Lines 134, 179 |
 | AlertSettings.swift | SMAppService.mainApp | launch at login toggle | WIRED | Lines 11, 55, 57, 62, 77 |
-| ClaudeMonApp.swift | UNUserNotificationCenterDelegate | AppDelegate conformance | WIRED | Line 292 |
+| TokemonApp.swift | UNUserNotificationCenterDelegate | AppDelegate conformance | WIRED | Line 292 |
 
 ### Commits Verified
 
 | Commit | Message | Files Changed |
 |--------|---------|---------------|
 | 87a325a | feat(02-01): add AlertManager service | AlertManager.swift, Constants.swift |
-| cb46061 | feat(02-01): wire AlertManager to UsageMonitor | ClaudeMonApp, UsageMonitor, PopoverContentView, UsageHeaderView |
-| 45c0a83 | feat(02-02): implement macOS notifications | ClaudeMonApp, AlertManager |
-| f8d2803 | feat(02-02): add Alerts settings tab | ClaudeMonApp, SettingsWindowController, AlertSettings, SettingsView |
-| 83d3bb2 | fix(02-02): guard UNUserNotificationCenter | ClaudeMonApp, AlertManager |
+| cb46061 | feat(02-01): wire AlertManager to UsageMonitor | TokemonApp, UsageMonitor, PopoverContentView, UsageHeaderView |
+| 45c0a83 | feat(02-02): implement macOS notifications | TokemonApp, AlertManager |
+| f8d2803 | feat(02-02): add Alerts settings tab | TokemonApp, SettingsWindowController, AlertSettings, SettingsView |
+| 83d3bb2 | fix(02-02): guard UNUserNotificationCenter | TokemonApp, AlertManager |
 | ddab252 | fix(02-02): resolve crashes and settings binding | AlertManager, AlertSettings |
 
 ### Anti-Patterns Found
@@ -105,7 +105,7 @@ Build complete! (0.19s)
 #### 4. Launch at Login
 
 **Test:** Enable "Launch at login" toggle. Log out and log back in (or restart).
-**Expected:** ClaudeMon launches automatically on login
+**Expected:** Tokemon launches automatically on login
 **Why human:** Requires system logout/login cycle
 
 ### Design Decisions Noted

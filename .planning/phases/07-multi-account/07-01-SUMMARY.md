@@ -24,15 +24,15 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Models/Account.swift
-    - ClaudeMon/Models/AccountSettings.swift
-    - ClaudeMon/Services/AccountManager.swift
+    - Tokemon/Models/Account.swift
+    - Tokemon/Models/AccountSettings.swift
+    - Tokemon/Services/AccountManager.swift
   modified:
-    - ClaudeMon/Utilities/Constants.swift
-    - ClaudeMon/Services/TokenManager.swift
+    - Tokemon/Utilities/Constants.swift
+    - Tokemon/Services/TokenManager.swift
 
 key-decisions:
-  - "Separate keychain service (com.claudemon.accounts) for account metadata, never modifying Claude Code's credentials keychain"
+  - "Separate keychain service (com.tokemon.accounts) for account metadata, never modifying Claude Code's credentials keychain"
   - "Account model uses Codable+Sendable for Keychain JSON storage and Swift 6 concurrency"
   - "Single-account migration runs once via UserDefaults flag, preserving existing alert settings"
 
@@ -71,14 +71,14 @@ Each task was committed atomically:
 3. **Task 3: Create AccountManager service with migration** - `c57c3e7` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Models/Account.swift` - Account struct with id, username, displayName, settings, createdAt, hasValidCredentials
-- `ClaudeMon/Models/AccountSettings.swift` - Per-account preferences (alertThreshold, notificationsEnabled, monthlyBudgetCents)
-- `ClaudeMon/Services/AccountManager.swift` - Central account coordinator with CRUD, active account, migration
-- `ClaudeMon/Utilities/Constants.swift` - Added accountsKeychainService constant
-- `ClaudeMon/Services/TokenManager.swift` - Added username-parameterized overloads for multi-account access
+- `Tokemon/Models/Account.swift` - Account struct with id, username, displayName, settings, createdAt, hasValidCredentials
+- `Tokemon/Models/AccountSettings.swift` - Per-account preferences (alertThreshold, notificationsEnabled, monthlyBudgetCents)
+- `Tokemon/Services/AccountManager.swift` - Central account coordinator with CRUD, active account, migration
+- `Tokemon/Utilities/Constants.swift` - Added accountsKeychainService constant
+- `Tokemon/Services/TokenManager.swift` - Added username-parameterized overloads for multi-account access
 
 ## Decisions Made
-- Separate keychain service (com.claudemon.accounts) for account metadata to avoid any modification of Claude Code's credentials keychain
+- Separate keychain service (com.tokemon.accounts) for account metadata to avoid any modification of Claude Code's credentials keychain
 - Account model uses Codable+Sendable for Keychain JSON storage and Swift 6 concurrency safety
 - Single-account migration runs once via UserDefaults flag, preserving existing alert settings into the new per-account structure
 

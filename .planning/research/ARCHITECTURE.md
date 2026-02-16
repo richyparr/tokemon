@@ -59,7 +59,7 @@ This process boundary is the single most important architectural constraint. The
 
 | Component | Responsibility | Typical Implementation |
 |-----------|----------------|------------------------|
-| **App (entry point)** | Declares scenes (MenuBarExtra, WindowGroup), owns top-level @Observable state | `@main struct ClaudeMonApp: App` with `@State var monitor = UsageMonitor()` |
+| **App (entry point)** | Declares scenes (MenuBarExtra, WindowGroup), owns top-level @Observable state | `@main struct TokemonApp: App` with `@State var monitor = UsageMonitor()` |
 | **MenuBarExtra** | Primary UI surface; shows status icon + popover with usage summary | SwiftUI `MenuBarExtra` with `.menuBarExtraStyle(.window)` |
 | **Floating Window** | Optional always-on-top compact usage display | `WindowGroup` with `.windowLevel(.floating)` (macOS 15+) or NSPanel subclass |
 | **Widget Extension** | Notification Center widget showing usage at a glance | Separate target, `TimelineProvider`, reads from App Group |
@@ -71,9 +71,9 @@ This process boundary is the single most important architectural constraint. The
 ## Recommended Project Structure
 
 ```
-ClaudeMon/
-├── ClaudeMon/                    # Main app target
-│   ├── ClaudeMonApp.swift        # @main, declares scenes
+Tokemon/
+├── Tokemon/                    # Main app target
+│   ├── TokemonApp.swift        # @main, declares scenes
 │   ├── Info.plist                # LSUIElement = YES
 │   │
 │   ├── Models/                   # SwiftData models (shared with widget)
@@ -113,9 +113,9 @@ ClaudeMon/
 │       ├── Constants.swift       # App Group ID, polling intervals
 │       └── Extensions.swift      # Date, Number formatting
 │
-├── ClaudeMonWidget/              # Widget extension target
-│   ├── ClaudeMonWidget.swift     # Widget definition + configuration
-│   ├── ClaudeMonWidgetBundle.swift # Widget bundle entry point
+├── TokemonWidget/              # Widget extension target
+│   ├── TokemonWidget.swift     # Widget definition + configuration
+│   ├── TokemonWidgetBundle.swift # Widget bundle entry point
 │   ├── UsageTimelineProvider.swift # TimelineProvider implementation
 │   ├── WidgetViews/
 │   │   ├── SmallWidgetView.swift
@@ -129,13 +129,13 @@ ClaudeMon/
 │   ├── SharedDefaults.swift      # UserDefaults(suiteName:) wrapper
 │   └── AppGroupConstants.swift   # Group ID, container URLs
 │
-└── ClaudeMon.xcodeproj
+└── Tokemon.xcodeproj
 ```
 
 ### Structure Rationale
 
-- **ClaudeMon/ (main target):** Contains all app logic, services, and views. This is the only target that writes data and runs services. Keeping services here prevents the widget from accidentally trying to poll APIs.
-- **ClaudeMonWidget/ (extension target):** Minimal code -- only reads shared data and renders it. No business logic, no networking, no polling.
+- **Tokemon/ (main target):** Contains all app logic, services, and views. This is the only target that writes data and runs services. Keeping services here prevents the widget from accidentally trying to poll APIs.
+- **TokemonWidget/ (extension target):** Minimal code -- only reads shared data and renders it. No business logic, no networking, no polling.
 - **Shared/:** SwiftData model files and App Group constants that must compile into both targets. Keep this minimal; only data definitions belong here.
 
 ## Architectural Patterns
@@ -209,7 +209,7 @@ final class UsageMonitor {
 ```swift
 // Shared/AppGroupConstants.swift (both targets)
 enum AppGroup {
-    static let identifier = "group.com.yourname.claudemon"
+    static let identifier = "group.com.yourname.tokemon"
 
     static var containerURL: URL {
         FileManager.default.containerURL(
@@ -258,7 +258,7 @@ struct UsageTimelineProvider: TimelineProvider {
 **Example:**
 ```swift
 @main
-struct ClaudeMonApp: App {
+struct TokemonApp: App {
     @State private var monitor = UsageMonitor()
     @State private var showFloatingWindow = false
 
@@ -458,7 +458,7 @@ This is a single-user desktop app, so "scaling" means handling data volume and s
 ### Anti-Pattern 4: Sandboxing the App
 
 **What people do:** Enable the App Sandbox because Xcode defaults to it or because they plan to distribute via the Mac App Store.
-**Why it's wrong:** ClaudeMon needs to read `~/.claude/projects/` which is in the user's real home directory. A sandboxed app's `NSHomeDirectory()` returns the app's container, not the real home. You cannot add an entitlement to read arbitrary paths outside the sandbox. A sandboxed app fundamentally cannot read Claude Code's log files without user-initiated file selection via NSOpenPanel for each session -- terrible UX.
+**Why it's wrong:** Tokemon needs to read `~/.claude/projects/` which is in the user's real home directory. A sandboxed app's `NSHomeDirectory()` returns the app's container, not the real home. You cannot add an entitlement to read arbitrary paths outside the sandbox. A sandboxed app fundamentally cannot read Claude Code's log files without user-initiated file selection via NSOpenPanel for each session -- terrible UX.
 **Do this instead:** Distribute outside the Mac App Store. Disable App Sandbox. Use Hardened Runtime + Notarization for security. Distribute via GitHub releases + Sparkle for updates.
 
 ### Anti-Pattern 5: Tight Coupling Between Data Sources
@@ -557,5 +557,5 @@ Phase 8: Polish
 - [SwiftUI macOS floating window/panel (Itsuki)](https://levelup.gitconnected.com/swiftui-macos-floating-window-panel-4eef94a20647) -- MEDIUM confidence
 
 ---
-*Architecture research for: ClaudeMon -- macOS Claude usage monitoring app*
+*Architecture research for: Tokemon -- macOS Claude usage monitoring app*
 *Researched: 2026-02-11*

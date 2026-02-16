@@ -22,14 +22,14 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Models/AdminUsageResponse.swift
-    - ClaudeMon/Services/AdminAPIClient.swift
-    - ClaudeMon/Views/Settings/AdminAPISettings.swift
+    - Tokemon/Models/AdminUsageResponse.swift
+    - Tokemon/Services/AdminAPIClient.swift
+    - Tokemon/Views/Settings/AdminAPISettings.swift
   modified:
-    - ClaudeMon/Views/Settings/SettingsView.swift
+    - Tokemon/Views/Settings/SettingsView.swift
 
 key-decisions:
-  - "Separate Keychain service (com.claudemon.admin-api) from OAuth credentials to avoid conflicts"
+  - "Separate Keychain service (com.tokemon.admin-api) from OAuth credentials to avoid conflicts"
   - "nonisolated hasAdminKey() for quick synchronous checks without actor isolation"
   - "Removed #Preview macro from plan code (incompatible with SPM builds without Xcode)"
 
@@ -69,13 +69,13 @@ Each task was committed atomically:
 3. **Task 3: Create AdminAPISettings tab and add to SettingsView** - `7947496` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Models/AdminUsageResponse.swift` - Codable response model for Admin API usage reports with UsageBucket and token aggregation
-- `ClaudeMon/Services/AdminAPIClient.swift` - Actor-based client for Admin API key management, validation, and usage fetching
-- `ClaudeMon/Views/Settings/AdminAPISettings.swift` - SwiftUI settings tab for Admin API key entry, validation, and disconnect
-- `ClaudeMon/Views/Settings/SettingsView.swift` - Added Admin API tab as fifth settings tab, increased minHeight
+- `Tokemon/Models/AdminUsageResponse.swift` - Codable response model for Admin API usage reports with UsageBucket and token aggregation
+- `Tokemon/Services/AdminAPIClient.swift` - Actor-based client for Admin API key management, validation, and usage fetching
+- `Tokemon/Views/Settings/AdminAPISettings.swift` - SwiftUI settings tab for Admin API key entry, validation, and disconnect
+- `Tokemon/Views/Settings/SettingsView.swift` - Added Admin API tab as fifth settings tab, increased minHeight
 
 ## Decisions Made
-- Separate Keychain service (com.claudemon.admin-api) from OAuth credentials to avoid cross-contamination
+- Separate Keychain service (com.tokemon.admin-api) from OAuth credentials to avoid cross-contamination
 - nonisolated hasAdminKey() allows quick sync checks without awaiting actor isolation
 - Removed #Preview macro from plan code since SPM builds without Xcode cannot resolve PreviewsMacros
 
@@ -87,7 +87,7 @@ Each task was committed atomically:
 - **Found during:** Task 3 (AdminAPISettings)
 - **Issue:** Plan included `#Preview` macro which requires Xcode's PreviewsMacros plugin, unavailable in SPM builds
 - **Fix:** Removed the `#Preview` block entirely (no other files in the project use previews)
-- **Files modified:** ClaudeMon/Views/Settings/AdminAPISettings.swift
+- **Files modified:** Tokemon/Views/Settings/AdminAPISettings.swift
 - **Verification:** Build succeeds after removal
 - **Committed in:** 7947496 (Task 3 commit)
 
@@ -95,7 +95,7 @@ Each task was committed atomically:
 - **Found during:** Task 3 (AdminAPISettings)
 - **Issue:** Plan code used `MainActor.run` with `await` inside the error catch block, mixing concurrency incorrectly
 - **Fix:** Restructured to capture error message before async cleanup, update state directly in Task closure
-- **Files modified:** ClaudeMon/Views/Settings/AdminAPISettings.swift
+- **Files modified:** Tokemon/Views/Settings/AdminAPISettings.swift
 - **Verification:** Build succeeds, no concurrency warnings
 - **Committed in:** 7947496 (Task 3 commit)
 

@@ -1,4 +1,4 @@
-# Architecture Patterns: ClaudeMon v2 Pro Features
+# Architecture Patterns: Tokemon v2 Pro Features
 
 **Domain:** Feature integration for existing macOS menu bar app
 **Researched:** 2026-02-14
@@ -6,10 +6,10 @@
 
 ## Existing Architecture Overview
 
-ClaudeMon v1 uses a clean @Observable pattern with clear separation of concerns:
+Tokemon v1 uses a clean @Observable pattern with clear separation of concerns:
 
 ```
-ClaudeMonApp (@main)
+TokemonApp (@main)
     |
     +-- UsageMonitor (@Observable) ---- primary state holder
     |       |-- oauthEnabled, jsonlEnabled, showExtraUsage
@@ -125,13 +125,13 @@ var canExportPDF: Bool { license.isProUser }
 Use separate Keychain service from Claude Code credentials:
 
 ```swift
-private let keychain = Keychain(service: "com.claudemon.license")
+private let keychain = Keychain(service: "com.tokemon.license")
 // Keys: "license_key", "instance_id", "cached_status"
 ```
 
 ### Integration Points
 
-1. **ClaudeMonApp.swift**: Add `@State private var licenseManager = LicenseManager()`
+1. **TokemonApp.swift**: Add `@State private var licenseManager = LicenseManager()`
 2. **SettingsView.swift**: Add "License" tab
 3. **PopoverContentView.swift**: Pass environment, show Pro badge if licensed
 4. **All Pro features**: Use `ProFeatureGate` wrapper
@@ -371,7 +371,7 @@ Menu("Export...") {
     isPresented: $showCSVExport,
     document: CSVDocument(data: exportData),
     contentType: .commaSeparatedText,
-    defaultFilename: "claudemon-usage-\(dateString).csv"
+    defaultFilename: "tokemon-usage-\(dateString).csv"
 )
 ```
 
@@ -379,7 +379,7 @@ Menu("Export...") {
 
 ```
 +----------------------------------+
-| ClaudeMon Usage Report           |
+| Tokemon Usage Report           |
 | Generated: Feb 14, 2026          |
 +----------------------------------+
 | Summary                          |
@@ -488,7 +488,7 @@ func generateImage(from view: some View, scale: CGFloat = 2.0) -> NSImage? {
 
 ```
 +---------------------------+
-| ClaudeMon                 |
+| Tokemon                 |
 |                           |
 |     72%                   |
 |   5-hour usage            |
@@ -575,7 +575,7 @@ Phase 1: Licensing Infrastructure
     - LemonSqueezyClient
     - LicenseSettings view
     - ProFeatureGate component
-    - Wire into ClaudeMonApp
+    - Wire into TokemonApp
 
     Dependencies: None (foundation for all Pro features)
 
@@ -647,7 +647,7 @@ Phase 5: Shareable Images
 - [Create with Swift - ImageRenderer](https://www.createwithswift.com/exporting-swiftui-views-to-images-with-imagerender/) - Detailed tutorial
 
 ### Multi-account Keychain
-- [KeychainAccess GitHub](https://github.com/kishikawakatsumi/KeychainAccess) - Library used by ClaudeMon
+- [KeychainAccess GitHub](https://github.com/kishikawakatsumi/KeychainAccess) - Library used by Tokemon
 - [Swift Keychain Secure Storage](https://oneuptime.com/blog/post/2026-02-02-swift-keychain-secure-storage/view) - Best practices
 
 ### File Export

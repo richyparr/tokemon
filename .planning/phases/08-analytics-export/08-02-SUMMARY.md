@@ -25,15 +25,15 @@ tech-stack:
 
 key-files:
   created:
-    - "ClaudeMon/Services/AnalyticsEngine.swift"
-    - "ClaudeMon/Models/UsageSummary.swift"
-    - "ClaudeMon/Models/ProjectUsage.swift"
-    - "ClaudeMon/Views/Analytics/AnalyticsDashboardView.swift"
-    - "ClaudeMon/Views/Analytics/ExtendedHistoryChartView.swift"
-    - "ClaudeMon/Views/Analytics/UsageSummaryView.swift"
-    - "ClaudeMon/Views/Analytics/ProjectBreakdownView.swift"
+    - "Tokemon/Services/AnalyticsEngine.swift"
+    - "Tokemon/Models/UsageSummary.swift"
+    - "Tokemon/Models/ProjectUsage.swift"
+    - "Tokemon/Views/Analytics/AnalyticsDashboardView.swift"
+    - "Tokemon/Views/Analytics/ExtendedHistoryChartView.swift"
+    - "Tokemon/Views/Analytics/UsageSummaryView.swift"
+    - "Tokemon/Views/Analytics/ProjectBreakdownView.swift"
   modified:
-    - "ClaudeMon/Views/Settings/SettingsView.swift"
+    - "Tokemon/Views/Settings/SettingsView.swift"
 
 key-decisions:
   - "AnalyticsEngine uses all static methods (no state, pure computation) for testability"
@@ -77,14 +77,14 @@ Each task was committed atomically:
 2. **Task 2: Build Analytics views and add Analytics tab to Settings** - `5d405c8` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Services/AnalyticsEngine.swift` - Static analytics engine with weeklySummaries, monthlySummaries, projectBreakdown, decodeProjectPath, formatTokenCount
-- `ClaudeMon/Models/UsageSummary.swift` - UsageSummary model (Identifiable, Sendable) for period aggregations
-- `ClaudeMon/Models/ProjectUsage.swift` - ProjectUsage model (Identifiable, Sendable) for per-project token breakdown
-- `ClaudeMon/Views/Analytics/AnalyticsDashboardView.swift` - Main analytics container with Pro-gated locked splash
-- `ClaudeMon/Views/Analytics/ExtendedHistoryChartView.swift` - Swift Charts area+line chart with 4 time range options (24h/7d/30d/90d)
-- `ClaudeMon/Views/Analytics/UsageSummaryView.swift` - Weekly/monthly summary table with avg/peak utilization
-- `ClaudeMon/Views/Analytics/ProjectBreakdownView.swift` - Per-project token breakdown with background JSONL parsing
-- `ClaudeMon/Views/Settings/SettingsView.swift` - Added Analytics tab, increased minHeight from 320 to 400
+- `Tokemon/Services/AnalyticsEngine.swift` - Static analytics engine with weeklySummaries, monthlySummaries, projectBreakdown, decodeProjectPath, formatTokenCount
+- `Tokemon/Models/UsageSummary.swift` - UsageSummary model (Identifiable, Sendable) for period aggregations
+- `Tokemon/Models/ProjectUsage.swift` - ProjectUsage model (Identifiable, Sendable) for per-project token breakdown
+- `Tokemon/Views/Analytics/AnalyticsDashboardView.swift` - Main analytics container with Pro-gated locked splash
+- `Tokemon/Views/Analytics/ExtendedHistoryChartView.swift` - Swift Charts area+line chart with 4 time range options (24h/7d/30d/90d)
+- `Tokemon/Views/Analytics/UsageSummaryView.swift` - Weekly/monthly summary table with avg/peak utilization
+- `Tokemon/Views/Analytics/ProjectBreakdownView.swift` - Per-project token breakdown with background JSONL parsing
+- `Tokemon/Views/Settings/SettingsView.swift` - Added Analytics tab, increased minHeight from 320 to 400
 
 ## Decisions Made
 - AnalyticsEngine uses all static methods (no instance state) for easy testability and no side effects
@@ -111,14 +111,14 @@ None - no external service configuration required.
 
 ## Self-Check: PASSED
 
-- FOUND: ClaudeMon/Services/AnalyticsEngine.swift
-- FOUND: ClaudeMon/Models/UsageSummary.swift
-- FOUND: ClaudeMon/Models/ProjectUsage.swift
-- FOUND: ClaudeMon/Views/Analytics/AnalyticsDashboardView.swift
-- FOUND: ClaudeMon/Views/Analytics/ExtendedHistoryChartView.swift
-- FOUND: ClaudeMon/Views/Analytics/UsageSummaryView.swift
-- FOUND: ClaudeMon/Views/Analytics/ProjectBreakdownView.swift
-- FOUND: ClaudeMon/Views/Settings/SettingsView.swift
+- FOUND: Tokemon/Services/AnalyticsEngine.swift
+- FOUND: Tokemon/Models/UsageSummary.swift
+- FOUND: Tokemon/Models/ProjectUsage.swift
+- FOUND: Tokemon/Views/Analytics/AnalyticsDashboardView.swift
+- FOUND: Tokemon/Views/Analytics/ExtendedHistoryChartView.swift
+- FOUND: Tokemon/Views/Analytics/UsageSummaryView.swift
+- FOUND: Tokemon/Views/Analytics/ProjectBreakdownView.swift
+- FOUND: Tokemon/Views/Settings/SettingsView.swift
 - FOUND: 08-02-SUMMARY.md
 - FOUND: commit 1358633
 - FOUND: commit 5d405c8

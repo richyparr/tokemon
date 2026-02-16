@@ -20,7 +20,7 @@ re_verification: false
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
 | 1 | User can view weekly and monthly usage summaries with totals and breakdowns | VERIFIED | `UsageSummaryView` renders weekly/monthly toggle with avg%, peak%, data point count per period. `AnalyticsEngine.weeklySummaries` groups by `Calendar.dateInterval(.weekOfYear)`, `monthlySummaries` groups by `.month`. Both compute average and peak from `primaryPercentage`. Data passed through `AnalyticsDashboardView` lines 49-52. |
-| 2 | User can export a PDF report of their usage (with charts and breakdowns) | VERIFIED | `ExportManager.exportPDF` generates PDF via `ImageRenderer` at 2x Retina on US Letter pages (612x792 pts, 36pt margins). `PDFReportView` is self-contained (no @Environment) with weekly summaries, monthly summaries, top-10 project breakdown, and "ClaudeMon" branding/footer. Wired via `AnalyticsDashboardView.performPDFExport()` line 148-157. Pro-gated with `.exportPDF`. |
+| 2 | User can export a PDF report of their usage (with charts and breakdowns) | VERIFIED | `ExportManager.exportPDF` generates PDF via `ImageRenderer` at 2x Retina on US Letter pages (612x792 pts, 36pt margins). `PDFReportView` is self-contained (no @Environment) with weekly summaries, monthly summaries, top-10 project breakdown, and "Tokemon" branding/footer. Wired via `AnalyticsDashboardView.performPDFExport()` line 148-157. Pro-gated with `.exportPDF`. |
 | 3 | User can export raw usage data as CSV | VERIFIED | `ExportManager.generateCSV` produces header "Timestamp,Utilization %,7-Day Utilization %,Source" with ISO8601 timestamps, formatted percentages, proper CSV escaping. `exportCSV` shows NSSavePanel with `.commaSeparatedText` content type. Wired via `AnalyticsDashboardView.performCSVExport()` line 160-164. Pro-gated with `.exportCSV`. |
 | 4 | User can view 30-day and 90-day usage history graphs | VERIFIED | `ExtendedHistoryChartView` has `ExtendedChartTimeRange` enum with `.month` (30d) and `.quarter` (90d) cases. Renders Swift Charts `AreaMark` + `LineMark` with filtered data points. 30d/90d ranges Pro-gated via `requiresPro` property. `HistoryStore.maxAgeDays = 90` with hourly downsampling for data older than 7 days. |
 | 5 | User can see which projects/folders consumed the most tokens | VERIFIED | `ProjectBreakdownView` calls `AnalyticsEngine.projectBreakdown(since:)` in `Task.detached` for background JSONL parsing. Shows project name, total tokens (formatted), session count, and relative proportion bar. Sorted by `totalTokens` descending. Time range picker (7d/30d/90d). Pro-gated with `.projectBreakdown`. |
@@ -31,18 +31,18 @@ re_verification: false
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `ClaudeMon/Services/HistoryStore.swift` | 90-day retention with hourly downsampling | VERIFIED | `maxAgeDays = 90`, `recentWindowDays = 7`, `downsampleOldEntries` groups by hour with Calendar.dateInterval, `shouldDownsample` throttles to once/hour, `getHistory(for:since:)` overload exists |
-| `ClaudeMon/Services/UsageMonitor.swift` | Per-account history reload | VERIFIED | `reloadHistory(for accountId:)` method at line 326, `historyStore` integration for both legacy and per-account paths |
-| `ClaudeMon/Services/AnalyticsEngine.swift` | Weekly/monthly summaries and project breakdown | VERIFIED | 200 lines. Static `weeklySummaries`, `monthlySummaries`, `projectBreakdown`, `decodeProjectPath`, `formatTokenCount`. Pure computation, no state. |
-| `ClaudeMon/Models/UsageSummary.swift` | UsageSummary model | VERIFIED | 12 lines. `struct UsageSummary: Identifiable, Sendable` with period, periodLabel, averageUtilization, peakUtilization, dataPointCount |
-| `ClaudeMon/Models/ProjectUsage.swift` | ProjectUsage model | VERIFIED | 18 lines. `struct ProjectUsage: Identifiable, Sendable` with projectPath, projectName, token breakdowns (input/output/cache), sessionCount, computed totalTokens |
-| `ClaudeMon/Services/ExportManager.swift` | PDF/CSV generation and export | VERIFIED | 173 lines. `@MainActor struct` with `generatePDF` (ImageRenderer, scale 2.0, CGContext PDF), `exportPDF`, `generateCSV` (ISO8601, CSV escaping), `exportCSV`. Both export methods use `NSApp.activate` + standalone `NSSavePanel`. |
-| `ClaudeMon/Views/Analytics/PDFReportView.swift` | Self-contained PDF view | VERIFIED | 150 lines. No @Environment. Solid colors only (.white bg, .black/.gray fg). Sections: header with date, account name, weekly summaries, monthly summaries, top-10 project tokens, branded footer. `frame(width: 540)`. |
-| `ClaudeMon/Views/Analytics/AnalyticsDashboardView.swift` | Main analytics container with export | VERIFIED | 166 lines. Pro gate at top level. ScrollView with ExtendedHistoryChartView, UsageSummaryView, ProjectBreakdownView, export section. Export buttons wired to ExportManager. isExporting loading state. AccountManager environment for PDF account name. |
-| `ClaudeMon/Views/Analytics/ExtendedHistoryChartView.swift` | 24h/7d/30d/90d chart | VERIFIED | 173 lines. `ExtendedChartTimeRange` enum with 4 cases, `requiresPro` for 30d/90d. Segmented picker with lock icons. Swift Charts AreaMark+LineMark. ThemeManager colors. Empty state handling. |
-| `ClaudeMon/Views/Analytics/UsageSummaryView.swift` | Weekly/monthly summary table | VERIFIED | 103 lines. Weekly/Monthly picker. Table with Period, Avg, Peak, Points columns. `.monospacedDigit()` for numbers. Pro-gated with `.weeklySummary`. Locked and empty states. |
-| `ClaudeMon/Views/Analytics/ProjectBreakdownView.swift` | Per-project token breakdown | VERIFIED | 159 lines. `Task.detached` for background JSONL parsing. "This Machine" badge. Time range picker (7d/30d/90d). ProjectRow with name, formatted tokens, session count, proportion bar. Pro-gated with `.projectBreakdown`. |
-| `ClaudeMon/Views/Settings/SettingsView.swift` | Analytics tab in settings | VERIFIED | `AnalyticsDashboardView()` at line 44 with `chart.bar.xaxis` icon. Positioned between Accounts and License tabs. `minHeight: 400`. |
+| `Tokemon/Services/HistoryStore.swift` | 90-day retention with hourly downsampling | VERIFIED | `maxAgeDays = 90`, `recentWindowDays = 7`, `downsampleOldEntries` groups by hour with Calendar.dateInterval, `shouldDownsample` throttles to once/hour, `getHistory(for:since:)` overload exists |
+| `Tokemon/Services/UsageMonitor.swift` | Per-account history reload | VERIFIED | `reloadHistory(for accountId:)` method at line 326, `historyStore` integration for both legacy and per-account paths |
+| `Tokemon/Services/AnalyticsEngine.swift` | Weekly/monthly summaries and project breakdown | VERIFIED | 200 lines. Static `weeklySummaries`, `monthlySummaries`, `projectBreakdown`, `decodeProjectPath`, `formatTokenCount`. Pure computation, no state. |
+| `Tokemon/Models/UsageSummary.swift` | UsageSummary model | VERIFIED | 12 lines. `struct UsageSummary: Identifiable, Sendable` with period, periodLabel, averageUtilization, peakUtilization, dataPointCount |
+| `Tokemon/Models/ProjectUsage.swift` | ProjectUsage model | VERIFIED | 18 lines. `struct ProjectUsage: Identifiable, Sendable` with projectPath, projectName, token breakdowns (input/output/cache), sessionCount, computed totalTokens |
+| `Tokemon/Services/ExportManager.swift` | PDF/CSV generation and export | VERIFIED | 173 lines. `@MainActor struct` with `generatePDF` (ImageRenderer, scale 2.0, CGContext PDF), `exportPDF`, `generateCSV` (ISO8601, CSV escaping), `exportCSV`. Both export methods use `NSApp.activate` + standalone `NSSavePanel`. |
+| `Tokemon/Views/Analytics/PDFReportView.swift` | Self-contained PDF view | VERIFIED | 150 lines. No @Environment. Solid colors only (.white bg, .black/.gray fg). Sections: header with date, account name, weekly summaries, monthly summaries, top-10 project tokens, branded footer. `frame(width: 540)`. |
+| `Tokemon/Views/Analytics/AnalyticsDashboardView.swift` | Main analytics container with export | VERIFIED | 166 lines. Pro gate at top level. ScrollView with ExtendedHistoryChartView, UsageSummaryView, ProjectBreakdownView, export section. Export buttons wired to ExportManager. isExporting loading state. AccountManager environment for PDF account name. |
+| `Tokemon/Views/Analytics/ExtendedHistoryChartView.swift` | 24h/7d/30d/90d chart | VERIFIED | 173 lines. `ExtendedChartTimeRange` enum with 4 cases, `requiresPro` for 30d/90d. Segmented picker with lock icons. Swift Charts AreaMark+LineMark. ThemeManager colors. Empty state handling. |
+| `Tokemon/Views/Analytics/UsageSummaryView.swift` | Weekly/monthly summary table | VERIFIED | 103 lines. Weekly/Monthly picker. Table with Period, Avg, Peak, Points columns. `.monospacedDigit()` for numbers. Pro-gated with `.weeklySummary`. Locked and empty states. |
+| `Tokemon/Views/Analytics/ProjectBreakdownView.swift` | Per-project token breakdown | VERIFIED | 159 lines. `Task.detached` for background JSONL parsing. "This Machine" badge. Time range picker (7d/30d/90d). ProjectRow with name, formatted tokens, session count, proportion bar. Pro-gated with `.projectBreakdown`. |
+| `Tokemon/Views/Settings/SettingsView.swift` | Analytics tab in settings | VERIFIED | `AnalyticsDashboardView()` at line 44 with `chart.bar.xaxis` icon. Positioned between Accounts and License tabs. `minHeight: 400`. |
 
 ### Key Link Verification
 
@@ -90,7 +90,7 @@ No TODO, FIXME, placeholder, stub, or empty implementation patterns detected in 
 ### 2. PDF Export Quality
 
 **Test:** Click "Export PDF Report" in Analytics tab, save the file, open in Preview
-**Expected:** US Letter page with ClaudeMon header, account name, weekly/monthly summaries with averages and peaks, top-10 project token usage, branded footer. Readable text at Retina quality, no gradient rendering artifacts
+**Expected:** US Letter page with Tokemon header, account name, weekly/monthly summaries with averages and peaks, top-10 project token usage, branded footer. Readable text at Retina quality, no gradient rendering artifacts
 **Why human:** ImageRenderer output quality and page layout require visual inspection
 
 ### 3. CSV Data Accuracy
@@ -123,7 +123,7 @@ No gaps found. All 5 success criteria from the ROADMAP are fully satisfied by th
 
 1. **Weekly/monthly summaries** -- AnalyticsEngine computes locale-aware week/month groupings with average and peak utilization. UsageSummaryView renders them in a clean table with a toggle picker.
 
-2. **PDF export** -- ExportManager generates Retina-quality PDFs via ImageRenderer with a self-contained PDFReportView containing weekly summaries, monthly summaries, top-10 project breakdown, and ClaudeMon branding.
+2. **PDF export** -- ExportManager generates Retina-quality PDFs via ImageRenderer with a self-contained PDFReportView containing weekly summaries, monthly summaries, top-10 project breakdown, and Tokemon branding.
 
 3. **CSV export** -- ExportManager generates properly formatted CSV with ISO8601 timestamps, utilization percentages, and source field with correct escaping.
 

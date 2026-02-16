@@ -24,10 +24,10 @@ tech-stack:
 
 key-files:
   created:
-    - "ClaudeMon/Services/ExportManager.swift"
-    - "ClaudeMon/Views/Analytics/PDFReportView.swift"
+    - "Tokemon/Services/ExportManager.swift"
+    - "Tokemon/Views/Analytics/PDFReportView.swift"
   modified:
-    - "ClaudeMon/Views/Analytics/AnalyticsDashboardView.swift"
+    - "Tokemon/Views/Analytics/AnalyticsDashboardView.swift"
 
 key-decisions:
   - "PDFReportView uses only solid colors (no gradients) to avoid ImageRenderer macOS rendering bugs"
@@ -72,9 +72,9 @@ Each task was committed atomically:
 2. **Task 2: Add export buttons to AnalyticsDashboardView** - `9f57856` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Services/ExportManager.swift` - Static @MainActor struct with generatePDF, exportPDF, generateCSV, exportCSV methods and CSV field escaping
-- `ClaudeMon/Views/Analytics/PDFReportView.swift` - Self-contained SwiftUI view for PDF rendering with weekly/monthly summaries, project breakdown, and ClaudeMon branding
-- `ClaudeMon/Views/Analytics/AnalyticsDashboardView.swift` - Added Export section with PDF/CSV buttons, Pro gating, isExporting loading state, AccountManager environment
+- `Tokemon/Services/ExportManager.swift` - Static @MainActor struct with generatePDF, exportPDF, generateCSV, exportCSV methods and CSV field escaping
+- `Tokemon/Views/Analytics/PDFReportView.swift` - Self-contained SwiftUI view for PDF rendering with weekly/monthly summaries, project breakdown, and Tokemon branding
+- `Tokemon/Views/Analytics/AnalyticsDashboardView.swift` - Added Export section with PDF/CSV buttons, Pro gating, isExporting loading state, AccountManager environment
 
 ## Decisions Made
 - PDFReportView uses only solid colors (`.white` background, `.black`/`.gray` foreground) to avoid ImageRenderer gradient rendering bugs on macOS
@@ -100,9 +100,9 @@ None - no external service configuration required.
 
 ## Self-Check: PASSED
 
-- FOUND: ClaudeMon/Services/ExportManager.swift
-- FOUND: ClaudeMon/Views/Analytics/PDFReportView.swift
-- FOUND: ClaudeMon/Views/Analytics/AnalyticsDashboardView.swift
+- FOUND: Tokemon/Services/ExportManager.swift
+- FOUND: Tokemon/Views/Analytics/PDFReportView.swift
+- FOUND: Tokemon/Views/Analytics/AnalyticsDashboardView.swift
 - FOUND: 08-03-SUMMARY.md
 - FOUND: commit bfdd6db
 - FOUND: commit 9f57856

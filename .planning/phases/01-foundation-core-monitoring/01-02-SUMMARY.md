@@ -24,13 +24,13 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Services/TokenManager.swift
-    - ClaudeMon/Services/OAuthClient.swift
-    - ClaudeMon/Services/JSONLParser.swift
+    - Tokemon/Services/TokenManager.swift
+    - Tokemon/Services/OAuthClient.swift
+    - Tokemon/Services/JSONLParser.swift
   modified:
-    - ClaudeMon/Services/UsageMonitor.swift
-    - ClaudeMon/Models/UsageSnapshot.swift
-    - ClaudeMon/ClaudeMonApp.swift
+    - Tokemon/Services/UsageMonitor.swift
+    - Tokemon/Models/UsageSnapshot.swift
+    - Tokemon/TokemonApp.swift
 
 key-decisions:
   - "Token expiry check with 10-minute proactive buffer to avoid mid-request expiration"
@@ -77,12 +77,12 @@ Each task was committed atomically:
 2. **Task 2: Implement JSONLParser and wire real data into UsageMonitor** - `d5a8100` (feat)
 
 ## Files Created/Modified
-- `ClaudeMon/Services/TokenManager.swift` - Keychain credential reading, token validation with expiry buffer, token refresh via OAuth endpoint, Keychain write-back
-- `ClaudeMon/Services/OAuthClient.swift` - HTTP client for /api/oauth/usage with Bearer auth, status code handling (200/401/403), automatic token refresh cycle
-- `ClaudeMon/Services/JSONLParser.swift` - Defensive JSONL parser for ~/.claude/projects/ files, session discovery, line-by-line parsing, aggregate usage computation
-- `ClaudeMon/Services/UsageMonitor.swift` - Replaced mock data with real OAuth-first/JSONL-fallback chain, retry logic, manual refresh, one-time error notification
-- `ClaudeMon/Models/UsageSnapshot.swift` - Added hasPercentage, totalTokens, formattedTokenCount computed properties, updated menuBarText for dual display modes
-- `ClaudeMon/ClaudeMonApp.swift` - Updated StatusItemManager to handle JSONL token-count display with neutral color
+- `Tokemon/Services/TokenManager.swift` - Keychain credential reading, token validation with expiry buffer, token refresh via OAuth endpoint, Keychain write-back
+- `Tokemon/Services/OAuthClient.swift` - HTTP client for /api/oauth/usage with Bearer auth, status code handling (200/401/403), automatic token refresh cycle
+- `Tokemon/Services/JSONLParser.swift` - Defensive JSONL parser for ~/.claude/projects/ files, session discovery, line-by-line parsing, aggregate usage computation
+- `Tokemon/Services/UsageMonitor.swift` - Replaced mock data with real OAuth-first/JSONL-fallback chain, retry logic, manual refresh, one-time error notification
+- `Tokemon/Models/UsageSnapshot.swift` - Added hasPercentage, totalTokens, formattedTokenCount computed properties, updated menuBarText for dual display modes
+- `Tokemon/TokemonApp.swift` - Updated StatusItemManager to handle JSONL token-count display with neutral color
 
 ## Decisions Made
 - **10-minute proactive token refresh buffer:** Access tokens expire after ~8 hours. Rather than waiting for a 401, the TokenManager proactively refreshes when within 10 minutes of expiry. This prevents mid-request failures during the polling cycle.

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Phase 8 extends ClaudeMon's existing usage tracking infrastructure with three major capabilities: (1) extended 90-day data retention with downsampling, (2) weekly/monthly usage summaries with per-project breakdowns, and (3) PDF and CSV export for usage reports.
+Phase 8 extends Tokemon's existing usage tracking infrastructure with three major capabilities: (1) extended 90-day data retention with downsampling, (2) weekly/monthly usage summaries with per-project breakdowns, and (3) PDF and CSV export for usage reports.
 
 The existing codebase provides a strong foundation. `HistoryStore` already supports per-account JSON file storage with 30-day retention. `UsageDataPoint` captures timestamped utilization percentages. `UsageChartView` renders trend charts using native Swift Charts. `JSONLParser` already reads `~/.claude/projects/` session files and extracts token counts per project directory. The `FeatureAccessManager` already defines Pro feature gates for all Phase 8 features (`.extendedHistory`, `.weeklySummary`, `.monthlySummary`, `.projectBreakdown`, `.exportPDF`, `.exportCSV`).
 
@@ -44,7 +44,7 @@ No additional packages needed. All capabilities use native Apple frameworks alre
 
 ### Recommended Project Structure
 ```
-ClaudeMon/
+Tokemon/
   Services/
     HistoryStore.swift          # EXTEND: 90-day retention + downsampling
     AnalyticsEngine.swift       # NEW: aggregation, summaries, project breakdown
@@ -155,14 +155,14 @@ struct AnalyticsEngine {
 ### Pattern 3: Project/Folder Token Breakdown
 **What:** Parse JSONL session files grouped by project directory to show which projects consumed the most tokens.
 **When to use:** ANALYTICS-07 requirement -- per-project usage tracking.
-**Key insight:** Claude Code stores sessions at `~/.claude/projects/{encoded-path}/` where the directory name encodes the project path (e.g., `-Users-richardparr-ClaudeMon` maps to `/Users/richardparr/ClaudeMon`). The existing `JSONLParser.findProjectDirectories()` already discovers these. Each JSONL entry also has a `cwd` field with the full path.
+**Key insight:** Claude Code stores sessions at `~/.claude/projects/{encoded-path}/` where the directory name encodes the project path (e.g., `-Users-richardparr-Tokemon` maps to `/Users/richardparr/Tokemon`). The existing `JSONLParser.findProjectDirectories()` already discovers these. Each JSONL entry also has a `cwd` field with the full path.
 **Example:**
 ```swift
 // Source: Existing JSONLParser patterns
 struct ProjectUsage: Identifiable {
     let id = UUID()
-    let projectPath: String        // Decoded path (e.g., "/Users/richardparr/ClaudeMon")
-    let projectName: String        // Last component (e.g., "ClaudeMon")
+    let projectPath: String        // Decoded path (e.g., "/Users/richardparr/Tokemon")
+    let projectName: String        // Last component (e.g., "Tokemon")
     let inputTokens: Int
     let outputTokens: Int
     let cacheCreationTokens: Int
@@ -176,7 +176,7 @@ struct ProjectUsage: Identifiable {
 
 extension AnalyticsEngine {
     /// Decode a Claude Code project directory name back to a filesystem path.
-    /// "-Users-richardparr-ClaudeMon" -> "/Users/richardparr/ClaudeMon"
+    /// "-Users-richardparr-Tokemon" -> "/Users/richardparr/Tokemon"
     static func decodeProjectPath(_ dirName: String) -> String {
         // Replace leading dash + subsequent dashes with slashes
         var path = dirName
@@ -231,7 +231,7 @@ extension AnalyticsEngine {
 @MainActor
 struct ExportManager {
     /// Render a report view to PDF and return the file URL.
-    static func generatePDF(from reportView: some View, filename: String = "ClaudeMon-Report.pdf") -> URL? {
+    static func generatePDF(from reportView: some View, filename: String = "Tokemon-Report.pdf") -> URL? {
         let renderer = ImageRenderer(content: reportView)
         renderer.scale = 2.0  // Retina quality
 
@@ -288,7 +288,7 @@ extension ExportManager {
 
     /// Show NSSavePanel and write CSV to user-selected location.
     @MainActor
-    static func exportCSV(content: String, suggestedFilename: String = "claudemon-usage.csv") async -> Bool {
+    static func exportCSV(content: String, suggestedFilename: String = "tokemon-usage.csv") async -> Bool {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.commaSeparatedText]
         panel.nameFieldStringValue = suggestedFilename
@@ -356,7 +356,7 @@ extension ExportManager {
 
 ### Pitfall 5: NSSavePanel in Menu Bar App
 **What goes wrong:** Save panel appears behind other windows or fails to show.
-**Why it happens:** ClaudeMon is an LSUIElement app (no Dock icon), so it doesn't have a key window by default.
+**Why it happens:** Tokemon is an LSUIElement app (no Dock icon), so it doesn't have a key window by default.
 **How to avoid:** Call `NSApp.activate(ignoringOtherApps: true)` before presenting NSSavePanel. Use `panel.begin()` (standalone) rather than `panel.beginSheetModal()` if there's no reliable key window. The existing `openSettings()` pattern in the codebase already handles this activation.
 **Warning signs:** Panel doesn't appear, appears behind other apps, or crashes on nil window.
 
@@ -431,7 +431,7 @@ struct PDFReportView: View {
         VStack(alignment: .leading, spacing: 16) {
             // Header
             HStack {
-                Text("ClaudeMon Usage Report")
+                Text("Tokemon Usage Report")
                     .font(.title.bold())
                 Spacer()
                 Text(generatedDate.formatted(date: .long, time: .shortened))
@@ -492,7 +492,7 @@ struct PDFReportView: View {
 ```swift
 // Source: macOS NSSavePanel documentation
 @MainActor
-static func exportPDF(from view: some View, suggestedFilename: String = "ClaudeMon-Report.pdf") async -> Bool {
+static func exportPDF(from view: some View, suggestedFilename: String = "Tokemon-Report.pdf") async -> Bool {
     // Activate app (important for LSUIElement apps)
     NSApp.activate(ignoringOtherApps: true)
 

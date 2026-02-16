@@ -29,7 +29,7 @@ All 4 success criteria have covering tasks:
 
 2. **Position persistence:**
    - Plan 04-01 Task 1: NSWindow Position extension for corner positioning
-   - Plan 04-01 Task 2: `setFrameAutosaveName("ClaudeMonFloatingWindow")` called before showing
+   - Plan 04-01 Task 2: `setFrameAutosaveName("TokemonFloatingWindow")` called before showing
 
 3. **Live usage data display:**
    - Plan 04-02 Task 1: FloatingWindowView with `@Environment(UsageMonitor.self)`
@@ -81,7 +81,7 @@ Actions are specific with full code samples. Verify commands are runnable (`swif
 | Position persistence | FloatingWindowController | UserDefaults | `setFrameAutosaveName` | 04-01 T2 |
 | Live data | FloatingWindowView | UsageMonitor | `@Environment(UsageMonitor.self)` | 04-02 T1 |
 | Color gradient | FloatingWindowView | GradientColors | `GradientColors.color(for:)` | 04-02 T1 |
-| Menu integration | ClaudeMonApp | FloatingWindowController | `toggleFloatingWindow()` | 04-02 T2 |
+| Menu integration | TokemonApp | FloatingWindowController | `toggleFloatingWindow()` | 04-02 T2 |
 | Environment injection | FloatingWindowController | FloatingWindowView | `.environment(monitor)` | 04-02 T2 |
 
 All critical wiring is explicitly planned in task actions.

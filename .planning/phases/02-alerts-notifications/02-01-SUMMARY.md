@@ -26,13 +26,13 @@ tech-stack:
 
 key-files:
   created:
-    - ClaudeMon/Services/AlertManager.swift
+    - Tokemon/Services/AlertManager.swift
   modified:
-    - ClaudeMon/Utilities/Constants.swift
-    - ClaudeMon/Services/UsageMonitor.swift
-    - ClaudeMon/ClaudeMonApp.swift
-    - ClaudeMon/Views/MenuBar/UsageHeaderView.swift
-    - ClaudeMon/Views/MenuBar/PopoverContentView.swift
+    - Tokemon/Utilities/Constants.swift
+    - Tokemon/Services/UsageMonitor.swift
+    - Tokemon/TokemonApp.swift
+    - Tokemon/Views/MenuBar/UsageHeaderView.swift
+    - Tokemon/Views/MenuBar/PopoverContentView.swift
 
 key-decisions:
   - "Notification sending stubbed for Plan 02 (separation of concerns)"
@@ -78,12 +78,12 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `ClaudeMon/Services/AlertManager.swift` - AlertManager service with AlertLevel enum, threshold checking, notification state
-- `ClaudeMon/Utilities/Constants.swift` - Added defaultAlertThreshold constant (80%)
-- `ClaudeMon/Services/UsageMonitor.swift` - Added onAlertCheck callback, invoked on each refresh
-- `ClaudeMon/ClaudeMonApp.swift` - Added AlertManager state, environment injection, wiring
-- `ClaudeMon/Views/MenuBar/UsageHeaderView.swift` - Added alertLevel property and warning banner for critical
-- `ClaudeMon/Views/MenuBar/PopoverContentView.swift` - Pass alertLevel from environment to header
+- `Tokemon/Services/AlertManager.swift` - AlertManager service with AlertLevel enum, threshold checking, notification state
+- `Tokemon/Utilities/Constants.swift` - Added defaultAlertThreshold constant (80%)
+- `Tokemon/Services/UsageMonitor.swift` - Added onAlertCheck callback, invoked on each refresh
+- `Tokemon/TokemonApp.swift` - Added AlertManager state, environment injection, wiring
+- `Tokemon/Views/MenuBar/UsageHeaderView.swift` - Added alertLevel property and warning banner for critical
+- `Tokemon/Views/MenuBar/PopoverContentView.swift` - Pass alertLevel from environment to header
 
 ## Decisions Made
 
@@ -116,7 +116,7 @@ None - no external service configuration required.
 
 ## Self-Check: PASSED
 
-- [x] AlertManager.swift exists at ClaudeMon/Services/AlertManager.swift
+- [x] AlertManager.swift exists at Tokemon/Services/AlertManager.swift
 - [x] Commit 87a325a exists
 - [x] Commit cb46061 exists
 - [x] Build succeeds with all changes

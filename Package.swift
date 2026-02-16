@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "ClaudeMon",
+    name: "Tokemon",
     platforms: [
         .macOS(.v14)
     ],
@@ -14,14 +14,14 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "ClaudeMon",
+            name: "Tokemon",
             dependencies: [
                 "MenuBarExtraAccess",
                 "SettingsAccess",
                 "KeychainAccess",
                 .product(name: "LemonSqueezyLicense", package: "swift-lemon-squeezy-license"),
             ],
-            path: "ClaudeMon",
+            path: "Tokemon",
             exclude: ["Info.plist"]
         ),
     ]

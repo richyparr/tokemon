@@ -32,14 +32,14 @@ re_verification: false
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `ClaudeMon/Utilities/Theme.swift` | AppTheme enum, ThemeColors struct, ThemeManager @Observable | VERIFIED | 106 lines, all components present with UserDefaults persistence |
-| `ClaudeMon/Utilities/Color+Hex.swift` | Hex color initialization | VERIFIED | 28 lines, extensions for Color and NSColor |
-| `ClaudeMon/Views/Settings/AppearanceSettings.swift` | Theme picker UI | VERIFIED | Radio group picker with theme descriptions |
-| `ClaudeMon/ClaudeMonApp.swift` | ThemeManager @State and .environment() injection | VERIFIED | Line 13: `@State private var themeManager`, Lines 31, 85: `.environment(themeManager)` |
-| `ClaudeMon/Views/MenuBar/PopoverContentView.swift` | Themed popover with colorScheme override | VERIFIED | Lines 10-11, 17-19, 23, 114-115 |
-| `ClaudeMon/Views/FloatingWindow/FloatingWindowView.swift` | Themed floating window | VERIFIED | Lines 10-11, 14-16, 20, 38-39 |
-| `ClaudeMon/Services/FloatingWindowController.swift` | ThemeManager environment injection | VERIFIED | Line 112: `.environment(themeManager)` |
-| `ClaudeMon/Views/Charts/UsageChartView.swift` | Theme-aware chart colors | VERIFIED | Line 88: `themeColors.chartGradientColors`, Line 100: `themeColors.primaryAccent` |
+| `Tokemon/Utilities/Theme.swift` | AppTheme enum, ThemeColors struct, ThemeManager @Observable | VERIFIED | 106 lines, all components present with UserDefaults persistence |
+| `Tokemon/Utilities/Color+Hex.swift` | Hex color initialization | VERIFIED | 28 lines, extensions for Color and NSColor |
+| `Tokemon/Views/Settings/AppearanceSettings.swift` | Theme picker UI | VERIFIED | Radio group picker with theme descriptions |
+| `Tokemon/TokemonApp.swift` | ThemeManager @State and .environment() injection | VERIFIED | Line 13: `@State private var themeManager`, Lines 31, 85: `.environment(themeManager)` |
+| `Tokemon/Views/MenuBar/PopoverContentView.swift` | Themed popover with colorScheme override | VERIFIED | Lines 10-11, 17-19, 23, 114-115 |
+| `Tokemon/Views/FloatingWindow/FloatingWindowView.swift` | Themed floating window | VERIFIED | Lines 10-11, 14-16, 20, 38-39 |
+| `Tokemon/Services/FloatingWindowController.swift` | ThemeManager environment injection | VERIFIED | Line 112: `.environment(themeManager)` |
+| `Tokemon/Views/Charts/UsageChartView.swift` | Theme-aware chart colors | VERIFIED | Line 88: `themeColors.chartGradientColors`, Line 100: `themeColors.primaryAccent` |
 
 ### Key Link Verification
 
@@ -47,7 +47,7 @@ re_verification: false
 |------|-----|-----|--------|---------|
 | `AppearanceSettings.swift` | `Theme.swift` | `@Environment(ThemeManager.self)` | WIRED | Line 7 |
 | `Theme.swift` | `UserDefaults` | `selectedTheme didSet` | WIRED | Line 88 |
-| `ClaudeMonApp.swift` | `PopoverContentView` | `.environment(themeManager)` | WIRED | Line 31 |
+| `TokemonApp.swift` | `PopoverContentView` | `.environment(themeManager)` | WIRED | Line 31 |
 | `FloatingWindowController.swift` | `FloatingWindowView` | `.environment(themeManager)` | WIRED | Line 112 |
 | `UsageChartView.swift` | `ThemeColors` | `themeColors.chartGradientColors` | WIRED | Line 88 |
 

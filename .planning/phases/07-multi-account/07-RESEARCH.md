@@ -43,7 +43,7 @@ No new dependencies required. Uses existing `KeychainAccess` package.
 
 ### Recommended Project Structure
 ```
-ClaudeMon/
+Tokemon/
 ├── Services/
 │   ├── AccountManager.swift        # NEW: Multi-account coordination
 │   ├── TokenManager.swift          # MODIFY: Accept accountId parameter
@@ -149,7 +149,7 @@ final class AccountManager {
     private let activeAccountKey = "activeAccountId"
 
     init() {
-        // Separate keychain service for ClaudeMon's account metadata
+        // Separate keychain service for Tokemon's account metadata
         accountsKeychain = Keychain(service: Constants.accountsKeychainService)
             .accessibility(.afterFirstUnlockThisDeviceOnly)
 
@@ -418,15 +418,15 @@ struct CombinedUsageView: View {
 | Parallel usage fetching | Manual threading | `withTaskGroup` | Structured concurrency, automatic cancellation |
 | Account picker UI | Custom popover | SwiftUI `Menu` | Native feel, automatic dismissal |
 
-**Key insight:** The app's job is coordination, not re-implementing OAuth. Claude Code handles the OAuth flow -- ClaudeMon just reads the stored credentials and fetches usage data for each account.
+**Key insight:** The app's job is coordination, not re-implementing OAuth. Claude Code handles the OAuth flow -- Tokemon just reads the stored credentials and fetches usage data for each account.
 
 ## Common Pitfalls
 
 ### Pitfall 1: Modifying Claude Code's Keychain Entries
 **What goes wrong:** Writing account metadata to Claude Code's keychain service corrupts credentials
 **Why it happens:** Tempting to co-locate all account data
-**How to avoid:** Use a separate keychain service (`Constants.accountsKeychainService`) for ClaudeMon's account metadata; only *read* from Claude Code's service
-**Warning signs:** Claude Code reports credential errors after ClaudeMon runs
+**How to avoid:** Use a separate keychain service (`Constants.accountsKeychainService`) for Tokemon's account metadata; only *read* from Claude Code's service
+**Warning signs:** Claude Code reports credential errors after Tokemon runs
 
 ### Pitfall 2: Not Handling Account Removal During Active Session
 **What goes wrong:** App crashes or shows stale data when active account is removed
@@ -526,7 +526,7 @@ actor HistoryStore {
         if let cached = fileURLs[accountId] { return cached }
 
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let appDir = appSupport.appendingPathComponent("ClaudeMon/history", isDirectory: true)
+        let appDir = appSupport.appendingPathComponent("Tokemon/history", isDirectory: true)
         try? FileManager.default.createDirectory(at: appDir, withIntermediateDirectories: true)
 
         let url = appDir.appendingPathComponent("\(accountId.uuidString).json")
@@ -677,7 +677,7 @@ extension OAuthClient {
 
 2. **Adding new accounts flow**
    - What we know: Claude Code's `claude login` creates the keychain entry
-   - What's unclear: Should ClaudeMon prompt user to run `claude login` or detect new credentials automatically?
+   - What's unclear: Should Tokemon prompt user to run `claude login` or detect new credentials automatically?
    - Recommendation: Manual "Add Account" button that shows instructions, plus periodic check for new credentials
 
 3. **Combined view metrics**
@@ -694,7 +694,7 @@ extension OAuthClient {
 
 ### Primary (HIGH confidence)
 - [KeychainAccess GitHub](https://github.com/kishikawakatsumi/KeychainAccess) - `allKeys()` and per-key storage patterns
-- Existing ClaudeMon codebase - TokenManager, LicenseStorage, UsageMonitor patterns
+- Existing Tokemon codebase - TokenManager, LicenseStorage, UsageMonitor patterns
 - [Apple Maintaining State in Your Apps](https://developer.apple.com/documentation/swift/maintaining-state-in-your-apps) - State management patterns
 
 ### Secondary (MEDIUM confidence)
@@ -725,7 +725,7 @@ extension OAuthClient {
 - Change from single file to per-account files
 - Add `accountId` parameter to all methods
 
-### ClaudeMonApp.swift
+### TokemonApp.swift
 - Add `AccountManager` as `@State` property
 - Wire `onActiveAccountChanged` callback to trigger UsageMonitor refresh
 - Pass to views via `.environment()`
@@ -739,7 +739,7 @@ extension OAuthClient {
 - Gate with `featureAccess.canAccess(.multiAccount)`
 
 ### Constants.swift
-- Add `accountsKeychainService = "com.claudemon.accounts"`
+- Add `accountsKeychainService = "com.tokemon.accounts"`
 
 ## Metadata
 

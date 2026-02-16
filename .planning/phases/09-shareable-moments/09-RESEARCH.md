@@ -6,11 +6,11 @@
 
 ## Summary
 
-Phase 9 adds "shareable moments" functionality to ClaudeMon: users can generate branded usage cards showing their Claude stats and copy them to the clipboard for social media sharing. This leverages the analytics infrastructure from Phase 8 (AnalyticsEngine, UsageSummary, ProjectUsage) and the proven ImageRenderer pattern from PDFReportView.
+Phase 9 adds "shareable moments" functionality to Tokemon: users can generate branded usage cards showing their Claude stats and copy them to the clipboard for social media sharing. This leverages the analytics infrastructure from Phase 8 (AnalyticsEngine, UsageSummary, ProjectUsage) and the proven ImageRenderer pattern from PDFReportView.
 
-The implementation is straightforward: (1) design a visually appealing SwiftUI card view with usage stats and ClaudeMon branding, (2) render it to NSImage using ImageRenderer, (3) copy to clipboard via NSPasteboard.writeObjects(). The key technical consideration is avoiding LinearGradient in the card view, as ImageRenderer on macOS has known rendering issues with gradients (already documented in Phase 8 research). Using solid colors and simple shapes ensures reliable output.
+The implementation is straightforward: (1) design a visually appealing SwiftUI card view with usage stats and Tokemon branding, (2) render it to NSImage using ImageRenderer, (3) copy to clipboard via NSPasteboard.writeObjects(). The key technical consideration is avoiding LinearGradient in the card view, as ImageRenderer on macOS has known rendering issues with gradients (already documented in Phase 8 research). Using solid colors and simple shapes ensures reliable output.
 
-The viral marketing aspect is served by including ClaudeMon branding (app name, URL) on every generated card. When users share these cards on Twitter/X, LinkedIn, or other platforms, the branding travels with the content. The "copy to clipboard" workflow is intentional: users manually paste and post, ensuring explicit consent for sharing.
+The viral marketing aspect is served by including Tokemon branding (app name, URL) on every generated card. When users share these cards on Twitter/X, LinkedIn, or other platforms, the branding travels with the content. The "copy to clipboard" workflow is intentional: users manually paste and post, ensuring explicit consent for sharing.
 
 **Primary recommendation:** Build a `ShareableCardView` with usage stats (daily/weekly utilization, top project, token count) using solid colors only. Add an `ExportManager.copyImageToClipboard()` method that uses ImageRenderer to render the card view to NSImage and copies it via NSPasteboard. Add a "Share Usage Card" button to the Analytics tab, Pro-gated via `FeatureAccessManager.canAccess(.usageCards)`.
 
@@ -42,7 +42,7 @@ No additional packages needed. All capabilities use native Apple frameworks.
 
 ### Recommended Project Structure
 ```
-ClaudeMon/
+Tokemon/
   Views/
     ShareableCard/
       ShareableCardView.swift       # NEW: The card template view
@@ -69,7 +69,7 @@ struct ShareableCardView: View {
         VStack(alignment: .leading, spacing: 12) {
             // Header with branding
             HStack {
-                Text("ClaudeMon")
+                Text("Tokemon")
                     .font(.headline)
                     .fontWeight(.bold)
                     .foregroundStyle(Color(hex: 0xc15f3c)) // Anthropic orange
@@ -114,7 +114,7 @@ struct ShareableCardView: View {
             Spacer()
 
             // Footer with URL
-            Text("claudemon.app")
+            Text("tokemon.app")
                 .font(.caption2)
                 .foregroundStyle(.gray)
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -339,7 +339,7 @@ struct ShareableCardPreviewView: View {
 // Source: Existing PDFReportView pattern + GitHub Wrapped design inspiration
 import SwiftUI
 
-/// A shareable card displaying usage statistics with ClaudeMon branding.
+/// A shareable card displaying usage statistics with Tokemon branding.
 /// CRITICAL: No @Environment, no gradients. All data passed as parameters.
 struct ShareableCardView: View {
     // Required data
@@ -361,10 +361,10 @@ struct ShareableCardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Header: ClaudeMon branding + period
+            // Header: Tokemon branding + period
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("ClaudeMon")
+                    Text("Tokemon")
                         .font(.headline)
                         .fontWeight(.bold)
                         .foregroundStyle(brandOrange)
@@ -408,7 +408,7 @@ struct ShareableCardView: View {
             // Footer: URL for viral marketing
             HStack {
                 Spacer()
-                Text("claudemon.app")
+                Text("tokemon.app")
                     .font(.caption2)
                     .fontWeight(.medium)
                     .foregroundStyle(secondaryText)
@@ -565,9 +565,9 @@ private func copyUsageCard() async {
    - Recommendation: Use 320x200 (1.6:1 aspect ratio at 2x = 640x400 pixels). This fits well in Twitter feeds, is not too tall for Instagram stories, and looks good inline. Larger sizes add no value and increase clipboard data size.
 
 4. **Branding Placement**
-   - What we know: SHARE-03 requires ClaudeMon branding for viral marketing.
+   - What we know: SHARE-03 requires Tokemon branding for viral marketing.
    - What's unclear: Logo image or text-only branding?
-   - Recommendation: Text-only ("ClaudeMon" + "claudemon.app"). The app currently has no logo asset, and text branding is clean and reliable in ImageRenderer. Adding a logo image requires asset management and potential rendering issues.
+   - Recommendation: Text-only ("Tokemon" + "tokemon.app"). The app currently has no logo asset, and text branding is clean and reliable in ImageRenderer. Adding a logo image requires asset management and potential rendering issues.
 
 ## Sources
 
