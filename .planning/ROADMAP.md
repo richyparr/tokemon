@@ -50,10 +50,12 @@ See [v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md) for full details.
 
 **Goal:** Expanded date range options for PDF/CSV export with Admin API data
 **Depends on:** Phase 9
-**Plans:** 0 plans
+**Plans:** 3 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 10 to break down)
+- [ ] 10-01-PLAN.md — Export config model, API pagination, cost bug fix
+- [ ] 10-02-PLAN.md — Two-step export dialog UI and dashboard wiring
+- [ ] 10-03-PLAN.md — Enhanced CSV (7 columns) and multi-page adaptive PDF
 
 ---
 
