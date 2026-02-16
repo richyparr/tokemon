@@ -12,7 +12,7 @@ struct ShareableCardView: View {
     let generatedDate: Date
 
     // Tokemon branding colors
-    private let anthropicOrange = Color(red: 0xc1 / 255.0, green: 0x5f / 255.0, blue: 0x3c / 255.0)
+    private let accentOrange = Color(red: 0xc1 / 255.0, green: 0x5f / 255.0, blue: 0x3c / 255.0)
     private let cardBackground = Color.white
 
     var body: some View {
@@ -26,7 +26,7 @@ struct ShareableCardView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Tokemon")
                             .font(.system(size: 18, weight: .bold, design: .rounded))
-                            .foregroundStyle(anthropicOrange)
+                            .foregroundStyle(accentOrange)
 
                         Text("Claude Usage Stats")
                             .font(.system(size: 11))

@@ -4,6 +4,7 @@ import SwiftUI
 /// Clean dropdown with preset intervals.
 struct RefreshSettings: View {
     @Environment(UsageMonitor.self) private var monitor
+    @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
 
     /// Available refresh intervals (in seconds)
     private let intervals: [(label: String, value: TimeInterval)] = [
@@ -51,6 +52,16 @@ struct RefreshSettings: View {
                     .foregroundStyle(.secondary)
             } header: {
                 Text("Display")
+            }
+
+            Section {
+                Toggle("Show usage trend chart", isOn: $showUsageTrend)
+
+                Text("Display a usage chart and burn rate in the popover")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Popover")
             }
         }
         .formStyle(.grouped)

@@ -6,7 +6,6 @@ enum AppTheme: String, CaseIterable, Identifiable {
     case native = "Native macOS"
     case light = "Light"
     case dark = "Dark"
-    case anthropic = "Anthropic"
 
     var id: String { rawValue }
 }
@@ -26,8 +25,7 @@ struct ThemeColors {
             // Hardcoded light appearance colors (NSColor ignores preferredColorScheme)
             return Color(hex: 0xececec)
         case .dark:
-            return Color(hex: 0x1a1a1a)
-        case .anthropic:
+            // Warm dark theme
             return colorScheme == .dark ? Color(hex: 0x141413) : Color(hex: 0xfaf9f5)
         }
     }
@@ -41,8 +39,7 @@ struct ThemeColors {
             // System blue in light mode
             return Color(hex: 0x007aff)
         case .dark:
-            return Color(hex: 0x4a9eff)
-        case .anthropic:
+            // Warm accent
             return Color(hex: 0xc15f3c)
         }
     }
@@ -56,8 +53,6 @@ struct ThemeColors {
             // Dark gray for light backgrounds (macOS light mode secondary label)
             return Color(hex: 0x3c3c43, opacity: 0.6)
         case .dark:
-            return Color(hex: 0x8e8e93)
-        case .anthropic:
             return Color(hex: 0xb0aea5)
         }
     }
@@ -71,8 +66,6 @@ struct ThemeColors {
             // Medium gray for light backgrounds (readable but muted)
             return Color(hex: 0x3c3c43, opacity: 0.3)
         case .dark:
-            return Color(hex: 0x545458)
-        case .anthropic:
             return Color(hex: 0x8a877d)
         }
     }
@@ -97,8 +90,6 @@ struct ThemeColors {
             // Use system blue for light theme (hardcoded to avoid NSColor issues)
             return [Color(hex: 0x007aff, opacity: 0.4), Color(hex: 0x007aff, opacity: 0.1)]
         case .dark:
-            return [Color(hex: 0x4a9eff, opacity: 0.4), Color(hex: 0x4a9eff, opacity: 0.1)]
-        case .anthropic:
             return [Color(hex: 0xc15f3c, opacity: 0.4), Color(hex: 0xc15f3c, opacity: 0.1)]
         }
     }
@@ -112,9 +103,7 @@ struct ThemeColors {
         case .light:
             return .light  // Always light
         case .dark:
-            return .dark  // Always dark
-        case .anthropic:
-            return nil  // Follows system
+            return nil  // Follows system (warm tones adapt to light/dark)
         }
     }
 }

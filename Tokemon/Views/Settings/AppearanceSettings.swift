@@ -16,7 +16,6 @@ struct AppearanceSettings: View {
     }
 
     @AppStorage("menuBarIconStyle") private var selectedStyle: String = IconStyle.percentage.rawValue
-    @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
 
     /// Description text for the currently selected theme
     private var themeDescription: String {
@@ -26,9 +25,7 @@ struct AppearanceSettings: View {
         case .light:
             return "Always light appearance"
         case .dark:
-            return "Always dark with muted accent colors"
-        case .anthropic:
-            return "Warm tones inspired by Anthropic's brand"
+            return "Warm tones with orange accents"
         }
     }
 
@@ -68,15 +65,6 @@ struct AppearanceSettings: View {
                 Text("Menu Bar Display")
             }
 
-            Section {
-                Toggle("Show usage trend chart", isOn: $showUsageTrend)
-
-                Text("Display a usage chart and burn rate in the popover")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            } header: {
-                Text("Popover")
-            }
         }
         .formStyle(.grouped)
     }

@@ -127,7 +127,7 @@ struct PopoverContentView: View {
 
                     Divider()
 
-                    Button("Quit Tokemon") {
+                    Button("Quit tokemon") {
                         NSApplication.shared.terminate(nil)
                     }
                     .keyboardShortcut("q", modifiers: .command)

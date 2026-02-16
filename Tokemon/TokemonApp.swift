@@ -20,13 +20,28 @@ struct TokemonApp: App {
     // Track whether chart is shown to adjust popover height
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
 
-    /// Compute popover height based on chart visibility and trial banner
+    /// Compute popover height based on content visibility
     private var popoverHeight: CGFloat {
-        let baseHeight: CGFloat = 420  // Pro user, no chart
-        let trialBannerHeight: CGFloat = 100
-        let chartHeight: CGFloat = 240
+        // Base heights measured from actual content:
+        // - Account switcher: ~24px
+        // - Usage header (percentage + reset): ~90px
+        // - Divider + spacing: ~24px
+        // - Usage detail section (basic): ~80px
+        // - Divider + spacing: ~24px
+        // - Footer row: ~24px
+        // - Padding: 32px (16 top + 16 bottom)
+        // Total base: ~298px, round to 300
+        let baseHeight: CGFloat = 300
+        let trialBannerHeight: CGFloat = 56   // Trial banner actual height
+        let chartHeight: CGFloat = 230        // Chart + burn rate section
+        let extraUsageHeight: CGFloat = 75    // Extra usage section (divider + title + 3 rows)
 
         var height = baseHeight
+
+        // Add height for extra usage section if shown
+        if monitor.showExtraUsage && monitor.currentUsage.extraUsageEnabled {
+            height += extraUsageHeight
+        }
 
         // Add height for trial banner if needed
         if shouldShowTrialBanner {
@@ -303,8 +318,8 @@ final class StatusItemManager {
 
         menu.addItem(NSMenuItem.separator())
 
-        // Quit Tokemon (Cmd+Q)
-        let quitItem = NSMenuItem(title: "Quit Tokemon", action: #selector(ContextMenuActions.quitApp), keyEquivalent: "q")
+        // Quit tokemon (Cmd+Q)
+        let quitItem = NSMenuItem(title: "Quit tokemon", action: #selector(ContextMenuActions.quitApp), keyEquivalent: "q")
         quitItem.target = actions
         menu.addItem(quitItem)
 

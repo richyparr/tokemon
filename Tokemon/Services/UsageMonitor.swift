@@ -77,9 +77,9 @@ final class UsageMonitor {
     }
 
     /// Whether to show extra usage (billing) section in popover
-    var showExtraUsage: Bool {
-        get { UserDefaults.standard.object(forKey: "showExtraUsage") as? Bool ?? true }
-        set { UserDefaults.standard.set(newValue, forKey: "showExtraUsage") }
+    /// Stored property with didSet for SwiftUI reactivity (computed properties don't trigger @Observable updates)
+    var showExtraUsage: Bool = UserDefaults.standard.object(forKey: "showExtraUsage") as? Bool ?? true {
+        didSet { UserDefaults.standard.set(showExtraUsage, forKey: "showExtraUsage") }
     }
 
     // MARK: - Callbacks

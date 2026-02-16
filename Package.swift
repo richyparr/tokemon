@@ -14,7 +14,7 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "Tokemon",
+            name: "tokemon",
             dependencies: [
                 "MenuBarExtraAccess",
                 "SettingsAccess",

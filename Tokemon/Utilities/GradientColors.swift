@@ -8,23 +8,23 @@ enum GradientColors {
     /// Returns an NSColor appropriate for the given usage percentage (0-100).
     ///
     /// Color progression:
-    /// - 0-39%: Secondary label color (subtle, blends with system)
-    /// - 40-64%: Muted warm green-yellow
-    /// - 65-79%: Amber
-    /// - 80-94%: Warm orange
-    /// - 95-100%: Muted red
+    /// - 0-39%: White (visible against any menu bar background)
+    /// - 40-64%: Bright green
+    /// - 65-79%: Amber/yellow
+    /// - 80-94%: Orange
+    /// - 95-100%: Red
     static func color(for usage: Double) -> NSColor {
         switch usage {
         case ..<40:
-            return NSColor.secondaryLabelColor
+            return NSColor.white
         case 40..<65:
-            return NSColor(calibratedRed: 0.6, green: 0.7, blue: 0.3, alpha: 1.0)
+            return NSColor(calibratedRed: 0.4, green: 0.8, blue: 0.4, alpha: 1.0)
         case 65..<80:
-            return NSColor(calibratedRed: 0.85, green: 0.6, blue: 0.2, alpha: 1.0)
+            return NSColor(calibratedRed: 1.0, green: 0.8, blue: 0.2, alpha: 1.0)
         case 80..<95:
-            return NSColor(calibratedRed: 0.9, green: 0.4, blue: 0.2, alpha: 1.0)
+            return NSColor(calibratedRed: 1.0, green: 0.5, blue: 0.2, alpha: 1.0)
         default:
-            return NSColor(calibratedRed: 0.85, green: 0.25, blue: 0.2, alpha: 1.0)
+            return NSColor(calibratedRed: 1.0, green: 0.3, blue: 0.3, alpha: 1.0)
         }
     }
 }

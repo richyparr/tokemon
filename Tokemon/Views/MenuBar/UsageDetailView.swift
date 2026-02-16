@@ -29,8 +29,8 @@ struct UsageDetailView: View {
             value: usage.sevenDayUtilization?.percentageFormatted ?? "--"
         )
 
-        // Show Sonnet row if non-nil and non-zero
-        if let sonnetUtil = usage.sevenDaySonnetUtilization, sonnetUtil > 0 {
+        // Show Sonnet row if available (even if 0%)
+        if let sonnetUtil = usage.sevenDaySonnetUtilization {
             detailRow(
                 label: "7-day Sonnet",
                 value: sonnetUtil.percentageFormatted
