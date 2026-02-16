@@ -58,7 +58,7 @@ struct BurnRateView: View {
                     Image(systemName: "clock")
                         .foregroundColor(timeToLimitColor)
                         .font(.caption)
-                    Text("Limit In")
+                    Text("Est. Limit")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
