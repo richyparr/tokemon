@@ -46,9 +46,22 @@ struct AdminAPISettings: View {
                 Section("Connect Admin API") {
                     if showingKeyField {
                         VStack(alignment: .leading, spacing: 8) {
-                            SecureField("sk-ant-admin...", text: $apiKey)
+                            HStack {
+                            TextField("sk-ant-admin...", text: $apiKey)
                                 .textFieldStyle(.roundedBorder)
                                 .disabled(isValidating)
+
+                            Button {
+                                if let clip = NSPasteboard.general.string(forType: .string) {
+                                    apiKey = clip.trimmingCharacters(in: .whitespacesAndNewlines)
+                                }
+                            } label: {
+                                Image(systemName: "doc.on.clipboard")
+                            }
+                            .buttonStyle(.borderless)
+                            .help("Paste from clipboard")
+                            .disabled(isValidating)
+                        }
 
                             if let error = errorMessage {
                                 Text(error)

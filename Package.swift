@@ -22,7 +22,11 @@ let package = Package(
                 .product(name: "LemonSqueezyLicense", package: "swift-lemon-squeezy-license"),
             ],
             path: "Tokemon",
-            exclude: ["Info.plist"]
+            exclude: ["Info.plist"],
+            resources: [
+                .copy("Resources/tokemon_logo_white.png"),
+                .copy("Resources/tokemon_logo.png"),
+            ]
         ),
     ]
 )

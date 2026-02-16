@@ -6,10 +6,56 @@ import SwiftUI
 struct PDFReportView: View {
     let accountName: String
     let generatedDate: Date
+
+    // Local data mode
     let weeklySummaries: [UsageSummary]
     let monthlySummaries: [UsageSummary]
     let projectBreakdown: [ProjectUsage]
     let totalDataPoints: Int
+
+    // Admin API data mode
+    let adminUsageData: AdminUsageResponse?
+    let adminCostData: AdminCostResponse?
+
+    /// Local data initializer
+    init(
+        accountName: String,
+        generatedDate: Date,
+        weeklySummaries: [UsageSummary],
+        monthlySummaries: [UsageSummary],
+        projectBreakdown: [ProjectUsage],
+        totalDataPoints: Int
+    ) {
+        self.accountName = accountName
+        self.generatedDate = generatedDate
+        self.weeklySummaries = weeklySummaries
+        self.monthlySummaries = monthlySummaries
+        self.projectBreakdown = projectBreakdown
+        self.totalDataPoints = totalDataPoints
+        self.adminUsageData = nil
+        self.adminCostData = nil
+    }
+
+    /// Admin API data initializer
+    init(
+        accountName: String,
+        generatedDate: Date,
+        adminUsageData: AdminUsageResponse,
+        adminCostData: AdminCostResponse?
+    ) {
+        self.accountName = accountName
+        self.generatedDate = generatedDate
+        self.weeklySummaries = []
+        self.monthlySummaries = []
+        self.projectBreakdown = []
+        self.totalDataPoints = 0
+        self.adminUsageData = adminUsageData
+        self.adminCostData = adminCostData
+    }
+
+    private var isAdminMode: Bool {
+        adminUsageData != nil
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -28,99 +74,31 @@ struct PDFReportView: View {
             }
 
             // 2. Account name
-            Text(accountName)
-                .font(.subheadline)
-                .foregroundStyle(.black)
+            HStack {
+                Text(accountName)
+                    .font(.subheadline)
+                    .foregroundStyle(.black)
+                if isAdminMode {
+                    Text("(Admin API)")
+                        .font(.caption)
+                        .foregroundStyle(.gray)
+                }
+            }
 
             // 3. Divider
             Rectangle()
                 .fill(.gray.opacity(0.3))
                 .frame(height: 1)
 
-            // 4. Weekly Summary section
-            if !weeklySummaries.isEmpty {
-                Text("Weekly Summary")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.black)
-                    .padding(.top, 4)
-
-                ForEach(weeklySummaries) { summary in
-                    HStack {
-                        Text(summary.periodLabel)
-                            .font(.callout)
-                            .foregroundStyle(.black)
-                        Spacer()
-                        Text("Avg: \(String(format: "%.1f", summary.averageUtilization))%")
-                            .font(.callout)
-                            .foregroundStyle(.black)
-                        Text("Peak: \(String(format: "%.1f", summary.peakUtilization))%")
-                            .font(.callout)
-                            .foregroundStyle(.black)
-                            .frame(width: 100, alignment: .trailing)
-                    }
-                }
+            if isAdminMode, let usage = adminUsageData {
+                // Admin API mode content
+                adminModeContent(usage: usage)
+            } else {
+                // Local data mode content
+                localModeContent
             }
 
-            // 5. Monthly Summary section
-            if !monthlySummaries.isEmpty {
-                Text("Monthly Summary")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.black)
-                    .padding(.top, 8)
-
-                ForEach(monthlySummaries) { summary in
-                    HStack {
-                        Text(summary.periodLabel)
-                            .font(.callout)
-                            .foregroundStyle(.black)
-                        Spacer()
-                        Text("Avg: \(String(format: "%.1f", summary.averageUtilization))%")
-                            .font(.callout)
-                            .foregroundStyle(.black)
-                        Text("Peak: \(String(format: "%.1f", summary.peakUtilization))%")
-                            .font(.callout)
-                            .foregroundStyle(.black)
-                            .frame(width: 100, alignment: .trailing)
-                    }
-                }
-            }
-
-            // 6. Divider
-            Rectangle()
-                .fill(.gray.opacity(0.3))
-                .frame(height: 1)
-                .padding(.top, 4)
-
-            // 7. Project Token Usage section (top 10)
-            if !projectBreakdown.isEmpty {
-                Text("Project Token Usage")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.black)
-                    .padding(.top, 4)
-
-                ForEach(Array(projectBreakdown.prefix(10))) { project in
-                    HStack {
-                        Text(project.projectName)
-                            .font(.callout)
-                            .foregroundStyle(.black)
-                        Spacer()
-                        Text(formatTokens(project.totalTokens))
-                            .font(.callout)
-                            .foregroundStyle(.black)
-                    }
-                }
-            }
-
-            // 8. Divider
-            Rectangle()
-                .fill(.gray.opacity(0.3))
-                .frame(height: 1)
-                .padding(.top, 4)
-
-            // 9. Footer
+            // Footer
             Spacer(minLength: 8)
 
             Text("Generated by Tokemon - https://tokemon.ai")
@@ -131,6 +109,197 @@ struct PDFReportView: View {
         .padding(24)
         .frame(width: 540)
         .background(.white)
+    }
+
+    // MARK: - Admin Mode Content
+
+    @ViewBuilder
+    private func adminModeContent(usage: AdminUsageResponse) -> some View {
+        // Cost summary (if available)
+        if let cost = adminCostData {
+            Text("Cost Summary")
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(.black)
+                .padding(.top, 4)
+
+            HStack {
+                Text("Total Cost (30 days)")
+                    .font(.callout)
+                    .foregroundStyle(.black)
+                Spacer()
+                Text(String(format: "$%.2f", cost.totalCost))
+                    .font(.callout)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.black)
+            }
+
+            Rectangle()
+                .fill(.gray.opacity(0.3))
+                .frame(height: 1)
+                .padding(.top, 4)
+        }
+
+        // Token usage summary
+        Text("Token Usage (30 days)")
+            .font(.headline)
+            .fontWeight(.semibold)
+            .foregroundStyle(.black)
+            .padding(.top, 4)
+
+        HStack {
+            Text("Total Tokens")
+                .font(.callout)
+                .foregroundStyle(.black)
+            Spacer()
+            Text(formatTokens(usage.totalTokens))
+                .font(.callout)
+                .foregroundStyle(.black)
+        }
+
+        HStack {
+            Text("Input Tokens")
+                .font(.callout)
+                .foregroundStyle(.black)
+            Spacer()
+            Text(formatTokens(usage.totalInputTokens))
+                .font(.callout)
+                .foregroundStyle(.black)
+        }
+
+        HStack {
+            Text("Output Tokens")
+                .font(.callout)
+                .foregroundStyle(.black)
+            Spacer()
+            Text(formatTokens(usage.totalOutputTokens))
+                .font(.callout)
+                .foregroundStyle(.black)
+        }
+
+        HStack {
+            Text("Cache Read Tokens")
+                .font(.callout)
+                .foregroundStyle(.black)
+            Spacer()
+            Text(formatTokens(usage.totalCacheReadTokens))
+                .font(.callout)
+                .foregroundStyle(.black)
+        }
+
+        Rectangle()
+            .fill(.gray.opacity(0.3))
+            .frame(height: 1)
+            .padding(.top, 4)
+
+        // Daily breakdown (last 7 days)
+        Text("Daily Breakdown (Recent)")
+            .font(.headline)
+            .fontWeight(.semibold)
+            .foregroundStyle(.black)
+            .padding(.top, 4)
+
+        let recentBuckets = Array(usage.data.suffix(7))
+        ForEach(recentBuckets.indices, id: \.self) { index in
+            let bucket = recentBuckets[index]
+            HStack {
+                Text(formatBucketDate(bucket.startingAt))
+                    .font(.callout)
+                    .foregroundStyle(.black)
+                Spacer()
+                Text(formatTokens(bucket.totalTokens))
+                    .font(.callout)
+                    .foregroundStyle(.black)
+            }
+        }
+    }
+
+    // MARK: - Local Mode Content
+
+    @ViewBuilder
+    private var localModeContent: some View {
+        // Weekly Summary section
+        if !weeklySummaries.isEmpty {
+            Text("Weekly Summary")
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(.black)
+                .padding(.top, 4)
+
+            ForEach(weeklySummaries) { summary in
+                HStack {
+                    Text(summary.periodLabel)
+                        .font(.callout)
+                        .foregroundStyle(.black)
+                    Spacer()
+                    Text("Avg: \(String(format: "%.1f", summary.averageUtilization))%")
+                        .font(.callout)
+                        .foregroundStyle(.black)
+                    Text("Peak: \(String(format: "%.1f", summary.peakUtilization))%")
+                        .font(.callout)
+                        .foregroundStyle(.black)
+                        .frame(width: 100, alignment: .trailing)
+                }
+            }
+        }
+
+        // Monthly Summary section
+        if !monthlySummaries.isEmpty {
+            Text("Monthly Summary")
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(.black)
+                .padding(.top, 8)
+
+            ForEach(monthlySummaries) { summary in
+                HStack {
+                    Text(summary.periodLabel)
+                        .font(.callout)
+                        .foregroundStyle(.black)
+                    Spacer()
+                    Text("Avg: \(String(format: "%.1f", summary.averageUtilization))%")
+                        .font(.callout)
+                        .foregroundStyle(.black)
+                    Text("Peak: \(String(format: "%.1f", summary.peakUtilization))%")
+                        .font(.callout)
+                        .foregroundStyle(.black)
+                        .frame(width: 100, alignment: .trailing)
+                }
+            }
+        }
+
+        // Divider
+        Rectangle()
+            .fill(.gray.opacity(0.3))
+            .frame(height: 1)
+            .padding(.top, 4)
+
+        // Project Token Usage section (top 10)
+        if !projectBreakdown.isEmpty {
+            Text("Project Token Usage")
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(.black)
+                .padding(.top, 4)
+
+            ForEach(Array(projectBreakdown.prefix(10))) { project in
+                HStack {
+                    Text(project.projectName)
+                        .font(.callout)
+                        .foregroundStyle(.black)
+                    Spacer()
+                    Text(formatTokens(project.totalTokens))
+                        .font(.callout)
+                        .foregroundStyle(.black)
+                }
+            }
+        }
+
+        // Divider
+        Rectangle()
+            .fill(.gray.opacity(0.3))
+            .frame(height: 1)
+            .padding(.top, 4)
     }
 
     // MARK: - Helpers
@@ -146,5 +315,632 @@ struct PDFReportView: View {
         } else {
             return "\(count) tokens"
         }
+    }
+
+    /// Format bucket date from ISO8601 string to readable format.
+    private func formatBucketDate(_ isoString: String) -> String {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        guard let date = isoFormatter.date(from: isoString) else {
+            // Try without fractional seconds
+            isoFormatter.formatOptions = [.withInternetDateTime]
+            guard let date = isoFormatter.date(from: isoString) else {
+                return isoString
+            }
+            let displayFormatter = DateFormatter()
+            displayFormatter.dateFormat = "MMM d"
+            return displayFormatter.string(from: date)
+        }
+
+        let displayFormatter = DateFormatter()
+        displayFormatter.dateFormat = "MMM d"
+        return displayFormatter.string(from: date)
+    }
+}
+
+// MARK: - Multi-Page PDF Support
+
+/// A single page wrapper for multi-page PDF export.
+/// Includes consistent footer with page numbers on every page.
+struct PDFReportPage: View {
+    let pageNumber: Int
+    let totalPages: Int
+    let content: AnyView
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            content
+
+            Spacer(minLength: 0)
+
+            // Footer on every page
+            HStack {
+                Text("Generated by Tokemon - tokemon.ai")
+                    .font(.system(size: 8))
+                    .foregroundStyle(.gray)
+                Spacer()
+                Text("Page \(pageNumber) of \(totalPages)")
+                    .font(.system(size: 8))
+                    .foregroundStyle(.gray)
+            }
+        }
+        .padding(24)
+        .frame(width: 540, height: 720) // US Letter minus margins
+        .background(.white)
+    }
+}
+
+/// Builds multi-page PDF reports with adaptive granularity.
+/// Returns an array of page views that can be rendered to a multi-page PDF.
+@MainActor
+struct PDFReportBuilder {
+
+    /// Build pages for an export with adaptive date granularity.
+    /// - Returns: Array of AnyView pages ready for multi-page PDF rendering
+    static func buildPages(
+        accountName: String,
+        generatedDate: Date,
+        config: ExportConfig,
+        adminUsageData: AdminUsageResponse?,
+        adminCostData: AdminCostResponse?,
+        localWeeklySummaries: [UsageSummary],
+        localMonthlySummaries: [UsageSummary],
+        localProjectBreakdown: [ProjectUsage]
+    ) -> [AnyView] {
+        var pages: [AnyView] = []
+
+        let isAdminMode = adminUsageData != nil
+        let granularity = config.granularity
+        let dateRange = config.dateRange
+
+        // Page 1: Summary page
+        let summaryContent = buildSummaryPage(
+            accountName: accountName,
+            generatedDate: generatedDate,
+            dateRange: dateRange,
+            granularity: granularity,
+            isAdminMode: isAdminMode,
+            adminUsageData: adminUsageData,
+            adminCostData: adminCostData,
+            localWeeklySummaries: localWeeklySummaries,
+            localMonthlySummaries: localMonthlySummaries
+        )
+
+        // For admin data, build detail table pages
+        if isAdminMode, let usage = adminUsageData {
+            // Aggregate data based on granularity
+            let aggregatedRows = aggregateUsageData(
+                usage: usage,
+                cost: adminCostData,
+                granularity: granularity
+            )
+
+            // Calculate pagination
+            let rowsOnFirstPage = 15 // Summary takes up space
+            let rowsPerSubsequentPage = 30
+
+            var allPages: [AnyView] = []
+            var currentRowIndex = 0
+
+            // First page: summary + start of detail table
+            let firstPageRows = Array(aggregatedRows.prefix(rowsOnFirstPage))
+            let firstPageContent = buildFirstPage(
+                summaryContent: summaryContent,
+                detailRows: firstPageRows,
+                granularity: granularity,
+                hasMorePages: aggregatedRows.count > rowsOnFirstPage
+            )
+            allPages.append(AnyView(firstPageContent))
+            currentRowIndex = rowsOnFirstPage
+
+            // Subsequent pages: detail table continuation
+            while currentRowIndex < aggregatedRows.count {
+                let endIndex = min(currentRowIndex + rowsPerSubsequentPage, aggregatedRows.count)
+                let pageRows = Array(aggregatedRows[currentRowIndex..<endIndex])
+                let pageContent = buildDetailPage(
+                    rows: pageRows,
+                    granularity: granularity,
+                    showHeader: true
+                )
+                allPages.append(AnyView(pageContent))
+                currentRowIndex = endIndex
+            }
+
+            // Wrap each page with PDFReportPage
+            let totalPages = allPages.count
+            pages = allPages.enumerated().map { index, content in
+                AnyView(PDFReportPage(
+                    pageNumber: index + 1,
+                    totalPages: totalPages,
+                    content: content
+                ))
+            }
+        } else {
+            // Local data: single summary page
+            pages = [AnyView(PDFReportPage(
+                pageNumber: 1,
+                totalPages: 1,
+                content: AnyView(buildLocalSummaryPage(
+                    accountName: accountName,
+                    generatedDate: generatedDate,
+                    dateRange: dateRange,
+                    weeklySummaries: localWeeklySummaries,
+                    monthlySummaries: localMonthlySummaries,
+                    projectBreakdown: localProjectBreakdown
+                ))
+            ))]
+        }
+
+        return pages
+    }
+
+    // MARK: - Page Building Helpers
+
+    private static func buildSummaryPage(
+        accountName: String,
+        generatedDate: Date,
+        dateRange: (start: Date, end: Date),
+        granularity: ReportGranularity,
+        isAdminMode: Bool,
+        adminUsageData: AdminUsageResponse?,
+        adminCostData: AdminCostResponse?,
+        localWeeklySummaries: [UsageSummary],
+        localMonthlySummaries: [UsageSummary]
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Header
+            Text("Tokemon Usage Report")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(.black)
+
+            HStack {
+                Text(accountName)
+                    .font(.system(size: 12))
+                    .foregroundStyle(.black)
+                Text(isAdminMode ? "(Admin API)" : "(Local Data)")
+                    .font(.system(size: 10))
+                    .foregroundStyle(.gray)
+            }
+
+            // Date range
+            Text(formatDateRange(dateRange))
+                .font(.system(size: 10))
+                .foregroundStyle(.gray)
+
+            Rectangle()
+                .fill(.gray.opacity(0.3))
+                .frame(height: 1)
+
+            // Summary metrics
+            if isAdminMode, let usage = adminUsageData {
+                adminSummaryMetrics(usage: usage, cost: adminCostData)
+            }
+        }
+    }
+
+    private static func formatDateRange(_ range: (start: Date, end: Date)) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return "\(formatter.string(from: range.start)) – \(formatter.string(from: range.end))"
+    }
+
+    @ViewBuilder
+    private static func adminSummaryMetrics(usage: AdminUsageResponse, cost: AdminCostResponse?) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Summary")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.black)
+
+            summaryRow("Total Tokens", formatTokens(usage.totalTokens))
+            summaryRow("Input Tokens", formatTokens(usage.totalUncachedInputTokens))
+            summaryRow("Output Tokens", formatTokens(usage.totalOutputTokens))
+            summaryRow("Cache Read", formatTokens(usage.totalCacheReadTokens))
+            summaryRow("Cache Create", formatTokens(usage.totalCacheCreationTokens))
+
+            if let cost = cost {
+                summaryRow("Total Cost", String(format: "$%.2f", cost.totalCost))
+            }
+        }
+
+        Rectangle()
+            .fill(.gray.opacity(0.3))
+            .frame(height: 1)
+            .padding(.top, 4)
+    }
+
+    @ViewBuilder
+    private static func summaryRow(_ label: String, _ value: String) -> some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 10))
+                .foregroundStyle(.black)
+            Spacer()
+            Text(value)
+                .font(.system(size: 10))
+                .foregroundStyle(.black)
+        }
+    }
+
+    private static func buildFirstPage(
+        summaryContent: some View,
+        detailRows: [AggregatedRow],
+        granularity: ReportGranularity,
+        hasMorePages: Bool
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            summaryContent
+
+            Text("\(granularity.label) Breakdown")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.black)
+                .padding(.top, 4)
+
+            detailTableHeader()
+
+            ForEach(detailRows.indices, id: \.self) { index in
+                detailTableRow(detailRows[index])
+            }
+
+            if hasMorePages {
+                Text("(continued on next page)")
+                    .font(.system(size: 8))
+                    .foregroundStyle(.gray)
+                    .padding(.top, 4)
+            }
+        }
+    }
+
+    private static func buildDetailPage(
+        rows: [AggregatedRow],
+        granularity: ReportGranularity,
+        showHeader: Bool
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            if showHeader {
+                Text("\(granularity.label) Breakdown (continued)")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.black)
+
+                detailTableHeader()
+            }
+
+            ForEach(rows.indices, id: \.self) { index in
+                detailTableRow(rows[index])
+            }
+        }
+    }
+
+    private static func buildLocalSummaryPage(
+        accountName: String,
+        generatedDate: Date,
+        dateRange: (start: Date, end: Date),
+        weeklySummaries: [UsageSummary],
+        monthlySummaries: [UsageSummary],
+        projectBreakdown: [ProjectUsage]
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Header
+            Text("Tokemon Usage Report")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(.black)
+
+            HStack {
+                Text(accountName)
+                    .font(.system(size: 12))
+                    .foregroundStyle(.black)
+                Text("(Local Data)")
+                    .font(.system(size: 10))
+                    .foregroundStyle(.gray)
+            }
+
+            Text(formatDateRange(dateRange))
+                .font(.system(size: 10))
+                .foregroundStyle(.gray)
+
+            Rectangle()
+                .fill(.gray.opacity(0.3))
+                .frame(height: 1)
+
+            // Weekly summaries
+            if !weeklySummaries.isEmpty {
+                Text("Weekly Summary")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.black)
+                    .padding(.top, 4)
+
+                ForEach(weeklySummaries.prefix(4)) { summary in
+                    HStack {
+                        Text(summary.periodLabel)
+                            .font(.system(size: 10))
+                            .foregroundStyle(.black)
+                        Spacer()
+                        Text("Avg: \(String(format: "%.1f%%", summary.averageUtilization))")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.black)
+                        Text("Peak: \(String(format: "%.1f%%", summary.peakUtilization))")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.black)
+                            .frame(width: 80, alignment: .trailing)
+                    }
+                }
+            }
+
+            // Monthly summaries
+            if !monthlySummaries.isEmpty {
+                Text("Monthly Summary")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.black)
+                    .padding(.top, 8)
+
+                ForEach(monthlySummaries.prefix(6)) { summary in
+                    HStack {
+                        Text(summary.periodLabel)
+                            .font(.system(size: 10))
+                            .foregroundStyle(.black)
+                        Spacer()
+                        Text("Avg: \(String(format: "%.1f%%", summary.averageUtilization))")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.black)
+                        Text("Peak: \(String(format: "%.1f%%", summary.peakUtilization))")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.black)
+                            .frame(width: 80, alignment: .trailing)
+                    }
+                }
+            }
+
+            // Project breakdown
+            if !projectBreakdown.isEmpty {
+                Rectangle()
+                    .fill(.gray.opacity(0.3))
+                    .frame(height: 1)
+                    .padding(.top, 4)
+
+                Text("Project Token Usage")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.black)
+                    .padding(.top, 4)
+
+                ForEach(projectBreakdown.prefix(8)) { project in
+                    HStack {
+                        Text(project.projectName)
+                            .font(.system(size: 10))
+                            .foregroundStyle(.black)
+                        Spacer()
+                        Text(formatTokens(project.totalTokens))
+                            .font(.system(size: 10))
+                            .foregroundStyle(.black)
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Detail Table
+
+    @ViewBuilder
+    private static func detailTableHeader() -> some View {
+        HStack(spacing: 4) {
+            Text("Date")
+                .frame(width: 60, alignment: .leading)
+            Text("Total")
+                .frame(width: 60, alignment: .trailing)
+            Text("Input")
+                .frame(width: 50, alignment: .trailing)
+            Text("Output")
+                .frame(width: 50, alignment: .trailing)
+            Text("Cache R")
+                .frame(width: 50, alignment: .trailing)
+            Text("Cache C")
+                .frame(width: 50, alignment: .trailing)
+            Text("Cost")
+                .frame(width: 50, alignment: .trailing)
+        }
+        .font(.system(size: 8, weight: .semibold))
+        .foregroundStyle(.gray)
+    }
+
+    @ViewBuilder
+    private static func detailTableRow(_ row: AggregatedRow) -> some View {
+        HStack(spacing: 4) {
+            Text(row.dateLabel)
+                .frame(width: 60, alignment: .leading)
+            Text(formatTokensCompact(row.totalTokens))
+                .frame(width: 60, alignment: .trailing)
+            Text(formatTokensCompact(row.inputTokens))
+                .frame(width: 50, alignment: .trailing)
+            Text(formatTokensCompact(row.outputTokens))
+                .frame(width: 50, alignment: .trailing)
+            Text(formatTokensCompact(row.cacheReadTokens))
+                .frame(width: 50, alignment: .trailing)
+            Text(formatTokensCompact(row.cacheCreateTokens))
+                .frame(width: 50, alignment: .trailing)
+            Text(row.cost.map { String(format: "$%.2f", $0) } ?? "-")
+                .frame(width: 50, alignment: .trailing)
+        }
+        .font(.system(size: 8))
+        .foregroundStyle(.black)
+    }
+
+    // MARK: - Data Aggregation
+
+    struct AggregatedRow {
+        let dateLabel: String
+        let totalTokens: Int
+        let inputTokens: Int
+        let outputTokens: Int
+        let cacheReadTokens: Int
+        let cacheCreateTokens: Int
+        let cost: Double?
+    }
+
+    private static func aggregateUsageData(
+        usage: AdminUsageResponse,
+        cost: AdminCostResponse?,
+        granularity: ReportGranularity
+    ) -> [AggregatedRow] {
+        // Build cost lookup
+        var costByDate: [String: Double] = [:]
+        if let cost = cost {
+            for bucket in cost.data {
+                costByDate[bucket.startingAt] = bucket.totalCost
+            }
+        }
+
+        switch granularity {
+        case .daily:
+            // One row per bucket
+            return usage.data.map { bucket in
+                AggregatedRow(
+                    dateLabel: formatBucketDateShort(bucket.startingAt),
+                    totalTokens: bucket.totalTokens,
+                    inputTokens: bucket.uncachedInputTokens,
+                    outputTokens: bucket.outputTokens,
+                    cacheReadTokens: bucket.cacheReadTokens,
+                    cacheCreateTokens: bucket.cacheCreationTokens,
+                    cost: costByDate[bucket.startingAt]
+                )
+            }
+
+        case .weekly:
+            return aggregateByWeek(usage: usage, costByDate: costByDate)
+
+        case .monthly:
+            return aggregateByMonth(usage: usage, costByDate: costByDate)
+        }
+    }
+
+    private static func aggregateByWeek(
+        usage: AdminUsageResponse,
+        costByDate: [String: Double]
+    ) -> [AggregatedRow] {
+        let calendar = Calendar.current
+
+        // Group buckets by week
+        var weeklyGroups: [Int: (buckets: [AdminUsageResponse.UsageBucket], startDate: Date)] = [:]
+
+        for bucket in usage.data {
+            guard let date = parseISODate(bucket.startingAt) else { continue }
+            let weekOfYear = calendar.component(.weekOfYear, from: date)
+            let year = calendar.component(.yearForWeekOfYear, from: date)
+            let key = year * 100 + weekOfYear
+
+            if weeklyGroups[key] == nil {
+                weeklyGroups[key] = (buckets: [], startDate: date)
+            }
+            weeklyGroups[key]?.buckets.append(bucket)
+        }
+
+        // Convert to rows
+        return weeklyGroups.sorted { $0.key < $1.key }.map { _, value in
+            let totalTokens = value.buckets.reduce(0) { $0 + $1.totalTokens }
+            let inputTokens = value.buckets.reduce(0) { $0 + $1.uncachedInputTokens }
+            let outputTokens = value.buckets.reduce(0) { $0 + $1.outputTokens }
+            let cacheReadTokens = value.buckets.reduce(0) { $0 + $1.cacheReadTokens }
+            let cacheCreateTokens = value.buckets.reduce(0) { $0 + $1.cacheCreationTokens }
+            let cost = value.buckets.compactMap { costByDate[$0.startingAt] }.reduce(0, +)
+
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MMM d"
+            let dateLabel = "Week of \(dateFormatter.string(from: value.startDate))"
+
+            return AggregatedRow(
+                dateLabel: dateLabel,
+                totalTokens: totalTokens,
+                inputTokens: inputTokens,
+                outputTokens: outputTokens,
+                cacheReadTokens: cacheReadTokens,
+                cacheCreateTokens: cacheCreateTokens,
+                cost: cost > 0 ? cost : nil
+            )
+        }
+    }
+
+    private static func aggregateByMonth(
+        usage: AdminUsageResponse,
+        costByDate: [String: Double]
+    ) -> [AggregatedRow] {
+        let calendar = Calendar.current
+
+        // Group buckets by month
+        var monthlyGroups: [Int: (buckets: [AdminUsageResponse.UsageBucket], startDate: Date)] = [:]
+
+        for bucket in usage.data {
+            guard let date = parseISODate(bucket.startingAt) else { continue }
+            let month = calendar.component(.month, from: date)
+            let year = calendar.component(.year, from: date)
+            let key = year * 100 + month
+
+            if monthlyGroups[key] == nil {
+                monthlyGroups[key] = (buckets: [], startDate: date)
+            }
+            monthlyGroups[key]?.buckets.append(bucket)
+        }
+
+        // Convert to rows
+        return monthlyGroups.sorted { $0.key < $1.key }.map { _, value in
+            let totalTokens = value.buckets.reduce(0) { $0 + $1.totalTokens }
+            let inputTokens = value.buckets.reduce(0) { $0 + $1.uncachedInputTokens }
+            let outputTokens = value.buckets.reduce(0) { $0 + $1.outputTokens }
+            let cacheReadTokens = value.buckets.reduce(0) { $0 + $1.cacheReadTokens }
+            let cacheCreateTokens = value.buckets.reduce(0) { $0 + $1.cacheCreationTokens }
+            let cost = value.buckets.compactMap { costByDate[$0.startingAt] }.reduce(0, +)
+
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MMMM yyyy"
+            let dateLabel = dateFormatter.string(from: value.startDate)
+
+            return AggregatedRow(
+                dateLabel: dateLabel,
+                totalTokens: totalTokens,
+                inputTokens: inputTokens,
+                outputTokens: outputTokens,
+                cacheReadTokens: cacheReadTokens,
+                cacheCreateTokens: cacheCreateTokens,
+                cost: cost > 0 ? cost : nil
+            )
+        }
+    }
+
+    // MARK: - Formatting Helpers
+
+    private static func formatTokens(_ count: Int) -> String {
+        if count >= 1_000_000 {
+            return String(format: "%.1fM", Double(count) / 1_000_000.0)
+        } else if count >= 1_000 {
+            return String(format: "%.1fK", Double(count) / 1_000.0)
+        } else {
+            return "\(count)"
+        }
+    }
+
+    private static func formatTokensCompact(_ count: Int) -> String {
+        if count >= 1_000_000 {
+            return String(format: "%.1fM", Double(count) / 1_000_000.0)
+        } else if count >= 1_000 {
+            return String(format: "%.0fK", Double(count) / 1_000.0)
+        } else {
+            return "\(count)"
+        }
+    }
+
+    private static func formatBucketDateShort(_ isoString: String) -> String {
+        guard let date = parseISODate(isoString) else {
+            return String(isoString.prefix(10))
+        }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d"
+        return formatter.string(from: date)
+    }
+
+    private static func parseISODate(_ isoString: String) -> Date? {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = isoFormatter.date(from: isoString) {
+            return date
+        }
+        isoFormatter.formatOptions = [.withInternetDateTime]
+        return isoFormatter.date(from: isoString)
     }
 }

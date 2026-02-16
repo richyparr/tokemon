@@ -1,10 +1,12 @@
 import SwiftUI
+import ServiceManagement
 
 /// Settings tab for configuring the refresh interval and display options.
 /// Clean dropdown with preset intervals.
 struct RefreshSettings: View {
     @Environment(UsageMonitor.self) private var monitor
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
+    @State private var launchAtLogin: Bool = SMAppService.mainApp.status == .enabled
 
     /// Available refresh intervals (in seconds)
     private let intervals: [(label: String, value: TimeInterval)] = [
@@ -63,8 +65,35 @@ struct RefreshSettings: View {
             } header: {
                 Text("Popover")
             }
+
+            Section {
+                Toggle("Launch at login", isOn: $launchAtLogin)
+                    .onChange(of: launchAtLogin) { _, newValue in
+                        setLaunchAtLogin(newValue)
+                    }
+
+                Text("Automatically start tokemon when you log in")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Startup")
+            }
         }
         .formStyle(.grouped)
+    }
+
+    private func setLaunchAtLogin(_ enabled: Bool) {
+        do {
+            if enabled {
+                try SMAppService.mainApp.register()
+            } else {
+                try SMAppService.mainApp.unregister()
+            }
+        } catch {
+            // Revert toggle on failure
+            launchAtLogin = SMAppService.mainApp.status == .enabled
+            print("[RefreshSettings] Failed to set launch at login: \(error)")
+        }
     }
 
     private var currentIntervalLabel: String {
