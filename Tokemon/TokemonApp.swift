@@ -39,9 +39,12 @@ struct TokemonApp: App {
 
         var height = baseHeight
 
-        // Add height for profile switcher when multiple profiles exist
+        // Add height for profile switcher and multi-profile summary when multiple profiles exist
         if profileManager.profiles.count > 1 {
-            height += 28  // Profile switcher row
+            let profileSwitcherHeight: CGFloat = 28   // Switcher dropdown
+            let profileSummaryHeader: CGFloat = 32    // "All Profiles" header + divider
+            let profileRowHeight: CGFloat = 24        // Per profile row
+            height += profileSwitcherHeight + profileSummaryHeader + (CGFloat(profileManager.profiles.count) * profileRowHeight)
         }
 
         // Add height for extra usage section if shown
@@ -134,6 +137,9 @@ struct TokemonApp: App {
             SettingsWindowController.shared.setLicenseManager(licenseManager)
             SettingsWindowController.shared.setFeatureAccessManager(featureAccess)
             SettingsWindowController.shared.setProfileManager(profileManager)
+
+            // Wire ProfileManager to UsageMonitor for multi-profile polling
+            monitor.profileManager = profileManager
 
             // Wire profile change callback to trigger a UsageMonitor refresh
             profileManager.onActiveProfileChanged = { [monitor] _ in

@@ -53,6 +53,49 @@ struct PopoverContentView: View {
             // Detail breakdown: reset time, usage windows (OAuth) or token counts (JSONL)
             UsageDetailView(usage: monitor.currentUsage, showExtraUsage: monitor.showExtraUsage)
 
+            // Multi-profile usage summary (only when 2+ profiles)
+            if profileManager.profiles.count > 1 {
+                Divider()
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("All Profiles")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+
+                    ForEach(profileManager.profiles) { profile in
+                        HStack {
+                            // Active indicator
+                            Circle()
+                                .fill(profile.id == profileManager.activeProfileId
+                                    ? Color.green : Color.clear)
+                                .frame(width: 6, height: 6)
+
+                            Text(profile.name)
+                                .font(.callout)
+                                .lineLimit(1)
+
+                            Spacer()
+
+                            // Usage percentage or status
+                            if let usage = profile.lastUsage, usage.hasPercentage {
+                                Text("\(Int(usage.primaryPercentage))%")
+                                    .font(.callout.monospacedDigit())
+                                    .foregroundStyle(usageColor(for: usage.primaryPercentage))
+                            } else if !profile.hasCredentials {
+                                Text("No creds")
+                                    .font(.caption)
+                                    .foregroundStyle(.tertiary)
+                            } else {
+                                Text("--")
+                                    .font(.callout)
+                                    .foregroundStyle(.tertiary)
+                            }
+                        }
+                    }
+                }
+            }
+
             // Usage trends section (only show if enabled in settings AND we have OAuth data)
             if showUsageTrend && monitor.currentUsage.hasPercentage {
                 Divider()
@@ -149,6 +192,14 @@ struct PopoverContentView: View {
             PurchasePromptView()
                 .environment(licenseManager)
         }
+    }
+
+    /// Color for usage percentage in the multi-profile summary
+    private func usageColor(for percentage: Double) -> Color {
+        if percentage >= 80 {
+            return Color(nsColor: GradientColors.color(for: percentage))
+        }
+        return .primary
     }
 
     /// Whether to show the trial/license banner in the popover
