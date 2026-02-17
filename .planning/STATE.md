@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 ## Current Position
 
-Phase: 11 of 17 (Multi-Profile Foundation)
-Plan: 2 of 3 in current phase (completed)
-Status: Executing
-Last activity: 2026-02-17 -- Completed 11-02 Profile Management UI
+Phase: 11 of 17 (Multi-Profile Foundation) -- COMPLETE
+Plan: 3 of 3 in current phase (completed)
+Status: Phase Complete
+Last activity: 2026-02-17 -- Completed 11-03 Multi-Profile Usage Polling & Display
 
-Progress: [████░░░░░░░░░░░░░░░░░░░░░░] 10%
+Progress: [█████░░░░░░░░░░░░░░░░░░░░░] 14%
 
 ## Shipped Milestones
 
@@ -36,7 +36,7 @@ Progress: [████░░░░░░░░░░░░░░░░░░░
 - Timeline: 2 days (Feb 14-15, 2026)
 
 **v3.0 Milestone:**
-- Total plans completed: 2
+- Total plans completed: 3
 - Total phases: 7 (Phases 11-17)
 - Requirements: 33
 
@@ -44,6 +44,7 @@ Progress: [████░░░░░░░░░░░░░░░░░░░
 |-------|------|----------|-------|-------|
 | 11    | 01   | 2min     | 2     | 3     |
 | 11    | 02   | 3min     | 2     | 6     |
+| 11    | 03   | 2min     | 2     | 5     |
 
 ## Accumulated Context
 
@@ -64,6 +65,9 @@ See PROJECT.md Key Decisions table for full list.
 - Profiles tab placed as FIRST tab in Settings for prominence
 - ProfileSwitcherView uses Menu dropdown matching popover footer style
 - SettingsWindowController gets setProfileManager following existing setter pattern
+- usageColor threshold at 80% for compact profile summary (matching GradientColors orange range)
+- Multi-profile polling sequential after main refresh (not concurrent with active profile update)
+- saveProfiles() on every usage update for persistence (UserDefaults writes are fast)
 
 ### Pending Todos
 
@@ -76,5 +80,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 11-02-PLAN.md (Profile Management UI)
-Resume: Run `/gsd:execute-phase 11` to continue with 11-03
+Stopped at: Completed 11-03-PLAN.md (Multi-Profile Usage Polling & Display) -- Phase 11 complete
+Resume: Run `/gsd:execute-phase 12` to start next phase
