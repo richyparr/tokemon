@@ -72,6 +72,20 @@ if [ -d "${RESOURCE_BUNDLE}" ]; then
     echo "[$(timestamp)] Copied SPM resource bundle."
 fi
 
+# --- Step 6b: Embed Sparkle framework ---
+SPARKLE_FRAMEWORK="${PROJECT_DIR}/.build/artifacts/sparkle/Sparkle/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework"
+if [ -d "${SPARKLE_FRAMEWORK}" ]; then
+    mkdir -p "${APP_BUNDLE}/Contents/Frameworks"
+    cp -R "${SPARKLE_FRAMEWORK}" "${APP_BUNDLE}/Contents/Frameworks/"
+    echo "[$(timestamp)] Embedded Sparkle.framework."
+
+    # Fix the rpath in the executable to find the embedded framework
+    install_name_tool -add_rpath "@executable_path/../Frameworks" "${APP_BUNDLE}/Contents/MacOS/${APP_NAME}" 2>/dev/null || true
+    echo "[$(timestamp)] Updated rpath for Sparkle."
+else
+    echo "[$(timestamp)] WARNING: Sparkle.framework not found at ${SPARKLE_FRAMEWORK}"
+fi
+
 # --- Step 7: Create PkgInfo ---
 echo -n "APPL????" > "${APP_BUNDLE}/Contents/PkgInfo"
 
