@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 ## Current Position
 
-Phase: 13 of 17 (Terminal Statusline) -- COMPLETE
-Plan: 2 of 2 in current phase (completed)
-Status: Phase Complete
-Last activity: 2026-02-17 -- Completed 13-02 Settings UI and App Integration
+Phase: 14 of 17 (Distribution & Trust)
+Plan: 4 of 4 in current phase (completed)
+Status: Plan Complete
+Last activity: 2026-02-17 -- Completed 14-04 Auto-Start Session Notification
 
-Progress: [████████░░░░░░░░░░░░░░░░░░] 29%
+Progress: [████████░░░░░░░░░░░░░░░░░░] 31%
 
 ## Shipped Milestones
 
@@ -49,6 +49,7 @@ Progress: [████████░░░░░░░░░░░░░░░
 | 12    | 02   | 1min     | 2     | 1     |
 | 13    | 01   | 2min     | 2     | 4     |
 | 13    | 02   | 3min     | 3     | 5     |
+| 14    | 04   | 2min     | 2     | 3     |
 
 ## Accumulated Context
 
@@ -83,6 +84,10 @@ See PROJECT.md Key Decisions table for full list.
 - Style descriptions as dynamic caption text below picker, updating based on selection
 - Monochrome toggle in own "Color Mode" section for visual clarity
 
+**Phase 14 Decisions:**
+- Called checkForSessionReset from within checkUsage (Option 2) to keep wiring simpler -- avoids adding another callback to UsageMonitor
+- Session notification uses timeSensitive interruption level (not critical) since it is informational
+
 ### Pending Todos
 
 None.
@@ -94,5 +99,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed Phase 13 (Terminal Statusline) -- All 4 TERM requirements satisfied
-Resume: Run `/gsd:plan-phase 14` to plan Distribution & Trust
+Stopped at: Completed 14-04 Auto-Start Session Notification
+Resume: Continue with remaining Phase 14 plans or next phase
