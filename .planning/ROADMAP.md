@@ -43,7 +43,7 @@ See [v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md) for full details.
 - [x] **Phase 14: Distribution & Trust** (4/4 plans) -- completed 2026-02-17
 - [x] **Phase 15: Team Dashboard PRO** (2/2 plans) -- completed 2026-02-17
 - [x] **Phase 16: Webhook Alerts PRO** (2/2 plans) -- completed 2026-02-17
-- [ ] **Phase 17: Budget & Forecasting PRO** -- Users can set spending limits and see predicted usage trajectories
+- [x] **Phase 17: Budget & Forecasting PRO** (2/2 plans) -- completed 2026-02-17
 
 ## Phase Details
 
@@ -170,8 +170,8 @@ Plans:
 **Plans:** 2 plans in 2 waves
 
 Plans:
-- [ ] 17-01-PLAN.md -- BudgetConfig model, BudgetManager service, ForecastingEngine, and AdminAPIClient cost-by-workspace extension (Wave 1)
-- [ ] 17-02-PLAN.md -- BudgetDashboardView with gauge/forecast/cost breakdown, Settings tab, and TokemonApp wiring (Wave 2)
+- [x] 17-01-PLAN.md -- BudgetConfig model, BudgetManager service, ForecastingEngine, and AdminAPIClient cost-by-workspace extension (Wave 1)
+- [x] 17-02-PLAN.md -- BudgetDashboardView with gauge/forecast/cost breakdown, Settings tab, and TokemonApp wiring (Wave 2)
 
 ---
 
@@ -198,7 +198,7 @@ Phases 11-13 can be built in parallel (independent FREE features). Phase 14 foll
 | 14. Distribution & Trust | v3.0 | 4/4 | Complete | 2026-02-17 |
 | 15. Team Dashboard PRO | v3.0 | 2/2 | Complete | 2026-02-17 |
 | 16. Webhook Alerts PRO | v3.0 | 2/2 | Complete | 2026-02-17 |
-| 17. Budget & Forecasting PRO | v3.0 | 0/2 | Not started | - |
+| 17. Budget & Forecasting PRO | v3.0 | 2/2 | Complete | 2026-02-17 |
 
 ---
 
