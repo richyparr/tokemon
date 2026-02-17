@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 14 of 17 (Distribution & Trust)
-Plan: 2 of 4 in current phase (14-01 and 14-04 complete, 14-02 and 14-03 remaining)
+Plan: 3 of 4 in current phase (14-01, 14-02, and 14-04 complete, 14-03 remaining)
 Status: In Progress
-Last activity: 2026-02-17 -- Completed 14-01 Code Signing & Release Infrastructure
+Last activity: 2026-02-17 -- Completed 14-02 Homebrew Cask
 
 Progress: [████████░░░░░░░░░░░░░░░░░░] 31%
 
@@ -36,7 +36,7 @@ Progress: [████████░░░░░░░░░░░░░░░
 - Timeline: 2 days (Feb 14-15, 2026)
 
 **v3.0 Milestone:**
-- Total plans completed: 9
+- Total plans completed: 10
 - Total phases: 7 (Phases 11-17)
 - Requirements: 33
 
@@ -50,6 +50,7 @@ Progress: [████████░░░░░░░░░░░░░░░
 | 13    | 01   | 2min     | 2     | 4     |
 | 13    | 02   | 3min     | 3     | 5     |
 | 14    | 01   | 3min     | 2     | 3     |
+| 14    | 02   | 2min     | 2     | 4     |
 | 14    | 04   | 2min     | 2     | 3     |
 
 ## Accumulated Context
@@ -92,6 +93,9 @@ See PROJECT.md Key Decisions table for full list.
 - softprops/action-gh-release@v2 with auto release notes generation
 - Called checkForSessionReset from within checkUsage (Option 2) to keep wiring simpler -- avoids adding another callback to UsageMonitor
 - Session notification uses timeSensitive interruption level (not critical) since it is informational
+- Used cask format (not formula) since Tokemon is a macOS .app distributed as DMG
+- Added depends_on macos >= :sonoma matching Info.plist LSMinimumSystemVersion 14.0
+- SHA256 computed once in release CI and forwarded via repository_dispatch client-payload to tap
 
 ### Pending Todos
 
@@ -104,5 +108,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 14-01 Code Signing & Release Infrastructure
-Resume: Execute 14-02 (Homebrew Cask) and 14-03 remaining plans
+Stopped at: Completed 14-02 Homebrew Cask
+Resume: Execute 14-03 remaining plan
