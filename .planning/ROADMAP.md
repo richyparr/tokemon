@@ -93,11 +93,11 @@ Plans:
   1. User can display session %, weekly %, and reset timer in their bash/zsh prompt
   2. User can customize the statusline format (choose which fields to show, adjust separators/colors)
   3. User can install the statusline integration with a single command (one-click install script)
-**Plans:** TBD
+**Plans:** 2 plans in 2 waves
 
 Plans:
-- [ ] 13-01: TBD
-- [ ] 13-02: TBD
+- [ ] 13-01-PLAN.md -- StatuslineExporter service, StatuslineConfig model, and shell helper script (Wave 1)
+- [ ] 13-02-PLAN.md -- StatuslineSettings UI, app lifecycle wiring, and one-click install (Wave 2)
 
 ---
 
@@ -193,7 +193,7 @@ Phases 11-13 can be built in parallel (independent FREE features). Phase 14 foll
 | 10. Enhanced Export | Post-v2.0 | 3/3 | Complete | 2026-02-16 |
 | 11. Multi-Profile Foundation | v3.0 | 3/3 | Complete | 2026-02-17 |
 | 12. Menu Bar Customization | v3.0 | 2/2 | Complete | 2026-02-17 |
-| 13. Terminal Statusline | v3.0 | 0/0 | Not started | - |
+| 13. Terminal Statusline | v3.0 | 0/2 | Planned | - |
 | 14. Distribution & Trust | v3.0 | 0/0 | Not started | - |
 | 15. Team Dashboard PRO | v3.0 | 0/0 | Not started | - |
 | 16. Webhook Alerts PRO | v3.0 | 0/0 | Not started | - |
