@@ -87,4 +87,12 @@ enum Constants {
 
     /// UserDefaults key for statusline configuration
     static let statuslineConfigKey = "tokemon.statuslineConfig"
+
+    // MARK: - Sparkle Updates
+
+    /// URL to appcast.xml hosted on GitHub Pages or releases
+    static let sparkleAppcastURL = "https://tokemon.app/appcast.xml"
+
+    /// UserDefaults key for automatic update check preference
+    static let autoCheckUpdatesKey = "tokemon.autoCheckUpdates"
 }
