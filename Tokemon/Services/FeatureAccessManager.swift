@@ -26,6 +26,10 @@ enum ProFeature: String, CaseIterable, Sendable {
     // Phase 16: Webhook Alerts PRO
     case webhookAlerts = "Slack & Discord webhook alerts"
 
+    // Phase 17: Budget & Forecasting PRO
+    case budgetTracking = "Budget tracking"
+    case usageForecasting = "Usage forecasting"
+
     /// User-friendly description for UI
     var displayName: String {
         rawValue
@@ -54,6 +58,10 @@ enum ProFeature: String, CaseIterable, Sendable {
             return "person.3.fill"
         case .webhookAlerts:
             return "bell.and.waves.left.and.right"
+        case .budgetTracking:
+            return "dollarsign.gauge.chart.lefthalf.righthalf"
+        case .usageForecasting:
+            return "chart.line.uptrend.xyaxis"
         }
     }
 }

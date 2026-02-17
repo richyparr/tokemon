@@ -94,4 +94,9 @@ enum Constants {
 
     /// UserDefaults key for webhook configuration (JSON-encoded WebhookConfig)
     static let webhookConfigKey = "tokemon.webhookConfig"
+
+    // MARK: - Budget & Forecasting
+
+    /// UserDefaults key for budget configuration (JSON-encoded BudgetConfig)
+    static let budgetConfigKey = "tokemon.budgetConfig"
 }
