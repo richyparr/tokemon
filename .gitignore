@@ -20,3 +20,4 @@ build/
 
 # App bundle (build artifact)
 *.app/
+*.dmg
