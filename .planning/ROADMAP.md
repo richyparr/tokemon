@@ -76,10 +76,11 @@ Plans:
   1. User can choose from 5 distinct icon styles (battery, progress bar, percentage text, icon+bar, compact) in Settings
   2. User can toggle monochrome mode so the icon blends with the native macOS menu bar
   3. Menu bar icon color automatically shifts from green to orange to red as usage increases
-**Plans:** TBD
+**Plans:** 2 plans in 2 waves
 
 Plans:
-- [ ] 12-01: TBD
+- [ ] 12-01-PLAN.md -- MenuBarIconStyle model, icon renderer for 5 styles with monochrome/color support, StatusItemManager integration (Wave 1)
+- [ ] 12-02-PLAN.md -- AppearanceSettings UI overhaul with 5-style picker, monochrome toggle, and live update wiring (Wave 2)
 
 ---
 
@@ -191,7 +192,7 @@ Phases 11-13 can be built in parallel (independent FREE features). Phase 14 foll
 | 9. Shareable Moments | v2.0 | 2/2 | Complete | 2026-02-15 |
 | 10. Enhanced Export | Post-v2.0 | 3/3 | Complete | 2026-02-16 |
 | 11. Multi-Profile Foundation | v3.0 | 3/3 | Complete | 2026-02-17 |
-| 12. Menu Bar Customization | v3.0 | 0/0 | Not started | - |
+| 12. Menu Bar Customization | v3.0 | 0/2 | Planned | - |
 | 13. Terminal Statusline | v3.0 | 0/0 | Not started | - |
 | 14. Distribution & Trust | v3.0 | 0/0 | Not started | - |
 | 15. Team Dashboard PRO | v3.0 | 0/0 | Not started | - |
