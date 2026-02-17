@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 14 of 17 (Distribution & Trust)
-Plan: 3 of 4 in current phase (14-01, 14-02, and 14-04 complete, 14-03 remaining)
-Status: In Progress
-Last activity: 2026-02-17 -- Completed 14-02 Homebrew Cask
+Plan: 4 of 4 in current phase (all plans complete)
+Status: Phase Complete
+Last activity: 2026-02-17 -- Completed 14-03 Sparkle Auto-Update
 
 Progress: [████████░░░░░░░░░░░░░░░░░░] 31%
 
@@ -36,7 +36,7 @@ Progress: [████████░░░░░░░░░░░░░░░
 - Timeline: 2 days (Feb 14-15, 2026)
 
 **v3.0 Milestone:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Total phases: 7 (Phases 11-17)
 - Requirements: 33
 
@@ -51,6 +51,7 @@ Progress: [████████░░░░░░░░░░░░░░░
 | 13    | 02   | 3min     | 3     | 5     |
 | 14    | 01   | 3min     | 2     | 3     |
 | 14    | 02   | 2min     | 2     | 4     |
+| 14    | 03   | 5min     | 3     | 11    |
 | 14    | 04   | 2min     | 2     | 3     |
 
 ## Accumulated Context
@@ -96,6 +97,9 @@ See PROJECT.md Key Decisions table for full list.
 - Used cask format (not formula) since Tokemon is a macOS .app distributed as DMG
 - Added depends_on macos >= :sonoma matching Info.plist LSMinimumSystemVersion 14.0
 - SHA256 computed once in release CI and forwarded via repository_dispatch client-payload to tap
+- Local let extraction for SUAppcastItem.displayVersionString to avoid Swift 6 sending data race
+- Named settings tab "Updates" (not "General") to avoid conflicting with existing RefreshSettings tab
+- Appcast URL set to tokemon.app/appcast.xml for future GitHub Pages hosting
 
 ### Pending Todos
 
@@ -108,5 +112,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 14-02 Homebrew Cask
-Resume: Execute 14-03 remaining plan
+Stopped at: Completed 14-03 Sparkle Auto-Update (Phase 14 complete)
+Resume: Begin Phase 15
