@@ -64,6 +64,10 @@ final class AlertManager {
         self.autoStartEnabled = UserDefaults.standard.bool(forKey: Constants.autoStartSessionKey)
     }
 
+    /// Callback invoked when webhook should check usage (wired to WebhookManager)
+    @ObservationIgnored
+    var onWebhookCheck: ((_ usage: UsageSnapshot, _ alertThreshold: Int) -> Void)?
+
     // MARK: - Private State
 
     /// Whether we've notified about warning level this usage window
@@ -134,6 +138,9 @@ final class AlertManager {
             hasNotifiedWarning = true
             sendNotification(level: .warning, percentage: percentage)
         }
+
+        // Forward to webhook manager for Slack/Discord alerts
+        onWebhookCheck?(usage, alertThreshold)
 
         // Check for session reset (auto-start notification)
         checkForSessionReset(usage)

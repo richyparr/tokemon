@@ -19,6 +19,7 @@ struct TokemonApp: App {
     @State private var statusItemManager = StatusItemManager()
     @State private var statuslineExporter = StatuslineExporter()
     @State private var updateManager = UpdateManager()
+    @State private var webhookManager = WebhookManager()
 
     // Track whether chart is shown to adjust popover height
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
@@ -109,6 +110,7 @@ struct TokemonApp: App {
                 .environment(featureAccess)
                 .environment(profileManager)
                 .environment(updateManager)
+                .environment(webhookManager)
                 .frame(width: 320, height: popoverHeight)
                 .onAppear {
                     // Ensure status item is updated when popover appears
@@ -133,6 +135,14 @@ struct TokemonApp: App {
             SettingsWindowController.shared.setFeatureAccessManager(featureAccess)
             SettingsWindowController.shared.setProfileManager(profileManager)
             SettingsWindowController.shared.setUpdateManager(updateManager)
+            SettingsWindowController.shared.setWebhookManager(webhookManager)
+
+            // Wire AlertManager's webhook callback to WebhookManager
+            alertManager.onWebhookCheck = { [webhookManager] usage, threshold in
+                Task { @MainActor in
+                    webhookManager.checkUsageAndNotify(usage, alertThreshold: threshold)
+                }
+            }
 
             // Wire ProfileManager to UsageMonitor for multi-profile polling
             monitor.profileManager = profileManager
@@ -215,6 +225,7 @@ struct TokemonApp: App {
                 .environment(featureAccess)
                 .environment(profileManager)
                 .environment(updateManager)
+                .environment(webhookManager)
         }
     }
 }

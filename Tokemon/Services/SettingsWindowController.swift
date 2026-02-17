@@ -15,6 +15,7 @@ final class SettingsWindowController {
     private var featureAccess: FeatureAccessManager?
     private var profileManager: ProfileManager?
     private var updateManager: UpdateManager?
+    private var webhookManager: WebhookManager?
 
     private init() {}
 
@@ -51,6 +52,11 @@ final class SettingsWindowController {
     /// Set the update manager reference (call from app startup)
     func setUpdateManager(_ manager: UpdateManager) {
         self.updateManager = manager
+    }
+
+    /// Set the webhook manager reference (call from app startup)
+    func setWebhookManager(_ manager: WebhookManager) {
+        self.webhookManager = manager
     }
 
     /// Show the settings window, creating it if necessary
@@ -98,6 +104,11 @@ final class SettingsWindowController {
             return
         }
 
+        guard let webhookManager = webhookManager else {
+            print("[Tokemon] Error: WebhookManager not set for settings window")
+            return
+        }
+
         let settingsView = SettingsView()
             .environment(monitor)
             .environment(alertManager)
@@ -106,6 +117,7 @@ final class SettingsWindowController {
             .environment(featureAccess)
             .environment(profileManager)
             .environment(updateManager)
+            .environment(webhookManager)
 
         let hostingController = NSHostingController(rootView: settingsView)
 

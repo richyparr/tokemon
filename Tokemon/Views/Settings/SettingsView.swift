@@ -50,6 +50,11 @@ struct SettingsView: View {
                     Label("Alerts", systemImage: "bell.badge")
                 }
 
+            WebhookSettings()
+                .tabItem {
+                    Label("Webhooks", systemImage: "bell.and.waves.left.and.right")
+                }
+
             AnalyticsDashboardView()
                 .tabItem {
                     Label("Analytics", systemImage: "chart.bar.xaxis")
