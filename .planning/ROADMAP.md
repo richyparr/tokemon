@@ -39,7 +39,7 @@ See [v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md) for full details.
 
 - [x] **Phase 11: Multi-Profile Foundation** (3/3 plans) -- completed 2026-02-17
 - [x] **Phase 12: Menu Bar Customization** (2/2 plans) -- completed 2026-02-17
-- [ ] **Phase 13: Terminal Statusline** -- Users can see Claude usage directly in their terminal prompt
+- [x] **Phase 13: Terminal Statusline** (2/2 plans) -- completed 2026-02-17
 - [ ] **Phase 14: Distribution & Trust** -- Users can install via Homebrew, receive auto-updates, and trust the signed binary
 - [ ] **Phase 15: Team Dashboard PRO** -- Team leads can view aggregated org usage in one place
 - [ ] **Phase 16: Webhook Alerts PRO** -- Users can receive usage alerts in Slack and Discord
@@ -61,9 +61,9 @@ See [v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md) for full details.
 **Plans:** 3 plans in 3 waves
 
 Plans:
-- [ ] 11-01-PLAN.md -- Profile model and ProfileManager service with copy/switch keychain operations (Wave 1)
-- [ ] 11-02-PLAN.md -- Profile management UI (Settings tab + popover switcher) and app integration (Wave 2)
-- [ ] 11-03-PLAN.md -- Multi-profile usage polling and simultaneous usage display in popover (Wave 3)
+- [x] 11-01-PLAN.md -- Profile model and ProfileManager service with copy/switch keychain operations (Wave 1)
+- [x] 11-02-PLAN.md -- Profile management UI (Settings tab + popover switcher) and app integration (Wave 2)
+- [x] 11-03-PLAN.md -- Multi-profile usage polling and simultaneous usage display in popover (Wave 3)
 
 ---
 
@@ -79,8 +79,8 @@ Plans:
 **Plans:** 2 plans in 2 waves
 
 Plans:
-- [ ] 12-01-PLAN.md -- MenuBarIconStyle model, icon renderer for 5 styles with monochrome/color support, StatusItemManager integration (Wave 1)
-- [ ] 12-02-PLAN.md -- AppearanceSettings UI overhaul with 5-style picker, monochrome toggle, and live update wiring (Wave 2)
+- [x] 12-01-PLAN.md -- MenuBarIconStyle model, icon renderer for 5 styles with monochrome/color support, StatusItemManager integration (Wave 1)
+- [x] 12-02-PLAN.md -- AppearanceSettings UI overhaul with 5-style picker, monochrome toggle, and live update wiring (Wave 2)
 
 ---
 
@@ -96,8 +96,8 @@ Plans:
 **Plans:** 2 plans in 2 waves
 
 Plans:
-- [ ] 13-01-PLAN.md -- StatuslineExporter service, StatuslineConfig model, and shell helper script (Wave 1)
-- [ ] 13-02-PLAN.md -- StatuslineSettings UI, app lifecycle wiring, and one-click install (Wave 2)
+- [x] 13-01-PLAN.md -- StatuslineExporter service, StatuslineConfig model, and shell helper script (Wave 1)
+- [x] 13-02-PLAN.md -- StatuslineSettings UI, app lifecycle wiring, and one-click install (Wave 2)
 
 ---
 
@@ -112,11 +112,13 @@ Plans:
   3. App checks for updates on launch and user can install updates from within the app
   4. User sees in-app notification when a new version is available
   5. User can enable auto-start of a new session when their usage resets to 0%
-**Plans:** TBD
+**Plans:** 4 plans in 2 waves
 
 Plans:
-- [ ] 14-01: TBD
-- [ ] 14-02: TBD
+- [ ] 14-01-PLAN.md -- Code signing, notarization, and GitHub Actions release workflow (Wave 1)
+- [ ] 14-02-PLAN.md -- Homebrew tap repository and formula (Wave 2)
+- [ ] 14-03-PLAN.md -- Sparkle framework integration, UpdateManager service, and update UI (Wave 2)
+- [ ] 14-04-PLAN.md -- Auto-start session notification when usage resets to 0% (Wave 1)
 
 ---
 
@@ -194,7 +196,7 @@ Phases 11-13 can be built in parallel (independent FREE features). Phase 14 foll
 | 11. Multi-Profile Foundation | v3.0 | 3/3 | Complete | 2026-02-17 |
 | 12. Menu Bar Customization | v3.0 | 2/2 | Complete | 2026-02-17 |
 | 13. Terminal Statusline | v3.0 | 2/2 | Complete | 2026-02-17 |
-| 14. Distribution & Trust | v3.0 | 0/0 | Not started | - |
+| 14. Distribution & Trust | v3.0 | 0/4 | Not started | - |
 | 15. Team Dashboard PRO | v3.0 | 0/0 | Not started | - |
 | 16. Webhook Alerts PRO | v3.0 | 0/0 | Not started | - |
 | 17. Budget & Forecasting PRO | v3.0 | 0/0 | Not started | - |
