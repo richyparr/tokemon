@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** v3.0 Phase 15 -- Team Dashboard PRO
+**Current focus:** v3.0 Phase 16 -- Webhook Alerts PRO
 
 ## Current Position
 
-Phase: 15 of 17 (Team Dashboard PRO)
-Plan: 2 of 2 in current phase (all plans complete)
-Status: Phase Complete
-Last activity: 2026-02-17 -- Completed Phase 15 Team Dashboard PRO
+Phase: 16 of 17 (Webhook Alerts PRO)
+Plan: 1 of 2 in current phase
+Status: In Progress
+Last activity: 2026-02-17 -- Completed 16-01 Webhook Model & Service
 
-Progress: [████████████░░░░░░░░░░░░░░] 43%
+Progress: [█████████████░░░░░░░░░░░░░] 46%
 
 ## Shipped Milestones
 
@@ -36,7 +36,7 @@ Progress: [████████████░░░░░░░░░░░
 - Timeline: 2 days (Feb 14-15, 2026)
 
 **v3.0 Milestone:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Total phases: 7 (Phases 11-17)
 - Requirements: 33
 
@@ -53,6 +53,9 @@ Progress: [████████████░░░░░░░░░░░
 | 14    | 02   | 2min     | 2     | 4     |
 | 14    | 03   | 5min     | 3     | 11    |
 | 14    | 04   | 2min     | 2     | 3     |
+| 15    | 01   | --       | --    | --    |
+| 15    | 02   | --       | --    | --    |
+| 16    | 01   | 3min     | 2     | 4     |
 
 ## Accumulated Context
 
@@ -101,6 +104,11 @@ See PROJECT.md Key Decisions table for full list.
 - Named settings tab "Updates" (not "General") to avoid conflicting with existing RefreshSettings tab
 - Appcast URL set to tokemon.app/appcast.xml for future GitHub Pages hosting
 
+**Phase 16 Decisions:**
+- Static payload methods for Sendable safety in Task.detached context (Swift 6 concurrency)
+- Profile name read from UserDefaults directly (no ProfileManager dependency) for loose coupling in WebhookManager
+- WebhookError enum with LocalizedError conformance for UI-friendly test webhook feedback
+
 ### Pending Todos
 
 None.
@@ -112,5 +120,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed Phase 15 Team Dashboard PRO
-Resume: Run `/gsd:plan-phase 16` to plan Webhook Alerts PRO
+Stopped at: Completed 16-01 Webhook Model & Service
+Resume: Run `/gsd:execute-phase 16` to continue with 16-02 (Webhook Settings UI)
