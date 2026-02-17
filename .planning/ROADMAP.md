@@ -58,11 +58,12 @@ See [v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md) for full details.
   3. User can switch active profile and the app writes that profile's credentials to the system keychain for Claude Code to use
   4. User can delete a profile they no longer need
   5. User can see usage summaries for all profiles simultaneously in the menu bar popover
-**Plans:** TBD
+**Plans:** 3 plans in 3 waves
 
 Plans:
-- [ ] 11-01: TBD
-- [ ] 11-02: TBD
+- [ ] 11-01-PLAN.md -- Profile model and ProfileManager service with copy/switch keychain operations (Wave 1)
+- [ ] 11-02-PLAN.md -- Profile management UI (Settings tab + popover switcher) and app integration (Wave 2)
+- [ ] 11-03-PLAN.md -- Multi-profile usage polling and simultaneous usage display in popover (Wave 3)
 
 ---
 
@@ -189,7 +190,7 @@ Phases 11-13 can be built in parallel (independent FREE features). Phase 14 foll
 | 8. Analytics & Export | v2.0 | 3/3 | Complete | 2026-02-15 |
 | 9. Shareable Moments | v2.0 | 2/2 | Complete | 2026-02-15 |
 | 10. Enhanced Export | Post-v2.0 | 3/3 | Complete | 2026-02-16 |
-| 11. Multi-Profile Foundation | v3.0 | 0/0 | Not started | - |
+| 11. Multi-Profile Foundation | v3.0 | 0/3 | Planned | - |
 | 12. Menu Bar Customization | v3.0 | 0/0 | Not started | - |
 | 13. Terminal Statusline | v3.0 | 0/0 | Not started | - |
 | 14. Distribution & Trust | v3.0 | 0/0 | Not started | - |
