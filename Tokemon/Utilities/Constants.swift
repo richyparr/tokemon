@@ -74,4 +74,12 @@ enum Constants {
     /// Claude Code's keychain entry. Same value as `keychainService`; the alias
     /// makes the intent clearer in profile-related code.
     static let claudeCodeKeychainService = "Claude Code-credentials"
+
+    // MARK: - Terminal Statusline
+
+    /// Directory for statusline cache files (~/.tokemon)
+    static let statuslineDirectory = "~/.tokemon"
+
+    /// UserDefaults key for statusline configuration
+    static let statuslineConfigKey = "tokemon.statuslineConfig"
 }
