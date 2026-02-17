@@ -1,0 +1,70 @@
+name: Update Formula SHA
+
+on:
+  repository_dispatch:
+    types: [release-published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to update (e.g., 1.0.1)'
+        required: true
+      sha256:
+        description: 'SHA256 hash of the DMG (optional, will download and compute if empty)'
+        required: false
+
+jobs:
+  update-sha:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine version and SHA
+        id: params
+        run: |
+          # Get version from dispatch payload or manual input
+          VERSION="${{ github.event.inputs.version || github.event.client_payload.version }}"
+          SHA="${{ github.event.inputs.sha256 || github.event.client_payload.sha256 }}"
+
+          if [ -z "$VERSION" ]; then
+            echo "::error::No version provided"
+            exit 1
+          fi
+
+          # If SHA not provided, download DMG and compute it
+          if [ -z "$SHA" ]; then
+            echo "Downloading DMG to compute SHA256..."
+            curl -L -o Tokemon.dmg \
+              "https://github.com/AverageHelper/tokemon/releases/download/v${VERSION}/Tokemon-${VERSION}.dmg"
+            SHA=$(shasum -a 256 Tokemon.dmg | cut -d' ' -f1)
+            rm -f Tokemon.dmg
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "sha256=$SHA" >> $GITHUB_OUTPUT
+          echo "Updating to v${VERSION} with SHA256: ${SHA}"
+
+      - name: Update formula
+        run: |
+          VERSION="${{ steps.params.outputs.version }}"
+          SHA256="${{ steps.params.outputs.sha256 }}"
+          sed -i '' "s/version \".*\"/version \"$VERSION\"/" Formula/tokemon.rb
+          sed -i '' "s/sha256 \".*\"/sha256 \"$SHA256\"/" Formula/tokemon.rb
+
+      - name: Verify formula syntax
+        run: |
+          # Basic syntax check - ensure required fields are present
+          grep -q "version \"${{ steps.params.outputs.version }}\"" Formula/tokemon.rb
+          grep -q "sha256 \"${{ steps.params.outputs.sha256 }}\"" Formula/tokemon.rb
+          echo "Formula updated successfully"
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: "Update tokemon to v${{ steps.params.outputs.version }}"
+          commit-message: "Update tokemon to v${{ steps.params.outputs.version }}"
+          branch: "update-v${{ steps.params.outputs.version }}"
+          body: |
+            Automated formula update for Tokemon v${{ steps.params.outputs.version }}.
+
+            - Version: `${{ steps.params.outputs.version }}`
+            - SHA256: `${{ steps.params.outputs.sha256 }}`
