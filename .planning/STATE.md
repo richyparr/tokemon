@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** v3.0 Phase 16 -- Webhook Alerts PRO
+**Current focus:** v3.0 Phase 17 -- Budget & Forecasting PRO
 
 ## Current Position
 
-Phase: 16 of 17 (Webhook Alerts PRO)
-Plan: 2 of 2 in current phase (COMPLETE)
-Status: Phase Complete
-Last activity: 2026-02-17 -- Completed 16-02 Webhook Settings UI & Alert Integration
+Phase: 17 of 17 (Budget & Forecasting PRO)
+Plan: 1 of 2 in current phase
+Status: In Progress
+Last activity: 2026-02-17 -- Completed 17-01 Budget & Forecasting Data Layer
 
-Progress: [█████████████░░░░░░░░░░░░░] 46%
+Progress: [██████████████░░░░░░░░░░░░] 48%
 
 ## Shipped Milestones
 
@@ -57,6 +57,7 @@ Progress: [█████████████░░░░░░░░░░
 | 15    | 02   | --       | --    | --    |
 | 16    | 01   | 3min     | 2     | 4     |
 | 16    | 02   | 2min     | 2     | 5     |
+| 17    | 01   | 3min     | 2     | 7     |
 
 ## Accumulated Context
 
@@ -112,6 +113,11 @@ See PROJECT.md Key Decisions table for full list.
 - Webhooks tab always visible in SettingsView -- Pro gate handled internally by WebhookSettings view
 - AlertManager.onWebhookCheck fires on every check -- WebhookManager handles its own deduplication
 
+**Phase 17 Decisions:**
+- ForecastingEngine uses static methods following BurnRateCalculator pattern (stateless, testable)
+- BudgetManager follows AlertManager notification pattern with once-per-threshold tracking and month rollover reset
+- CostResult uses explicit init(from:) decoder for backward-compatible optional workspaceId
+
 ### Pending Todos
 
 None.
@@ -123,5 +129,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 16-02 Webhook Settings UI & Alert Integration (Phase 16 complete)
-Resume: Run `/gsd:execute-phase 17` to continue with next phase
+Stopped at: Completed 17-01 Budget & Forecasting Data Layer
+Resume: Continue with 17-02 (Budget & Forecasting UI)
