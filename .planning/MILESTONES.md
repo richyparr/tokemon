@@ -40,7 +40,23 @@ Transform Tokemon into a paid product with licensing, multi-account support, ext
 
 ---
 
-## Planned
+## In Progress
 
-_Next milestone not yet defined. Run `/gsd:new-milestone` to start._
+### v3.0 Competitive Parity & Growth
 
+**Phases:** 11-17 | **Plans:** TBD | **Requirements:** 33
+
+Match Claude Usage Tracker (1.2k stars) feature-for-feature in FREE tier, then differentiate with team/org PRO features.
+
+**FREE Tier (Competitive Parity):**
+- Phase 11: Multi-profile support (copy/switch credential architecture)
+- Phase 12: Menu bar icon customization (5 styles)
+- Phase 13: Terminal statusline integration for Claude Code
+- Phase 14: Distribution & trust (Homebrew, code signing, Sparkle auto-updates)
+
+**PRO Tier (Differentiation):**
+- Phase 15: Team dashboard (aggregate org usage via Admin API)
+- Phase 16: Slack/Discord webhook alerts
+- Phase 17: Budget tracking + usage forecasting
+
+**Roadmap:** [ROADMAP.md](ROADMAP.md)

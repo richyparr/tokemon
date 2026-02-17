@@ -21,7 +21,7 @@ Requirements for v2 Pro release. All complete except shareable moments.
 
 *Removed post-ship due to Claude Code keychain architecture limitations.*
 
-- [x] ~~ACCOUNT-01 through ACCOUNT-05~~ — Replaced by PROF-* in v3
+- [x] ~~ACCOUNT-01 through ACCOUNT-05~~ -- Replaced by PROF-* in v3
 
 ### Licensing
 
@@ -144,45 +144,45 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PROF-01 | TBD | Pending |
-| PROF-02 | TBD | Pending |
-| PROF-03 | TBD | Pending |
-| PROF-04 | TBD | Pending |
-| PROF-05 | TBD | Pending |
-| PROF-06 | TBD | Pending |
-| MENU-01 | TBD | Pending |
-| MENU-02 | TBD | Pending |
-| MENU-03 | TBD | Pending |
-| TERM-01 | TBD | Pending |
-| TERM-02 | TBD | Pending |
-| TERM-03 | TBD | Pending |
-| TERM-04 | TBD | Pending |
-| DIST-01 | TBD | Pending |
-| DIST-02 | TBD | Pending |
-| DIST-03 | TBD | Pending |
-| DIST-04 | TBD | Pending |
-| DIST-05 | TBD | Pending |
-| AUTO-01 | TBD | Pending |
-| TEAM-01 | TBD | Pending |
-| TEAM-02 | TBD | Pending |
-| TEAM-03 | TBD | Pending |
-| HOOK-01 | TBD | Pending |
-| HOOK-02 | TBD | Pending |
-| HOOK-03 | TBD | Pending |
-| HOOK-04 | TBD | Pending |
-| BUDG-01 | TBD | Pending |
-| BUDG-02 | TBD | Pending |
-| BUDG-03 | TBD | Pending |
-| BUDG-04 | TBD | Pending |
-| FORE-01 | TBD | Pending |
-| FORE-02 | TBD | Pending |
-| FORE-03 | TBD | Pending |
+| PROF-01 | Phase 11 | Pending |
+| PROF-02 | Phase 11 | Pending |
+| PROF-03 | Phase 11 | Pending |
+| PROF-04 | Phase 11 | Pending |
+| PROF-05 | Phase 11 | Pending |
+| PROF-06 | Phase 11 | Pending |
+| MENU-01 | Phase 12 | Pending |
+| MENU-02 | Phase 12 | Pending |
+| MENU-03 | Phase 12 | Pending |
+| TERM-01 | Phase 13 | Pending |
+| TERM-02 | Phase 13 | Pending |
+| TERM-03 | Phase 13 | Pending |
+| TERM-04 | Phase 13 | Pending |
+| DIST-01 | Phase 14 | Pending |
+| DIST-02 | Phase 14 | Pending |
+| DIST-03 | Phase 14 | Pending |
+| DIST-04 | Phase 14 | Pending |
+| DIST-05 | Phase 14 | Pending |
+| AUTO-01 | Phase 14 | Pending |
+| TEAM-01 | Phase 15 | Pending |
+| TEAM-02 | Phase 15 | Pending |
+| TEAM-03 | Phase 15 | Pending |
+| HOOK-01 | Phase 16 | Pending |
+| HOOK-02 | Phase 16 | Pending |
+| HOOK-03 | Phase 16 | Pending |
+| HOOK-04 | Phase 16 | Pending |
+| BUDG-01 | Phase 17 | Pending |
+| BUDG-02 | Phase 17 | Pending |
+| BUDG-03 | Phase 17 | Pending |
+| BUDG-04 | Phase 17 | Pending |
+| FORE-01 | Phase 17 | Pending |
+| FORE-02 | Phase 17 | Pending |
+| FORE-03 | Phase 17 | Pending |
 
 **Coverage:**
 - v3.0 requirements: 33 total
-- Mapped to phases: 0
-- Unmapped: 33 ⚠️
+- Mapped to phases: 33
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-17 after v3.0 requirements definition*
+*Last updated: 2026-02-17 after v3.0 roadmap creation*
