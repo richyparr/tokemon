@@ -7,7 +7,6 @@ struct ProjectBreakdownView: View {
     @State private var projects: [ProjectUsage] = []
     @State private var isLoading = false
     @State private var selectedTimeRange: ProjectTimeRange = .month
-    @Environment(FeatureAccessManager.self) private var featureAccess
 
     enum ProjectTimeRange: String, CaseIterable {
         case week = "7d"
@@ -42,38 +41,19 @@ struct ProjectBreakdownView: View {
                             .fill(.quaternary)
                     )
                 Spacer()
-                if featureAccess.canAccess(.projectBreakdown) {
-                    Picker("", selection: $selectedTimeRange) {
-                        ForEach(ProjectTimeRange.allCases, id: \.self) { range in
-                            Text(range.rawValue).tag(range)
-                        }
+                Picker("", selection: $selectedTimeRange) {
+                    ForEach(ProjectTimeRange.allCases, id: \.self) { range in
+                        Text(range.rawValue).tag(range)
                     }
-                    .pickerStyle(.segmented)
-                    .frame(width: 150)
-                    .onChange(of: selectedTimeRange) { _, _ in
-                        loadProjects()
-                    }
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 150)
+                .onChange(of: selectedTimeRange) { _, _ in
+                    loadProjects()
                 }
             }
 
-            if !featureAccess.canAccess(.projectBreakdown) {
-                // Locked state
-                VStack(spacing: 8) {
-                    Image(systemName: "lock.fill")
-                        .font(.title2)
-                        .foregroundStyle(.secondary)
-                    Text("Project breakdown is a Pro feature")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                    Button("Upgrade to Pro") {
-                        featureAccess.openPurchasePage()
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-            } else if isLoading {
+            if isLoading {
                 // Loading state
                 VStack(spacing: 8) {
                     ProgressView()
@@ -101,9 +81,7 @@ struct ProjectBreakdownView: View {
             }
         }
         .onAppear {
-            if featureAccess.canAccess(.projectBreakdown) {
-                loadProjects()
-            }
+            loadProjects()
         }
     }
 

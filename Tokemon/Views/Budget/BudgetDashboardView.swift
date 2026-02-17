@@ -1,42 +1,13 @@
 import SwiftUI
 
-/// Main budget dashboard with Pro gate, budget configuration form, and sub-views.
+/// Main budget dashboard with budget configuration form, gauge, and forecasting.
 /// Shows budget gauge, cost breakdown by project, and usage forecasting.
-/// Requires Pro license and Admin API key for full functionality.
+/// Requires Admin API key for cost data.
 struct BudgetDashboardView: View {
-    @Environment(FeatureAccessManager.self) private var featureAccess
     @Environment(BudgetManager.self) private var budgetManager
 
     var body: some View {
-        if !featureAccess.canAccess(.budgetTracking) {
-            // Locked splash for non-Pro users
-            VStack(spacing: 16) {
-                Spacer()
-
-                Image(systemName: "dollarsign.gauge.chart.lefthalf.righthalf")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.secondary)
-
-                Text("Budget & Forecasting")
-                    .font(.title2)
-                    .fontWeight(.bold)
-
-                Text("Set spending limits, track costs by project, and get AI-powered usage predictions. Requires Tokemon Pro.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: 280)
-
-                Button("Upgrade to Pro") {
-                    featureAccess.openPurchasePage()
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-
-                Spacer()
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else if !AdminAPIClient.shared.hasAdminKey() {
+        if !AdminAPIClient.shared.hasAdminKey() {
             // Admin API not configured
             VStack(spacing: 16) {
                 Image(systemName: "building.2")

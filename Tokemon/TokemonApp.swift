@@ -12,8 +12,6 @@ struct TokemonApp: App {
     @State private var monitor = UsageMonitor()
     @State private var alertManager = AlertManager()
     @State private var themeManager = ThemeManager()
-    @State private var licenseManager: LicenseManager
-    @State private var featureAccess: FeatureAccessManager
     @State private var isPopoverPresented = false
     @State private var profileManager = ProfileManager()
     @State private var statusItemManager = StatusItemManager()
@@ -71,11 +69,6 @@ struct TokemonApp: App {
 
 
     init() {
-        // Initialize license and feature managers together (shared dependency)
-        let license = LicenseManager()
-        _licenseManager = State(initialValue: license)
-        _featureAccess = State(initialValue: FeatureAccessManager(licenseManager: license))
-
         // Set notification delegate to handle notifications while app is "active"
         // (Menu bar apps are always considered active)
         // Note: UNUserNotificationCenter requires a proper app bundle - skip when running as SPM executable
@@ -107,8 +100,6 @@ struct TokemonApp: App {
                 .environment(monitor)
                 .environment(alertManager)
                 .environment(themeManager)
-                .environment(licenseManager)
-                .environment(featureAccess)
                 .environment(profileManager)
                 .environment(updateManager)
                 .environment(webhookManager)
@@ -116,7 +107,7 @@ struct TokemonApp: App {
                 .frame(width: 320, height: popoverHeight)
                 .onAppear {
                     // Ensure status item is updated when popover appears
-                    statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel, licenseState: licenseManager.state)
+                    statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
                 }
         } label: {
             // Fallback label -- the real rendering is done via NSStatusItem
@@ -127,14 +118,12 @@ struct TokemonApp: App {
             // Called once during setup -- store the reference for future updates
             statusItemManager.statusItem = statusItem
             statusItemManager.registerForStyleChanges()
-            statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel, licenseState: licenseManager.state)
+            statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
 
-            // Initialize settings window controller with monitor, alertManager, themeManager, and licenseManager references
+            // Initialize settings window controller with monitor, alertManager, and themeManager references
             SettingsWindowController.shared.setMonitor(monitor)
             SettingsWindowController.shared.setAlertManager(alertManager)
             SettingsWindowController.shared.setThemeManager(themeManager)
-            SettingsWindowController.shared.setLicenseManager(licenseManager)
-            SettingsWindowController.shared.setFeatureAccessManager(featureAccess)
             SettingsWindowController.shared.setProfileManager(profileManager)
             SettingsWindowController.shared.setUpdateManager(updateManager)
             SettingsWindowController.shared.setWebhookManager(webhookManager)
@@ -166,23 +155,11 @@ struct TokemonApp: App {
             statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
             // Register for monitor changes to keep the status item text current
-            monitor.onUsageChanged = { [statusItemManager, alertManager, licenseManager, budgetManager] usage in
+            monitor.onUsageChanged = { [statusItemManager, alertManager, budgetManager] usage in
                 Task { @MainActor in
-                    statusItemManager.update(with: usage, error: monitor.error, alertLevel: alertManager.currentAlertLevel, licenseState: licenseManager.state)
+                    statusItemManager.update(with: usage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
                     await budgetManager.refreshIfNeeded()
                     budgetManager.checkBudgetThresholds()
-                }
-            }
-
-            // Register for license state changes to update status item
-            licenseManager.onStateChanged = { [statusItemManager, alertManager] state in
-                Task { @MainActor in
-                    statusItemManager.update(
-                        with: monitor.currentUsage,
-                        error: monitor.error,
-                        alertLevel: alertManager.currentAlertLevel,
-                        licenseState: state
-                    )
                 }
             }
 
@@ -226,8 +203,6 @@ struct TokemonApp: App {
                 .environment(monitor)
                 .environment(alertManager)
                 .environment(themeManager)
-                .environment(licenseManager)
-                .environment(featureAccess)
                 .environment(profileManager)
                 .environment(updateManager)
                 .environment(webhookManager)
@@ -268,8 +243,6 @@ final class StatusItemManager {
     private var lastError: UsageMonitor.MonitorError?
     @ObservationIgnored
     private var lastAlertLevel: AlertManager.AlertLevel = .normal
-    @ObservationIgnored
-    private var lastLicenseState: LicenseState?
 
     /// Style change notification observer
     @ObservationIgnored
@@ -300,7 +273,7 @@ final class StatusItemManager {
             Task { @MainActor in
                 guard let self else { return }
                 self.reloadSettings()
-                self.update(with: self.lastUsage, error: self.lastError, alertLevel: self.lastAlertLevel, licenseState: self.lastLicenseState)
+                self.update(with: self.lastUsage, error: self.lastError, alertLevel: self.lastAlertLevel)
             }
         }
     }
@@ -308,22 +281,18 @@ final class StatusItemManager {
     /// Update the status item button with the current usage data.
     /// Uses MenuBarIconRenderer to produce the appropriate visual output for the selected style.
     /// Shows error indicator when both sources have failed, or alert indicator for critical usage.
-    /// Optionally appends license state suffix (trial days, expired badge).
-    func update(with usage: UsageSnapshot, error: UsageMonitor.MonitorError?, alertLevel: AlertManager.AlertLevel = .normal, licenseState: LicenseState? = nil) {
+    func update(with usage: UsageSnapshot, error: UsageMonitor.MonitorError?, alertLevel: AlertManager.AlertLevel = .normal) {
         guard let button = statusItem?.button else { return }
 
         // Store last parameters for re-rendering on settings change
         lastUsage = usage
         lastError = error
         lastAlertLevel = alertLevel
-        lastLicenseState = licenseState
-
-        // Determine suffix from license state
-        var suffix = licenseState?.menuBarSuffix
 
         // Determine if we need error/alert indicators
         var isErrorState = false
         var isCriticalState = false
+        var suffix: String? = nil
 
         if case .bothSourcesFailed = error {
             isErrorState = true
@@ -331,13 +300,9 @@ final class StatusItemManager {
             isCriticalState = true
         }
 
-        // For error/critical states, append "!" to suffix
+        // For error/critical states, show "!" suffix
         if isErrorState || isCriticalState {
-            if let existing = suffix {
-                suffix = "\(existing) !"
-            } else {
-                suffix = "!"
-            }
+            suffix = "!"
         }
 
         // Use the renderer

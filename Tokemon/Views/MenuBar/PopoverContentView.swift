@@ -8,8 +8,6 @@ struct PopoverContentView: View {
     @Environment(UsageMonitor.self) private var monitor
     @Environment(AlertManager.self) private var alertManager
     @Environment(ThemeManager.self) private var themeManager
-    @Environment(LicenseManager.self) private var licenseManager
-    @Environment(FeatureAccessManager.self) private var featureAccess
     @Environment(ProfileManager.self) private var profileManager
     @Environment(\.colorScheme) private var colorScheme
 
@@ -132,11 +130,6 @@ struct PopoverContentView: View {
                 )
 
                 Spacer()
-
-                // Pro badge (shown when Pro)
-                if case .pro = featureAccess.licenseState {
-                    ProBadge()
-                }
 
                 // Refresh button
                 Button {

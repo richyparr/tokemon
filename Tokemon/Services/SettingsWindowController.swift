@@ -11,8 +11,6 @@ final class SettingsWindowController {
     private var monitor: UsageMonitor?
     private var alertManager: AlertManager?
     private var themeManager: ThemeManager?
-    private var licenseManager: LicenseManager?
-    private var featureAccess: FeatureAccessManager?
     private var profileManager: ProfileManager?
     private var updateManager: UpdateManager?
     private var webhookManager: WebhookManager?
@@ -33,16 +31,6 @@ final class SettingsWindowController {
     /// Set the theme manager reference (call from app startup)
     func setThemeManager(_ manager: ThemeManager) {
         self.themeManager = manager
-    }
-
-    /// Set the license manager reference (call from app startup)
-    func setLicenseManager(_ manager: LicenseManager) {
-        self.licenseManager = manager
-    }
-
-    /// Set the feature access manager reference (call from app startup)
-    func setFeatureAccessManager(_ manager: FeatureAccessManager) {
-        self.featureAccess = manager
     }
 
     /// Set the profile manager reference (call from app startup)
@@ -90,16 +78,6 @@ final class SettingsWindowController {
             return
         }
 
-        guard let licenseManager = licenseManager else {
-            print("[Tokemon] Error: LicenseManager not set for settings window")
-            return
-        }
-
-        guard let featureAccess = featureAccess else {
-            print("[Tokemon] Error: FeatureAccessManager not set for settings window")
-            return
-        }
-
         guard let profileManager = profileManager else {
             print("[Tokemon] Error: ProfileManager not set for settings window")
             return
@@ -124,8 +102,6 @@ final class SettingsWindowController {
             .environment(monitor)
             .environment(alertManager)
             .environment(themeManager)
-            .environment(licenseManager)
-            .environment(featureAccess)
             .environment(profileManager)
             .environment(updateManager)
             .environment(webhookManager)

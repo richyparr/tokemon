@@ -1,12 +1,11 @@
 import SwiftUI
 
-/// Main settings window with tabs: Profiles, General, Data Sources, Appearance, Alerts, Analytics, License, Admin API, and Updates.
+/// Main settings window with tabs: Profiles, General, Data Sources, Appearance, Alerts, Analytics, Admin API, and Updates.
 /// Uses native macOS TabView with automatic style for system-consistent settings.
 struct SettingsView: View {
     @Environment(UsageMonitor.self) private var monitor
     @Environment(AlertManager.self) private var alertManager
     @Environment(ThemeManager.self) private var themeManager
-    @Environment(LicenseManager.self) private var licenseManager
 
     var body: some View {
         TabView {
@@ -63,12 +62,6 @@ struct SettingsView: View {
             AnalyticsDashboardView()
                 .tabItem {
                     Label("Analytics", systemImage: "chart.bar.xaxis")
-                }
-
-            LicenseSettings()
-                .environment(licenseManager)
-                .tabItem {
-                    Label("License", systemImage: "key.fill")
                 }
 
             AdminAPISettings()

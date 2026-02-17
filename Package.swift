@@ -10,7 +10,6 @@ let package = Package(
         .package(url: "https://github.com/orchetect/MenuBarExtraAccess.git", from: "1.2.2"),
         .package(url: "https://github.com/orchetect/SettingsAccess.git", from: "2.1.0"),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess.git", from: "4.2.2"),
-        .package(url: "https://github.com/kevinhermawan/swift-lemon-squeezy-license.git", from: "1.0.1"),
         .package(url: "https://github.com/sparkle-project/Sparkle.git", from: "2.6.0"),
     ],
     targets: [
@@ -20,7 +19,6 @@ let package = Package(
                 "MenuBarExtraAccess",
                 "SettingsAccess",
                 "KeychainAccess",
-                .product(name: "LemonSqueezyLicense", package: "swift-lemon-squeezy-license"),
                 .product(name: "Sparkle", package: "Sparkle"),
             ],
             path: "Tokemon",

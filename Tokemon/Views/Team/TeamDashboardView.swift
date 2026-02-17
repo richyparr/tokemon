@@ -1,10 +1,8 @@
 import SwiftUI
 
 /// Main Team Dashboard for viewing organization-wide usage by member.
-/// Pro-gated at top level. Shows aggregated stats and per-member breakdown.
+/// Requires Admin API key. Shows aggregated stats and per-member breakdown.
 struct TeamDashboardView: View {
-    @Environment(FeatureAccessManager.self) private var featureAccess
-
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var members: [TeamMember] = []
@@ -27,31 +25,7 @@ struct TeamDashboardView: View {
     }
 
     var body: some View {
-        if !featureAccess.canAccess(.teamDashboard) {
-            // Locked splash for non-Pro users
-            VStack(spacing: 16) {
-                Image(systemName: "person.3.fill")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.secondary)
-
-                Text("Team Dashboard is a Pro feature")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-
-                Text("View aggregated organization usage and drill down to per-member token consumption.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: 280)
-
-                Button("Upgrade to Pro") {
-                    featureAccess.openPurchasePage()
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else if !AdminAPIClient.shared.hasAdminKey() {
+        if !AdminAPIClient.shared.hasAdminKey() {
             // Admin API not configured
             VStack(spacing: 16) {
                 Image(systemName: "building.2")

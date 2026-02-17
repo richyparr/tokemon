@@ -1,45 +1,16 @@
 import SwiftUI
 
 /// Main analytics container view for the Settings > Analytics tab.
-/// Pro-gated at the top level: shows a locked splash if not Pro,
-/// otherwise displays extended history chart, usage summaries, project breakdown, and export buttons.
+/// Displays extended history chart, usage summaries, project breakdown, and export buttons.
 struct AnalyticsDashboardView: View {
-    @Environment(FeatureAccessManager.self) private var featureAccess
     @Environment(UsageMonitor.self) private var monitor
 
     @State private var isExporting = false
-    @State private var showingPurchasePrompt = false
     @State private var isCopied = false
     @State private var pendingExportFormat: ExportFormat?
 
     var body: some View {
-        if !featureAccess.canAccess(.extendedHistory) {
-            // Locked splash for non-Pro users
-            VStack(spacing: 16) {
-                Image(systemName: "chart.bar.xaxis")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.secondary)
-
-                Text("Analytics is a Pro feature")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-
-                Text("View extended usage history, weekly and monthly summaries, and per-project token breakdown.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: 280)
-
-                Button("Upgrade to Pro") {
-                    featureAccess.openPurchasePage()
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else {
-            // Pro analytics dashboard - use Form for consistent styling with other tabs
-            Form {
+        Form {
                 // Organization Usage (only if Admin API connected)
                 if AdminAPIClient.shared.hasAdminKey() {
                     Section {
@@ -72,9 +43,6 @@ struct AnalyticsDashboardView: View {
             }
             .formStyle(.grouped)
             .scrollIndicators(.visible, axes: .vertical)
-            .sheet(isPresented: $showingPurchasePrompt) {
-                PurchasePromptView()
-            }
             .sheet(item: $pendingExportFormat) { format in
                 ExportDialogView(
                     format: format,
@@ -90,7 +58,6 @@ struct AnalyticsDashboardView: View {
                     }
                 )
             }
-        }
     }
 
     // MARK: - Export Section
@@ -106,7 +73,6 @@ struct AnalyticsDashboardView: View {
                 exportButton(
                     title: "Export PDF Report",
                     icon: "doc.richtext",
-                    feature: .exportPDF,
                     format: .pdf
                 )
 
@@ -114,7 +80,6 @@ struct AnalyticsDashboardView: View {
                 exportButton(
                     title: "Export CSV Data",
                     icon: "tablecells",
-                    feature: .exportCSV,
                     format: .csv
                 )
 
@@ -122,7 +87,6 @@ struct AnalyticsDashboardView: View {
                 exportButton(
                     title: isCopied ? "Copied!" : "Share Usage Card",
                     icon: isCopied ? "checkmark" : "photo.fill",
-                    feature: .usageCards,
                     format: .card
                 )
 
@@ -134,34 +98,17 @@ struct AnalyticsDashboardView: View {
         }
     }
 
-    /// A single export button with Pro gating.
+    /// A single export button.
     @ViewBuilder
-    private func exportButton(title: String, icon: String, feature: ProFeature, format: ExportFormat) -> some View {
-        if featureAccess.canAccess(feature) {
-            Button {
-                pendingExportFormat = format
-            } label: {
-                Label(title, systemImage: icon)
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.regular)
-            .disabled(isExporting)
-        } else {
-            Button {
-                showingPurchasePrompt = true
-            } label: {
-                Label(title, systemImage: icon)
-                    .overlay(alignment: .topTrailing) {
-                        Image(systemName: "lock.fill")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                            .offset(x: 8, y: -6)
-                    }
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.regular)
-            .disabled(true)
+    private func exportButton(title: String, icon: String, format: ExportFormat) -> some View {
+        Button {
+            pendingExportFormat = format
+        } label: {
+            Label(title, systemImage: icon)
         }
+        .buttonStyle(.bordered)
+        .controlSize(.regular)
+        .disabled(isExporting)
     }
 
     // MARK: - Export Actions

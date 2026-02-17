@@ -11,7 +11,6 @@ struct UsageSummaryView: View {
     @State private var adminMonthlySummaries: [AdminUsageSummary] = []
     @State private var isLoadingAdmin = false
     @State private var adminDataLoaded = false
-    @Environment(FeatureAccessManager.self) private var featureAccess
 
     private var hasAdminAPI: Bool {
         AdminAPIClient.shared.hasAdminKey()
@@ -55,46 +54,25 @@ struct UsageSummaryView: View {
                     .font(.headline)
 
                 // Data source badge
-                if featureAccess.canAccess(.weeklySummary) {
-                    Text(hasAdminAPI && adminDataLoaded ? "Organization" : "This Machine")
-                        .font(.caption)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(.quaternary)
-                        .cornerRadius(4)
-                }
+                Text(hasAdminAPI && adminDataLoaded ? "Organization" : "This Machine")
+                    .font(.caption)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(.quaternary)
+                    .cornerRadius(4)
 
                 Spacer()
 
-                if featureAccess.canAccess(.weeklySummary) {
-                    Picker("", selection: $selectedPeriod) {
-                        ForEach(SummaryPeriod.allCases, id: \.self) { period in
-                            Text(period.rawValue).tag(period)
-                        }
+                Picker("", selection: $selectedPeriod) {
+                    ForEach(SummaryPeriod.allCases, id: \.self) { period in
+                        Text(period.rawValue).tag(period)
                     }
-                    .pickerStyle(.segmented)
-                    .frame(width: 150)
                 }
+                .pickerStyle(.segmented)
+                .frame(width: 150)
             }
 
-            if !featureAccess.canAccess(.weeklySummary) {
-                // Locked state
-                VStack(spacing: 8) {
-                    Image(systemName: "lock.fill")
-                        .font(.title2)
-                        .foregroundStyle(.secondary)
-                    Text("Usage summaries are a Pro feature")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                    Button("Upgrade to Pro") {
-                        featureAccess.openPurchasePage()
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-            } else if isLoadingAdmin {
+            if isLoadingAdmin {
                 HStack {
                     ProgressView()
                         .controlSize(.small)

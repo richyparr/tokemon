@@ -4,7 +4,6 @@ import SwiftUI
 /// Toggles OAuth and JSONL independently with at-least-one-enabled guard.
 struct DataSourceSettings: View {
     @Environment(UsageMonitor.self) private var monitor
-    @Environment(FeatureAccessManager.self) private var featureAccess
 
     var body: some View {
         @Bindable var monitor = monitor
@@ -59,26 +58,6 @@ struct DataSourceSettings: View {
                 Text("At least one data source must be enabled")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-            }
-
-            // Pro Features teaser (preparation for Phase 7 multi-account)
-            Section {
-                HStack {
-                    Image(systemName: "person.2.fill")
-                        .foregroundStyle(.secondary)
-                    Text("Multiple accounts")
-                    Spacer()
-                    if featureAccess.isPro {
-                        Text("Coming in v2.1")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    } else {
-                        ProBadge()
-                    }
-                }
-                .opacity(0.6)
-            } header: {
-                Text("Pro Features")
             }
         }
         .formStyle(.grouped)

@@ -25,9 +25,6 @@ packages:
   KeychainAccess:
     url: https://github.com/kishikawakatsumi/KeychainAccess.git
     from: "4.2.2"
-  LemonSqueezyLicense:
-    url: https://github.com/kevinhermawan/swift-lemon-squeezy-license.git
-    from: "1.0.1"
 
 targets:
   Tokemon:
@@ -54,8 +51,6 @@ targets:
       - package: MenuBarExtraAccess
       - package: SettingsAccess
       - package: KeychainAccess
-      - package: LemonSqueezyLicense
-        product: LemonSqueezyLicense
     entitlements:
       path: Tokemon/Tokemon.entitlements
       properties:
