@@ -40,23 +40,41 @@ Transform Tokemon into a paid product with licensing, multi-account support, ext
 
 ---
 
+### v3.0 Competitive Parity & Growth (2026-02-17)
+
+**Phases:** 11-17 | **Plans:** 17 | **Requirements:** 33
+
+Match Claude Usage Tracker feature-for-feature in FREE tier, then differentiate with team/org PRO features.
+
+**Key Accomplishments:**
+- Multi-profile support with copy/switch credential architecture
+- Menu bar icon customization (5 styles) with monochrome mode
+- Terminal statusline integration for Claude Code (bash/zsh)
+- Distribution & trust (Homebrew tap, code signing, notarization, Sparkle)
+- Team dashboard PRO (org-wide usage via Admin API)
+- Slack/Discord webhook alerts PRO
+- Budget tracking + usage forecasting PRO
+
+**Stats:** 14,418 LOC Swift | 1 day (Feb 17)
+
+**Archive:** [v3.0-ROADMAP.md](milestones/v3.0-ROADMAP.md) | [v3.0-REQUIREMENTS.md](milestones/v3.0-REQUIREMENTS.md)
+
+---
+
 ## In Progress
 
-### v3.0 Competitive Parity & Growth
+### v4.0 Raycast Integration
 
-**Phases:** 11-17 | **Plans:** TBD | **Requirements:** 33
+**Phases:** 18+ | **Plans:** TBD | **Requirements:** TBD
 
-Match Claude Usage Tracker (1.2k stars) feature-for-feature in FREE tier, then differentiate with team/org PRO features.
+Bring Tokemon's usage monitoring to Raycast as a standalone extension.
 
-**FREE Tier (Competitive Parity):**
-- Phase 11: Multi-profile support (copy/switch credential architecture)
-- Phase 12: Menu bar icon customization (5 styles)
-- Phase 13: Terminal statusline integration for Claude Code
-- Phase 14: Distribution & trust (Homebrew, code signing, Sparkle auto-updates)
+**Target Features:**
+- Usage dashboard command (session %, weekly %, reset timer)
+- Menu bar integration
+- Alert configuration commands
+- Profile switching from Raycast
 
-**PRO Tier (Differentiation):**
-- Phase 15: Team dashboard (aggregate org usage via Admin API)
-- Phase 16: Slack/Discord webhook alerts
-- Phase 17: Budget tracking + usage forecasting
+**Architecture:** Standalone — fetches data directly via OAuth, no Tokemon.app required.
 
 **Roadmap:** [ROADMAP.md](ROADMAP.md)

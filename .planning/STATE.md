@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** v3.0 shipped -- all milestones complete
+**Current focus:** v4.0 Raycast Integration
 
 ## Current Position
 
-Phase: All complete
-Plan: N/A
-Status: v3.0 Shipped
-Last activity: 2026-02-17 -- Archived v3.0 milestone
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-17 — Milestone v4.0 started
 
-Progress: [██████████████████████████] 100%
+Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░] 0%
 
 ## Shipped Milestones
 
@@ -134,5 +134,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Archived v3.0 milestone
-Resume: All milestones shipped — ready for v4.0 planning with `/gsd:new-milestone`
+Stopped at: Started v4.0 milestone — defining requirements
+Resume: Continue with requirements definition and roadmap creation

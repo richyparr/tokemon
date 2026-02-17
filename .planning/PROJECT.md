@@ -3,15 +3,26 @@
 ## Current State
 
 **Version:** v3.0 shipped 2026-02-17
-**Status:** All milestones complete
+**Status:** Planning v4.0 — Raycast Integration
 
 Native macOS menu bar utility for monitoring Claude usage with live OAuth data, extended analytics, Pro licensing, multi-profile support, terminal statusline, and team features.
 
 **Codebase:** 14,418 LOC Swift | 17 phases | 43 plans
 
-## Shipped: v3.0 Competitive Parity & Growth
+## Current Milestone: v4.0 Raycast Integration
 
-**Goal:** Match Claude Usage Tracker feature-for-feature in FREE tier, then differentiate with team/org PRO features.
+**Goal:** Bring Tokemon's usage monitoring to Raycast as a standalone extension, reaching developers where they already work.
+
+**Target features:**
+- [ ] Usage dashboard command (session %, weekly %, reset timer)
+- [ ] Menu bar integration (usage in Raycast menu bar)
+- [ ] Alert configuration commands
+- [ ] Profile switching from Raycast
+
+**Architecture:** Standalone extension — fetches data directly via OAuth, works without Tokemon.app running.
+
+<details>
+<summary>v3.0 Competitive Parity & Growth (shipped 2026-02-17)</summary>
 
 **FREE tier (competitive parity):**
 - [x] Multi-profile support (copy/switch credential architecture)
@@ -27,6 +38,8 @@ Native macOS menu bar utility for monitoring Claude usage with live OAuth data, 
 - [x] Slack/Discord webhook alerts
 - [x] Budget tracking with $ limits
 - [x] Usage forecasting (pace indicators, time-to-limit predictions)
+
+</details>
 
 ## What This Is
 
@@ -57,22 +70,18 @@ A native macOS app for monitoring Claude usage across all your sources — Claud
 - PDF and CSV export
 - Shareable usage cards with clipboard copy
 
-### Active (v3.0) — SHIPPED 2026-02-17
+### Active (v4.0)
 
-**FREE Tier:**
-- [x] Multi-profile support with credential copy/switch
-- [x] Menu bar icon customization (5 styles)
-- [x] Terminal statusline integration
-- [x] Homebrew tap distribution
-- [x] Apple Developer code signing
-- [x] Sparkle auto-updates
-- [x] Auto-start sessions on usage reset
+**Raycast Extension:**
+- [ ] Usage dashboard command
+- [ ] Menu bar integration
+- [ ] Alert configuration
+- [ ] Profile switching
 
-**PRO Tier:**
-- [x] Team dashboard (org-wide usage aggregation)
-- [x] Slack/Discord webhook alerts
-- [x] Budget tracking with $ limits
-- [x] Usage forecasting
+### Shipped (v3.0) — 2026-02-17
+
+**FREE Tier:** Multi-profile, menu bar customization, terminal statusline, Homebrew, code signing, Sparkle, auto-start
+**PRO Tier:** Team dashboard, webhooks, budget tracking, forecasting
 
 ### Out of Scope
 
@@ -123,4 +132,4 @@ A native macOS app for monitoring Claude usage across all your sources — Claud
 | Custom ArcShape gauge | Full visual control vs system Gauge, 270-degree arc | Good |
 
 ---
-*Last updated: 2026-02-17 after v3.0 milestone shipped*
+*Last updated: 2026-02-17 after v4.0 milestone started*
