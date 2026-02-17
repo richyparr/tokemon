@@ -111,6 +111,51 @@ struct OAuthClient {
         }
     }
 
+    // MARK: - Profile-Based Fetch Methods
+
+    /// Fetch usage using credentials stored in a profile (not from system keychain).
+    /// - Parameter credentialsJSON: The raw JSON string containing claudeAiOauth credentials.
+    /// - Returns: The decoded OAuthUsageResponse.
+    /// - Throws: OAuthError or TokenManager.TokenError if credentials are invalid/expired.
+    static func fetchUsageWithCredentials(_ credentialsJSON: String) async throws -> OAuthUsageResponse {
+        guard let data = credentialsJSON.data(using: .utf8) else {
+            throw OAuthError.invalidResponse
+        }
+
+        let credentials = try JSONDecoder().decode(
+            TokenManager.ClaudeCredentials.self,
+            from: data
+        )
+        let oauth = credentials.claudeAiOauth
+
+        // Check expiry with 10-minute buffer
+        let expiresAtDate = Date(timeIntervalSince1970: Double(oauth.expiresAt) / 1000.0)
+        let bufferDate = Date().addingTimeInterval(10 * 60)
+
+        if expiresAtDate < bufferDate {
+            // Try to refresh using the stored refresh token
+            let tokenResponse = try await TokenManager.refreshAccessToken(
+                refreshToken: oauth.refreshToken
+            )
+            // Return usage with the refreshed token
+            // Note: We don't write back to system keychain here -- only the active profile's
+            // credentials get written to keychain on switch
+            return try await fetchUsage(accessToken: tokenResponse.accessToken)
+        }
+
+        return try await fetchUsage(accessToken: oauth.accessToken)
+    }
+
+    /// Fetch usage using a manual session key (API key style auth).
+    /// - Parameters:
+    ///   - sessionKey: The Claude session key.
+    ///   - orgId: Optional organization ID.
+    /// - Returns: The decoded OAuthUsageResponse.
+    static func fetchUsageWithSessionKey(_ sessionKey: String, orgId: String? = nil) async throws -> OAuthUsageResponse {
+        // Session keys are used as Bearer tokens directly
+        return try await fetchUsage(accessToken: sessionKey)
+    }
+
     // MARK: - Private Helpers
 
     /// Perform the full token refresh cycle: get refresh token, refresh, update Keychain.

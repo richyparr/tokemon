@@ -131,6 +131,15 @@ final class ProfileManager {
         onActiveProfileChanged?(profile)
     }
 
+    // MARK: - Usage Tracking
+
+    /// Update a profile's cached usage snapshot (called by UsageMonitor after polling).
+    func updateProfileUsage(profileId: UUID, usage: UsageSnapshot) {
+        guard let index = profiles.firstIndex(where: { $0.id == profileId }) else { return }
+        profiles[index].lastUsage = usage
+        saveProfiles()
+    }
+
     // MARK: - Keychain Sync Operations (Copy/Switch Pattern)
 
     /// Sync (copy) credentials FROM the system keychain INTO the specified profile.

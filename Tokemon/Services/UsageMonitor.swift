@@ -82,6 +82,12 @@ final class UsageMonitor {
         didSet { UserDefaults.standard.set(showExtraUsage, forKey: "showExtraUsage") }
     }
 
+    // MARK: - Multi-Profile
+
+    /// Reference to ProfileManager for multi-profile polling (set by TokemonApp after init)
+    @ObservationIgnored
+    var profileManager: ProfileManager?
+
     // MARK: - Callbacks
 
     /// Callback invoked when currentUsage changes, used to update NSStatusItem.
@@ -207,6 +213,11 @@ final class UsageMonitor {
                 onAlertCheck?(currentUsage)
                 // Record to history
                 await recordHistory(for: currentUsage)
+                // Update active profile's cached usage and fetch all other profiles
+                if let profileManager, let activeId = profileManager.activeProfileId {
+                    profileManager.updateProfileUsage(profileId: activeId, usage: currentUsage)
+                }
+                await refreshAllProfiles()
                 return
             } catch {
                 oauthState = .failed(error.localizedDescription)
@@ -244,6 +255,11 @@ final class UsageMonitor {
                 onAlertCheck?(currentUsage)
                 // Record to history
                 await recordHistory(for: currentUsage)
+                // Update active profile's cached usage and fetch all other profiles
+                if let profileManager, let activeId = profileManager.activeProfileId {
+                    profileManager.updateProfileUsage(profileId: activeId, usage: currentUsage)
+                }
+                await refreshAllProfiles()
                 return
             } catch {
                 jsonlState = .failed(error.localizedDescription)
@@ -304,6 +320,53 @@ final class UsageMonitor {
     /// Reload history from store (for UI refresh).
     func reloadHistory() async {
         usageHistory = await historyStore.getHistory()
+    }
+
+    // MARK: - Multi-Profile Polling
+
+    /// Fetch usage for all profiles simultaneously (for PROF-06 multi-profile display).
+    /// Updates each profile's lastUsage in ProfileManager.
+    /// Called after the main refresh() completes successfully.
+    func refreshAllProfiles() async {
+        guard let profileManager else { return }
+
+        // Fetch usage for all profiles that have credentials (excluding active -- already fetched)
+        let otherProfiles = profileManager.profiles.filter {
+            $0.id != profileManager.activeProfileId && $0.hasCredentials
+        }
+
+        guard !otherProfiles.isEmpty else { return }
+
+        // Use TaskGroup for parallel fetching
+        await withTaskGroup(of: (UUID, UsageSnapshot?).self) { group in
+            for profile in otherProfiles {
+                group.addTask {
+                    do {
+                        let response: OAuthUsageResponse
+                        if let credJSON = profile.cliCredentialsJSON {
+                            response = try await OAuthClient.fetchUsageWithCredentials(credJSON)
+                        } else if let sessionKey = profile.claudeSessionKey {
+                            response = try await OAuthClient.fetchUsageWithSessionKey(
+                                sessionKey,
+                                orgId: profile.organizationId
+                            )
+                        } else {
+                            return (profile.id, nil)
+                        }
+                        return (profile.id, response.toSnapshot())
+                    } catch {
+                        print("[UsageMonitor] Failed to fetch usage for profile \(profile.name): \(error)")
+                        return (profile.id, nil)
+                    }
+                }
+            }
+
+            for await (profileId, snapshot) in group {
+                if let snapshot {
+                    profileManager.updateProfileUsage(profileId: profileId, usage: snapshot)
+                }
+            }
+        }
     }
 
     // Note: No deinit needed -- the UsageMonitor lives for the lifetime of the app.
