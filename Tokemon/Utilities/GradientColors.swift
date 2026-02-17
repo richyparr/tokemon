@@ -23,4 +23,14 @@ enum GradientColors {
             return NSColor(calibratedRed: 1.0, green: 0.3, blue: 0.3, alpha: 1.0)  // Red
         }
     }
+
+    /// Returns an NSColor for the given usage percentage, with monochrome override support.
+    /// When `isMonochrome` is true, returns `NSColor.labelColor` regardless of usage level.
+    /// This centralizes the monochrome logic so callers don't need to duplicate it.
+    static func nsColor(for usage: Double, isMonochrome: Bool) -> NSColor {
+        if isMonochrome {
+            return NSColor.labelColor
+        }
+        return color(for: usage)
+    }
 }
