@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** v3.0 Phase 12 -- Menu Bar Customization
+**Current focus:** v3.0 Phase 13 -- Terminal Statusline
 
 ## Current Position
 
@@ -93,4 +93,4 @@ None.
 
 Last session: 2026-02-17
 Stopped at: Completed 12-02-PLAN.md (Settings UI Picker) -- Phase 12 complete
-Resume: Run `/gsd:execute-phase 13` to start Phase 13
+Resume: Run `/gsd:plan-phase 13` to plan Terminal Statusline

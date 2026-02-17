@@ -54,9 +54,9 @@ Requirements for v3.0 Competitive Parity & Growth milestone.
 
 ### Menu Bar Customization (FREE)
 
-- [ ] **MENU-01**: User can choose from 5 icon styles (battery, progress, percentage, icon+bar, compact)
-- [ ] **MENU-02**: User can toggle monochrome mode
-- [ ] **MENU-03**: Icon color reflects usage status (green/orange/red)
+- [x] **MENU-01**: User can choose from 5 icon styles (battery, progress, percentage, icon+bar, compact)
+- [x] **MENU-02**: User can toggle monochrome mode
+- [x] **MENU-03**: Icon color reflects usage status (green/orange/red)
 
 ### Terminal Statusline (FREE)
 
@@ -150,9 +150,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROF-04 | Phase 11 | Complete |
 | PROF-05 | Phase 11 | Complete |
 | PROF-06 | Phase 11 | Complete |
-| MENU-01 | Phase 12 | Pending |
-| MENU-02 | Phase 12 | Pending |
-| MENU-03 | Phase 12 | Pending |
+| MENU-01 | Phase 12 | Complete |
+| MENU-02 | Phase 12 | Complete |
+| MENU-03 | Phase 12 | Complete |
 | TERM-01 | Phase 13 | Pending |
 | TERM-02 | Phase 13 | Pending |
 | TERM-03 | Phase 13 | Pending |
