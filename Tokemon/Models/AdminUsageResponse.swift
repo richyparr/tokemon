@@ -54,12 +54,15 @@ struct AdminUsageResponse: Codable, Sendable {
         let cacheCreation: CacheCreation?
         let cacheReadInputTokens: Int
         let outputTokens: Int
+        /// User ID when grouped by user_id (only present in team usage queries)
+        let userId: String?
 
         enum CodingKeys: String, CodingKey {
             case uncachedInputTokens = "uncached_input_tokens"
             case cacheCreation = "cache_creation"
             case cacheReadInputTokens = "cache_read_input_tokens"
             case outputTokens = "output_tokens"
+            case userId = "user_id"
         }
 
         var cacheCreationTokens: Int {

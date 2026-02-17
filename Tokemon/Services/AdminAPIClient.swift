@@ -159,6 +159,151 @@ actor AdminAPIClient {
         _ = try await fetchUsageReport(startingAt: startDate, endingAt: endDate, bucketWidth: "1d")
     }
 
+    // MARK: - Team Dashboard (Pro Feature)
+
+    /// Fetch organization members list.
+    /// Handles pagination automatically to retrieve all members.
+    ///
+    /// - Returns: Array of all organization members
+    func fetchOrganizationMembers() async throws -> [TeamMember] {
+        guard let adminKey = try? keychain.get(keychainKey) else {
+            throw AdminAPIError.notConfigured
+        }
+
+        var allMembers: [TeamMember] = []
+        var nextPage: String? = nil
+
+        repeat {
+            guard var components = URLComponents(string: "\(baseURL)/members") else {
+                throw AdminAPIError.invalidURL
+            }
+
+            var queryItems = [URLQueryItem(name: "limit", value: "100")]
+            if let page = nextPage {
+                queryItems.append(URLQueryItem(name: "next_page", value: page))
+            }
+            components.queryItems = queryItems
+
+            guard let url = components.url else {
+                throw AdminAPIError.invalidURL
+            }
+
+            var request = URLRequest(url: url)
+            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+            request.setValue(adminKey, forHTTPHeaderField: "x-api-key")
+
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw AdminAPIError.invalidResponse
+            }
+
+            switch httpResponse.statusCode {
+            case 200:
+                let decoder = JSONDecoder()
+                let membersResponse = try decoder.decode(OrganizationMembersResponse.self, from: data)
+                allMembers.append(contentsOf: membersResponse.data)
+
+                if membersResponse.hasMore, let page = membersResponse.nextPage {
+                    nextPage = page
+                } else {
+                    break
+                }
+            case 401, 403:
+                throw AdminAPIError.unauthorized
+            case 404:
+                throw AdminAPIError.notFound
+            default:
+                throw AdminAPIError.serverError(httpResponse.statusCode)
+            }
+        } while nextPage != nil
+
+        return allMembers
+    }
+
+    /// Fetch usage data grouped by user ID.
+    /// Returns usage results with userId populated for per-member breakdown.
+    ///
+    /// - Parameters:
+    ///   - startingAt: Start of the reporting period
+    ///   - endingAt: End of the reporting period
+    ///   - bucketWidth: Aggregation bucket size (default "1d")
+    /// - Returns: Usage response with per-user data
+    func fetchUsageByMember(
+        startingAt: Date,
+        endingAt: Date,
+        bucketWidth: String = "1d"
+    ) async throws -> AdminUsageResponse {
+        guard let adminKey = try? keychain.get(keychainKey) else {
+            throw AdminAPIError.notConfigured
+        }
+
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+
+        var allBuckets: [AdminUsageResponse.UsageBucket] = []
+        var nextPage: String? = nil
+
+        repeat {
+            guard var components = URLComponents(string: "\(baseURL)/usage_report/messages") else {
+                throw AdminAPIError.invalidURL
+            }
+
+            var queryItems = [
+                URLQueryItem(name: "starting_at", value: formatter.string(from: startingAt)),
+                URLQueryItem(name: "ending_at", value: formatter.string(from: endingAt)),
+                URLQueryItem(name: "bucket_width", value: bucketWidth),
+                URLQueryItem(name: "group_by", value: "user_id"),
+                URLQueryItem(name: "limit", value: "31"),
+            ]
+
+            if let page = nextPage {
+                queryItems.append(URLQueryItem(name: "next_page", value: page))
+            }
+
+            components.queryItems = queryItems
+
+            guard let url = components.url else {
+                throw AdminAPIError.invalidURL
+            }
+
+            var request = URLRequest(url: url)
+            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+            request.setValue(adminKey, forHTTPHeaderField: "x-api-key")
+
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw AdminAPIError.invalidResponse
+            }
+
+            switch httpResponse.statusCode {
+            case 200:
+                let decoder = JSONDecoder()
+                let usageResponse = try decoder.decode(AdminUsageResponse.self, from: data)
+                allBuckets.append(contentsOf: usageResponse.data)
+
+                if usageResponse.hasMore, let page = usageResponse.nextPage {
+                    nextPage = page
+                } else {
+                    break
+                }
+            case 401, 403:
+                throw AdminAPIError.unauthorized
+            case 404:
+                throw AdminAPIError.notFound
+            default:
+                throw AdminAPIError.serverError(httpResponse.statusCode)
+            }
+        } while nextPage != nil
+
+        return AdminUsageResponse(
+            data: allBuckets,
+            hasMore: false,
+            nextPage: nil
+        )
+    }
+
     /// Fetch organization cost report (single page).
     ///
     /// - Parameters:

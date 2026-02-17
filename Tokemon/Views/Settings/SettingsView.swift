@@ -65,6 +65,14 @@ struct SettingsView: View {
                 .tabItem {
                     Label("Admin", systemImage: "building.2")
                 }
+
+            // Team tab only visible when Admin API is configured
+            if AdminAPIClient.shared.hasAdminKey() {
+                TeamDashboardView()
+                    .tabItem {
+                        Label("Team", systemImage: "person.3.fill")
+                    }
+            }
         }
         .frame(minWidth: 560, minHeight: 400)
     }

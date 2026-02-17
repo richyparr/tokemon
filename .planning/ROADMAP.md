@@ -40,8 +40,8 @@ See [v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md) for full details.
 - [x] **Phase 11: Multi-Profile Foundation** (3/3 plans) -- completed 2026-02-17
 - [x] **Phase 12: Menu Bar Customization** (2/2 plans) -- completed 2026-02-17
 - [x] **Phase 13: Terminal Statusline** (2/2 plans) -- completed 2026-02-17
-- [ ] **Phase 14: Distribution & Trust** -- Users can install via Homebrew, receive auto-updates, and trust the signed binary
-- [ ] **Phase 15: Team Dashboard PRO** -- Team leads can view aggregated org usage in one place
+- [x] **Phase 14: Distribution & Trust** (4/4 plans) -- completed 2026-02-17
+- [x] **Phase 15: Team Dashboard PRO** (2/2 plans) -- completed 2026-02-17
 - [ ] **Phase 16: Webhook Alerts PRO** -- Users can receive usage alerts in Slack and Discord
 - [ ] **Phase 17: Budget & Forecasting PRO** -- Users can set spending limits and see predicted usage trajectories
 
@@ -134,8 +134,8 @@ Plans:
 **Plans:** 2 plans in 2 waves
 
 Plans:
-- [ ] 15-01-PLAN.md -- TeamMember model, AdminAPIClient extensions for members and grouped usage (Wave 1)
-- [ ] 15-02-PLAN.md -- TeamDashboardView, MemberUsageRow, Settings integration with date filtering (Wave 2)
+- [x] 15-01-PLAN.md -- TeamMember model, AdminAPIClient extensions for members and grouped usage (Wave 1)
+- [x] 15-02-PLAN.md -- TeamDashboardView, MemberUsageRow, Settings integration with date filtering (Wave 2)
 
 ---
 
@@ -197,7 +197,7 @@ Phases 11-13 can be built in parallel (independent FREE features). Phase 14 foll
 | 12. Menu Bar Customization | v3.0 | 2/2 | Complete | 2026-02-17 |
 | 13. Terminal Statusline | v3.0 | 2/2 | Complete | 2026-02-17 |
 | 14. Distribution & Trust | v3.0 | 4/4 | Complete | 2026-02-17 |
-| 15. Team Dashboard PRO | v3.0 | 0/2 | Planned | - |
+| 15. Team Dashboard PRO | v3.0 | 2/2 | Complete | 2026-02-17 |
 | 16. Webhook Alerts PRO | v3.0 | 0/0 | Not started | - |
 | 17. Budget & Forecasting PRO | v3.0 | 0/0 | Not started | - |
 

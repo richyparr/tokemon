@@ -20,6 +20,9 @@ enum ProFeature: String, CaseIterable, Sendable {
     // Phase 9: Shareable Moments
     case usageCards = "Shareable usage cards"
 
+    // Phase 15: Team Dashboard PRO
+    case teamDashboard = "Team usage dashboard"
+
     /// User-friendly description for UI
     var displayName: String {
         rawValue
@@ -44,6 +47,8 @@ enum ProFeature: String, CaseIterable, Sendable {
             return "square.and.arrow.up.fill"
         case .usageCards:
             return "photo.fill"
+        case .teamDashboard:
+            return "person.3.fill"
         }
     }
 }
