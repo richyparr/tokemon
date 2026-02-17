@@ -60,4 +60,18 @@ enum Constants {
 
     /// Keychain service name for Tokemon account metadata (separate from Claude Code credentials)
     static let accountsKeychainService = "ai.tokemon.accounts"
+
+    // MARK: - Multi-Profile
+
+    /// UserDefaults key for profile storage
+    static let profilesStorageKey = "tokemon.profiles"
+
+    /// UserDefaults key for active profile ID
+    static let activeProfileIdKey = "tokemon.activeProfileId"
+
+    /// Keychain service for Claude Code credentials (alias for keychainService).
+    /// Used by ProfileManager for copy/switch operations -- reads FROM and writes TO
+    /// Claude Code's keychain entry. Same value as `keychainService`; the alias
+    /// makes the intent clearer in profile-related code.
+    static let claudeCodeKeychainService = "Claude Code-credentials"
 }
