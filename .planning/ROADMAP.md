@@ -167,12 +167,11 @@ Plans:
   3. User can see cost attribution broken down by project
   4. User sees a predicted time-to-limit based on historical usage patterns, with an "on pace" / "ahead" / "behind" indicator
   5. Prediction updates in real-time as usage changes throughout the day
-**Plans:** TBD
+**Plans:** 2 plans in 2 waves
 
 Plans:
-- [ ] 17-01: TBD
-- [ ] 17-02: TBD
-- [ ] 17-03: TBD
+- [ ] 17-01-PLAN.md -- BudgetConfig model, BudgetManager service, ForecastingEngine, and AdminAPIClient cost-by-workspace extension (Wave 1)
+- [ ] 17-02-PLAN.md -- BudgetDashboardView with gauge/forecast/cost breakdown, Settings tab, and TokemonApp wiring (Wave 2)
 
 ---
 
@@ -199,7 +198,7 @@ Phases 11-13 can be built in parallel (independent FREE features). Phase 14 foll
 | 14. Distribution & Trust | v3.0 | 4/4 | Complete | 2026-02-17 |
 | 15. Team Dashboard PRO | v3.0 | 2/2 | Complete | 2026-02-17 |
 | 16. Webhook Alerts PRO | v3.0 | 2/2 | Complete | 2026-02-17 |
-| 17. Budget & Forecasting PRO | v3.0 | 0/0 | Not started | - |
+| 17. Budget & Forecasting PRO | v3.0 | 0/2 | Not started | - |
 
 ---
 
