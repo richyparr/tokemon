@@ -67,15 +67,15 @@ Requirements for v3.0 Competitive Parity & Growth milestone.
 
 ### Distribution & Trust (FREE)
 
-- [ ] **DIST-01**: App distributed via Homebrew tap (`brew install tokemon`)
-- [ ] **DIST-02**: App signed with Apple Developer certificate
-- [ ] **DIST-03**: App notarized for Gatekeeper
-- [ ] **DIST-04**: Sparkle framework for automatic updates
-- [ ] **DIST-05**: Update notifications in app
+- [x] **DIST-01**: App distributed via Homebrew tap (`brew install tokemon`)
+- [x] **DIST-02**: App signed with Apple Developer certificate
+- [x] **DIST-03**: App notarized for Gatekeeper
+- [x] **DIST-04**: Sparkle framework for automatic updates
+- [x] **DIST-05**: Update notifications in app
 
 ### Automation (FREE)
 
-- [ ] **AUTO-01**: User can enable auto-start session when usage resets to 0%
+- [x] **AUTO-01**: User can enable auto-start session when usage resets to 0%
 
 ### Team Dashboard (PRO)
 
@@ -157,12 +157,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TERM-02 | Phase 13 | Complete |
 | TERM-03 | Phase 13 | Complete |
 | TERM-04 | Phase 13 | Complete |
-| DIST-01 | Phase 14 | Pending |
-| DIST-02 | Phase 14 | Pending |
-| DIST-03 | Phase 14 | Pending |
-| DIST-04 | Phase 14 | Pending |
-| DIST-05 | Phase 14 | Pending |
-| AUTO-01 | Phase 14 | Pending |
+| DIST-01 | Phase 14 | Complete |
+| DIST-02 | Phase 14 | Complete |
+| DIST-03 | Phase 14 | Complete |
+| DIST-04 | Phase 14 | Complete |
+| DIST-05 | Phase 14 | Complete |
+| AUTO-01 | Phase 14 | Complete |
 | TEAM-01 | Phase 15 | Pending |
 | TEAM-02 | Phase 15 | Pending |
 | TEAM-03 | Phase 15 | Pending |

@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** v3.0 Phase 14 -- Distribution & Trust
+**Current focus:** v3.0 Phase 15 -- Team Dashboard PRO
 
 ## Current Position
 
@@ -14,7 +14,7 @@ Plan: 4 of 4 in current phase (all plans complete)
 Status: Phase Complete
 Last activity: 2026-02-17 -- Completed 14-03 Sparkle Auto-Update
 
-Progress: [████████░░░░░░░░░░░░░░░░░░] 31%
+Progress: [██████████░░░░░░░░░░░░░░░░] 36%
 
 ## Shipped Milestones
 
@@ -113,4 +113,4 @@ None.
 
 Last session: 2026-02-17
 Stopped at: Completed 14-03 Sparkle Auto-Update (Phase 14 complete)
-Resume: Begin Phase 15
+Resume: Run `/gsd:plan-phase 15` to plan Team Dashboard PRO
