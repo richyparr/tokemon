@@ -46,6 +46,20 @@ struct AlertSettings: View {
                 Text("Notifications")
             }
 
+            // MARK: - Session Notifications Section
+            Section {
+                Toggle("Notify when session resets", isOn: Binding(
+                    get: { alertManager.autoStartEnabled },
+                    set: { alertManager.autoStartEnabled = $0 }
+                ))
+
+                Text("Get notified when your usage resets to 0%, indicating a fresh session is available.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Session Notifications")
+            }
+
             // MARK: - Startup Section
             Section {
                 Toggle("Launch at login", isOn: $launchAtLogin)

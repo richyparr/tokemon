@@ -134,6 +134,9 @@ final class AlertManager {
             hasNotifiedWarning = true
             sendNotification(level: .warning, percentage: percentage)
         }
+
+        // Check for session reset (auto-start notification)
+        checkForSessionReset(usage)
     }
 
     /// Reset notification state (called when window resets or manually)
