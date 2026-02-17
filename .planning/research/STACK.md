@@ -261,7 +261,7 @@ dependencies: [
 - [Polpiella: Floating window in macOS 15](https://www.polpiella.dev/creating-a-floating-window-using-swiftui-in-macos-15) -- MEDIUM confidence, community tutorial
 - [Cindori: Floating panel in SwiftUI](https://cindori.com/developer/floating-panel) -- MEDIUM confidence, community tutorial
 - [Peter Steinberger: Settings from menu bar items](https://steipete.me/posts/2025/showing-settings-from-macos-menu-bar-items) -- MEDIUM confidence, documents SettingsLink bug
-- [Hacking with Swift: SwiftData in widgets](https://www.hackingwithswift.com/quick-start/swiftdata/how-to-access-a-swiftdata-container-from-widgets) -- MEDIUM confidence, tutorial
+- [Hacking with Swift: SwiftData in widgets](https://www.hackingwithswift.com/quick-start/swiftui/how-to-access-a-swiftdata-container-from-widgets) -- MEDIUM confidence, tutorial
 - [KeychainAccess GitHub](https://github.com/kishikawakatsumi/KeychainAccess) -- HIGH confidence, direct source
 - [swift-security GitHub](https://github.com/dm-zharov/swift-security) -- MEDIUM confidence, smaller community
 - [ccusage: Claude Code local JSONL parser](https://github.com/ryoppippi/ccusage) -- LOW confidence for JSONL format stability (unofficial, could change)
@@ -682,5 +682,313 @@ let package = Package(
 - [Managing Multiple Accounts with Keychain](https://medium.com/@leekiereloo/seamlessly-manage-multiple-user-accounts-in-ios-with-keychain-9ed080638a25) - Pattern guidance - MEDIUM confidence
 
 ---
-*Stack research for: Tokemon v2 Pro Features*
-*Updated: 2026-02-14*
+
+# v4.0 Raycast Extension: Stack Additions
+
+**Researched:** 2026-02-18
+**Scope:** Standalone Raycast extension for Claude usage monitoring
+**Overall Confidence:** HIGH (verified via official Raycast documentation)
+
+## Overview
+
+This section covers the **standalone Raycast extension** that fetches Claude usage data directly via OAuth. The extension operates independently of Tokemon.app, sharing only the OAuth endpoints and data models conceptually.
+
+**Key architectural constraint:** Raycast extensions run in Node.js, not Swift. The extension must reimplement OAuth flows and data fetching in TypeScript, not call Tokemon.app.
+
+## Core Stack
+
+| Technology | Version | Purpose | Why This Choice |
+|------------|---------|---------|-----------------|
+| **TypeScript** | 5.8+ | Primary language | Raycast requires TypeScript/JavaScript; TypeScript provides type safety matching existing Swift models |
+| **React** | 19.x | UI framework | Raycast components are React-based; required by @raycast/api |
+| **Node.js** | 22.14+ | Runtime | Raycast's required runtime version as of Feb 2026 |
+| **@raycast/api** | ^1.104.x | Core extension API | Official Raycast components, OAuth, storage, preferences |
+| **@raycast/utils** | ^1.17.x | Utilities | useFetch, useLocalStorage, OAuth utilities, caching |
+
+## Package Dependencies
+
+### Runtime Dependencies
+
+```json
+{
+  "dependencies": {
+    "@raycast/api": "^1.104.0",
+    "@raycast/utils": "^1.17.0"
+  }
+}
+```
+
+**Rationale:**
+- **@raycast/api**: Core requirement for all Raycast extensions. Provides `OAuth.PKCEClient`, `LocalStorage`, `MenuBarExtra`, `Form`, preferences API, and all UI components.
+- **@raycast/utils**: Utility hooks (`useFetch`, `usePromise`, `useLocalStorage`) that significantly reduce boilerplate for data fetching and caching.
+
+### Development Dependencies
+
+```json
+{
+  "devDependencies": {
+    "@raycast/eslint-config": "^2.1.1",
+    "@types/node": "^22.x",
+    "@types/react": "^19.x",
+    "eslint": "^9.x",
+    "prettier": "^3.5.x",
+    "typescript": "^5.8.x"
+  }
+}
+```
+
+**Rationale:**
+- **@raycast/eslint-config**: Official ESLint config with Raycast-specific rules; required for store submission.
+- **TypeScript 5.8+**: Required for Node 22 compatibility and latest language features.
+- **ESLint 9**: New flat config format used by Raycast since v1.48.8.
+
+## Key Libraries by Feature
+
+### OAuth & Authentication
+
+| Library | Source | Purpose |
+|---------|--------|---------|
+| `OAuth.PKCEClient` | @raycast/api | PKCE OAuth flow with built-in overlay, redirect handling, token storage |
+| `LocalStorage` | @raycast/api | Encrypted local storage for refresh tokens and credentials |
+| Preferences API | @raycast/api | Password-type preferences for manual token entry fallback |
+
+**Why native Raycast OAuth:**
+1. Built-in PKCE support (required for Claude OAuth)
+2. Automatic secure token storage in Raycast's encrypted database
+3. Native OAuth overlay UI with provider branding
+4. Handles redirect URIs automatically
+
+### Data Fetching
+
+| Library | Source | Purpose |
+|---------|--------|---------|
+| `useFetch` | @raycast/utils | HTTP requests with caching, loading states, error handling |
+| `fetch` | Node.js native | Raw fetch for token refresh endpoint |
+| `useLocalStorage` | @raycast/utils | Persist cached usage data between sessions |
+
+**Why useFetch over raw fetch:**
+- Stale-while-revalidate caching built-in
+- Automatic loading/error state management
+- `keepPreviousData` prevents UI flicker during refresh
+- `failureToastOptions` for user-friendly error messages
+
+### Menu Bar Integration
+
+| Component | Source | Purpose |
+|-----------|--------|---------|
+| `MenuBarExtra` | @raycast/api | Menu bar icon and dropdown menu |
+| `MenuBarExtra.Item` | @raycast/api | Individual menu items with actions |
+| `MenuBarExtra.Section` | @raycast/api | Grouped menu sections |
+
+**Configuration in package.json:**
+```json
+{
+  "commands": [
+    {
+      "name": "menu-bar",
+      "title": "Usage Menu Bar",
+      "mode": "menu-bar",
+      "interval": "5m"
+    }
+  ]
+}
+```
+
+### User Preferences
+
+| Type | Use Case | Storage |
+|------|----------|---------|
+| `textfield` | Display name, custom labels | Raycast preferences |
+| `password` | Manual OAuth token entry | Raycast secure storage |
+| `dropdown` | Alert threshold selection | Raycast preferences |
+| `checkbox` | Enable/disable features | Raycast preferences |
+
+## Integration Points
+
+### Claude OAuth Endpoint (Existing)
+
+The extension will call the same endpoints as Tokemon.app:
+
+```typescript
+// Usage endpoint
+const USAGE_URL = "https://api.anthropic.com/api/oauth/usage";
+
+// Token refresh endpoint
+const TOKEN_REFRESH_URL = "https://console.anthropic.com/v1/oauth/token";
+
+// OAuth client ID (Claude Code's official ID)
+const CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e";
+```
+
+### Response Model (Port from Swift)
+
+```typescript
+interface OAuthUsageResponse {
+  five_hour?: UsageWindow;
+  seven_day?: UsageWindow;
+  seven_day_oauth_apps?: UsageWindow;
+  seven_day_opus?: UsageWindow;
+  seven_day_sonnet?: UsageWindow;
+  extra_usage?: ExtraUsage;
+}
+
+interface UsageWindow {
+  utilization: number;  // 0-100
+  resets_at?: string;   // ISO-8601
+}
+
+interface ExtraUsage {
+  is_enabled: boolean;
+  monthly_limit?: number;  // cents
+  used_credits?: number;   // cents
+  utilization?: number;    // 0-100
+}
+```
+
+### Token Refresh Flow
+
+```typescript
+// Raycast PKCE client handles most of this, but for refresh:
+async function refreshToken(refreshToken: string): Promise<TokenResponse> {
+  const params = new URLSearchParams({
+    grant_type: "refresh_token",
+    refresh_token: refreshToken,
+    client_id: CLIENT_ID,
+  });
+
+  const response = await fetch(TOKEN_REFRESH_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params,
+  });
+
+  return response.json();
+}
+```
+
+## File Structure
+
+```
+tokemon-raycast/
+  package.json           # Manifest + dependencies
+  tsconfig.json          # TypeScript config (auto-generated)
+  eslint.config.js       # ESLint flat config
+  .prettierrc            # Prettier rules
+  assets/
+    icon.png             # Extension icon (512x512)
+    command-icon.png     # Command-specific icons
+  src/
+    usage-dashboard.tsx  # Main usage view command
+    menu-bar.tsx         # MenuBarExtra command
+    configure-alerts.tsx # Alert configuration form
+    switch-profile.tsx   # Profile switcher command
+    lib/
+      oauth.ts           # OAuth client wrapper
+      api.ts             # API calls (usage, refresh)
+      types.ts           # TypeScript interfaces
+      storage.ts         # LocalStorage helpers
+```
+
+## What NOT to Use
+
+### DO NOT Include
+
+| Technology | Reason |
+|------------|--------|
+| **Swift/SwiftUI** | Raycast extensions are Node.js only; cannot call native code |
+| **Tokemon.app IPC** | Extension must be standalone; no dependency on app running |
+| **keytar/node-keychain** | Raycast restricts direct Keychain access; use built-in OAuth/LocalStorage |
+| **External HTTP libraries** (axios, got) | Native fetch + useFetch sufficient; avoid bundle bloat |
+| **State management libraries** (Redux, Zustand) | React hooks + Raycast utilities sufficient for this scope |
+| **Testing frameworks** | Raycast extensions don't have official testing story; manual testing required |
+| **Database packages** (SQLite, better-sqlite3) | LocalStorage + file-based caching sufficient |
+
+### Avoid These Patterns
+
+| Pattern | Why Avoid | Instead |
+|---------|-----------|---------|
+| Reading Claude Code keychain directly | Raycast blocks Keychain Access requests for store submission | Use Raycast OAuth flow or manual token entry |
+| Polling with setInterval | Raycast handles background refresh via `interval` in manifest | Configure `"interval": "5m"` in command |
+| Complex state machines | Overkill for extension scope | React useState + useEffect |
+| External config files | Raycast preferences are the standard | Define in package.json `preferences` |
+
+## OAuth Strategy Decision
+
+### Option A: Full OAuth PKCE Flow (Recommended)
+
+Use Raycast's built-in `OAuth.PKCEClient` to authenticate directly with Claude.
+
+**Pros:**
+- Native UX with Raycast OAuth overlay
+- Automatic token storage and refresh
+- No manual token copying
+
+**Cons:**
+- Requires Claude to support PKCE redirect to Raycast (may need verification)
+- More complex initial implementation
+
+### Option B: Manual Token Entry (Fallback)
+
+User copies OAuth token from Claude Code's keychain and pastes into Raycast preferences.
+
+**Pros:**
+- Guaranteed to work (no OAuth redirect dependency)
+- Simpler implementation
+
+**Cons:**
+- Poor UX (token copying is tedious)
+- Token expiry requires re-entry
+
+### Recommendation
+
+**Implement Option A with Option B as fallback.** Start with PKCE flow; if Claude's OAuth doesn't support Raycast redirect URIs, fall back to password preference for manual token entry.
+
+## Installation Commands
+
+```bash
+# Create new extension (Raycast CLI)
+npx create-raycast-extension tokemon-raycast
+
+# Or manually:
+mkdir tokemon-raycast && cd tokemon-raycast
+npm init -y
+npm install @raycast/api @raycast/utils
+npm install -D @raycast/eslint-config @types/node @types/react eslint prettier typescript
+
+# Development
+npm run dev
+
+# Build for store
+npm run build
+npm run lint
+```
+
+## Raycast Extension Sources
+
+### Official Documentation (HIGH confidence)
+- [Raycast API Introduction](https://developers.raycast.com) - Core API reference
+- [OAuth | Raycast API](https://developers.raycast.com/api-reference/oauth) - PKCE flow, token storage
+- [Menu Bar Commands | Raycast API](https://developers.raycast.com/api-reference/menu-bar-commands) - MenuBarExtra component
+- [Storage | Raycast API](https://developers.raycast.com/api-reference/storage) - LocalStorage API
+- [Security | Raycast API](https://developers.raycast.com/information/security) - Keychain restrictions
+- [@raycast/utils Getting Started](https://developers.raycast.com/utilities/getting-started) - Utility hooks
+- [useFetch | Raycast API](https://developers.raycast.com/utilities/react-hooks/usefetch) - Data fetching patterns
+- [Preferences | Raycast API](https://developers.raycast.com/api-reference/preferences) - User preferences
+
+### Package Versions (HIGH confidence)
+- [@raycast/api npm](https://www.npmjs.com/package/@raycast/api) - v1.104.5 (Feb 2026)
+- [@raycast/utils npm](https://www.npmjs.com/package/@raycast/utils) - Peer dependency on @raycast/api
+- [@raycast/eslint-config npm](https://www.npmjs.com/package/@raycast/eslint-config) - v2.1.1
+
+### Reference Extensions (MEDIUM confidence)
+- [CCUsage Raycast Extension](https://www.raycast.com/nyatinte/ccusage) - Existing Claude usage extension using ccusage CLI
+- [GitLab Raycast Extension](https://github.com/raycast/extensions/blob/main/extensions/gitlab/package.json) - Reference package.json structure
+
+### Existing Tokemon Codebase (verified)
+- `/Users/richardparr/Tokemon/Tokemon/Utilities/Constants.swift` - OAuth endpoints, client ID
+- `/Users/richardparr/Tokemon/Tokemon/Models/OAuthUsageResponse.swift` - Response model structure
+- `/Users/richardparr/Tokemon/Tokemon/Services/OAuthClient.swift` - Fetch + refresh flow
+
+---
+*Stack research for: Tokemon v4.0 Raycast Extension*
+*Updated: 2026-02-18*

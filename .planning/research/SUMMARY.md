@@ -388,3 +388,194 @@ None of these gaps block roadmap creation or phase planning. They are implementa
 
 ---
 *v2 Research completed: 2026-02-14*
+
+---
+
+# v4.0 Raycast Extension Research Summary
+
+**Synthesized:** 2026-02-18
+**Scope:** Standalone Raycast extension for Claude usage monitoring
+**Confidence:** HIGH (official Raycast docs verified, competitor extensions analyzed)
+
+## Executive Summary
+
+The Tokemon Raycast extension is a standalone TypeScript/React application that monitors Claude usage directly via OAuth, operating independently of Tokemon.app. The critical constraint is that Raycast Store policy prohibits Keychain access, meaning the extension cannot read credentials from Claude Code directly. Users must manually enter OAuth tokens via Raycast password preferences, which the extension then uses for token refresh and API calls.
+
+The extension enters a competitive space with three existing solutions (ccusage, raycast-llm-usage, ClaudeCast), but Tokemon differentiates through multi-profile support (unique among competitors), configurable alert thresholds, and no CLI dependency. The architecture follows Raycast's ephemeral process model with aggressive caching via `useCachedState` and background refresh for the menu bar command.
+
+Research identified 25 pitfalls, with the most critical being: (1) Keychain access causing automatic store rejection, (2) OAuth state mismatch during hot reload development, (3) `isLoading` stuck true causing battery drain, and (4) API rate limits interpreted as auth failures. All have documented mitigations.
+
+## Stack Additions for v4.0
+
+| Technology | Version | Purpose | Notes |
+|------------|---------|---------|-------|
+| **TypeScript** | 5.8+ | Primary language | Raycast requires TS/JS; type safety matches Swift models |
+| **React** | 19.x | UI framework | Raycast components are React-based |
+| **Node.js** | 22.14+ | Runtime | Raycast's required runtime version |
+| **@raycast/api** | ^1.104.x | Core extension API | OAuth, storage, MenuBarExtra, preferences |
+| **@raycast/utils** | ^1.17.x | Utilities | useFetch, useLocalStorage, useCachedPromise |
+
+**No external dependencies required.** All functionality uses built-in Raycast APIs.
+
+## Feature Table Stakes
+
+Features users expect from a Claude usage Raycast extension (based on competitor analysis):
+
+| Feature | Complexity | Raycast Pattern | Competitor Parity |
+|---------|------------|-----------------|-------------------|
+| Current session usage (%) | LOW | MenuBarExtra title | All have this |
+| Weekly usage (%) | LOW | Metadata panel | All have this |
+| Reset countdown timer | LOW | Metadata label | All have this |
+| Menu bar icon with usage | LOW | MenuBarExtra | All have this |
+| Manual refresh action | LOW | ActionPanel | All have this |
+| Loading states | LOW | isLoading prop | Expected UX |
+| Error handling | MEDIUM | Toast, EmptyView | Required |
+| Pace indicator | LOW | Color-coded accessory | ClaudeCast has this |
+
+**Tokemon Differentiators (unique):**
+- **Multi-profile support** — Work/personal/client accounts (no competitor has this)
+- **Alert configuration from Raycast** — Set thresholds without opening Tokemon.app
+- **No CLI dependency** — Direct OAuth (ccusage requires npx/bunx)
+- **Native app companion** — "Open in Tokemon" for deeper analytics
+
+## Architecture Decisions
+
+### Process Model
+Raycast extensions are ephemeral — loaded on command invocation, unloaded after execution. Menu bar commands persist only while `isLoading: true`. All state must be persisted to LocalStorage or useCachedState between invocations.
+
+### Credential Handling
+**Critical constraint:** Raycast Store rejects extensions requesting Keychain access.
+
+**Solution:** Manual token entry via password preferences + automatic refresh.
+1. User copies tokens from Keychain Access.app (one-time setup)
+2. Extension stores in Raycast's encrypted LocalStorage
+3. Auto-refresh maintains session without re-entry
+
+### Caching Strategy
+```
+Layer 1: useCachedState (instant UI on command open)
+Layer 2: LocalStorage (OAuth tokens, usage history)
+Layer 3: useFetch (stale-while-revalidate for API calls)
+```
+
+### Component Structure
+```
+src/
+  index.tsx              # Dashboard command (List + Detail)
+  menu-bar.tsx           # MenuBarExtra with background refresh
+  configure-alerts.tsx   # Alert threshold settings (Form)
+  switch-profile.tsx     # Profile switcher (future)
+  api/
+    oauth-client.ts      # Token refresh logic
+    usage-client.ts      # Fetch usage data
+    types.ts             # OAuthUsageResponse, etc.
+  hooks/
+    useUsageData.ts      # SWR-based usage fetching
+    useCredentials.ts    # Token management
+```
+
+## Watch Out For (Top 5 Pitfalls)
+
+| Pitfall | Severity | Phase | Prevention |
+|---------|----------|-------|------------|
+| **Keychain access causes store rejection** | CRITICAL | Foundation | Use Raycast OAuth utils + password preferences ONLY |
+| **OAuth state mismatch during dev hot reload** | CRITICAL | Foundation | Never save files during active OAuth redirect |
+| **isLoading stuck true drains battery** | CRITICAL | Menu Bar | Use try/finally, prefer usePromise hooks |
+| **Rate limits (429) treated as auth failure** | HIGH | Foundation | Explicit 429 handling, retain auth state |
+| **Duplicate MenuBarExtra items break onAction** | HIGH | Menu Bar | Ensure unique titles for sibling items |
+
+**Full pitfall list:** 25 pitfalls documented in `/Users/richardparr/Tokemon/.planning/milestones/v4-research/PITFALLS.md`
+
+## Roadmap Implications
+
+### Suggested Phase Structure
+
+**Phase 1: Extension Foundation (Days 1-2)**
+- Project scaffolding (`npm init raycast-extension`)
+- Type definitions (port from Swift models)
+- Credential management (password preferences + LocalStorage)
+- Custom extension icon (512x512)
+- MIT license configuration
+
+**Phase 2: Core Data Fetching (Days 3-4)**
+- OAuth client with token refresh
+- Usage fetching with `useFetch` + SWR
+- Response parsing to `UsageSnapshot`
+- Error handling (429 vs 401 differentiation)
+- Graceful offline degradation (show cached data)
+
+**Phase 3: Dashboard Command (Days 4-5)**
+- List view with usage metrics
+- Detail view for each metric
+- Manual refresh action (Cmd+R)
+- Loading states (no flicker on initial load)
+
+**Phase 4: Menu Bar Command (Days 5-6)**
+- MenuBarExtra with dynamic icon/title
+- Background refresh (5m interval)
+- LaunchType detection for background vs foreground
+- Proper isLoading lifecycle
+
+**Phase 5: Polish & Store Submission (Days 7-8)**
+- Multi-profile support (LocalStorage profiles + profile switcher)
+- Alert configuration (Form command)
+- README with setup instructions
+- Store submission
+
+### Phase Ordering Rationale
+
+1. **Foundation first** — Credential handling determines entire architecture; Keychain rejection is catastrophic
+2. **Data before UI** — OAuth + API client must work before building views
+3. **Dashboard before menu bar** — Simpler lifecycle, validates data flow
+4. **Menu bar last** — Most complex lifecycle (background refresh, isLoading)
+5. **Polish for submission** — Store requirements (icon, license, README) before publish
+
+### Research Flags
+
+**Needs deeper research:**
+- **Phase 1:** Claude OAuth PKCE compatibility with Raycast redirect URIs (may need fallback to manual token entry)
+
+**Standard patterns (skip research):**
+- **Phase 2-5:** All use documented Raycast APIs with official examples
+
+## Confidence Assessment
+
+| Area | Confidence | Notes |
+|------|------------|-------|
+| Stack | HIGH | Official Raycast docs verified; package versions confirmed on npm |
+| Features | HIGH | 3 competitors analyzed; differentiation opportunities clear |
+| Architecture | HIGH | Raycast lifecycle docs explicit; process model well-documented |
+| Pitfalls | HIGH | 25 pitfalls verified against official docs and real extension issues |
+
+**Overall confidence:** HIGH
+
+### Gaps to Address
+
+- **Claude OAuth PKCE with Raycast:** Unknown if Claude's OAuth supports Raycast's redirect URIs. Plan: Attempt PKCE flow; fall back to manual token entry if it fails.
+- **Raycast Store review timeline:** Unknown review duration. Plan: Submit early; have Homebrew distribution as backup.
+
+## Sources
+
+### Official Raycast Documentation (HIGH confidence)
+- [Raycast API Introduction](https://developers.raycast.com)
+- [OAuth | Raycast API](https://developers.raycast.com/api-reference/oauth)
+- [Menu Bar Commands](https://developers.raycast.com/api-reference/menu-bar-commands)
+- [Storage | Raycast API](https://developers.raycast.com/api-reference/storage)
+- [Security | Raycast API](https://developers.raycast.com/information/security)
+- [Background Refresh](https://developers.raycast.com/information/lifecycle/background-refresh)
+- [Best Practices](https://developers.raycast.com/information/best-practices)
+- [Store Submission Guidelines](https://developers.raycast.com/basics/prepare-an-extension-for-store)
+
+### Competitor Analysis (MEDIUM confidence)
+- [ccusage Raycast Extension](https://www.raycast.com/nyatinte/ccusage) — 5,981 installs, CLI dependency
+- [raycast-llm-usage](https://github.com/markhudsonn/raycast-llm-usage) — Direct Keychain (not store-compatible)
+- [ClaudeCast](https://www.raycast.com/qazi0/claudecast) — Feature bloat, AI integration focus
+
+### Tokemon Codebase (HIGH confidence)
+- `Tokemon/Utilities/Constants.swift` — OAuth endpoints, client ID
+- `Tokemon/Models/OAuthUsageResponse.swift` — Response model to port
+- `Tokemon/Services/OAuthClient.swift` — Token refresh logic to port
+
+---
+*v4 Research completed: 2026-02-18*
+*Ready for roadmap: yes*
