@@ -2,12 +2,31 @@
 
 ## Current State
 
-**Version:** v2.0 shipped 2026-02-15
-**Status:** Feature complete, planning v3
+**Version:** v2.0 shipped 2026-02-15 (multi-account removed post-ship)
+**Status:** Planning v3.0 — Competitive Parity & Growth
 
-Native macOS menu bar utility for monitoring Claude usage with live OAuth data, multi-account support, extended analytics, Pro licensing, and shareable usage cards.
+Native macOS menu bar utility for monitoring Claude usage with live OAuth data, extended analytics, Pro licensing, and shareable usage cards.
 
-**Codebase:** 7,706 LOC Swift | 9 phases | 23 plans
+**Codebase:** 7,706 LOC Swift | 10 phases | 26 plans
+
+## Current Milestone: v3.0 Competitive Parity & Growth
+
+**Goal:** Match Claude Usage Tracker (1.2k stars) feature-for-feature in FREE tier, then differentiate with team/org PRO features.
+
+**FREE tier (competitive parity):**
+- Multi-profile support (copy/switch credential architecture)
+- Menu bar icon customization (5 styles)
+- Terminal statusline integration for Claude Code
+- Homebrew tap distribution
+- Apple Developer code signing + notarization
+- Sparkle auto-updates
+- Auto-start sessions on reset
+
+**PRO tier (differentiation):**
+- Team dashboard (aggregate org usage via Admin API)
+- Slack/Discord webhook alerts
+- Budget tracking with $ limits
+- Usage forecasting (ML-based limit predictions)
 
 ## What This Is
 
@@ -31,32 +50,44 @@ A native macOS app for monitoring Claude usage across all your sources — Claud
 
 **v2.0 (shipped 2026-02-15):**
 - LemonSqueezy licensing with 2-week trial, Pro subscription, offline/grace support
-- Multi-account (add/switch/manage/remove accounts)
-- Per-account alert thresholds
-- Combined usage summary across accounts
+- ~~Multi-account (add/switch/manage/remove accounts)~~ — removed post-ship (Claude Code keychain architecture)
 - Weekly and monthly usage summaries
 - 30-day and 90-day usage history
 - Project/folder breakdown
 - PDF and CSV export
 - Shareable usage cards with clipboard copy
 
-### Active (v3)
+### Active (v3.0)
 
-_None defined yet. Run `/gsd:new-milestone` to start v3 planning._
+**FREE Tier:**
+- [ ] Multi-profile support with credential copy/switch
+- [ ] Menu bar icon customization (5 styles)
+- [ ] Terminal statusline integration
+- [ ] Homebrew tap distribution
+- [ ] Apple Developer code signing
+- [ ] Sparkle auto-updates
+- [ ] Auto-start sessions on usage reset
+
+**PRO Tier:**
+- [ ] Team dashboard (org-wide usage aggregation)
+- [ ] Slack/Discord webhook alerts
+- [ ] Budget tracking with $ limits
+- [ ] Usage forecasting
 
 ### Out of Scope
 
 - Mac App Store distribution — sandbox blocks ~/.claude access
 - Real-time Notification Center widget — WidgetKit refresh budget too limiting
-- Multi-provider monitoring — Claude-only for best-in-class experience
+- Multi-provider monitoring (Copilot, Cursor, Gemini) — Claude-only for best-in-class experience
 - Claude.ai scraping — too fragile, using OAuth instead
 - Open source — closed source for monetization
+- iOS companion app — deferred to v4+
 
-### Deferred (v3+)
+### Deferred (v4+)
 
-- iOS companion app
-- Web interface
+- Web dashboard interface
 - Raycast/Alfred extensions
+- Localization (8 languages)
 
 ## Constraints
 
@@ -85,5 +116,9 @@ _None defined yet. Run `/gsd:new-milestone` to start v3 planning._
 | Solid colors only in ImageRenderer views | Workaround for macOS gradient rendering bug | Good |
 | NSSavePanel standalone presentation | LSUIElement apps have no reliable key window | Good |
 
+| Multi-profile via copy/switch | Claude Usage Tracker approach — copy credentials to app storage, write back on switch | — Pending |
+| Homebrew tap for distribution | Developer trust requirement, industry standard | — Pending |
+| Apple code signing | User security requirement, enables notarization | — Pending |
+
 ---
-*Last updated: 2026-02-15 after v2.0 milestone*
+*Last updated: 2026-02-17 after v3.0 milestone start*
