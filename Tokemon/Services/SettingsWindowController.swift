@@ -14,6 +14,7 @@ final class SettingsWindowController {
     private var licenseManager: LicenseManager?
     private var featureAccess: FeatureAccessManager?
     private var profileManager: ProfileManager?
+    private var updateManager: UpdateManager?
 
     private init() {}
 
@@ -45,6 +46,11 @@ final class SettingsWindowController {
     /// Set the profile manager reference (call from app startup)
     func setProfileManager(_ manager: ProfileManager) {
         self.profileManager = manager
+    }
+
+    /// Set the update manager reference (call from app startup)
+    func setUpdateManager(_ manager: UpdateManager) {
+        self.updateManager = manager
     }
 
     /// Show the settings window, creating it if necessary
@@ -87,6 +93,11 @@ final class SettingsWindowController {
             return
         }
 
+        guard let updateManager = updateManager else {
+            print("[Tokemon] Error: UpdateManager not set for settings window")
+            return
+        }
+
         let settingsView = SettingsView()
             .environment(monitor)
             .environment(alertManager)
@@ -94,6 +105,7 @@ final class SettingsWindowController {
             .environment(licenseManager)
             .environment(featureAccess)
             .environment(profileManager)
+            .environment(updateManager)
 
         let hostingController = NSHostingController(rootView: settingsView)
 

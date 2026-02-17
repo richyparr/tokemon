@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Main settings window with eight tabs: Profiles, General, Data Sources, Appearance, Alerts, Analytics, License, and Admin API.
+/// Main settings window with tabs: Profiles, General, Data Sources, Appearance, Alerts, Analytics, License, Admin API, and Updates.
 /// Uses native macOS TabView with automatic style for system-consistent settings.
 struct SettingsView: View {
     @Environment(UsageMonitor.self) private var monitor
@@ -13,6 +13,11 @@ struct SettingsView: View {
             ProfilesSettings()
                 .tabItem {
                     Label("Profiles", systemImage: "person.2")
+                }
+
+            GeneralSettings()
+                .tabItem {
+                    Label("Updates", systemImage: "arrow.triangle.2.circlepath.circle")
                 }
 
             RefreshSettings()

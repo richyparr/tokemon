@@ -18,6 +18,7 @@ struct TokemonApp: App {
     @State private var profileManager = ProfileManager()
     @State private var statusItemManager = StatusItemManager()
     @State private var statuslineExporter = StatuslineExporter()
+    @State private var updateManager = UpdateManager()
 
     // Track whether chart is shown to adjust popover height
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
@@ -116,6 +117,7 @@ struct TokemonApp: App {
                 .environment(licenseManager)
                 .environment(featureAccess)
                 .environment(profileManager)
+                .environment(updateManager)
                 .frame(width: 320, height: popoverHeight)
                 .onAppear {
                     // Ensure status item is updated when popover appears
@@ -139,6 +141,7 @@ struct TokemonApp: App {
             SettingsWindowController.shared.setLicenseManager(licenseManager)
             SettingsWindowController.shared.setFeatureAccessManager(featureAccess)
             SettingsWindowController.shared.setProfileManager(profileManager)
+            SettingsWindowController.shared.setUpdateManager(updateManager)
 
             // Wire ProfileManager to UsageMonitor for multi-profile polling
             monitor.profileManager = profileManager
@@ -220,6 +223,7 @@ struct TokemonApp: App {
                 .environment(licenseManager)
                 .environment(featureAccess)
                 .environment(profileManager)
+                .environment(updateManager)
         }
     }
 }
