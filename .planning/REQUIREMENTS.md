@@ -3,9 +3,9 @@
 **Defined:** 2026-02-14
 **Core Value:** Know your Claude usage at a glance before hitting limits.
 
-## v2 Requirements
+## v2 Requirements (Shipped)
 
-Requirements for v2 Pro release. Each maps to roadmap phases.
+Requirements for v2 Pro release. All complete except shareable moments.
 
 ### Analytics & Reports
 
@@ -15,15 +15,13 @@ Requirements for v2 Pro release. Each maps to roadmap phases.
 - [x] **ANALYTICS-04**: User can export usage data as CSV
 - [x] **ANALYTICS-05**: User can view 30-day usage history
 - [x] **ANALYTICS-06**: User can view 90-day usage history
-- [x] **ANALYTICS-07**: User can see project/folder breakdown (which projects used most tokens)
+- [x] **ANALYTICS-07**: User can see project/folder breakdown
 
-### Multi-Account
+### Multi-Account (REMOVED)
 
-- [x] **ACCOUNT-01**: User can add multiple Claude accounts
-- [x] **ACCOUNT-02**: User can switch between accounts
-- [x] **ACCOUNT-03**: User can remove an account
-- [x] **ACCOUNT-04**: User can set per-account alert thresholds
-- [x] **ACCOUNT-05**: User can see combined usage across all accounts
+*Removed post-ship due to Claude Code keychain architecture limitations.*
+
+- [x] ~~ACCOUNT-01 through ACCOUNT-05~~ — Replaced by PROF-* in v3
 
 ### Licensing
 
@@ -35,13 +33,89 @@ Requirements for v2 Pro release. Each maps to roadmap phases.
 
 ### Shareable Moments
 
-- [ ] **SHARE-01**: User can generate "usage card" image showing their stats
-- [ ] **SHARE-02**: User can copy image to clipboard for sharing
-- [ ] **SHARE-03**: Usage card includes Tokemon branding (viral marketing)
+- [x] **SHARE-01**: User can generate "usage card" image showing their stats
+- [x] **SHARE-02**: User can copy image to clipboard for sharing
+- [x] **SHARE-03**: Usage card includes Tokemon branding (viral marketing)
 
-## v3 Requirements
+---
 
-Deferred to future release. Tracked but not in current roadmap.
+## v3.0 Requirements
+
+Requirements for v3.0 Competitive Parity & Growth milestone.
+
+### Multi-Profile (FREE)
+
+- [ ] **PROF-01**: User can create multiple profiles with custom names
+- [ ] **PROF-02**: User can sync CLI credentials from system keychain to profile
+- [ ] **PROF-03**: User can enter manual session keys for secondary accounts
+- [ ] **PROF-04**: User can switch between profiles (writes credentials to system keychain)
+- [ ] **PROF-05**: User can delete profiles
+- [ ] **PROF-06**: User can see all profiles' usage in menu bar simultaneously
+
+### Menu Bar Customization (FREE)
+
+- [ ] **MENU-01**: User can choose from 5 icon styles (battery, progress, percentage, icon+bar, compact)
+- [ ] **MENU-02**: User can toggle monochrome mode
+- [ ] **MENU-03**: Icon color reflects usage status (green/orange/red)
+
+### Terminal Statusline (FREE)
+
+- [ ] **TERM-01**: User can display usage in terminal statusline (bash/zsh prompt)
+- [ ] **TERM-02**: Statusline shows session %, weekly %, reset timer
+- [ ] **TERM-03**: User can customize statusline format
+- [ ] **TERM-04**: One-click install script for statusline
+
+### Distribution & Trust (FREE)
+
+- [ ] **DIST-01**: App distributed via Homebrew tap (`brew install tokemon`)
+- [ ] **DIST-02**: App signed with Apple Developer certificate
+- [ ] **DIST-03**: App notarized for Gatekeeper
+- [ ] **DIST-04**: Sparkle framework for automatic updates
+- [ ] **DIST-05**: Update notifications in app
+
+### Automation (FREE)
+
+- [ ] **AUTO-01**: User can enable auto-start session when usage resets to 0%
+
+### Team Dashboard (PRO)
+
+- [ ] **TEAM-01**: User can view aggregated usage across org members (via Admin API)
+- [ ] **TEAM-02**: User can see per-member usage breakdown
+- [ ] **TEAM-03**: User can filter by date range
+
+### Webhook Alerts (PRO)
+
+- [ ] **HOOK-01**: User can configure Slack webhook URL
+- [ ] **HOOK-02**: User can configure Discord webhook URL
+- [ ] **HOOK-03**: User receives webhook notification at threshold
+- [ ] **HOOK-04**: User can customize webhook message format
+
+### Budget Tracking (PRO)
+
+- [ ] **BUDG-01**: User can set monthly $ budget limit
+- [ ] **BUDG-02**: User sees current spend vs budget
+- [ ] **BUDG-03**: User receives alert at budget threshold (50%, 75%, 90%)
+- [ ] **BUDG-04**: User can see cost attribution by project
+
+### Usage Forecasting (PRO)
+
+- [ ] **FORE-01**: User sees predicted time to limit based on usage patterns
+- [ ] **FORE-02**: User sees "on pace" / "ahead" / "behind" indicator
+- [ ] **FORE-03**: Prediction updates in real-time as usage changes
+
+---
+
+## Future Requirements (v4+)
+
+### Localization
+
+- **LOC-01**: App supports English, Spanish, French, German, Japanese
+- **LOC-02**: All UI strings externalized for translation
+
+### macOS Widgets
+
+- **WIDG-01**: User can add usage widget to Notification Center
+- **WIDG-02**: Widget shows session %, weekly %, reset timer
 
 ### iOS Companion
 
@@ -53,18 +127,15 @@ Deferred to future release. Tracked but not in current roadmap.
 
 - **INTEG-01**: Raycast extension for quick usage check
 - **INTEG-02**: Alfred workflow for quick usage check
-- **INTEG-03**: Shortcuts integration for automation
 
 ## Out of Scope
 
-Explicitly excluded. Documented to prevent scope creep.
-
 | Feature | Reason |
 |---------|--------|
-| Mac App Store distribution | Sandbox blocks ~/.claude access; need JSONL for project breakdown |
+| Multi-provider (Copilot, Cursor, Gemini) | Claude-only for best-in-class experience |
+| Mac App Store distribution | Sandbox blocks ~/.claude access |
 | Open source | Closed source for monetization |
 | Web interface | Focus on native Mac experience |
-| Multi-provider (OpenAI, etc.) | Claude-only for best-in-class experience |
 | Real-time widget | WidgetKit refresh budget too limiting |
 
 ## Traceability
@@ -73,32 +144,45 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LICENSE-01 | Phase 6 | Complete |
-| LICENSE-02 | Phase 6 | Complete |
-| LICENSE-03 | Phase 6 | Complete |
-| LICENSE-04 | Phase 6 | Complete |
-| LICENSE-05 | Phase 6 | Complete |
-| ACCOUNT-01 | Phase 7 | Complete |
-| ACCOUNT-02 | Phase 7 | Complete |
-| ACCOUNT-03 | Phase 7 | Complete |
-| ACCOUNT-04 | Phase 7 | Complete |
-| ACCOUNT-05 | Phase 7 | Complete |
-| ANALYTICS-01 | Phase 8 | Complete |
-| ANALYTICS-02 | Phase 8 | Complete |
-| ANALYTICS-03 | Phase 8 | Complete |
-| ANALYTICS-04 | Phase 8 | Complete |
-| ANALYTICS-05 | Phase 8 | Complete |
-| ANALYTICS-06 | Phase 8 | Complete |
-| ANALYTICS-07 | Phase 8 | Complete |
-| SHARE-01 | Phase 9 | Pending |
-| SHARE-02 | Phase 9 | Pending |
-| SHARE-03 | Phase 9 | Pending |
+| PROF-01 | TBD | Pending |
+| PROF-02 | TBD | Pending |
+| PROF-03 | TBD | Pending |
+| PROF-04 | TBD | Pending |
+| PROF-05 | TBD | Pending |
+| PROF-06 | TBD | Pending |
+| MENU-01 | TBD | Pending |
+| MENU-02 | TBD | Pending |
+| MENU-03 | TBD | Pending |
+| TERM-01 | TBD | Pending |
+| TERM-02 | TBD | Pending |
+| TERM-03 | TBD | Pending |
+| TERM-04 | TBD | Pending |
+| DIST-01 | TBD | Pending |
+| DIST-02 | TBD | Pending |
+| DIST-03 | TBD | Pending |
+| DIST-04 | TBD | Pending |
+| DIST-05 | TBD | Pending |
+| AUTO-01 | TBD | Pending |
+| TEAM-01 | TBD | Pending |
+| TEAM-02 | TBD | Pending |
+| TEAM-03 | TBD | Pending |
+| HOOK-01 | TBD | Pending |
+| HOOK-02 | TBD | Pending |
+| HOOK-03 | TBD | Pending |
+| HOOK-04 | TBD | Pending |
+| BUDG-01 | TBD | Pending |
+| BUDG-02 | TBD | Pending |
+| BUDG-03 | TBD | Pending |
+| BUDG-04 | TBD | Pending |
+| FORE-01 | TBD | Pending |
+| FORE-02 | TBD | Pending |
+| FORE-03 | TBD | Pending |
 
 **Coverage:**
-- v2 requirements: 20 total
-- Mapped to phases: 20
-- Unmapped: 0
+- v3.0 requirements: 33 total
+- Mapped to phases: 0
+- Unmapped: 33 ⚠️
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-14 after v2 roadmap creation*
+*Last updated: 2026-02-17 after v3.0 requirements definition*
