@@ -16,7 +16,6 @@ struct PopoverContentView: View {
     // Setting for showing usage trend (stored in UserDefaults)
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
 
-    @State private var showingPurchasePrompt = false
 
     /// Computed theme colors based on current theme and color scheme
     private var themeColors: ThemeColors {
@@ -111,13 +110,6 @@ struct PopoverContentView: View {
                 )
             }
 
-            // Upgrade banner for free users
-            if shouldShowUpgradeBanner {
-                UpgradeBannerView {
-                    showingPurchasePrompt = true
-                }
-            }
-
             // Error banner (if error exists)
             if let error = monitor.error {
                 ErrorBannerView(
@@ -191,10 +183,6 @@ struct PopoverContentView: View {
         .frame(width: 320)
         .background(themeColors.primaryBackground.ignoresSafeArea())
         .tint(themeColors.primaryAccent)
-        .sheet(isPresented: $showingPurchasePrompt) {
-            PurchasePromptView()
-                .environment(licenseManager)
-        }
     }
 
     /// Color for usage percentage in the multi-profile summary
@@ -205,13 +193,6 @@ struct PopoverContentView: View {
         return .primary
     }
 
-    /// Whether to show the upgrade banner for free users
-    private var shouldShowUpgradeBanner: Bool {
-        if case .free = licenseManager.state {
-            return true
-        }
-        return false
-    }
 
     /// Open settings window using our custom controller
     private func openSettingsWindow() {

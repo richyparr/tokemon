@@ -35,7 +35,6 @@ struct TokemonApp: App {
         // - Padding: 32px (16 top + 16 bottom)
         // Total base: ~298px, round to 300
         let baseHeight: CGFloat = 300
-        let trialBannerHeight: CGFloat = 56   // Trial banner actual height
         let updateBannerHeight: CGFloat = 56  // Update available banner height
         let chartHeight: CGFloat = 230        // Chart + burn rate section
         let extraUsageHeight: CGFloat = 75    // Extra usage section (divider + title + 3 rows)
@@ -55,11 +54,6 @@ struct TokemonApp: App {
             height += extraUsageHeight
         }
 
-        // Add height for upgrade banner if free user
-        if shouldShowUpgradeBanner {
-            height += trialBannerHeight
-        }
-
         // Add height for update banner if update is available
         if updateManager.updateAvailable {
             height += updateBannerHeight
@@ -73,13 +67,6 @@ struct TokemonApp: App {
         return height
     }
 
-    /// Whether upgrade banner should be shown (matches PopoverContentView logic)
-    private var shouldShowUpgradeBanner: Bool {
-        if case .free = licenseManager.state {
-            return true
-        }
-        return false
-    }
 
     init() {
         // Initialize license and feature managers together (shared dependency)
