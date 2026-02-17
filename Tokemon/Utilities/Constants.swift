@@ -75,6 +75,11 @@ enum Constants {
     /// makes the intent clearer in profile-related code.
     static let claudeCodeKeychainService = "Claude Code-credentials"
 
+    // MARK: - Auto-Start Session
+
+    /// UserDefaults key for auto-start session notification preference
+    static let autoStartSessionKey = "tokemon.autoStartSession"
+
     // MARK: - Terminal Statusline
 
     /// Directory for statusline cache files (~/.tokemon)

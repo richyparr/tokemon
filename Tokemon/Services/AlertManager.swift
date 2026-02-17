@@ -47,6 +47,13 @@ final class AlertManager {
         }
     }
 
+    /// Whether auto-start session notification is enabled
+    var autoStartEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(autoStartEnabled, forKey: Constants.autoStartSessionKey)
+        }
+    }
+
     // MARK: - Initialization
 
     init() {
@@ -54,6 +61,7 @@ final class AlertManager {
         let stored = UserDefaults.standard.integer(forKey: "alertThreshold")
         self.alertThreshold = stored > 0 ? min(100, max(50, stored)) : Constants.defaultAlertThreshold
         self.notificationsEnabled = UserDefaults.standard.bool(forKey: "notificationsEnabled")
+        self.autoStartEnabled = UserDefaults.standard.bool(forKey: Constants.autoStartSessionKey)
     }
 
     // MARK: - Private State
@@ -65,6 +73,14 @@ final class AlertManager {
     /// Whether we've notified about critical level this usage window
     @ObservationIgnored
     private var hasNotifiedCritical: Bool = false
+
+    /// Previous usage percentage (to detect 0% transition)
+    @ObservationIgnored
+    private var previousPercentage: Double = -1
+
+    /// Whether we've notified about session reset this cycle
+    @ObservationIgnored
+    private var hasNotifiedSessionReset: Bool = false
 
     /// Tracks the window reset timestamp (rounded to minute) to detect new windows
     @ObservationIgnored
@@ -124,7 +140,73 @@ final class AlertManager {
     func resetNotificationState() {
         hasNotifiedWarning = false
         hasNotifiedCritical = false
+        hasNotifiedSessionReset = false
         currentAlertLevel = .normal
+    }
+
+    // MARK: - Session Reset Detection
+
+    /// Check if usage has reset to 0% and send notification if enabled.
+    /// Called by checkUsage after each successful refresh.
+    ///
+    /// - Parameter usage: Current usage snapshot
+    ///
+    /// Logic:
+    /// - If previous percentage was > 0 and current is 0%, session has reset
+    /// - Send notification ONCE per reset cycle
+    /// - Reset the notification flag when usage goes back above 0%
+    func checkForSessionReset(_ usage: UsageSnapshot) {
+        guard usage.hasPercentage else { return }
+        guard autoStartEnabled else {
+            previousPercentage = usage.primaryPercentage
+            return
+        }
+
+        let current = usage.primaryPercentage
+
+        // Detect reset: was > 0, now is 0
+        if previousPercentage > 0 && current == 0 && !hasNotifiedSessionReset {
+            hasNotifiedSessionReset = true
+            sendSessionResetNotification()
+        }
+
+        // Reset notification flag when usage goes back above 0
+        if current > 0 {
+            hasNotifiedSessionReset = false
+        }
+
+        previousPercentage = current
+    }
+
+    /// Send notification that session has reset
+    private func sendSessionResetNotification() {
+        guard hasAppBundle else {
+            print("[AlertManager] No app bundle, skipping session reset notification")
+            return
+        }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Session Available"
+        content.subtitle = "Claude Code"
+        content.body = "Your usage has reset to 0%. A fresh session is ready."
+        content.sound = .default
+        content.interruptionLevel = .timeSensitive
+
+        let uniqueId = "tokemon.session-reset.\(Date().timeIntervalSince1970)"
+
+        let request = UNNotificationRequest(
+            identifier: uniqueId,
+            content: content,
+            trigger: nil
+        )
+
+        print("[AlertManager] Sending session reset notification")
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("[AlertManager] Session reset notification error: \(error.localizedDescription)")
+            }
+        }
     }
 
     // MARK: - Private Methods
