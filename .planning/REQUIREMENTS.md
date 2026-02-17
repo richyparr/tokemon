@@ -1,142 +1,60 @@
 # Requirements: Tokemon
 
-**Defined:** 2026-02-14
+**Defined:** 2026-02-18
 **Core Value:** Know your Claude usage at a glance before hitting limits.
 
-## v2 Requirements (Shipped)
+## v4.0 Requirements
 
-Requirements for v2 Pro release. All complete except shareable moments.
+Requirements for Raycast extension release.
 
-### Analytics & Reports
+### Extension Foundation
 
-- [x] **ANALYTICS-01**: User can view weekly usage summary
-- [x] **ANALYTICS-02**: User can view monthly usage summary
-- [x] **ANALYTICS-03**: User can export usage report as PDF
-- [x] **ANALYTICS-04**: User can export usage data as CSV
-- [x] **ANALYTICS-05**: User can view 30-day usage history
-- [x] **ANALYTICS-06**: User can view 90-day usage history
-- [x] **ANALYTICS-07**: User can see project/folder breakdown
+- [ ] **EXT-01**: Extension scaffolded with TypeScript, React, @raycast/api
+- [ ] **EXT-02**: Custom Tokemon icon displayed in Raycast
+- [ ] **EXT-03**: MIT license and README with setup instructions
+- [ ] **EXT-04**: User can enter OAuth token via setup wizard
 
-### Multi-Account (REMOVED)
+### Dashboard Command
 
-*Removed post-ship due to Claude Code keychain architecture limitations.*
+- [ ] **DASH-01**: User sees session usage percentage
+- [ ] **DASH-02**: User sees weekly usage percentage
+- [ ] **DASH-03**: User sees reset timer countdown
+- [ ] **DASH-04**: User sees pace indicator (on track / ahead / behind)
+- [ ] **DASH-05**: User can manually refresh usage data
 
-- [x] ~~ACCOUNT-01 through ACCOUNT-05~~ -- Replaced by PROF-* in v3
+### Menu Bar Command
 
-### Licensing
+- [ ] **MENU-01**: Usage percentage displayed in Raycast menu bar
+- [ ] **MENU-02**: Menu bar updates automatically (background refresh)
+- [ ] **MENU-03**: Menu bar color indicates usage level (green/orange/red)
 
-- [x] **LICENSE-01**: App shows trial status (X days remaining)
-- [x] **LICENSE-02**: App prompts to purchase when trial expires
-- [x] **LICENSE-03**: User can enter license key to activate
-- [x] **LICENSE-04**: App validates license on launch
-- [x] **LICENSE-05**: User can manage subscription (links to LemonSqueezy portal)
+### Multi-Profile
 
-### Shareable Moments
+- [ ] **PROF-01**: User can add multiple profiles with tokens
+- [ ] **PROF-02**: User can switch between profiles
+- [ ] **PROF-03**: User can delete profiles
 
-- [x] **SHARE-01**: User can generate "usage card" image showing their stats
-- [x] **SHARE-02**: User can copy image to clipboard for sharing
-- [x] **SHARE-03**: Usage card includes Tokemon branding (viral marketing)
+### Alerts
 
----
-
-## v3.0 Requirements
-
-Requirements for v3.0 Competitive Parity & Growth milestone.
-
-### Multi-Profile (FREE)
-
-- [x] **PROF-01**: User can create multiple profiles with custom names
-- [x] **PROF-02**: User can sync CLI credentials from system keychain to profile
-- [x] **PROF-03**: User can enter manual session keys for secondary accounts
-- [x] **PROF-04**: User can switch between profiles (writes credentials to system keychain)
-- [x] **PROF-05**: User can delete profiles
-- [x] **PROF-06**: User can see all profiles' usage in menu bar simultaneously
-
-### Menu Bar Customization (FREE)
-
-- [x] **MENU-01**: User can choose from 5 icon styles (battery, progress, percentage, icon+bar, compact)
-- [x] **MENU-02**: User can toggle monochrome mode
-- [x] **MENU-03**: Icon color reflects usage status (green/orange/red)
-
-### Terminal Statusline (FREE)
-
-- [x] **TERM-01**: User can display usage in terminal statusline (bash/zsh prompt)
-- [x] **TERM-02**: Statusline shows session %, weekly %, reset timer
-- [x] **TERM-03**: User can customize statusline format
-- [x] **TERM-04**: One-click install script for statusline
-
-### Distribution & Trust (FREE)
-
-- [x] **DIST-01**: App distributed via Homebrew tap (`brew install tokemon`)
-- [x] **DIST-02**: App signed with Apple Developer certificate
-- [x] **DIST-03**: App notarized for Gatekeeper
-- [x] **DIST-04**: Sparkle framework for automatic updates
-- [x] **DIST-05**: Update notifications in app
-
-### Automation (FREE)
-
-- [x] **AUTO-01**: User can enable auto-start session when usage resets to 0%
-
-### Team Dashboard (PRO)
-
-- [x] **TEAM-01**: User can view aggregated usage across org members (via Admin API)
-- [x] **TEAM-02**: User can see per-member usage breakdown
-- [x] **TEAM-03**: User can filter by date range
-
-### Webhook Alerts (PRO)
-
-- [x] **HOOK-01**: User can configure Slack webhook URL
-- [x] **HOOK-02**: User can configure Discord webhook URL
-- [x] **HOOK-03**: User receives webhook notification at threshold
-- [x] **HOOK-04**: User can customize webhook message format
-
-### Budget Tracking (PRO)
-
-- [x] **BUDG-01**: User can set monthly $ budget limit
-- [x] **BUDG-02**: User sees current spend vs budget
-- [x] **BUDG-03**: User receives alert at budget threshold (50%, 75%, 90%)
-- [x] **BUDG-04**: User can see cost attribution by project
-
-### Usage Forecasting (PRO)
-
-- [x] **FORE-01**: User sees predicted time to limit based on usage patterns
-- [x] **FORE-02**: User sees "on pace" / "ahead" / "behind" indicator
-- [x] **FORE-03**: Prediction updates in real-time as usage changes
+- [ ] **ALRT-01**: User can configure usage threshold for alerts
+- [ ] **ALRT-02**: User receives Raycast notification at threshold
+- [ ] **ALRT-03**: User can test alert from settings
 
 ---
 
-## Future Requirements (v4+)
+## Previous Milestones (Archived)
 
-### Localization
-
-- **LOC-01**: App supports English, Spanish, French, German, Japanese
-- **LOC-02**: All UI strings externalized for translation
-
-### macOS Widgets
-
-- **WIDG-01**: User can add usage widget to Notification Center
-- **WIDG-02**: Widget shows session %, weekly %, reset timer
-
-### iOS Companion
-
-- **IOS-01**: User can view usage on iOS app
-- **IOS-02**: User receives push notifications on iOS
-- **IOS-03**: Settings sync via iCloud
-
-### Integrations
-
-- **INTEG-01**: Raycast extension for quick usage check
-- **INTEG-02**: Alfred workflow for quick usage check
+- **v1.0-v3.0**: See [milestones/](milestones/) for archived requirements
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Multi-provider (Copilot, Cursor, Gemini) | Claude-only for best-in-class experience |
-| Mac App Store distribution | Sandbox blocks ~/.claude access |
-| Open source | Closed source for monetization |
-| Web interface | Focus on native Mac experience |
-| Real-time widget | WidgetKit refresh budget too limiting |
+| Alfred extension | Raycast-only for v4.0; Alfred deferred |
+| iOS companion | Deferred until Apple Developer Program |
+| Tokemon.app integration | Keep extension standalone; may add later |
+| Direct Keychain access | Raycast Store rejects Keychain requests |
+| Claude chat/AI features | Scope creep; focus on usage monitoring |
 
 ## Traceability
 
@@ -144,45 +62,30 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PROF-01 | Phase 11 | Complete |
-| PROF-02 | Phase 11 | Complete |
-| PROF-03 | Phase 11 | Complete |
-| PROF-04 | Phase 11 | Complete |
-| PROF-05 | Phase 11 | Complete |
-| PROF-06 | Phase 11 | Complete |
-| MENU-01 | Phase 12 | Complete |
-| MENU-02 | Phase 12 | Complete |
-| MENU-03 | Phase 12 | Complete |
-| TERM-01 | Phase 13 | Complete |
-| TERM-02 | Phase 13 | Complete |
-| TERM-03 | Phase 13 | Complete |
-| TERM-04 | Phase 13 | Complete |
-| DIST-01 | Phase 14 | Complete |
-| DIST-02 | Phase 14 | Complete |
-| DIST-03 | Phase 14 | Complete |
-| DIST-04 | Phase 14 | Complete |
-| DIST-05 | Phase 14 | Complete |
-| AUTO-01 | Phase 14 | Complete |
-| TEAM-01 | Phase 15 | Complete |
-| TEAM-02 | Phase 15 | Complete |
-| TEAM-03 | Phase 15 | Complete |
-| HOOK-01 | Phase 16 | Complete |
-| HOOK-02 | Phase 16 | Complete |
-| HOOK-03 | Phase 16 | Complete |
-| HOOK-04 | Phase 16 | Complete |
-| BUDG-01 | Phase 17 | Complete |
-| BUDG-02 | Phase 17 | Complete |
-| BUDG-03 | Phase 17 | Complete |
-| BUDG-04 | Phase 17 | Complete |
-| FORE-01 | Phase 17 | Complete |
-| FORE-02 | Phase 17 | Complete |
-| FORE-03 | Phase 17 | Complete |
+| EXT-01 | TBD | Pending |
+| EXT-02 | TBD | Pending |
+| EXT-03 | TBD | Pending |
+| EXT-04 | TBD | Pending |
+| DASH-01 | TBD | Pending |
+| DASH-02 | TBD | Pending |
+| DASH-03 | TBD | Pending |
+| DASH-04 | TBD | Pending |
+| DASH-05 | TBD | Pending |
+| MENU-01 | TBD | Pending |
+| MENU-02 | TBD | Pending |
+| MENU-03 | TBD | Pending |
+| PROF-01 | TBD | Pending |
+| PROF-02 | TBD | Pending |
+| PROF-03 | TBD | Pending |
+| ALRT-01 | TBD | Pending |
+| ALRT-02 | TBD | Pending |
+| ALRT-03 | TBD | Pending |
 
 **Coverage:**
-- v3.0 requirements: 33 total
-- Mapped to phases: 33
-- Complete: 33
+- v4.0 requirements: 15 total
+- Mapped to phases: 0
+- Unmapped: 15
 
 ---
-*Requirements defined: 2026-02-14*
-*Last updated: 2026-02-17 after v3.0 milestone shipped*
+*Requirements defined: 2026-02-18*
+*Last updated: 2026-02-18 after v4.0 milestone started*
