@@ -49,12 +49,35 @@ final class UpdateManager: NSObject {
         }
     }
 
+    /// Timeout task for update check
+    @ObservationIgnored
+    private var checkTimeoutTask: Task<Void, Never>?
+
     /// Manually check for updates (from Settings or menu)
     func checkForUpdates() {
         guard let controller = updaterController else { return }
         isChecking = true
         error = nil
+
+        // Cancel any existing timeout
+        checkTimeoutTask?.cancel()
+
+        // Start timeout timer (15 seconds)
+        checkTimeoutTask = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(15))
+            if !Task.isCancelled && self.isChecking {
+                self.isChecking = false
+                self.error = "Update check timed out. Appcast may not be available."
+            }
+        }
+
         controller.checkForUpdates(nil)
+    }
+
+    /// Cancel timeout when check completes
+    private func cancelTimeout() {
+        checkTimeoutTask?.cancel()
+        checkTimeoutTask = nil
     }
 
     /// Open download page for available update
@@ -82,6 +105,7 @@ extension UpdateManager: SPUUpdaterDelegate {
         // Extract version string before crossing actor boundary to avoid data race
         let version = item.displayVersionString
         Task { @MainActor in
+            self.cancelTimeout()
             self.updateAvailable = true
             self.availableVersion = version
             self.isChecking = false
@@ -90,6 +114,7 @@ extension UpdateManager: SPUUpdaterDelegate {
 
     nonisolated func updaterDidNotFindUpdate(_ updater: SPUUpdater, error: any Error) {
         Task { @MainActor in
+            self.cancelTimeout()
             self.updateAvailable = false
             self.availableVersion = nil
             self.isChecking = false
@@ -102,6 +127,7 @@ extension UpdateManager: SPUUpdaterDelegate {
 
     nonisolated func updater(_ updater: SPUUpdater, didAbortWithError error: any Error) {
         Task { @MainActor in
+            self.cancelTimeout()
             self.isChecking = false
             self.error = error.localizedDescription
         }
