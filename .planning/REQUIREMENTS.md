@@ -45,12 +45,12 @@ Requirements for v3.0 Competitive Parity & Growth milestone.
 
 ### Multi-Profile (FREE)
 
-- [ ] **PROF-01**: User can create multiple profiles with custom names
-- [ ] **PROF-02**: User can sync CLI credentials from system keychain to profile
-- [ ] **PROF-03**: User can enter manual session keys for secondary accounts
-- [ ] **PROF-04**: User can switch between profiles (writes credentials to system keychain)
-- [ ] **PROF-05**: User can delete profiles
-- [ ] **PROF-06**: User can see all profiles' usage in menu bar simultaneously
+- [x] **PROF-01**: User can create multiple profiles with custom names
+- [x] **PROF-02**: User can sync CLI credentials from system keychain to profile
+- [x] **PROF-03**: User can enter manual session keys for secondary accounts
+- [x] **PROF-04**: User can switch between profiles (writes credentials to system keychain)
+- [x] **PROF-05**: User can delete profiles
+- [x] **PROF-06**: User can see all profiles' usage in menu bar simultaneously
 
 ### Menu Bar Customization (FREE)
 
@@ -144,12 +144,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PROF-01 | Phase 11 | Pending |
-| PROF-02 | Phase 11 | Pending |
-| PROF-03 | Phase 11 | Pending |
-| PROF-04 | Phase 11 | Pending |
-| PROF-05 | Phase 11 | Pending |
-| PROF-06 | Phase 11 | Pending |
+| PROF-01 | Phase 11 | Complete |
+| PROF-02 | Phase 11 | Complete |
+| PROF-03 | Phase 11 | Complete |
+| PROF-04 | Phase 11 | Complete |
+| PROF-05 | Phase 11 | Complete |
+| PROF-06 | Phase 11 | Complete |
 | MENU-01 | Phase 12 | Pending |
 | MENU-02 | Phase 12 | Pending |
 | MENU-03 | Phase 12 | Pending |

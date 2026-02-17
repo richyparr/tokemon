@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** v3.0 Phase 11 -- Multi-Profile Foundation
+**Current focus:** v3.0 Phase 12 -- Menu Bar Customization
 
 ## Current Position
 
@@ -81,4 +81,4 @@ None.
 
 Last session: 2026-02-17
 Stopped at: Completed 11-03-PLAN.md (Multi-Profile Usage Polling & Display) -- Phase 11 complete
-Resume: Run `/gsd:execute-phase 12` to start next phase
+Resume: Run `/gsd:plan-phase 12` to plan Menu Bar Customization

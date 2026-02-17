@@ -37,7 +37,7 @@ See [v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md) for full details.
 
 **Milestone Goal:** Match Claude Usage Tracker feature-for-feature in the FREE tier, then differentiate with team/org PRO features that justify the subscription.
 
-- [ ] **Phase 11: Multi-Profile Foundation** -- Users can manage multiple Claude accounts with credential switching
+- [x] **Phase 11: Multi-Profile Foundation** (3/3 plans) -- completed 2026-02-17
 - [ ] **Phase 12: Menu Bar Customization** -- Users can personalize the menu bar icon to match their workflow
 - [ ] **Phase 13: Terminal Statusline** -- Users can see Claude usage directly in their terminal prompt
 - [ ] **Phase 14: Distribution & Trust** -- Users can install via Homebrew, receive auto-updates, and trust the signed binary
@@ -190,7 +190,7 @@ Phases 11-13 can be built in parallel (independent FREE features). Phase 14 foll
 | 8. Analytics & Export | v2.0 | 3/3 | Complete | 2026-02-15 |
 | 9. Shareable Moments | v2.0 | 2/2 | Complete | 2026-02-15 |
 | 10. Enhanced Export | Post-v2.0 | 3/3 | Complete | 2026-02-16 |
-| 11. Multi-Profile Foundation | v3.0 | 0/3 | Planned | - |
+| 11. Multi-Profile Foundation | v3.0 | 3/3 | Complete | 2026-02-17 |
 | 12. Menu Bar Customization | v3.0 | 0/0 | Not started | - |
 | 13. Terminal Statusline | v3.0 | 0/0 | Not started | - |
 | 14. Distribution & Trust | v3.0 | 0/0 | Not started | - |
