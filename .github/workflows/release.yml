@@ -9,6 +9,7 @@
 #   APPLE_ID                    - Apple account email address
 #   AC_PASSWORD                 - App-specific password (appleid.apple.com)
 #   APPLE_TEAM_ID               - 10-character Apple Developer Team ID
+#   HOMEBREW_TAP_TOKEN           - PAT with repo scope for triggering homebrew-tokemon updates
 
 name: Release
 
@@ -85,3 +86,20 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute DMG SHA256
+        id: sha
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          SHA=$(shasum -a 256 Tokemon-${VERSION}.dmg | cut -d' ' -f1)
+          echo "sha256=$SHA" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "DMG SHA256: $SHA"
+
+      - name: Trigger Homebrew tap update
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          repository: AverageHelper/homebrew-tokemon
+          event-type: release-published
+          client-payload: '{"version": "${{ steps.sha.outputs.version }}", "sha256": "${{ steps.sha.outputs.sha256 }}"}'
