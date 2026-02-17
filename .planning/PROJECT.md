@@ -2,31 +2,31 @@
 
 ## Current State
 
-**Version:** v2.0 shipped 2026-02-15 (multi-account removed post-ship)
-**Status:** Planning v3.0 — Competitive Parity & Growth
+**Version:** v3.0 shipped 2026-02-17
+**Status:** All milestones complete
 
-Native macOS menu bar utility for monitoring Claude usage with live OAuth data, extended analytics, Pro licensing, and shareable usage cards.
+Native macOS menu bar utility for monitoring Claude usage with live OAuth data, extended analytics, Pro licensing, multi-profile support, terminal statusline, and team features.
 
-**Codebase:** 7,706 LOC Swift | 10 phases | 26 plans
+**Codebase:** 14,418 LOC Swift | 17 phases | 43 plans
 
-## Current Milestone: v3.0 Competitive Parity & Growth
+## Shipped: v3.0 Competitive Parity & Growth
 
-**Goal:** Match Claude Usage Tracker (1.2k stars) feature-for-feature in FREE tier, then differentiate with team/org PRO features.
+**Goal:** Match Claude Usage Tracker feature-for-feature in FREE tier, then differentiate with team/org PRO features.
 
 **FREE tier (competitive parity):**
-- Multi-profile support (copy/switch credential architecture)
-- Menu bar icon customization (5 styles)
-- Terminal statusline integration for Claude Code
-- Homebrew tap distribution
-- Apple Developer code signing + notarization
-- Sparkle auto-updates
-- Auto-start sessions on reset
+- [x] Multi-profile support (copy/switch credential architecture)
+- [x] Menu bar icon customization (5 styles)
+- [x] Terminal statusline integration for Claude Code
+- [x] Homebrew tap distribution
+- [x] Apple Developer code signing + notarization
+- [x] Sparkle auto-updates
+- [x] Auto-start sessions on reset
 
 **PRO tier (differentiation):**
-- Team dashboard (aggregate org usage via Admin API)
-- Slack/Discord webhook alerts
-- Budget tracking with $ limits
-- Usage forecasting (ML-based limit predictions)
+- [x] Team dashboard (aggregate org usage via Admin API)
+- [x] Slack/Discord webhook alerts
+- [x] Budget tracking with $ limits
+- [x] Usage forecasting (pace indicators, time-to-limit predictions)
 
 ## What This Is
 
@@ -57,22 +57,22 @@ A native macOS app for monitoring Claude usage across all your sources — Claud
 - PDF and CSV export
 - Shareable usage cards with clipboard copy
 
-### Active (v3.0)
+### Active (v3.0) — SHIPPED 2026-02-17
 
 **FREE Tier:**
-- [ ] Multi-profile support with credential copy/switch
-- [ ] Menu bar icon customization (5 styles)
-- [ ] Terminal statusline integration
-- [ ] Homebrew tap distribution
-- [ ] Apple Developer code signing
-- [ ] Sparkle auto-updates
-- [ ] Auto-start sessions on usage reset
+- [x] Multi-profile support with credential copy/switch
+- [x] Menu bar icon customization (5 styles)
+- [x] Terminal statusline integration
+- [x] Homebrew tap distribution
+- [x] Apple Developer code signing
+- [x] Sparkle auto-updates
+- [x] Auto-start sessions on usage reset
 
 **PRO Tier:**
-- [ ] Team dashboard (org-wide usage aggregation)
-- [ ] Slack/Discord webhook alerts
-- [ ] Budget tracking with $ limits
-- [ ] Usage forecasting
+- [x] Team dashboard (org-wide usage aggregation)
+- [x] Slack/Discord webhook alerts
+- [x] Budget tracking with $ limits
+- [x] Usage forecasting
 
 ### Out of Scope
 
@@ -116,9 +116,11 @@ A native macOS app for monitoring Claude usage across all your sources — Claud
 | Solid colors only in ImageRenderer views | Workaround for macOS gradient rendering bug | Good |
 | NSSavePanel standalone presentation | LSUIElement apps have no reliable key window | Good |
 
-| Multi-profile via copy/switch | Claude Usage Tracker approach — copy credentials to app storage, write back on switch | — Pending |
-| Homebrew tap for distribution | Developer trust requirement, industry standard | — Pending |
-| Apple code signing | User security requirement, enables notarization | — Pending |
+| Multi-profile via copy/switch | Claude Usage Tracker approach — copy credentials to app storage, write back on switch | Good |
+| Homebrew tap for distribution | Developer trust requirement, industry standard | Good |
+| Apple code signing | User security requirement, enables notarization | Good |
+| ForecastingEngine static methods | Follows BurnRateCalculator pattern — stateless, testable | Good |
+| Custom ArcShape gauge | Full visual control vs system Gauge, 270-degree arc | Good |
 
 ---
-*Last updated: 2026-02-17 after v3.0 milestone start*
+*Last updated: 2026-02-17 after v3.0 milestone shipped*

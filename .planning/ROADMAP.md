@@ -4,7 +4,7 @@
 
 - **v1.0 MVP** -- Phases 1-5 (shipped 2026-02-14) -- [Archive](milestones/v1.0-ROADMAP.md)
 - **v2.0 Pro Features** -- Phases 6-9 (shipped 2026-02-15) -- [Archive](milestones/v2.0-ROADMAP.md)
-- **v3.0 Competitive Parity & Growth** -- Phases 11-17 (in progress)
+- **v3.0 Competitive Parity & Growth** -- Phases 11-17 (shipped 2026-02-17) -- [Archive](milestones/v3.0-ROADMAP.md)
 
 ## Phases
 
@@ -33,174 +33,20 @@ See [v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md) for full details.
 
 </details>
 
-### v3.0 Competitive Parity & Growth (In Progress)
+<details>
+<summary>v3.0 Competitive Parity & Growth (Phases 11-17) -- SHIPPED 2026-02-17</summary>
 
-**Milestone Goal:** Match Claude Usage Tracker feature-for-feature in the FREE tier, then differentiate with team/org PRO features that justify the subscription.
+- [x] Phase 11: Multi-Profile Foundation (3/3 plans) -- completed 2026-02-17
+- [x] Phase 12: Menu Bar Customization (2/2 plans) -- completed 2026-02-17
+- [x] Phase 13: Terminal Statusline (2/2 plans) -- completed 2026-02-17
+- [x] Phase 14: Distribution & Trust (4/4 plans) -- completed 2026-02-17
+- [x] Phase 15: Team Dashboard PRO (2/2 plans) -- completed 2026-02-17
+- [x] Phase 16: Webhook Alerts PRO (2/2 plans) -- completed 2026-02-17
+- [x] Phase 17: Budget & Forecasting PRO (2/2 plans) -- completed 2026-02-17
 
-- [x] **Phase 11: Multi-Profile Foundation** (3/3 plans) -- completed 2026-02-17
-- [x] **Phase 12: Menu Bar Customization** (2/2 plans) -- completed 2026-02-17
-- [x] **Phase 13: Terminal Statusline** (2/2 plans) -- completed 2026-02-17
-- [x] **Phase 14: Distribution & Trust** (4/4 plans) -- completed 2026-02-17
-- [x] **Phase 15: Team Dashboard PRO** (2/2 plans) -- completed 2026-02-17
-- [x] **Phase 16: Webhook Alerts PRO** (2/2 plans) -- completed 2026-02-17
-- [x] **Phase 17: Budget & Forecasting PRO** (2/2 plans) -- completed 2026-02-17
+See [v3.0-ROADMAP.md](milestones/v3.0-ROADMAP.md) for full details.
 
-## Phase Details
-
-### Phase 11: Multi-Profile Foundation
-
-**Goal:** Users can manage multiple Claude accounts with credential switching, replacing the removed v2.0 multi-account feature with a copy/switch architecture that works with Claude Code's keychain.
-**Depends on:** Phase 10 (existing v2.0 codebase)
-**Requirements:** PROF-01, PROF-02, PROF-03, PROF-04, PROF-05, PROF-06
-**Success Criteria** (what must be TRUE):
-  1. User can create a named profile and see it listed in the app
-  2. User can sync credentials from the system keychain into a profile and enter manual session keys for secondary accounts
-  3. User can switch active profile and the app writes that profile's credentials to the system keychain for Claude Code to use
-  4. User can delete a profile they no longer need
-  5. User can see usage summaries for all profiles simultaneously in the menu bar popover
-**Plans:** 3 plans in 3 waves
-
-Plans:
-- [x] 11-01-PLAN.md -- Profile model and ProfileManager service with copy/switch keychain operations (Wave 1)
-- [x] 11-02-PLAN.md -- Profile management UI (Settings tab + popover switcher) and app integration (Wave 2)
-- [x] 11-03-PLAN.md -- Multi-profile usage polling and simultaneous usage display in popover (Wave 3)
-
----
-
-### Phase 12: Menu Bar Customization
-
-**Goal:** Users can personalize the menu bar icon style and color to match their preferences and see usage status at a glance without opening the popover.
-**Depends on:** Phase 10 (existing v2.0 codebase)
-**Requirements:** MENU-01, MENU-02, MENU-03
-**Success Criteria** (what must be TRUE):
-  1. User can choose from 5 distinct icon styles (battery, progress bar, percentage text, icon+bar, compact) in Settings
-  2. User can toggle monochrome mode so the icon blends with the native macOS menu bar
-  3. Menu bar icon color automatically shifts from green to orange to red as usage increases
-**Plans:** 2 plans in 2 waves
-
-Plans:
-- [x] 12-01-PLAN.md -- MenuBarIconStyle model, icon renderer for 5 styles with monochrome/color support, StatusItemManager integration (Wave 1)
-- [x] 12-02-PLAN.md -- AppearanceSettings UI overhaul with 5-style picker, monochrome toggle, and live update wiring (Wave 2)
-
----
-
-### Phase 13: Terminal Statusline
-
-**Goal:** Users can see their Claude usage directly in their terminal prompt, giving Claude Code users at-a-glance awareness without switching to the menu bar.
-**Depends on:** Phase 10 (existing v2.0 codebase)
-**Requirements:** TERM-01, TERM-02, TERM-03, TERM-04
-**Success Criteria** (what must be TRUE):
-  1. User can display session %, weekly %, and reset timer in their bash/zsh prompt
-  2. User can customize the statusline format (choose which fields to show, adjust separators/colors)
-  3. User can install the statusline integration with a single command (one-click install script)
-**Plans:** 2 plans in 2 waves
-
-Plans:
-- [x] 13-01-PLAN.md -- StatuslineExporter service, StatuslineConfig model, and shell helper script (Wave 1)
-- [x] 13-02-PLAN.md -- StatuslineSettings UI, app lifecycle wiring, and one-click install (Wave 2)
-
----
-
-### Phase 14: Distribution & Trust
-
-**Goal:** Users can install Tokemon via Homebrew, trust the code-signed and notarized binary, and receive automatic updates -- establishing distribution parity with competing tools.
-**Depends on:** Phase 11, Phase 12, Phase 13 (all FREE features complete before distribution)
-**Requirements:** DIST-01, DIST-02, DIST-03, DIST-04, DIST-05, AUTO-01
-**Success Criteria** (what must be TRUE):
-  1. User can install Tokemon via `brew install tokemon` from a Homebrew tap
-  2. App opens without macOS Gatekeeper warnings (signed + notarized)
-  3. App checks for updates on launch and user can install updates from within the app
-  4. User sees in-app notification when a new version is available
-  5. User can enable auto-start of a new session when their usage resets to 0%
-**Plans:** 4 plans in 2 waves
-
-Plans:
-- [ ] 14-01-PLAN.md -- Code signing, notarization, and GitHub Actions release workflow (Wave 1)
-- [ ] 14-02-PLAN.md -- Homebrew tap repository and formula (Wave 2)
-- [ ] 14-03-PLAN.md -- Sparkle framework integration, UpdateManager service, and update UI (Wave 2)
-- [ ] 14-04-PLAN.md -- Auto-start session notification when usage resets to 0% (Wave 1)
-
----
-
-### Phase 15: Team Dashboard PRO
-
-**Goal:** Team leads and org admins can view aggregated usage across all org members, enabling proactive capacity management.
-**Depends on:** Phase 14 (distribution pipeline established for PRO features)
-**Requirements:** TEAM-01, TEAM-02, TEAM-03
-**Success Criteria** (what must be TRUE):
-  1. User can view a dashboard showing total org-wide Claude usage aggregated from the Admin API
-  2. User can drill down to see per-member usage breakdown
-  3. User can filter the team dashboard by date range to analyze usage over specific periods
-**Plans:** 2 plans in 2 waves
-
-Plans:
-- [x] 15-01-PLAN.md -- TeamMember model, AdminAPIClient extensions for members and grouped usage (Wave 1)
-- [x] 15-02-PLAN.md -- TeamDashboardView, MemberUsageRow, Settings integration with date filtering (Wave 2)
-
----
-
-### Phase 16: Webhook Alerts PRO
-
-**Goal:** Users can receive Claude usage alerts directly in Slack and Discord channels, enabling team-wide awareness without everyone needing the app open.
-**Depends on:** Phase 15 (team context established)
-**Requirements:** HOOK-01, HOOK-02, HOOK-03, HOOK-04
-**Success Criteria** (what must be TRUE):
-  1. User can configure a Slack webhook URL in Settings and receive threshold alerts in their Slack channel
-  2. User can configure a Discord webhook URL in Settings and receive threshold alerts in their Discord channel
-  3. User can customize the webhook message format (choose fields, adjust template)
-**Plans:** 2 plans in 2 waves
-
-Plans:
-- [x] 16-01-PLAN.md -- WebhookConfig model, WebhookManager service with Slack/Discord payload formatting (Wave 1)
-- [x] 16-02-PLAN.md -- WebhookSettings UI, AlertManager integration, and TokemonApp wiring (Wave 2)
-
----
-
-### Phase 17: Budget & Forecasting PRO
-
-**Goal:** Users can set dollar-based spending limits and see ML-driven usage predictions, turning reactive monitoring into proactive budget management.
-**Depends on:** Phase 15 (team dashboard provides cost data foundation)
-**Requirements:** BUDG-01, BUDG-02, BUDG-03, BUDG-04, FORE-01, FORE-02, FORE-03
-**Success Criteria** (what must be TRUE):
-  1. User can set a monthly dollar budget limit and see current spend vs. budget as a visual gauge
-  2. User receives alerts at 50%, 75%, and 90% of their budget threshold
-  3. User can see cost attribution broken down by project
-  4. User sees a predicted time-to-limit based on historical usage patterns, with an "on pace" / "ahead" / "behind" indicator
-  5. Prediction updates in real-time as usage changes throughout the day
-**Plans:** 2 plans in 2 waves
-
-Plans:
-- [x] 17-01-PLAN.md -- BudgetConfig model, BudgetManager service, ForecastingEngine, and AdminAPIClient cost-by-workspace extension (Wave 1)
-- [x] 17-02-PLAN.md -- BudgetDashboardView with gauge/forecast/cost breakdown, Settings tab, and TokemonApp wiring (Wave 2)
-
----
-
-## Progress
-
-**Execution Order:**
-Phases 11-13 can be built in parallel (independent FREE features). Phase 14 follows all FREE features. Phases 15-17 are sequential PRO features.
-
-| Phase | Milestone | Plans Complete | Status | Completed |
-|-------|-----------|----------------|--------|-----------|
-| 1. Foundation & Core Monitoring | v1.0 | 3/3 | Complete | 2026-02-12 |
-| 2. Alerts & Notifications | v1.0 | 2/2 | Complete | 2026-02-13 |
-| 3. Usage Trends & API Integration | v1.0 | 3/3 | Complete | 2026-02-13 |
-| 4. Floating Window | v1.0 | 2/2 | Complete | 2026-02-14 |
-| 5. Theming & Design Polish | v1.0 | 2/2 | Complete | 2026-02-14 |
-| 6. Licensing Foundation | v2.0 | 3/3 | Complete | 2026-02-14 |
-| 7. Multi-Account | v2.0 | 3/3 | Complete | 2026-02-14 |
-| 8. Analytics & Export | v2.0 | 3/3 | Complete | 2026-02-15 |
-| 9. Shareable Moments | v2.0 | 2/2 | Complete | 2026-02-15 |
-| 10. Enhanced Export | Post-v2.0 | 3/3 | Complete | 2026-02-16 |
-| 11. Multi-Profile Foundation | v3.0 | 3/3 | Complete | 2026-02-17 |
-| 12. Menu Bar Customization | v3.0 | 2/2 | Complete | 2026-02-17 |
-| 13. Terminal Statusline | v3.0 | 2/2 | Complete | 2026-02-17 |
-| 14. Distribution & Trust | v3.0 | 4/4 | Complete | 2026-02-17 |
-| 15. Team Dashboard PRO | v3.0 | 2/2 | Complete | 2026-02-17 |
-| 16. Webhook Alerts PRO | v3.0 | 2/2 | Complete | 2026-02-17 |
-| 17. Budget & Forecasting PRO | v3.0 | 2/2 | Complete | 2026-02-17 |
-
----
+</details>
 
 ## Future Backlog
 
@@ -212,4 +58,4 @@ Ideas discussed but deferred for future milestones:
 
 *v1.0 shipped: 2026-02-14*
 *v2.0 shipped: 2026-02-15*
-*v3.0 roadmap created: 2026-02-17*
+*v3.0 shipped: 2026-02-17*

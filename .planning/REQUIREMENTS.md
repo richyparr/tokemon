@@ -79,29 +79,29 @@ Requirements for v3.0 Competitive Parity & Growth milestone.
 
 ### Team Dashboard (PRO)
 
-- [ ] **TEAM-01**: User can view aggregated usage across org members (via Admin API)
-- [ ] **TEAM-02**: User can see per-member usage breakdown
-- [ ] **TEAM-03**: User can filter by date range
+- [x] **TEAM-01**: User can view aggregated usage across org members (via Admin API)
+- [x] **TEAM-02**: User can see per-member usage breakdown
+- [x] **TEAM-03**: User can filter by date range
 
 ### Webhook Alerts (PRO)
 
-- [ ] **HOOK-01**: User can configure Slack webhook URL
-- [ ] **HOOK-02**: User can configure Discord webhook URL
-- [ ] **HOOK-03**: User receives webhook notification at threshold
-- [ ] **HOOK-04**: User can customize webhook message format
+- [x] **HOOK-01**: User can configure Slack webhook URL
+- [x] **HOOK-02**: User can configure Discord webhook URL
+- [x] **HOOK-03**: User receives webhook notification at threshold
+- [x] **HOOK-04**: User can customize webhook message format
 
 ### Budget Tracking (PRO)
 
-- [ ] **BUDG-01**: User can set monthly $ budget limit
-- [ ] **BUDG-02**: User sees current spend vs budget
-- [ ] **BUDG-03**: User receives alert at budget threshold (50%, 75%, 90%)
-- [ ] **BUDG-04**: User can see cost attribution by project
+- [x] **BUDG-01**: User can set monthly $ budget limit
+- [x] **BUDG-02**: User sees current spend vs budget
+- [x] **BUDG-03**: User receives alert at budget threshold (50%, 75%, 90%)
+- [x] **BUDG-04**: User can see cost attribution by project
 
 ### Usage Forecasting (PRO)
 
-- [ ] **FORE-01**: User sees predicted time to limit based on usage patterns
-- [ ] **FORE-02**: User sees "on pace" / "ahead" / "behind" indicator
-- [ ] **FORE-03**: Prediction updates in real-time as usage changes
+- [x] **FORE-01**: User sees predicted time to limit based on usage patterns
+- [x] **FORE-02**: User sees "on pace" / "ahead" / "behind" indicator
+- [x] **FORE-03**: Prediction updates in real-time as usage changes
 
 ---
 
@@ -163,26 +163,26 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DIST-04 | Phase 14 | Complete |
 | DIST-05 | Phase 14 | Complete |
 | AUTO-01 | Phase 14 | Complete |
-| TEAM-01 | Phase 15 | Pending |
-| TEAM-02 | Phase 15 | Pending |
-| TEAM-03 | Phase 15 | Pending |
-| HOOK-01 | Phase 16 | Pending |
-| HOOK-02 | Phase 16 | Pending |
-| HOOK-03 | Phase 16 | Pending |
-| HOOK-04 | Phase 16 | Pending |
-| BUDG-01 | Phase 17 | Pending |
-| BUDG-02 | Phase 17 | Pending |
-| BUDG-03 | Phase 17 | Pending |
-| BUDG-04 | Phase 17 | Pending |
-| FORE-01 | Phase 17 | Pending |
-| FORE-02 | Phase 17 | Pending |
-| FORE-03 | Phase 17 | Pending |
+| TEAM-01 | Phase 15 | Complete |
+| TEAM-02 | Phase 15 | Complete |
+| TEAM-03 | Phase 15 | Complete |
+| HOOK-01 | Phase 16 | Complete |
+| HOOK-02 | Phase 16 | Complete |
+| HOOK-03 | Phase 16 | Complete |
+| HOOK-04 | Phase 16 | Complete |
+| BUDG-01 | Phase 17 | Complete |
+| BUDG-02 | Phase 17 | Complete |
+| BUDG-03 | Phase 17 | Complete |
+| BUDG-04 | Phase 17 | Complete |
+| FORE-01 | Phase 17 | Complete |
+| FORE-02 | Phase 17 | Complete |
+| FORE-03 | Phase 17 | Complete |
 
 **Coverage:**
 - v3.0 requirements: 33 total
 - Mapped to phases: 33
-- Unmapped: 0
+- Complete: 33
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-17 after v3.0 roadmap creation*
+*Last updated: 2026-02-17 after v3.0 milestone shipped*

@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** v3.0 Phase 17 -- Budget & Forecasting PRO
+**Current focus:** v3.0 shipped -- all milestones complete
 
 ## Current Position
 
-Phase: 17 of 17 (Budget & Forecasting PRO)
-Plan: 2 of 2 in current phase
-Status: Phase Complete
-Last activity: 2026-02-17 -- Completed 17-02 Budget & Forecasting UI
+Phase: All complete
+Plan: N/A
+Status: v3.0 Shipped
+Last activity: 2026-02-17 -- Archived v3.0 milestone
 
 Progress: [██████████████████████████] 100%
 
@@ -20,6 +20,7 @@ Progress: [███████████████████████
 
 - **v1.0 MVP** -- 5 phases, 12 plans (shipped 2026-02-14)
 - **v2.0 Pro Features** -- 5 phases, 14 plans (shipped 2026-02-15)
+- **v3.0 Competitive Parity & Growth** -- 7 phases, 17 plans (shipped 2026-02-17)
 
 ## Performance Metrics
 
@@ -133,5 +134,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 17-02 Budget & Forecasting UI -- Phase 17 complete
-Resume: v3.0 Phase 17 fully delivered
+Stopped at: Archived v3.0 milestone
+Resume: All milestones shipped — ready for v4.0 planning with `/gsd:new-milestone`
