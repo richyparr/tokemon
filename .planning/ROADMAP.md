@@ -131,11 +131,11 @@ Plans:
   1. User can view a dashboard showing total org-wide Claude usage aggregated from the Admin API
   2. User can drill down to see per-member usage breakdown
   3. User can filter the team dashboard by date range to analyze usage over specific periods
-**Plans:** TBD
+**Plans:** 2 plans in 2 waves
 
 Plans:
-- [ ] 15-01: TBD
-- [ ] 15-02: TBD
+- [ ] 15-01-PLAN.md -- TeamMember model, AdminAPIClient extensions for members and grouped usage (Wave 1)
+- [ ] 15-02-PLAN.md -- TeamDashboardView, MemberUsageRow, Settings integration with date filtering (Wave 2)
 
 ---
 
@@ -197,7 +197,7 @@ Phases 11-13 can be built in parallel (independent FREE features). Phase 14 foll
 | 12. Menu Bar Customization | v3.0 | 2/2 | Complete | 2026-02-17 |
 | 13. Terminal Statusline | v3.0 | 2/2 | Complete | 2026-02-17 |
 | 14. Distribution & Trust | v3.0 | 4/4 | Complete | 2026-02-17 |
-| 15. Team Dashboard PRO | v3.0 | 0/0 | Not started | - |
+| 15. Team Dashboard PRO | v3.0 | 0/2 | Planned | - |
 | 16. Webhook Alerts PRO | v3.0 | 0/0 | Not started | - |
 | 17. Budget & Forecasting PRO | v3.0 | 0/0 | Not started | - |
 
