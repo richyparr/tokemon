@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 ## Current Position
 
-Phase: 12 of 17 (Menu Bar Customization)
-Plan: 1 of 2 in current phase (completed)
-Status: In Progress
-Last activity: 2026-02-17 -- Completed 12-01 Icon Rendering Engine
+Phase: 12 of 17 (Menu Bar Customization) -- COMPLETE
+Plan: 2 of 2 in current phase (completed)
+Status: Phase Complete
+Last activity: 2026-02-17 -- Completed 12-02 Settings UI Picker
 
-Progress: [██████░░░░░░░░░░░░░░░░░░░░] 18%
+Progress: [██████░░░░░░░░░░░░░░░░░░░░] 21%
 
 ## Shipped Milestones
 
@@ -36,7 +36,7 @@ Progress: [██████░░░░░░░░░░░░░░░░░
 - Timeline: 2 days (Feb 14-15, 2026)
 
 **v3.0 Milestone:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Total phases: 7 (Phases 11-17)
 - Requirements: 33
 
@@ -46,6 +46,7 @@ Progress: [██████░░░░░░░░░░░░░░░░░
 | 11    | 02   | 3min     | 2     | 6     |
 | 11    | 03   | 2min     | 2     | 5     |
 | 12    | 01   | 2min     | 2     | 4     |
+| 12    | 02   | 1min     | 2     | 1     |
 
 ## Accumulated Context
 
@@ -76,6 +77,9 @@ See PROJECT.md Key Decisions table for full list.
 - Monochrome logic centralized in GradientColors.nsColor(for:isMonochrome:) to avoid duplication
 - NotificationCenter-based style change sync for immediate re-render without app restart
 - Error/critical states on image styles use imageLeft positioning with "!" text suffix
+- Radio group picker iterates MenuBarIconStyle.allCases with displayName labels and rawValue tags
+- Style descriptions as dynamic caption text below picker, updating based on selection
+- Monochrome toggle in own "Color Mode" section for visual clarity
 
 ### Pending Todos
 
@@ -88,5 +92,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 12-01-PLAN.md (Icon Rendering Engine)
-Resume: Run `/gsd:execute-phase 12` to continue with 12-02 (Settings UI Picker)
+Stopped at: Completed 12-02-PLAN.md (Settings UI Picker) -- Phase 12 complete
+Resume: Run `/gsd:execute-phase 13` to start Phase 13
