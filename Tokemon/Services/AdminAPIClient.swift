@@ -413,6 +413,91 @@ actor AdminAPIClient {
         )
     }
 
+    // MARK: - Cost by Workspace
+
+    /// Fetch cost data grouped by workspace for project-level cost attribution.
+    /// Handles pagination automatically to retrieve all workspace cost data.
+    ///
+    /// - Parameters:
+    ///   - startingAt: Start of the reporting period
+    ///   - endingAt: End of the reporting period
+    ///   - bucketWidth: Aggregation bucket size (default "1d")
+    /// - Returns: Combined cost response with workspaceId populated in each result
+    func fetchCostByWorkspace(
+        startingAt: Date,
+        endingAt: Date,
+        bucketWidth: String = "1d"
+    ) async throws -> AdminCostResponse {
+        guard let adminKey = try? keychain.get(keychainKey) else {
+            throw AdminAPIError.notConfigured
+        }
+
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+
+        var allBuckets: [AdminCostResponse.CostBucket] = []
+        var nextPage: String? = nil
+
+        repeat {
+            guard var components = URLComponents(string: "\(baseURL)/cost_report") else {
+                throw AdminAPIError.invalidURL
+            }
+
+            var queryItems = [
+                URLQueryItem(name: "starting_at", value: formatter.string(from: startingAt)),
+                URLQueryItem(name: "ending_at", value: formatter.string(from: endingAt)),
+                URLQueryItem(name: "bucket_width", value: bucketWidth),
+                URLQueryItem(name: "group_by", value: "workspace"),
+                URLQueryItem(name: "limit", value: "31"),
+            ]
+
+            if let page = nextPage {
+                queryItems.append(URLQueryItem(name: "next_page", value: page))
+            }
+
+            components.queryItems = queryItems
+
+            guard let url = components.url else {
+                throw AdminAPIError.invalidURL
+            }
+
+            var request = URLRequest(url: url)
+            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+            request.setValue(adminKey, forHTTPHeaderField: "x-api-key")
+
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw AdminAPIError.invalidResponse
+            }
+
+            switch httpResponse.statusCode {
+            case 200:
+                let decoder = JSONDecoder()
+                let costResponse = try decoder.decode(AdminCostResponse.self, from: data)
+                allBuckets.append(contentsOf: costResponse.data)
+
+                if costResponse.hasMore, let page = costResponse.nextPage {
+                    nextPage = page
+                } else {
+                    break
+                }
+            case 401, 403:
+                throw AdminAPIError.unauthorized
+            case 404:
+                throw AdminAPIError.notFound
+            default:
+                throw AdminAPIError.serverError(httpResponse.statusCode)
+            }
+        } while nextPage != nil
+
+        return AdminCostResponse(
+            data: allBuckets,
+            hasMore: false,
+            nextPage: nil
+        )
+    }
+
     // MARK: - Errors
 
     enum AdminAPIError: LocalizedError, Sendable {

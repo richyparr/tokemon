@@ -152,6 +152,21 @@ struct AdminCostResponse: Codable, Sendable {
     struct CostResult: Codable, Sendable {
         let currency: String
         let amount: String
+        /// Workspace ID when grouped by workspace (only present with group_by=workspace)
+        let workspaceId: String?
+
+        enum CodingKeys: String, CodingKey {
+            case currency
+            case amount
+            case workspaceId = "workspace_id"
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            currency = try container.decode(String.self, forKey: .currency)
+            amount = try container.decode(String.self, forKey: .amount)
+            workspaceId = try container.decodeIfPresent(String.self, forKey: .workspaceId)
+        }
     }
 
     enum CodingKeys: String, CodingKey {
