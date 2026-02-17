@@ -55,6 +55,11 @@ struct SettingsView: View {
                     Label("Webhooks", systemImage: "bell.and.waves.left.and.right")
                 }
 
+            BudgetDashboardView()
+                .tabItem {
+                    Label("Budget", systemImage: "dollarsign.gauge.chart.lefthalf.righthalf")
+                }
+
             AnalyticsDashboardView()
                 .tabItem {
                     Label("Analytics", systemImage: "chart.bar.xaxis")

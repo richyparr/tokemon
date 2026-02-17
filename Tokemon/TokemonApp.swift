@@ -20,6 +20,7 @@ struct TokemonApp: App {
     @State private var statuslineExporter = StatuslineExporter()
     @State private var updateManager = UpdateManager()
     @State private var webhookManager = WebhookManager()
+    @State private var budgetManager = BudgetManager()
 
     // Track whether chart is shown to adjust popover height
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
@@ -111,6 +112,7 @@ struct TokemonApp: App {
                 .environment(profileManager)
                 .environment(updateManager)
                 .environment(webhookManager)
+                .environment(budgetManager)
                 .frame(width: 320, height: popoverHeight)
                 .onAppear {
                     // Ensure status item is updated when popover appears
@@ -136,6 +138,7 @@ struct TokemonApp: App {
             SettingsWindowController.shared.setProfileManager(profileManager)
             SettingsWindowController.shared.setUpdateManager(updateManager)
             SettingsWindowController.shared.setWebhookManager(webhookManager)
+            SettingsWindowController.shared.setBudgetManager(budgetManager)
 
             // Wire AlertManager's webhook callback to WebhookManager
             alertManager.onWebhookCheck = { [webhookManager] usage, threshold in
@@ -163,9 +166,11 @@ struct TokemonApp: App {
             statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
             // Register for monitor changes to keep the status item text current
-            monitor.onUsageChanged = { [statusItemManager, alertManager, licenseManager] usage in
+            monitor.onUsageChanged = { [statusItemManager, alertManager, licenseManager, budgetManager] usage in
                 Task { @MainActor in
                     statusItemManager.update(with: usage, error: monitor.error, alertLevel: alertManager.currentAlertLevel, licenseState: licenseManager.state)
+                    await budgetManager.refreshIfNeeded()
+                    budgetManager.checkBudgetThresholds()
                 }
             }
 
@@ -226,6 +231,7 @@ struct TokemonApp: App {
                 .environment(profileManager)
                 .environment(updateManager)
                 .environment(webhookManager)
+                .environment(budgetManager)
         }
     }
 }

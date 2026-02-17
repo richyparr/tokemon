@@ -42,6 +42,14 @@ final class BudgetManager {
     @ObservationIgnored
     private var lastFetchMonth: Int = 0
 
+    /// Timestamp of last cost data fetch (for rate limiting)
+    @ObservationIgnored
+    private var lastCostFetch: Date?
+
+    /// Minimum interval between cost fetches (5 minutes)
+    @ObservationIgnored
+    private let costRefreshInterval: TimeInterval = 300
+
     /// Whether we're running as a proper app bundle (required for notifications)
     @ObservationIgnored
     private let hasAppBundle: Bool = Bundle.main.bundleIdentifier != nil
@@ -58,6 +66,17 @@ final class BudgetManager {
     func saveConfig() {
         BudgetConfig.save(config)
         NotificationCenter.default.post(name: BudgetManager.configChangedNotification, object: nil)
+    }
+
+    // MARK: - Rate-Limited Refresh
+
+    /// Refresh cost data if enough time has elapsed since the last fetch.
+    /// Called from the UsageMonitor refresh cycle; rate-limited to avoid hammering the Admin API.
+    func refreshIfNeeded() async {
+        guard config.isEnabled else { return }
+        guard lastCostFetch == nil || Date().timeIntervalSince(lastCostFetch!) >= costRefreshInterval else { return }
+        await fetchCurrentMonthCost()
+        lastCostFetch = Date()
     }
 
     // MARK: - Cost Fetching

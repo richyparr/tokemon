@@ -16,6 +16,7 @@ final class SettingsWindowController {
     private var profileManager: ProfileManager?
     private var updateManager: UpdateManager?
     private var webhookManager: WebhookManager?
+    private var budgetManager: BudgetManager?
 
     private init() {}
 
@@ -57,6 +58,11 @@ final class SettingsWindowController {
     /// Set the webhook manager reference (call from app startup)
     func setWebhookManager(_ manager: WebhookManager) {
         self.webhookManager = manager
+    }
+
+    /// Set the budget manager reference (call from app startup)
+    func setBudgetManager(_ manager: BudgetManager) {
+        self.budgetManager = manager
     }
 
     /// Show the settings window, creating it if necessary
@@ -109,6 +115,11 @@ final class SettingsWindowController {
             return
         }
 
+        guard let budgetManager = budgetManager else {
+            print("[Tokemon] Error: BudgetManager not set for settings window")
+            return
+        }
+
         let settingsView = SettingsView()
             .environment(monitor)
             .environment(alertManager)
@@ -118,6 +129,7 @@ final class SettingsWindowController {
             .environment(profileManager)
             .environment(updateManager)
             .environment(webhookManager)
+            .environment(budgetManager)
 
         let hostingController = NSHostingController(rootView: settingsView)
 
