@@ -23,6 +23,9 @@ enum ProFeature: String, CaseIterable, Sendable {
     // Phase 15: Team Dashboard PRO
     case teamDashboard = "Team usage dashboard"
 
+    // Phase 16: Webhook Alerts PRO
+    case webhookAlerts = "Slack & Discord webhook alerts"
+
     /// User-friendly description for UI
     var displayName: String {
         rawValue
@@ -49,6 +52,8 @@ enum ProFeature: String, CaseIterable, Sendable {
             return "photo.fill"
         case .teamDashboard:
             return "person.3.fill"
+        case .webhookAlerts:
+            return "bell.and.waves.left.and.right"
         }
     }
 }
