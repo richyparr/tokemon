@@ -42,7 +42,7 @@ See [v2.0-ROADMAP.md](milestones/v2.0-ROADMAP.md) for full details.
 - [x] **Phase 13: Terminal Statusline** (2/2 plans) -- completed 2026-02-17
 - [x] **Phase 14: Distribution & Trust** (4/4 plans) -- completed 2026-02-17
 - [x] **Phase 15: Team Dashboard PRO** (2/2 plans) -- completed 2026-02-17
-- [ ] **Phase 16: Webhook Alerts PRO** -- Users can receive usage alerts in Slack and Discord
+- [ ] **Phase 16: Webhook Alerts PRO** (2 plans) -- Slack & Discord usage alerts
 - [ ] **Phase 17: Budget & Forecasting PRO** -- Users can set spending limits and see predicted usage trajectories
 
 ## Phase Details
@@ -148,11 +148,11 @@ Plans:
   1. User can configure a Slack webhook URL in Settings and receive threshold alerts in their Slack channel
   2. User can configure a Discord webhook URL in Settings and receive threshold alerts in their Discord channel
   3. User can customize the webhook message format (choose fields, adjust template)
-**Plans:** TBD
+**Plans:** 2 plans in 2 waves
 
 Plans:
-- [ ] 16-01: TBD
-- [ ] 16-02: TBD
+- [ ] 16-01-PLAN.md -- WebhookConfig model, WebhookManager service with Slack/Discord payload formatting (Wave 1)
+- [ ] 16-02-PLAN.md -- WebhookSettings UI, AlertManager integration, and TokemonApp wiring (Wave 2)
 
 ---
 
@@ -198,7 +198,7 @@ Phases 11-13 can be built in parallel (independent FREE features). Phase 14 foll
 | 13. Terminal Statusline | v3.0 | 2/2 | Complete | 2026-02-17 |
 | 14. Distribution & Trust | v3.0 | 4/4 | Complete | 2026-02-17 |
 | 15. Team Dashboard PRO | v3.0 | 2/2 | Complete | 2026-02-17 |
-| 16. Webhook Alerts PRO | v3.0 | 0/0 | Not started | - |
+| 16. Webhook Alerts PRO | v3.0 | 0/2 | Planned | - |
 | 17. Budget & Forecasting PRO | v3.0 | 0/0 | Not started | - |
 
 ---
