@@ -128,6 +128,7 @@ struct TokemonApp: App {
         .menuBarExtraAccess(isPresented: $isPopoverPresented) { statusItem in
             // Called once during setup -- store the reference for future updates
             statusItemManager.statusItem = statusItem
+            statusItemManager.registerForStyleChanges()
             statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel, licenseState: licenseManager.state)
 
             // Initialize settings window controller with monitor, alertManager, themeManager, and licenseManager references
@@ -212,54 +213,149 @@ final class StatusItemManager {
     @ObservationIgnored
     private var eventMonitor: Any?
 
+    /// Current icon style -- read from UserDefaults
+    @ObservationIgnored
+    private var currentStyle: MenuBarIconStyle = {
+        if let raw = UserDefaults.standard.string(forKey: "menuBarIconStyle"),
+           let style = MenuBarIconStyle(rawValue: raw) {
+            return style
+        }
+        return .percentage
+    }()
+
+    /// Whether monochrome mode is enabled -- read from UserDefaults
+    @ObservationIgnored
+    private var isMonochrome: Bool = UserDefaults.standard.bool(forKey: "menuBarMonochrome")
+
+    /// Last update parameters for re-rendering when settings change
+    @ObservationIgnored
+    private var lastUsage: UsageSnapshot = .empty
+    @ObservationIgnored
+    private var lastError: UsageMonitor.MonitorError?
+    @ObservationIgnored
+    private var lastAlertLevel: AlertManager.AlertLevel = .normal
+    @ObservationIgnored
+    private var lastLicenseState: LicenseState?
+
+    /// Style change notification observer
+    @ObservationIgnored
+    private var styleChangeObserver: NSObjectProtocol?
+
+    /// Notification posted when menu bar style or monochrome setting changes
+    static let styleChangedNotification = Notification.Name("MenuBarStyleChanged")
+
+    /// Re-read style and monochrome settings from UserDefaults
+    func reloadSettings() {
+        if let raw = UserDefaults.standard.string(forKey: "menuBarIconStyle"),
+           let style = MenuBarIconStyle(rawValue: raw) {
+            currentStyle = style
+        } else {
+            currentStyle = .percentage
+        }
+        isMonochrome = UserDefaults.standard.bool(forKey: "menuBarMonochrome")
+    }
+
+    /// Register for style change notifications so the menu bar re-renders when settings change
+    func registerForStyleChanges() {
+        guard styleChangeObserver == nil else { return }
+        styleChangeObserver = NotificationCenter.default.addObserver(
+            forName: Self.styleChangedNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                guard let self else { return }
+                self.reloadSettings()
+                self.update(with: self.lastUsage, error: self.lastError, alertLevel: self.lastAlertLevel, licenseState: self.lastLicenseState)
+            }
+        }
+    }
+
     /// Update the status item button with the current usage data.
-    /// Renders a colored percentage string for OAuth, or token count for JSONL fallback.
+    /// Uses MenuBarIconRenderer to produce the appropriate visual output for the selected style.
     /// Shows error indicator when both sources have failed, or alert indicator for critical usage.
     /// Optionally appends license state suffix (trial days, expired badge).
     func update(with usage: UsageSnapshot, error: UsageMonitor.MonitorError?, alertLevel: AlertManager.AlertLevel = .normal, licenseState: LicenseState? = nil) {
         guard let button = statusItem?.button else { return }
 
-        var text = usage.menuBarText
+        // Store last parameters for re-rendering on settings change
+        lastUsage = usage
+        lastError = error
+        lastAlertLevel = alertLevel
+        lastLicenseState = licenseState
 
-        // Append license state suffix if relevant (e.g., [3d] for trial, [!] for expired)
-        if let suffix = licenseState?.menuBarSuffix {
-            text = "\(text) \(suffix)"
-        }
+        // Determine suffix from license state
+        var suffix = licenseState?.menuBarSuffix
 
-        let color: NSColor
+        // Determine if we need error/alert indicators
+        var isErrorState = false
+        var isCriticalState = false
 
-        // Priority 1: Error indicator (both sources failed) - orange with "!"
         if case .bothSourcesFailed = error {
-            text = "\(text) !"
-            color = NSColor(calibratedRed: 0.9, green: 0.5, blue: 0.2, alpha: 1.0) // Warm orange -- obvious but not alarming
-        }
-        // Priority 2: Critical alert level (usage >= 100%) - red with "!"
-        else if alertLevel == .critical {
-            text = "\(text) !"
-            color = NSColor(calibratedRed: 0.85, green: 0.25, blue: 0.2, alpha: 1.0) // Red -- critical warning
-        }
-        // Priority 3: Warning alert level (usage >= threshold) - use gradient color, no extra indicator
-        else if alertLevel == .warning, usage.hasPercentage {
-            color = GradientColors.color(for: usage.primaryPercentage)
-        }
-        // Priority 4: Normal OAuth percentage - gradient color
-        else if usage.hasPercentage {
-            color = GradientColors.color(for: usage.primaryPercentage)
-        }
-        // Priority 5: JSONL fallback - neutral color
-        else if usage.source == .jsonl {
-            color = NSColor.secondaryLabelColor
-        }
-        // Priority 6: No data - neutral color
-        else {
-            color = NSColor.secondaryLabelColor
+            isErrorState = true
+        } else if alertLevel == .critical {
+            isCriticalState = true
         }
 
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .medium),
-            .foregroundColor: color,
-        ]
-        button.attributedTitle = NSAttributedString(string: text, attributes: attributes)
+        // For error/critical states, append "!" to suffix
+        if isErrorState || isCriticalState {
+            if let existing = suffix {
+                suffix = "\(existing) !"
+            } else {
+                suffix = "!"
+            }
+        }
+
+        // Use the renderer
+        let hasData = usage.source != .none
+        let result = MenuBarIconRenderer.render(
+            style: currentStyle,
+            percentage: usage.hasPercentage ? usage.primaryPercentage : 0,
+            isMonochrome: isMonochrome,
+            hasData: hasData && usage.hasPercentage,
+            suffix: suffix
+        )
+
+        if let image = result.image {
+            // Image-based style
+            button.image = image
+            button.imagePosition = .imageOnly
+            button.attributedTitle = NSAttributedString(string: "")
+
+            // For error/critical states on image styles, show "!" text after the icon
+            if isErrorState || isCriticalState {
+                let errorColor: NSColor
+                if isErrorState {
+                    errorColor = NSColor(calibratedRed: 0.9, green: 0.5, blue: 0.2, alpha: 1.0)
+                } else {
+                    errorColor = NSColor(calibratedRed: 0.85, green: 0.25, blue: 0.2, alpha: 1.0)
+                }
+                let errorAttrs: [NSAttributedString.Key: Any] = [
+                    .font: NSFont.monospacedDigitSystemFont(ofSize: 10, weight: .bold),
+                    .foregroundColor: errorColor,
+                ]
+                button.attributedTitle = NSAttributedString(string: "!", attributes: errorAttrs)
+                button.imagePosition = .imageLeft
+            }
+        } else if let title = result.title {
+            // Text-based style
+            button.image = nil
+            button.imagePosition = .noImage
+
+            // For error/critical states on text styles, override color
+            if isErrorState {
+                let mutable = NSMutableAttributedString(attributedString: title)
+                mutable.addAttribute(.foregroundColor, value: NSColor(calibratedRed: 0.9, green: 0.5, blue: 0.2, alpha: 1.0), range: NSRange(location: 0, length: mutable.length))
+                button.attributedTitle = mutable
+            } else if isCriticalState {
+                let mutable = NSMutableAttributedString(attributedString: title)
+                mutable.addAttribute(.foregroundColor, value: NSColor(calibratedRed: 0.85, green: 0.25, blue: 0.2, alpha: 1.0), range: NSRange(location: 0, length: mutable.length))
+                button.attributedTitle = mutable
+            } else {
+                button.attributedTitle = title
+            }
+        }
+
         statusItem?.length = NSStatusItem.variableLength
     }
 
