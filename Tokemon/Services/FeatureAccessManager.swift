@@ -61,7 +61,7 @@ final class FeatureAccessManager {
 
     // MARK: - Computed State
 
-    /// Whether the user has Pro access (trial, licensed, or grace period)
+    /// Whether the user has Pro access
     var isPro: Bool {
         licenseManager.state.isProEnabled
     }
@@ -69,22 +69,6 @@ final class FeatureAccessManager {
     /// Current license state (for UI display)
     var licenseState: LicenseState {
         licenseManager.state
-    }
-
-    /// Trial days remaining (nil if not on trial)
-    var trialDaysRemaining: Int? {
-        if case .onTrial(let days, _, _) = licenseManager.state {
-            return days
-        }
-        return nil
-    }
-
-    /// Grace period days remaining (nil if not in grace period)
-    var graceDaysRemaining: Int? {
-        if case .gracePeriod(let days, _) = licenseManager.state {
-            return days
-        }
-        return nil
     }
 
     // MARK: - Initialization

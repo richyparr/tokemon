@@ -22,7 +22,7 @@ enum LicenseError: Error, LocalizedError {
 }
 
 /// Central license state manager following UsageMonitor pattern.
-/// Handles activation, validation, trial management, and grace periods.
+/// Handles activation and validation - simple Free/Pro model.
 @Observable
 @MainActor
 final class LicenseManager {
@@ -30,7 +30,7 @@ final class LicenseManager {
     // MARK: - Published State
 
     /// Current license state
-    var state: LicenseState = .unlicensed
+    var state: LicenseState = .free
 
     /// Whether validation is in progress
     var isValidating: Bool = false
@@ -102,7 +102,7 @@ final class LicenseManager {
             )
 
             // Update state
-            state = .licensed(licenseKey: trimmedKey, instanceId: instance.id, expiresAt: expiresAt)
+            state = .pro(licenseKey: trimmedKey, instanceId: instance.id, expiresAt: expiresAt)
             lastValidated = Date()
             onStateChanged?(state)
 
@@ -141,13 +141,8 @@ final class LicenseManager {
             let response = try await license.validate(key: key, instanceId: instanceId)
 
             guard response.valid else {
-                // Check if subscription expired (needs grace period)
-                if response.licenseKey?.status == .expired {
-                    enterGracePeriod(key: key)
-                    return true
-                }
                 // License is invalid
-                state = .unlicensed
+                state = .free
                 try await storage.clearLicense()
                 onStateChanged?(state)
                 return false
@@ -158,7 +153,7 @@ final class LicenseManager {
             lastValidated = Date()
 
             // Update state with fresh expiry info
-            state = .licensed(
+            state = .pro(
                 licenseKey: key,
                 instanceId: instanceId,
                 expiresAt: response.licenseKey?.expiresAt
@@ -188,7 +183,7 @@ final class LicenseManager {
         }
 
         try await storage.clearLicense()
-        state = .unlicensed
+        state = .free
         lastValidated = nil
         onStateChanged?(state)
     }
@@ -209,79 +204,31 @@ final class LicenseManager {
 
     /// Load cached state on launch
     private func loadCachedState() async {
-        // Developer mode bypass - treat as licensed Pro user
+        // Developer mode bypass - treat as Pro user
         if Constants.developerModeProEnabled {
-            state = .licensed(licenseKey: "DEV-MODE", instanceId: "dev", expiresAt: nil)
+            state = .pro(licenseKey: "DEV-MODE", instanceId: "dev", expiresAt: nil)
             lastValidated = Date()
             return
         }
 
-        // First check for existing license
+        // Check for existing license
         if let cached = try? await storage.getLicenseData() {
             state = cached.state
             lastValidated = cached.lastValidated
             return
         }
 
-        // Then check for trial
-        if let trial = try? await storage.getTrialState() {
-            if trial.daysRemaining > 0 {
-                state = .onTrial(
-                    daysRemaining: trial.daysRemaining,
-                    startDate: trial.startDate,
-                    endDate: trial.endDate
-                )
-            } else {
-                state = .trialExpired
-            }
-            return
-        }
-
-        // No license or trial - start trial
-        do {
-            try await storage.startTrial()
-            if let trial = try await storage.getTrialState() {
-                state = .onTrial(
-                    daysRemaining: trial.daysRemaining,
-                    startDate: trial.startDate,
-                    endDate: trial.endDate
-                )
-            }
-        } catch {
-            print("[LicenseManager] Failed to start trial: \(error)")
-            state = .unlicensed
-        }
+        // No license - free tier
+        state = .free
     }
 
     /// Validate on app launch (non-blocking)
     private func validateOnLaunch() async {
-        // Only validate if we have a license (not trial)
-        guard case .licensed = state else {
-            // Update trial days remaining
-            if let trial = try? await storage.getTrialState() {
-                if trial.daysRemaining > 0 {
-                    state = .onTrial(
-                        daysRemaining: trial.daysRemaining,
-                        startDate: trial.startDate,
-                        endDate: trial.endDate
-                    )
-                } else {
-                    state = .trialExpired
-                }
-                onStateChanged?(state)
-            }
-            return
-        }
+        // Only validate if we have a license
+        guard case .pro = state else { return }
 
         // Validate license in background
         _ = try? await validateLicense()
-    }
-
-    /// Enter grace period when subscription lapses
-    private func enterGracePeriod(key: String) {
-        let daysRemaining = Constants.gracePeriodDays
-        state = .gracePeriod(daysRemaining: daysRemaining, licenseKey: key)
-        onStateChanged?(state)
     }
 
     /// Handle offline validation using cached state
@@ -297,7 +244,7 @@ final class LicenseManager {
         }
 
         // Offline window expired
-        state = .unlicensed
+        state = .free
         onStateChanged?(state)
         return false
     }

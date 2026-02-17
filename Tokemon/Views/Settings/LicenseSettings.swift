@@ -20,7 +20,7 @@ struct LicenseSettings: View {
                     }
                 }
 
-                if case .licensed(_, _, let expires) = licenseManager.state,
+                if case .pro(_, _, let expires) = licenseManager.state,
                    let expiresAt = expires {
                     LabeledContent("Renews") {
                         Text(expiresAt.formatted(date: .abbreviated, time: .omitted))
@@ -106,27 +106,18 @@ struct LicenseSettings: View {
     }
 
     private var isLicensed: Bool {
-        if case .licensed = licenseManager.state { return true }
+        if case .pro = licenseManager.state { return true }
         return false
     }
 
     @ViewBuilder
     private var statusIcon: some View {
         switch licenseManager.state {
-        case .licensed:
+        case .pro:
             Image(systemName: "checkmark.seal.fill")
                 .foregroundStyle(.green)
-        case .onTrial:
-            Image(systemName: "clock")
-                .foregroundStyle(.blue)
-        case .trialExpired:
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(.orange)
-        case .gracePeriod:
-            Image(systemName: "exclamationmark.circle.fill")
-                .foregroundStyle(.yellow)
-        case .unlicensed:
-            Image(systemName: "xmark.circle.fill")
+        case .free:
+            Image(systemName: "person.fill")
                 .foregroundStyle(.secondary)
         }
     }

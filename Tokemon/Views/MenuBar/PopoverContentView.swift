@@ -111,9 +111,9 @@ struct PopoverContentView: View {
                 )
             }
 
-            // Trial/License banner
-            if shouldShowTrialBanner {
-                TrialBannerView(state: licenseManager.state) {
+            // Upgrade banner for free users
+            if shouldShowUpgradeBanner {
+                UpgradeBannerView {
                     showingPurchasePrompt = true
                 }
             }
@@ -141,8 +141,8 @@ struct PopoverContentView: View {
 
                 Spacer()
 
-                // Pro badge (shown when licensed)
-                if case .licensed = featureAccess.licenseState {
+                // Pro badge (shown when Pro)
+                if case .pro = featureAccess.licenseState {
                     ProBadge()
                 }
 
@@ -205,14 +205,12 @@ struct PopoverContentView: View {
         return .primary
     }
 
-    /// Whether to show the trial/license banner in the popover
-    private var shouldShowTrialBanner: Bool {
-        switch licenseManager.state {
-        case .onTrial, .trialExpired, .gracePeriod:
+    /// Whether to show the upgrade banner for free users
+    private var shouldShowUpgradeBanner: Bool {
+        if case .free = licenseManager.state {
             return true
-        default:
-            return false
         }
+        return false
     }
 
     /// Open settings window using our custom controller

@@ -55,8 +55,8 @@ struct TokemonApp: App {
             height += extraUsageHeight
         }
 
-        // Add height for trial banner if needed
-        if shouldShowTrialBanner {
+        // Add height for upgrade banner if free user
+        if shouldShowUpgradeBanner {
             height += trialBannerHeight
         }
 
@@ -73,14 +73,12 @@ struct TokemonApp: App {
         return height
     }
 
-    /// Whether trial banner should be shown (matches PopoverContentView logic)
-    private var shouldShowTrialBanner: Bool {
-        switch licenseManager.state {
-        case .onTrial, .trialExpired, .gracePeriod:
+    /// Whether upgrade banner should be shown (matches PopoverContentView logic)
+    private var shouldShowUpgradeBanner: Bool {
+        if case .free = licenseManager.state {
             return true
-        default:
-            return false
         }
+        return false
     }
 
     init() {

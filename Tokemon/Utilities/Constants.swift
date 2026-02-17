@@ -44,13 +44,7 @@ enum Constants {
     /// LemonSqueezy customer portal URL for subscription management
     static let lemonSqueezyPortalURL = "https://tokemon.lemonsqueezy.com/billing"
 
-    /// Trial duration in days
-    static let trialDurationDays: Int = 14
-
-    /// Grace period for subscription lapses in days
-    static let gracePeriodDays: Int = 7
-
-    /// Offline validation window in days
+    /// Offline validation window in days (for network failures)
     static let offlineValidationDays: Int = 7
 
     /// Keychain service name for license storage (separate from OAuth credentials)
