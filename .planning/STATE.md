@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 17 of 17 (Budget & Forecasting PRO)
-Plan: 1 of 2 in current phase
-Status: In Progress
-Last activity: 2026-02-17 -- Completed 17-01 Budget & Forecasting Data Layer
+Plan: 2 of 2 in current phase
+Status: Phase Complete
+Last activity: 2026-02-17 -- Completed 17-02 Budget & Forecasting UI
 
-Progress: [██████████████░░░░░░░░░░░░] 48%
+Progress: [██████████████████████████] 100%
 
 ## Shipped Milestones
 
@@ -36,7 +36,7 @@ Progress: [██████████████░░░░░░░░░
 - Timeline: 2 days (Feb 14-15, 2026)
 
 **v3.0 Milestone:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Total phases: 7 (Phases 11-17)
 - Requirements: 33
 
@@ -58,6 +58,7 @@ Progress: [██████████████░░░░░░░░░
 | 16    | 01   | 3min     | 2     | 4     |
 | 16    | 02   | 2min     | 2     | 5     |
 | 17    | 01   | 3min     | 2     | 7     |
+| 17    | 02   | 3min     | 2     | 8     |
 
 ## Accumulated Context
 
@@ -117,6 +118,9 @@ See PROJECT.md Key Decisions table for full list.
 - ForecastingEngine uses static methods following BurnRateCalculator pattern (stateless, testable)
 - BudgetManager follows AlertManager notification pattern with once-per-threshold tracking and month rollover reset
 - CostResult uses explicit init(from:) decoder for backward-compatible optional workspaceId
+- Custom 270-degree arc gauge (ArcShape) instead of system Gauge for full visual control
+- Rate-limited refreshIfNeeded() (5-minute interval) wired to onUsageChanged callback
+- Budget tab always visible in SettingsView -- Pro gate handled internally by BudgetDashboardView
 
 ### Pending Todos
 
@@ -129,5 +133,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 17-01 Budget & Forecasting Data Layer
-Resume: Continue with 17-02 (Budget & Forecasting UI)
+Stopped at: Completed 17-02 Budget & Forecasting UI -- Phase 17 complete
+Resume: v3.0 Phase 17 fully delivered
