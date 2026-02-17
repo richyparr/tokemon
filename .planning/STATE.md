@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 11 of 17 (Multi-Profile Foundation)
-Plan: 1 of 3 in current phase (completed)
+Plan: 2 of 3 in current phase (completed)
 Status: Executing
-Last activity: 2026-02-17 -- Completed 11-01 Profile Data Layer
+Last activity: 2026-02-17 -- Completed 11-02 Profile Management UI
 
-Progress: [███░░░░░░░░░░░░░░░░░░░░░░░] 5%
+Progress: [████░░░░░░░░░░░░░░░░░░░░░░] 10%
 
 ## Shipped Milestones
 
@@ -36,13 +36,14 @@ Progress: [███░░░░░░░░░░░░░░░░░░░░
 - Timeline: 2 days (Feb 14-15, 2026)
 
 **v3.0 Milestone:**
-- Total plans completed: 1
+- Total plans completed: 2
 - Total phases: 7 (Phases 11-17)
 - Requirements: 33
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 11    | 01   | 2min     | 2     | 3     |
+| 11    | 02   | 3min     | 2     | 6     |
 
 ## Accumulated Context
 
@@ -60,6 +61,9 @@ See PROJECT.md Key Decisions table for full list.
 - Used Process + /usr/bin/security for keychain I/O (not KeychainAccess) to avoid permission issues with Claude Code's keychain entry
 - UserDefaults for profile persistence (lightweight, appropriate for small profile metadata)
 - Profile stores full JSON blob from system keychain rather than parsing individual fields
+- Profiles tab placed as FIRST tab in Settings for prominence
+- ProfileSwitcherView uses Menu dropdown matching popover footer style
+- SettingsWindowController gets setProfileManager following existing setter pattern
 
 ### Pending Todos
 
@@ -72,5 +76,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 11-01-PLAN.md (Profile Data Layer)
-Resume: Run `/gsd:execute-phase 11` to continue with 11-02
+Stopped at: Completed 11-02-PLAN.md (Profile Management UI)
+Resume: Run `/gsd:execute-phase 11` to continue with 11-03
