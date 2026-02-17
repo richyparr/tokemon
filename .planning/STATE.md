@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 14 of 17 (Distribution & Trust)
-Plan: 4 of 4 in current phase (completed)
-Status: Plan Complete
-Last activity: 2026-02-17 -- Completed 14-04 Auto-Start Session Notification
+Plan: 2 of 4 in current phase (14-01 and 14-04 complete, 14-02 and 14-03 remaining)
+Status: In Progress
+Last activity: 2026-02-17 -- Completed 14-01 Code Signing & Release Infrastructure
 
 Progress: [████████░░░░░░░░░░░░░░░░░░] 31%
 
@@ -36,7 +36,7 @@ Progress: [████████░░░░░░░░░░░░░░░
 - Timeline: 2 days (Feb 14-15, 2026)
 
 **v3.0 Milestone:**
-- Total plans completed: 7
+- Total plans completed: 9
 - Total phases: 7 (Phases 11-17)
 - Requirements: 33
 
@@ -49,6 +49,7 @@ Progress: [████████░░░░░░░░░░░░░░░
 | 12    | 02   | 1min     | 2     | 1     |
 | 13    | 01   | 2min     | 2     | 4     |
 | 13    | 02   | 3min     | 3     | 5     |
+| 14    | 01   | 3min     | 2     | 3     |
 | 14    | 04   | 2min     | 2     | 3     |
 
 ## Accumulated Context
@@ -85,6 +86,10 @@ See PROJECT.md Key Decisions table for full list.
 - Monochrome toggle in own "Color Mode" section for visual clarity
 
 **Phase 14 Decisions:**
+- SKIP_SIGNING env var for testing build-release.sh bundle structure without Developer ID certificate
+- Entitlements file used during codesign for hardened runtime compatibility with keychain access
+- DMG re-signed and re-stapled after app stapling for complete notarization chain
+- softprops/action-gh-release@v2 with auto release notes generation
 - Called checkForSessionReset from within checkUsage (Option 2) to keep wiring simpler -- avoids adding another callback to UsageMonitor
 - Session notification uses timeSensitive interruption level (not critical) since it is informational
 
@@ -99,5 +104,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 14-04 Auto-Start Session Notification
-Resume: Continue with remaining Phase 14 plans or next phase
+Stopped at: Completed 14-01 Code Signing & Release Infrastructure
+Resume: Execute 14-02 (Homebrew Cask) and 14-03 remaining plans
