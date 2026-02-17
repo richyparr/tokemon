@@ -34,6 +34,11 @@ struct SettingsView: View {
                     Label("Appearance", systemImage: "paintbrush")
                 }
 
+            StatuslineSettings()
+                .tabItem {
+                    Label("Terminal", systemImage: "terminal")
+                }
+
             AlertSettings()
                 .environment(alertManager)
                 .tabItem {

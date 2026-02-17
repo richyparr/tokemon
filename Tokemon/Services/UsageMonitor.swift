@@ -100,6 +100,11 @@ final class UsageMonitor {
     @ObservationIgnored
     var onAlertCheck: ((_ usage: UsageSnapshot) -> Void)?
 
+    /// Callback invoked to export usage to statusline files after each refresh.
+    /// Set by TokemonApp to wire StatuslineExporter.export.
+    @ObservationIgnored
+    var onStatuslineExport: ((_ usage: UsageSnapshot) -> Void)?
+
     // MARK: - History
 
     /// History store for recording usage over time
@@ -208,9 +213,10 @@ final class UsageMonitor {
                 // Reset retry counters on success
                 oauthRetryCount = 0
                 retryCount = 0
-                // Notify status item and alert manager
+                // Notify status item, alert manager, and statusline exporter
                 onUsageChanged?(currentUsage)
                 onAlertCheck?(currentUsage)
+                onStatuslineExport?(currentUsage)
                 // Record to history
                 await recordHistory(for: currentUsage)
                 // Update active profile's cached usage and fetch all other profiles
@@ -250,9 +256,10 @@ final class UsageMonitor {
                 }
                 // Reset total retry counter on any success
                 retryCount = 0
-                // Notify status item and alert manager
+                // Notify status item, alert manager, and statusline exporter
                 onUsageChanged?(currentUsage)
                 onAlertCheck?(currentUsage)
+                onStatuslineExport?(currentUsage)
                 // Record to history
                 await recordHistory(for: currentUsage)
                 // Update active profile's cached usage and fetch all other profiles
@@ -286,9 +293,10 @@ final class UsageMonitor {
             print("[Tokemon] Max retry attempts (\(Constants.maxRetryAttempts)) reached. Manual retry required.")
         }
 
-        // Still notify status item and alert manager (error state may change display)
+        // Still notify status item, alert manager, and statusline exporter (error state may change display)
         onUsageChanged?(currentUsage)
         onAlertCheck?(currentUsage)
+        onStatuslineExport?(currentUsage)
     }
 
     /// Manual retry: resets counters and restarts polling.

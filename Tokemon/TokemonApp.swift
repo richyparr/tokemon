@@ -17,6 +17,7 @@ struct TokemonApp: App {
     @State private var isPopoverPresented = false
     @State private var profileManager = ProfileManager()
     @State private var statusItemManager = StatusItemManager()
+    @State private var statuslineExporter = StatuslineExporter()
 
     // Track whether chart is shown to adjust popover height
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
@@ -182,6 +183,27 @@ struct TokemonApp: App {
                     alertManager.checkUsage(usage)
                 }
             }
+
+            // Wire statusline export to refresh cycle
+            monitor.onStatuslineExport = { [statuslineExporter] usage in
+                statuslineExporter.export(usage)
+            }
+
+            // Listen for statusline config changes to reload exporter settings
+            NotificationCenter.default.addObserver(
+                forName: StatuslineExporter.configChangedNotification,
+                object: nil,
+                queue: .main
+            ) { _ in
+                Task { @MainActor in
+                    statuslineExporter.reloadConfig()
+                    // Re-export with current data to immediately reflect format changes
+                    statuslineExporter.export(monitor.currentUsage)
+                }
+            }
+
+            // Copy shell helper script to ~/.tokemon/ for user access
+            statuslineExporter.installShellHelper()
 
             // Install right-click event monitor
             statusItemManager.installRightClickMonitor(

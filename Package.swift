@@ -26,6 +26,7 @@ let package = Package(
             resources: [
                 .copy("Resources/tokemon_logo_white.png"),
                 .copy("Resources/tokemon_logo.png"),
+                .copy("Resources/tokemon-statusline.sh"),
             ]
         ),
     ]
