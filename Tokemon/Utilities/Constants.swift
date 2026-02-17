@@ -89,4 +89,9 @@ enum Constants {
 
     /// UserDefaults key for automatic update check preference
     static let autoCheckUpdatesKey = "tokemon.autoCheckUpdates"
+
+    // MARK: - Webhook Alerts
+
+    /// UserDefaults key for webhook configuration (JSON-encoded WebhookConfig)
+    static let webhookConfigKey = "tokemon.webhookConfig"
 }
