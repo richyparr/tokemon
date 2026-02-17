@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 ## Current Position
 
-Phase: 11 of 17 (Multi-Profile Foundation) -- COMPLETE
-Plan: 3 of 3 in current phase (completed)
-Status: Phase Complete
-Last activity: 2026-02-17 -- Completed 11-03 Multi-Profile Usage Polling & Display
+Phase: 12 of 17 (Menu Bar Customization)
+Plan: 1 of 2 in current phase (completed)
+Status: In Progress
+Last activity: 2026-02-17 -- Completed 12-01 Icon Rendering Engine
 
-Progress: [█████░░░░░░░░░░░░░░░░░░░░░] 14%
+Progress: [██████░░░░░░░░░░░░░░░░░░░░] 18%
 
 ## Shipped Milestones
 
@@ -36,7 +36,7 @@ Progress: [█████░░░░░░░░░░░░░░░░░░
 - Timeline: 2 days (Feb 14-15, 2026)
 
 **v3.0 Milestone:**
-- Total plans completed: 3
+- Total plans completed: 4
 - Total phases: 7 (Phases 11-17)
 - Requirements: 33
 
@@ -45,6 +45,7 @@ Progress: [█████░░░░░░░░░░░░░░░░░░
 | 11    | 01   | 2min     | 2     | 3     |
 | 11    | 02   | 3min     | 2     | 6     |
 | 11    | 03   | 2min     | 2     | 5     |
+| 12    | 01   | 2min     | 2     | 4     |
 
 ## Accumulated Context
 
@@ -69,6 +70,13 @@ See PROJECT.md Key Decisions table for full list.
 - Multi-profile polling sequential after main refresh (not concurrent with active profile update)
 - saveProfiles() on every usage update for persistence (UserDefaults writes are fast)
 
+**Phase 12 Decisions:**
+- Renderer returns (image, title) tuple with exactly one non-nil -- StatusItemManager decides button layout
+- Battery/progressBar render custom NSImage at 18x18pt; iconAndBar uses NSTextAttachment for SF Symbol
+- Monochrome logic centralized in GradientColors.nsColor(for:isMonochrome:) to avoid duplication
+- NotificationCenter-based style change sync for immediate re-render without app restart
+- Error/critical states on image styles use imageLeft positioning with "!" text suffix
+
 ### Pending Todos
 
 None.
@@ -80,5 +88,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 11-03-PLAN.md (Multi-Profile Usage Polling & Display) -- Phase 11 complete
-Resume: Run `/gsd:plan-phase 12` to plan Menu Bar Customization
+Stopped at: Completed 12-01-PLAN.md (Icon Rendering Engine)
+Resume: Run `/gsd:execute-phase 12` to continue with 12-02 (Settings UI Picker)
