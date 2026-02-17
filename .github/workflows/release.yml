@@ -79,10 +79,18 @@ jobs:
           chmod +x scripts/notarize.sh
           ./scripts/notarize.sh "Tokemon-${VERSION}.dmg"
 
+      - name: Generate appcast
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          chmod +x scripts/generate-appcast.sh
+          ./scripts/generate-appcast.sh $VERSION Tokemon-${VERSION}.dmg
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: Tokemon-*.dmg
+          files: |
+            Tokemon-*.dmg
+            appcast.xml
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

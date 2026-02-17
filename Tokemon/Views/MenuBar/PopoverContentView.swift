@@ -127,6 +127,9 @@ struct PopoverContentView: View {
                 )
             }
 
+            // Update available banner
+            UpdateBannerView()
+
             Divider()
 
             // Footer: refresh status + actions

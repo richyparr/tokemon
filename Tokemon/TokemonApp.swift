@@ -36,6 +36,7 @@ struct TokemonApp: App {
         // Total base: ~298px, round to 300
         let baseHeight: CGFloat = 300
         let trialBannerHeight: CGFloat = 56   // Trial banner actual height
+        let updateBannerHeight: CGFloat = 56  // Update available banner height
         let chartHeight: CGFloat = 230        // Chart + burn rate section
         let extraUsageHeight: CGFloat = 75    // Extra usage section (divider + title + 3 rows)
 
@@ -57,6 +58,11 @@ struct TokemonApp: App {
         // Add height for trial banner if needed
         if shouldShowTrialBanner {
             height += trialBannerHeight
+        }
+
+        // Add height for update banner if update is available
+        if updateManager.updateAvailable {
+            height += updateBannerHeight
         }
 
         // Add height for chart if enabled
