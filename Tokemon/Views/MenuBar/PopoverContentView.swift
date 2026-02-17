@@ -10,6 +10,7 @@ struct PopoverContentView: View {
     @Environment(ThemeManager.self) private var themeManager
     @Environment(LicenseManager.self) private var licenseManager
     @Environment(FeatureAccessManager.self) private var featureAccess
+    @Environment(ProfileManager.self) private var profileManager
     @Environment(\.colorScheme) private var colorScheme
 
     // Setting for showing usage trend (stored in UserDefaults)
@@ -39,6 +40,11 @@ struct PopoverContentView: View {
 
     private var popoverContent: some View {
         VStack(spacing: 16) {
+            // Profile switcher (only shown when 2+ profiles exist)
+            if profileManager.profiles.count > 1 {
+                ProfileSwitcherView()
+            }
+
             // Big percentage number (dominant, first thing user sees)
             UsageHeaderView(usage: monitor.currentUsage, alertLevel: alertManager.currentAlertLevel)
 

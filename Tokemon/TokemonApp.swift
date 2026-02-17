@@ -15,6 +15,7 @@ struct TokemonApp: App {
     @State private var licenseManager: LicenseManager
     @State private var featureAccess: FeatureAccessManager
     @State private var isPopoverPresented = false
+    @State private var profileManager = ProfileManager()
     @State private var statusItemManager = StatusItemManager()
 
     // Track whether chart is shown to adjust popover height
@@ -37,6 +38,11 @@ struct TokemonApp: App {
         let extraUsageHeight: CGFloat = 75    // Extra usage section (divider + title + 3 rows)
 
         var height = baseHeight
+
+        // Add height for profile switcher when multiple profiles exist
+        if profileManager.profiles.count > 1 {
+            height += 28  // Profile switcher row
+        }
 
         // Add height for extra usage section if shown
         if monitor.showExtraUsage && monitor.currentUsage.extraUsageEnabled {
@@ -105,6 +111,7 @@ struct TokemonApp: App {
                 .environment(themeManager)
                 .environment(licenseManager)
                 .environment(featureAccess)
+                .environment(profileManager)
                 .frame(width: 320, height: popoverHeight)
                 .onAppear {
                     // Ensure status item is updated when popover appears
@@ -126,6 +133,14 @@ struct TokemonApp: App {
             SettingsWindowController.shared.setThemeManager(themeManager)
             SettingsWindowController.shared.setLicenseManager(licenseManager)
             SettingsWindowController.shared.setFeatureAccessManager(featureAccess)
+            SettingsWindowController.shared.setProfileManager(profileManager)
+
+            // Wire profile change callback to trigger a UsageMonitor refresh
+            profileManager.onActiveProfileChanged = { [monitor] _ in
+                Task { @MainActor in
+                    await monitor.refresh()
+                }
+            }
 
             // Initialize floating window controller with references
             FloatingWindowController.shared.setMonitor(monitor)
@@ -175,6 +190,7 @@ struct TokemonApp: App {
                 .environment(themeManager)
                 .environment(licenseManager)
                 .environment(featureAccess)
+                .environment(profileManager)
         }
     }
 }
