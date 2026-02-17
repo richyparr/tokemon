@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 16 of 17 (Webhook Alerts PRO)
-Plan: 1 of 2 in current phase
-Status: In Progress
-Last activity: 2026-02-17 -- Completed 16-01 Webhook Model & Service
+Plan: 2 of 2 in current phase (COMPLETE)
+Status: Phase Complete
+Last activity: 2026-02-17 -- Completed 16-02 Webhook Settings UI & Alert Integration
 
 Progress: [█████████████░░░░░░░░░░░░░] 46%
 
@@ -56,6 +56,7 @@ Progress: [█████████████░░░░░░░░░░
 | 15    | 01   | --       | --    | --    |
 | 15    | 02   | --       | --    | --    |
 | 16    | 01   | 3min     | 2     | 4     |
+| 16    | 02   | 2min     | 2     | 5     |
 
 ## Accumulated Context
 
@@ -108,6 +109,8 @@ See PROJECT.md Key Decisions table for full list.
 - Static payload methods for Sendable safety in Task.detached context (Swift 6 concurrency)
 - Profile name read from UserDefaults directly (no ProfileManager dependency) for loose coupling in WebhookManager
 - WebhookError enum with LocalizedError conformance for UI-friendly test webhook feedback
+- Webhooks tab always visible in SettingsView -- Pro gate handled internally by WebhookSettings view
+- AlertManager.onWebhookCheck fires on every check -- WebhookManager handles its own deduplication
 
 ### Pending Todos
 
@@ -120,5 +123,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 16-01 Webhook Model & Service
-Resume: Run `/gsd:execute-phase 16` to continue with 16-02 (Webhook Settings UI)
+Stopped at: Completed 16-02 Webhook Settings UI & Alert Integration (Phase 16 complete)
+Resume: Run `/gsd:execute-phase 17` to continue with next phase
