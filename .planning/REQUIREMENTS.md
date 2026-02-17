@@ -60,10 +60,10 @@ Requirements for v3.0 Competitive Parity & Growth milestone.
 
 ### Terminal Statusline (FREE)
 
-- [ ] **TERM-01**: User can display usage in terminal statusline (bash/zsh prompt)
-- [ ] **TERM-02**: Statusline shows session %, weekly %, reset timer
-- [ ] **TERM-03**: User can customize statusline format
-- [ ] **TERM-04**: One-click install script for statusline
+- [x] **TERM-01**: User can display usage in terminal statusline (bash/zsh prompt)
+- [x] **TERM-02**: Statusline shows session %, weekly %, reset timer
+- [x] **TERM-03**: User can customize statusline format
+- [x] **TERM-04**: One-click install script for statusline
 
 ### Distribution & Trust (FREE)
 
@@ -153,10 +153,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MENU-01 | Phase 12 | Complete |
 | MENU-02 | Phase 12 | Complete |
 | MENU-03 | Phase 12 | Complete |
-| TERM-01 | Phase 13 | Pending |
-| TERM-02 | Phase 13 | Pending |
-| TERM-03 | Phase 13 | Pending |
-| TERM-04 | Phase 13 | Pending |
+| TERM-01 | Phase 13 | Complete |
+| TERM-02 | Phase 13 | Complete |
+| TERM-03 | Phase 13 | Complete |
+| TERM-04 | Phase 13 | Complete |
 | DIST-01 | Phase 14 | Pending |
 | DIST-02 | Phase 14 | Pending |
 | DIST-03 | Phase 14 | Pending |
