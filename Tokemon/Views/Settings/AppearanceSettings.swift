@@ -1,21 +1,13 @@
 import SwiftUI
 
 /// Settings tab for menu bar appearance configuration.
-/// Phase 1: Percentage mode fully implemented; logo and gauge are future placeholders.
+/// Provides theme selection, icon style picker (5 styles), and monochrome toggle.
 struct AppearanceSettings: View {
     @Environment(UsageMonitor.self) private var monitor
     @Environment(ThemeManager.self) private var themeManager
 
-    /// Menu bar icon style options
-    enum IconStyle: String, CaseIterable, Identifiable {
-        case percentage = "Percentage"
-        case claudeLogo = "Claude Logo"
-        case gaugeMeter = "Gauge Meter"
-
-        var id: String { rawValue }
-    }
-
-    @AppStorage("menuBarIconStyle") private var selectedStyle: String = IconStyle.percentage.rawValue
+    @AppStorage("menuBarIconStyle") private var selectedStyle: String = MenuBarIconStyle.percentage.rawValue
+    @AppStorage("menuBarMonochrome") private var isMonochrome: Bool = false
 
     /// Description text for the currently selected theme
     private var themeDescription: String {
@@ -29,8 +21,28 @@ struct AppearanceSettings: View {
         }
     }
 
+    /// Description text for the currently selected icon style
+    private var styleDescription: String {
+        guard let style = MenuBarIconStyle(rawValue: selectedStyle) else {
+            return ""
+        }
+        switch style {
+        case .percentage:
+            return "Shows usage as a colored percentage (e.g., 42%)"
+        case .battery:
+            return "Battery icon that fills as usage increases"
+        case .progressBar:
+            return "Thin progress bar showing usage level"
+        case .iconAndBar:
+            return "Lightning bolt icon with percentage text"
+        case .compact:
+            return "Minimal number display without % sign"
+        }
+    }
+
     var body: some View {
         Form {
+            // Section 1: Theme (existing, unchanged)
             Section {
                 @Bindable var manager = themeManager
 
@@ -48,24 +60,39 @@ struct AppearanceSettings: View {
                 Text("Theme")
             }
 
+            // Section 2: Menu Bar Icon (5-style picker with descriptions)
             Section {
-                Picker("Menu bar display", selection: $selectedStyle) {
-                    Text("Percentage").tag(IconStyle.percentage.rawValue)
-                    Text("Claude Logo (coming soon)").tag(IconStyle.claudeLogo.rawValue)
-                    Text("Gauge Meter (coming soon)").tag(IconStyle.gaugeMeter.rawValue)
+                Picker("Icon style", selection: $selectedStyle) {
+                    ForEach(MenuBarIconStyle.allCases) { style in
+                        Text(style.displayName).tag(style.rawValue)
+                    }
                 }
                 .pickerStyle(.radioGroup)
 
-                if selectedStyle != IconStyle.percentage.rawValue {
-                    Text("This style will be available in a future update. Using percentage for now.")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
-                }
+                Text(styleDescription)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             } header: {
-                Text("Menu Bar Display")
+                Text("Menu Bar Icon")
             }
 
+            // Section 3: Monochrome (toggle with explanation)
+            Section {
+                Toggle("Monochrome icon", isOn: $isMonochrome)
+
+                Text("Use a single color that matches the native macOS menu bar style. When off, the icon color shifts from green to orange to red as usage increases.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Color Mode")
+            }
         }
         .formStyle(.grouped)
+        .onChange(of: selectedStyle) { _, _ in
+            NotificationCenter.default.post(name: Notification.Name("MenuBarStyleChanged"), object: nil)
+        }
+        .onChange(of: isMonochrome) { _, _ in
+            NotificationCenter.default.post(name: Notification.Name("MenuBarStyleChanged"), object: nil)
+        }
     }
 }
