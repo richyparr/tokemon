@@ -16,6 +16,7 @@ xcuserdata/
 
 # Build artifacts
 build/
+.build-xcode/
 
 # App bundle (build artifact)
 *.app/
