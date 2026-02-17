@@ -1,0 +1,87 @@
+# Automated release pipeline for Tokemon
+# Triggered by pushing a version tag (e.g., git tag v1.0.0 && git push origin v1.0.0)
+#
+# Required repository secrets:
+#   APPLE_CERTIFICATE_P12       - Base64-encoded Developer ID Application .p12 file
+#   APPLE_CERTIFICATE_PASSWORD  - Password for the .p12 file
+#   APPLE_DEVELOPER_ID          - Certificate common name
+#                                 (e.g., "Developer ID Application: Your Name (TEAMID)")
+#   APPLE_ID                    - Apple account email address
+#   AC_PASSWORD                 - App-specific password (appleid.apple.com)
+#   APPLE_TEAM_ID               - 10-character Apple Developer Team ID
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: macos-14
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: '6.0'
+
+      - name: Import signing certificate
+        env:
+          CERTIFICATE_P12: ${{ secrets.APPLE_CERTIFICATE_P12 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          # Decode certificate from base64
+          echo "$CERTIFICATE_P12" | base64 --decode > certificate.p12
+
+          # Create temporary keychain
+          security create-keychain -p "" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "" build.keychain
+
+          # Import certificate
+          security import certificate.p12 -k build.keychain \
+            -P "$CERTIFICATE_PASSWORD" \
+            -T /usr/bin/codesign
+
+          # Allow codesign to access keychain without UI prompt
+          security set-key-partition-list -S apple-tool:,apple: \
+            -s -k "" build.keychain
+
+          # Cleanup
+          rm certificate.p12
+
+      - name: Build and sign release
+        env:
+          APPLE_DEVELOPER_ID: ${{ secrets.APPLE_DEVELOPER_ID }}
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          chmod +x scripts/build-release.sh
+          ./scripts/build-release.sh "$VERSION"
+
+      - name: Notarize
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_DEVELOPER_ID: ${{ secrets.APPLE_DEVELOPER_ID }}
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          chmod +x scripts/notarize.sh
+          ./scripts/notarize.sh "Tokemon-${VERSION}.dmg"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Tokemon-*.dmg
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
