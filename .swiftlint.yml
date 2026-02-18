@@ -1,0 +1,56 @@
+# SwiftLint Configuration for Tokemon
+
+excluded:
+  - .build
+  - build
+  - Package.swift
+  - "*.generated.swift"
+
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+  - function_body_length
+  - type_body_length
+  - file_length
+  - cyclomatic_complexity
+  - nesting
+  - identifier_name
+
+opt_in_rules:
+  - empty_count
+  - closure_spacing
+  - contains_over_first_not_nil
+  - discouraged_object_literal
+  - empty_string
+  - explicit_init
+  - first_where
+  - force_unwrapping
+  - implicitly_unwrapped_optional
+  - last_where
+  - modifier_order
+  - operator_usage_whitespace
+  - overridden_super_call
+  - pattern_matching_keywords
+  - private_action
+  - private_outlet
+  - redundant_nil_coalescing
+  - sorted_first_last
+  - toggle_bool
+  - unavailable_function
+  - unneeded_parentheses_in_closure_argument
+  - yoda_condition
+
+force_cast: warning
+force_try: warning
+force_unwrapping: warning
+
+implicitly_unwrapped_optional:
+  severity: warning
+
+trailing_comma:
+  mandatory_comma: false
+
+vertical_whitespace:
+  max_empty_lines: 2
+
+reporter: "xcode"

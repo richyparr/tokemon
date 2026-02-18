@@ -56,6 +56,20 @@ targets:
       properties:
         com.apple.security.app-sandbox: false
 
+  TokemonTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: TokemonTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.tokemon.app.tests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Tokemon.app/Contents/MacOS/Tokemon"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks @loader_path/../Frameworks"
+    dependencies:
+      - target: Tokemon
+
   TokemonUITests:
     type: bundle.ui-testing
     platform: macOS
@@ -82,6 +96,7 @@ schemes:
       config: Debug
       gatherCoverageData: true
       targets:
+        - TokemonTests
         - TokemonUITests
     profile:
       config: Release

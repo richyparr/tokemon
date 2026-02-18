@@ -59,6 +59,17 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "8943F7CEE6223E6A96AFBD39"
+               BuildableName = "TokemonTests.xctest"
+               BlueprintName = "TokemonTests"
+               ReferencedContainer = "container:Tokemon.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "186B971EFD9541E2D135C7FD"
                BuildableName = "TokemonUITests.xctest"
                BlueprintName = "TokemonUITests"

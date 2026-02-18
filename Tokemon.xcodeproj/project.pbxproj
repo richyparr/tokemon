@@ -10,22 +10,27 @@
 		004F57E1C9D1B41DF1AED18E /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 608BD595E10AF9D6C2F60108 /* UpdateManager.swift */; };
 		0117698D1D2D65189C87927B /* BudgetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A064B85F3B914426645FD51 /* BudgetManager.swift */; };
 		04AD50D19DBD8BE9A89F351E /* BudgetDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23985DEF97FD1AADAD7B85A /* BudgetDashboardView.swift */; };
+		06CF591C87F0DE88416749BC /* UsageDataPointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AF869280DC4BDCAC7D9887 /* UsageDataPointTests.swift */; };
 		07D6789B3A9636B38FD18BCC /* JSONLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8DFF05E3562B8C6F186AF2 /* JSONLParser.swift */; };
 		0C475360A5540AAB24009B14 /* WebhookConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87FB4549C7815768B282515B /* WebhookConfig.swift */; };
 		0FDD66EA61897255369C7F9C /* CostBreakdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E8A6DEE031C45BDEAAF04 /* CostBreakdownView.swift */; };
 		10DED05B8C439EDAD7F58E90 /* ErrorBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8501935E350978C2B6A3B8C /* ErrorBannerView.swift */; };
 		13C100983FC17FC4ED4A4568 /* SettingsAccess in Frameworks */ = {isa = PBXBuildFile; productRef = FBBEA55FE899BD7D573AD896 /* SettingsAccess */; };
 		14CC08750042689A25AE91BF /* tokemon-statusline.sh in Resources */ = {isa = PBXBuildFile; fileRef = C109C2C751CA4155C9432FDD /* tokemon-statusline.sh */; };
+		1CDB9A4FDDD9B35B144838C4 /* GradientColorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEFA2EC925CC47EDB9CCFF2 /* GradientColorsTests.swift */; };
 		1EC98BE0EEF83AB82D3253FB /* TeamMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E955C2A5890B0C075894F8 /* TeamMember.swift */; };
 		2073158EE576A258567B5760 /* DataSourceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528543DB1B8EEBFF4A3D8C98 /* DataSourceSettings.swift */; };
 		20E83ADC4D8C2C4F256428B8 /* AppearanceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17998F14ADA62C5DE975D0BF /* AppearanceSettings.swift */; };
 		21BD469670450AB0B31B9C57 /* ProjectBreakdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5F964BA40888A39E27B7C1 /* ProjectBreakdownView.swift */; };
+		240E68B4FFFAF8138E0BC792 /* JSONLParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAD0E72AE626C28F7B574BC /* JSONLParserTests.swift */; };
 		28F6F20A336E5B86CED43A71 /* TrialBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B5E56A27CF8EC0DC10E69D /* TrialBannerView.swift */; };
 		29C591E7F9FBBD942BA6BA49 /* UsageSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2923EBB067DA976637EB72FB /* UsageSnapshot.swift */; };
 		2A91726755746879EE0A3C7C /* StatuslineSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B7059FF8ED93BDFEB83F62 /* StatuslineSettings.swift */; };
 		2FC937088854FF5025638B4D /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C87702FC99CF93535EBA1A6 /* HistoryStore.swift */; };
 		30A7765F5E625EE49DB5D15D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A03BECBF13FB23B8B943CBE /* Extensions.swift */; };
+		32E37ED03B8FF3E8421E4F65 /* TokemonLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3912A8273323D5D88BCECBF2 /* TokemonLayoutTests.swift */; };
 		37154E5D8DCB20127AF51FF6 /* AnalyticsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9FAE614C01FD1E90FB4550 /* AnalyticsEngine.swift */; };
+		38F5295794D8104D9F11FF99 /* UsageSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1770D0C60F067900CCD99B6 /* UsageSnapshotTests.swift */; };
 		3AEE6515ECF64732833DC327 /* ExportConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296F5E6CBD286863EF3C82B9 /* ExportConfig.swift */; };
 		3C141CDF39914381D695E7FD /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D55C27C0F61AC0139E6B8E /* SettingsView.swift */; };
 		3CF78615169BA04A5244A1DC /* TeamUsageSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998C5E515B435FC23BD49E30 /* TeamUsageSummaryView.swift */; };
@@ -35,6 +40,7 @@
 		49EB318B75A14672D5F2B120 /* UsageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7FB3C0E763DBB7E4771CD3 /* UsageDetailView.swift */; };
 		4FD3B4869C30553228C0AFE9 /* AnalyticsDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E76E7BD17A871792A102FB /* AnalyticsDashboardView.swift */; };
 		5252DEE73E61DD0ADBE4A16E /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7827A07678EB95D98A1F2993 /* AppIcon.icns */; };
+		55CE85E7ADCC8B43640A443D /* ConstantsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE713D25228307F478EEC7BE /* ConstantsTests.swift */; };
 		582BF8B47075B1EAAB646DD9 /* DataSourceState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4965208D25E3A2484DA7D99 /* DataSourceState.swift */; };
 		5A0EDF797DA92B2663DD77C5 /* UsageMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4EB9C6ACC5F988F54CBA0B /* UsageMonitor.swift */; };
 		5A78FC5C99E91ED165078C84 /* OAuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47647700F26691D957B7E3C /* OAuthClient.swift */; };
@@ -50,6 +56,7 @@
 		75C14174F8D38D9C79DC0AAA /* tokemon_logo_white.png in Resources */ = {isa = PBXBuildFile; fileRef = F48A86AFA95D5A0B9F8C993D /* tokemon_logo_white.png */; };
 		7B290189E89AF0F599A4EF14 /* MemberUsageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF39096943554DA0BC88042F /* MemberUsageRow.swift */; };
 		7EFD68CEA419818262CC80EB /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B830AEBD28764DAA036C497D /* Constants.swift */; };
+		82E6AE6FAF6EB25F103395AB /* BurnRateCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4923FCCB67284A6461E2BA7 /* BurnRateCalculatorTests.swift */; };
 		8550567ABA5BC9BEA9894A05 /* StatuslineConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032C71F1CB61FBE62EAF0BF2 /* StatuslineConfig.swift */; };
 		8732BCED6F9B57FE62283586 /* RefreshStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D88AB2064E01812CAE84221 /* RefreshStatusView.swift */; };
 		8BC5A0F37874C216A9A5E947 /* UpdateBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF43F9DFE08537DAF4419C3C /* UpdateBannerView.swift */; };
@@ -74,6 +81,7 @@
 		B937E7F4821FF674CF0EE680 /* TokemonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F69FD4D5EDD80EF5062383 /* TokemonUITests.swift */; };
 		B9680B0C860A82BFB40EDD4E /* BudgetGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0375F6EEEDD05C27B017FE /* BudgetGaugeView.swift */; };
 		BD41E6F7A8A494E48F9A13C1 /* tokemon_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 9F3C164966F166B1095A3EA9 /* tokemon_logo.png */; };
+		BED8B26393985C83202CEF85 /* AnalyticsEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EA45B8B76C59D9393AC1AB /* AnalyticsEngineTests.swift */; };
 		C01A35B9BD2249D19F090DFD /* AlertSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB767A7420B9BA54C1B6776 /* AlertSettings.swift */; };
 		C31FE7D6D689A85ABF9A9FA1 /* MenuBarIconStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CBB97F6F9DB782964437B7 /* MenuBarIconStyle.swift */; };
 		C88385D60444EC33E51B045D /* OAuthUsageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB61B22591CECD91D01412 /* OAuthUsageResponse.swift */; };
@@ -91,6 +99,7 @@
 		E58F707C14C58B28EAE7D42B /* ShareableInsight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869CBFF3C47FDC65143589D3 /* ShareableInsight.swift */; };
 		E6E75261A9479ECC5008EC41 /* MenuBarExtraAccess in Frameworks */ = {isa = PBXBuildFile; productRef = E5AEA65AF84DB4C6D79D8464 /* MenuBarExtraAccess */; };
 		E7B31D2E21C587D65DF37173 /* UsageDataPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB4FFB2CA14B9B4513CD976F /* UsageDataPoint.swift */; };
+		E82D30E7FD589D8B552D3B0E /* AlertManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D30F231CD111C03BAD3D73E /* AlertManagerTests.swift */; };
 		E93A815126D47BE5CB8E5551 /* MenuBarIconRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4816009F45A97284AD003858 /* MenuBarIconRenderer.swift */; };
 		EFFA05FE195E9BF770183A32 /* UsageSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DD7E3BE67BDDF4C8230C29 /* UsageSummaryView.swift */; };
 		F69A46C7E35EE708E06BB6BE /* TeamDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17840EFA597CFEEFD4E29B99 /* TeamDashboardView.swift */; };
@@ -99,6 +108,13 @@
 
 /* Begin PBXContainerItemProxy section */
 		580E3ED41CD6F40FA806A70F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5CC892EC26894AC95878E845 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE91297D15ECAE366B6F5A5D;
+			remoteInfo = Tokemon;
+		};
+		C0C1A267064678AD38B33505 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5CC892EC26894AC95878E845 /* Project object */;
 			proxyType = 1;
@@ -120,6 +136,7 @@
 		1BCC9362F58DA463BC842786 /* Tokemon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tokemon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		20AA9E1B345EACDA5072DEE6 /* AdminUsageResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUsageResponse.swift; sourceTree = "<group>"; };
 		20AFE92B795F3344BCE628A6 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
+		21811BC25857B034321570FC /* TokemonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TokemonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		239E8A6DEE031C45BDEAAF04 /* CostBreakdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CostBreakdownView.swift; sourceTree = "<group>"; };
 		23E76E7BD17A871792A102FB /* AnalyticsDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsDashboardView.swift; sourceTree = "<group>"; };
 		2914FD515CA8658E4844CB6E /* ForecastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastView.swift; sourceTree = "<group>"; };
@@ -129,6 +146,7 @@
 		2C7FB3C0E763DBB7E4771CD3 /* UsageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDetailView.swift; sourceTree = "<group>"; };
 		30F69FD4D5EDD80EF5062383 /* TokemonUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokemonUITests.swift; sourceTree = "<group>"; };
 		363EC7D548F60E4215CB7BA5 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
+		3912A8273323D5D88BCECBF2 /* TokemonLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokemonLayoutTests.swift; sourceTree = "<group>"; };
 		4223BFEE7B6D0449BF7809A8 /* WebhookSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookSettings.swift; sourceTree = "<group>"; };
 		4342DA568C933A305E934649 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4764D9F9CD710A52DC032685 /* BudgetConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetConfig.swift; sourceTree = "<group>"; };
@@ -143,6 +161,7 @@
 		632F4DD45617A3937991AB99 /* ExtendedHistoryChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedHistoryChartView.swift; sourceTree = "<group>"; };
 		661FE669BBCF3060F75F89FE /* Tokemon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Tokemon.entitlements; sourceTree = "<group>"; };
 		66DD7E3BE67BDDF4C8230C29 /* UsageSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageSummaryView.swift; sourceTree = "<group>"; };
+		6AEFA2EC925CC47EDB9CCFF2 /* GradientColorsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientColorsTests.swift; sourceTree = "<group>"; };
 		6C8DFF05E3562B8C6F186AF2 /* JSONLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONLParser.swift; sourceTree = "<group>"; };
 		6CB2FA52399A13324C7E9615 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		725ECE9154FE4D26A4980038 /* GeneralSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettings.swift; sourceTree = "<group>"; };
@@ -157,6 +176,7 @@
 		869CBFF3C47FDC65143589D3 /* ShareableInsight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareableInsight.swift; sourceTree = "<group>"; };
 		875DB0EB10B1B79E2E22D88F /* UsageSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageSummary.swift; sourceTree = "<group>"; };
 		87FB4549C7815768B282515B /* WebhookConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookConfig.swift; sourceTree = "<group>"; };
+		8D30F231CD111C03BAD3D73E /* AlertManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManagerTests.swift; sourceTree = "<group>"; };
 		8DFE02FB9299696F0F8BE881 /* StatuslineExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatuslineExporter.swift; sourceTree = "<group>"; };
 		96D55C27C0F61AC0139E6B8E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		97B5E56A27CF8EC0DC10E69D /* TrialBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrialBannerView.swift; sourceTree = "<group>"; };
@@ -164,9 +184,12 @@
 		9C87702FC99CF93535EBA1A6 /* HistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryStore.swift; sourceTree = "<group>"; };
 		9D0375F6EEEDD05C27B017FE /* BudgetGaugeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetGaugeView.swift; sourceTree = "<group>"; };
 		9F3C164966F166B1095A3EA9 /* tokemon_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tokemon_logo.png; sourceTree = "<group>"; };
+		A1770D0C60F067900CCD99B6 /* UsageSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageSnapshotTests.swift; sourceTree = "<group>"; };
 		A2541829893B264A3D7C80B3 /* BurnRateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurnRateView.swift; sourceTree = "<group>"; };
+		A4923FCCB67284A6461E2BA7 /* BurnRateCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurnRateCalculatorTests.swift; sourceTree = "<group>"; };
 		A5C085D68CD94B17B1F2B5D0 /* ShareableCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareableCardView.swift; sourceTree = "<group>"; };
 		A8501935E350978C2B6A3B8C /* ErrorBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorBannerView.swift; sourceTree = "<group>"; };
+		A8AF869280DC4BDCAC7D9887 /* UsageDataPointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataPointTests.swift; sourceTree = "<group>"; };
 		AA75BD5F57DDDD22F9C62DCB /* PDFReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFReportView.swift; sourceTree = "<group>"; };
 		AAF63D353E7555C070DA15CF /* ExportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportManager.swift; sourceTree = "<group>"; };
 		AC5F964BA40888A39E27B7C1 /* ProjectBreakdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectBreakdownView.swift; sourceTree = "<group>"; };
@@ -181,12 +204,15 @@
 		C0C4841AE0753706ADE9E0AA /* AdminAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminAPIClient.swift; sourceTree = "<group>"; };
 		C109C2C751CA4155C9432FDD /* tokemon-statusline.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "tokemon-statusline.sh"; sourceTree = "<group>"; };
 		C2CBB97F6F9DB782964437B7 /* MenuBarIconStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIconStyle.swift; sourceTree = "<group>"; };
+		C3EA45B8B76C59D9393AC1AB /* AnalyticsEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsEngineTests.swift; sourceTree = "<group>"; };
 		C4011BC5537815D534B3235D /* NSWindow+Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSWindow+Position.swift"; sourceTree = "<group>"; };
 		CA4EB9C6ACC5F988F54CBA0B /* UsageMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageMonitor.swift; sourceTree = "<group>"; };
 		CC44BFAE86A133A028654D61 /* FloatingWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingWindowController.swift; sourceTree = "<group>"; };
+		CE713D25228307F478EEC7BE /* ConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstantsTests.swift; sourceTree = "<group>"; };
 		D23985DEF97FD1AADAD7B85A /* BudgetDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetDashboardView.swift; sourceTree = "<group>"; };
 		D4965208D25E3A2484DA7D99 /* DataSourceState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceState.swift; sourceTree = "<group>"; };
 		D943AFB098D1D0D439BC1C58 /* ExportDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDialogView.swift; sourceTree = "<group>"; };
+		DAAD0E72AE626C28F7B574BC /* JSONLParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONLParserTests.swift; sourceTree = "<group>"; };
 		DB4FFB2CA14B9B4513CD976F /* UsageDataPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataPoint.swift; sourceTree = "<group>"; };
 		DF43F9DFE08537DAF4419C3C /* UpdateBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateBannerView.swift; sourceTree = "<group>"; };
 		E47647700F26691D957B7E3C /* OAuthClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthClient.swift; sourceTree = "<group>"; };
@@ -337,6 +363,7 @@
 			isa = PBXGroup;
 			children = (
 				1BCC9362F58DA463BC842786 /* Tokemon.app */,
+				21811BC25857B034321570FC /* TokemonTests.xctest */,
 				0F1D1E3FB8CCC74D73974FE4 /* TokemonUITests.xctest */,
 			);
 			name = Products;
@@ -356,6 +383,7 @@
 				4342DA568C933A305E934649 /* README.md */,
 				153A009D1F3FC5BBA2891021 /* TokemonAccessibilityTests.swift */,
 				82BFD7FEF50E8CB7314F430B /* TokemonLaunchTests.swift */,
+				3912A8273323D5D88BCECBF2 /* TokemonLayoutTests.swift */,
 				30F69FD4D5EDD80EF5062383 /* TokemonUITests.swift */,
 			);
 			path = TokemonUITests;
@@ -376,6 +404,7 @@
 			isa = PBXGroup;
 			children = (
 				137CD514A656D350995ACA31 /* Tokemon */,
+				C531630E8DB0FAC9E08E295B /* TokemonTests */,
 				87AC64C5C4EFA607BACC477D /* TokemonUITests */,
 				7B25168DB4A72D9561325378 /* Products */,
 			);
@@ -392,6 +421,21 @@
 				5CCF6411EA5093ACF4A2D082 /* Theme.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		C531630E8DB0FAC9E08E295B /* TokemonTests */ = {
+			isa = PBXGroup;
+			children = (
+				8D30F231CD111C03BAD3D73E /* AlertManagerTests.swift */,
+				C3EA45B8B76C59D9393AC1AB /* AnalyticsEngineTests.swift */,
+				A4923FCCB67284A6461E2BA7 /* BurnRateCalculatorTests.swift */,
+				CE713D25228307F478EEC7BE /* ConstantsTests.swift */,
+				6AEFA2EC925CC47EDB9CCFF2 /* GradientColorsTests.swift */,
+				DAAD0E72AE626C28F7B574BC /* JSONLParserTests.swift */,
+				A8AF869280DC4BDCAC7D9887 /* UsageDataPointTests.swift */,
+				A1770D0C60F067900CCD99B6 /* UsageSnapshotTests.swift */,
+			);
+			path = TokemonTests;
 			sourceTree = "<group>";
 		};
 		CBE7B0434EB7BEE69C53C187 /* Components */ = {
@@ -472,6 +516,24 @@
 			productReference = 0F1D1E3FB8CCC74D73974FE4 /* TokemonUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		8943F7CEE6223E6A96AFBD39 /* TokemonTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C3729CF28B0748369D01231F /* Build configuration list for PBXNativeTarget "TokemonTests" */;
+			buildPhases = (
+				6697D9F91DFA03C78DF7A5E0 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9F317BA455E200F361E8A509 /* PBXTargetDependency */,
+			);
+			name = TokemonTests;
+			packageProductDependencies = (
+			);
+			productName = TokemonTests;
+			productReference = 21811BC25857B034321570FC /* TokemonTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		BE91297D15ECAE366B6F5A5D /* Tokemon */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95E837737E81D6B86672C953 /* Build configuration list for PBXNativeTarget "Tokemon" */;
@@ -531,6 +593,7 @@
 			projectRoot = "";
 			targets = (
 				BE91297D15ECAE366B6F5A5D /* Tokemon */,
+				8943F7CEE6223E6A96AFBD39 /* TokemonTests */,
 				186B971EFD9541E2D135C7FD /* TokemonUITests */,
 			);
 		};
@@ -565,6 +628,7 @@
 			files = (
 				64BA80EFDC49CF8909EC3ED6 /* TokemonAccessibilityTests.swift in Sources */,
 				B0E6AEE4261FA358142750D2 /* TokemonLaunchTests.swift in Sources */,
+				32E37ED03B8FF3E8421E4F65 /* TokemonLayoutTests.swift in Sources */,
 				B937E7F4821FF674CF0EE680 /* TokemonUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -653,6 +717,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6697D9F91DFA03C78DF7A5E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E82D30E7FD589D8B552D3B0E /* AlertManagerTests.swift in Sources */,
+				BED8B26393985C83202CEF85 /* AnalyticsEngineTests.swift in Sources */,
+				82E6AE6FAF6EB25F103395AB /* BurnRateCalculatorTests.swift in Sources */,
+				55CE85E7ADCC8B43640A443D /* ConstantsTests.swift in Sources */,
+				1CDB9A4FDDD9B35B144838C4 /* GradientColorsTests.swift in Sources */,
+				240E68B4FFFAF8138E0BC792 /* JSONLParserTests.swift in Sources */,
+				06CF591C87F0DE88416749BC /* UsageDataPointTests.swift in Sources */,
+				38F5295794D8104D9F11FF99 /* UsageSnapshotTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -660,6 +739,11 @@
 			isa = PBXTargetDependency;
 			target = BE91297D15ECAE366B6F5A5D /* Tokemon */;
 			targetProxy = 580E3ED41CD6F40FA806A70F /* PBXContainerItemProxy */;
+		};
+		9F317BA455E200F361E8A509 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE91297D15ECAE366B6F5A5D /* Tokemon */;
+			targetProxy = C0C1A267064678AD38B33505 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -679,6 +763,18 @@
 				SDKROOT = macosx;
 			};
 			name = Debug;
+		};
+		137F3E4740DDC90C32607A10 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = ai.tokemon.app.tests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tokemon.app/Contents/MacOS/Tokemon";
+			};
+			name = Release;
 		};
 		27E34D3A403AFAB864041325 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -761,6 +857,18 @@
 				TEST_TARGET_NAME = Tokemon;
 			};
 			name = Release;
+		};
+		8548898F23411664D6A0F9A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = ai.tokemon.app.tests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tokemon.app/Contents/MacOS/Tokemon";
+			};
+			name = Debug;
 		};
 		917367CF1CE3E30D677B3ED7 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -869,6 +977,15 @@
 			buildConfigurations = (
 				936F90ED60D78764A55DF485 /* Debug */,
 				4724EBC44FD62748B6E6EBBD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C3729CF28B0748369D01231F /* Build configuration list for PBXNativeTarget "TokemonTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8548898F23411664D6A0F9A3 /* Debug */,
+				137F3E4740DDC90C32607A10 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
