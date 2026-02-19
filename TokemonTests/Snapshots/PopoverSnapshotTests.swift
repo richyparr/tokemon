@@ -30,7 +30,7 @@ final class PopoverSnapshotTests: SnapshotTestCase {
     ///   - multiProfileCount: Number of profiles to create. Defaults to 1 (no profile switcher).
     /// - Returns: A configured view ready for snapshotting.
     private func makePopoverView(
-        usage: UsageSnapshot = .mockOAuth(percentage: 50),
+        usage: UsageSnapshot = .mockOAuth(percentage: 50, resetsAt: nil),
         alertLevel: AlertManager.AlertLevel = .normal,
         theme: AppTheme = .native,
         showChart: Bool = false,
@@ -56,7 +56,7 @@ final class PopoverSnapshotTests: SnapshotTestCase {
                 // Give non-active profiles some mock usage for display
                 profileManager.updateProfileUsage(
                     profileId: profile.id,
-                    usage: .mockOAuth(percentage: Double(i * 20))
+                    usage: .mockOAuth(percentage: Double(i * 20), resetsAt: nil)
                 )
             }
         }
@@ -78,7 +78,7 @@ final class PopoverSnapshotTests: SnapshotTestCase {
 
     func testPopover_OAuthBasic_50Percent() {
         let view = makePopoverView(
-            usage: .mockOAuth(percentage: 50)
+            usage: .mockOAuth(percentage: 50, resetsAt: nil)
         )
         let vc = view.snapshotController(width: 320, height: 300)
         assertSnapshot(of: vc, as: .image(precision: snapshotPrecision))
@@ -94,7 +94,7 @@ final class PopoverSnapshotTests: SnapshotTestCase {
 
     func testPopover_Critical_95Percent() {
         let view = makePopoverView(
-            usage: .mockCritical(percentage: 95),
+            usage: .mockCritical(percentage: 95, resetsAt: nil),
             alertLevel: .critical
         )
         let vc = view.snapshotController(width: 320, height: 340)
@@ -113,7 +113,7 @@ final class PopoverSnapshotTests: SnapshotTestCase {
 
     func testPopover_WithChart() {
         let view = makePopoverView(
-            usage: .mockOAuth(percentage: 50),
+            usage: .mockOAuth(percentage: 50, resetsAt: nil),
             showChart: true
         )
         // Chart adds ~230px to height (chart section + burn rate)
@@ -122,8 +122,17 @@ final class PopoverSnapshotTests: SnapshotTestCase {
     }
 
     func testPopover_WithExtraUsage() {
+        // mockWithExtraUsage calls mockOAuth which defaults resetsAt to now+3600.
+        // Use explicit resetsAt: nil to avoid time-dependent subtitle text.
         let view = makePopoverView(
-            usage: .mockWithExtraUsage(),
+            usage: .mockOAuth(
+                percentage: 60,
+                resetsAt: nil,
+                extraUsageEnabled: true,
+                extraUsageSpentCents: 1250,
+                extraUsageLimitCents: 5000,
+                extraUsageUtilization: 25.0
+            ),
             showExtraUsage: true
         )
         // Extra usage adds ~75px for billing info
@@ -136,7 +145,7 @@ final class PopoverSnapshotTests: SnapshotTestCase {
     func testPopover_AllThemes() {
         for theme in AppTheme.allCases {
             let view = makePopoverView(
-                usage: .mockOAuth(percentage: 50),
+                usage: .mockOAuth(percentage: 50, resetsAt: nil),
                 theme: theme
             )
             let vc = view.snapshotController(width: 320, height: 300)
@@ -152,7 +161,7 @@ final class PopoverSnapshotTests: SnapshotTestCase {
 
     func testPopover_MultiProfile_TwoProfiles() {
         let view = makePopoverView(
-            usage: .mockOAuth(percentage: 50),
+            usage: .mockOAuth(percentage: 50, resetsAt: nil),
             multiProfileCount: 2
         )
         // Multi-profile adds profile switcher (~28px) + "All Profiles" section (~80px)
