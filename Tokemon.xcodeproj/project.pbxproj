@@ -59,6 +59,7 @@
 		7EFD68CEA419818262CC80EB /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B830AEBD28764DAA036C497D /* Constants.swift */; };
 		82E6AE6FAF6EB25F103395AB /* BurnRateCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4923FCCB67284A6461E2BA7 /* BurnRateCalculatorTests.swift */; };
 		8550567ABA5BC9BEA9894A05 /* StatuslineConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032C71F1CB61FBE62EAF0BF2 /* StatuslineConfig.swift */; };
+		858BF8B266E9C5CBEB30F483 /* SnapshotTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1759B2DC3FFA8846DF6093CC /* SnapshotTestHelper.swift */; };
 		8732BCED6F9B57FE62283586 /* RefreshStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D88AB2064E01812CAE84221 /* RefreshStatusView.swift */; };
 		8BC5A0F37874C216A9A5E947 /* UpdateBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF43F9DFE08537DAF4419C3C /* UpdateBannerView.swift */; };
 		91D68E4E2EC44116A360C05B /* StatuslineExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFE02FB9299696F0F8BE881 /* StatuslineExporter.swift */; };
@@ -81,6 +82,7 @@
 		B5B7F3D7C8A990CB47167D39 /* UsageSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875DB0EB10B1B79E2E22D88F /* UsageSummary.swift */; };
 		B937E7F4821FF674CF0EE680 /* TokemonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F69FD4D5EDD80EF5062383 /* TokemonUITests.swift */; };
 		B9680B0C860A82BFB40EDD4E /* BudgetGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0375F6EEEDD05C27B017FE /* BudgetGaugeView.swift */; };
+		B9D70E32268E1BEA39F4EBF3 /* MockDataFactories.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2B3C38D2E55239D1B2D413 /* MockDataFactories.swift */; };
 		BD41E6F7A8A494E48F9A13C1 /* tokemon_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 9F3C164966F166B1095A3EA9 /* tokemon_logo.png */; };
 		BED8B26393985C83202CEF85 /* AnalyticsEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EA45B8B76C59D9393AC1AB /* AnalyticsEngineTests.swift */; };
 		C01A35B9BD2249D19F090DFD /* AlertSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB767A7420B9BA54C1B6776 /* AlertSettings.swift */; };
@@ -133,6 +135,7 @@
 		0D88AB2064E01812CAE84221 /* RefreshStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshStatusView.swift; sourceTree = "<group>"; };
 		0F1D1E3FB8CCC74D73974FE4 /* TokemonUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TokemonUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		153A009D1F3FC5BBA2891021 /* TokemonAccessibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokemonAccessibilityTests.swift; sourceTree = "<group>"; };
+		1759B2DC3FFA8846DF6093CC /* SnapshotTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestHelper.swift; sourceTree = "<group>"; };
 		17840EFA597CFEEFD4E29B99 /* TeamDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamDashboardView.swift; sourceTree = "<group>"; };
 		17998F14ADA62C5DE975D0BF /* AppearanceSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettings.swift; sourceTree = "<group>"; };
 		1BCC9362F58DA463BC842786 /* Tokemon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tokemon.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -214,6 +217,7 @@
 		D23985DEF97FD1AADAD7B85A /* BudgetDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetDashboardView.swift; sourceTree = "<group>"; };
 		D4965208D25E3A2484DA7D99 /* DataSourceState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceState.swift; sourceTree = "<group>"; };
 		D943AFB098D1D0D439BC1C58 /* ExportDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDialogView.swift; sourceTree = "<group>"; };
+		DA2B3C38D2E55239D1B2D413 /* MockDataFactories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataFactories.swift; sourceTree = "<group>"; };
 		DAAD0E72AE626C28F7B574BC /* JSONLParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONLParserTests.swift; sourceTree = "<group>"; };
 		DB4FFB2CA14B9B4513CD976F /* UsageDataPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataPoint.swift; sourceTree = "<group>"; };
 		DF43F9DFE08537DAF4419C3C /* UpdateBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateBannerView.swift; sourceTree = "<group>"; };
@@ -445,8 +449,18 @@
 				DAAD0E72AE626C28F7B574BC /* JSONLParserTests.swift */,
 				A8AF869280DC4BDCAC7D9887 /* UsageDataPointTests.swift */,
 				A1770D0C60F067900CCD99B6 /* UsageSnapshotTests.swift */,
+				CAEA1A6A9D19B54F4E7AAA4C /* Snapshots */,
 			);
 			path = TokemonTests;
+			sourceTree = "<group>";
+		};
+		CAEA1A6A9D19B54F4E7AAA4C /* Snapshots */ = {
+			isa = PBXGroup;
+			children = (
+				DA2B3C38D2E55239D1B2D413 /* MockDataFactories.swift */,
+				1759B2DC3FFA8846DF6093CC /* SnapshotTestHelper.swift */,
+			);
+			path = Snapshots;
 			sourceTree = "<group>";
 		};
 		CBE7B0434EB7BEE69C53C187 /* Components */ = {
@@ -743,6 +757,8 @@
 				55CE85E7ADCC8B43640A443D /* ConstantsTests.swift in Sources */,
 				1CDB9A4FDDD9B35B144838C4 /* GradientColorsTests.swift in Sources */,
 				240E68B4FFFAF8138E0BC792 /* JSONLParserTests.swift in Sources */,
+				B9D70E32268E1BEA39F4EBF3 /* MockDataFactories.swift in Sources */,
+				858BF8B266E9C5CBEB30F483 /* SnapshotTestHelper.swift in Sources */,
 				06CF591C87F0DE88416749BC /* UsageDataPointTests.swift in Sources */,
 				38F5295794D8104D9F11FF99 /* UsageSnapshotTests.swift in Sources */,
 			);

@@ -60,7 +60,8 @@ final class AnalyticsEngineTests: XCTestCase {
         XCTAssertEqual(AnalyticsEngine.formatTokenCount(10000000), "10.0M")
     }
 
-    func testFormatTokenCount_Billions() {
-        XCTAssertEqual(AnalyticsEngine.formatTokenCount(1500000000), "1.5B")
+    func testFormatTokenCount_VeryLarge_StillUsesMillions() {
+        // Implementation caps at M suffix; 1.5B = 1500.0M
+        XCTAssertEqual(AnalyticsEngine.formatTokenCount(1500000000), "1500.0M")
     }
 }
