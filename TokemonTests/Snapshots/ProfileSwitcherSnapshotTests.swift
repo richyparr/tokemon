@@ -21,6 +21,13 @@ final class ProfileSwitcherSnapshotTests: SnapshotTestCase {
     /// Compact height for the profile switcher row.
     private let switcherHeight: CGFloat = 40
 
+    override func setUp() {
+        super.setUp()
+        // Clear profile data between tests to prevent profile accumulation.
+        UserDefaults.standard.removeObject(forKey: "tokemon.profiles")
+        UserDefaults.standard.removeObject(forKey: "tokemon.activeProfileId")
+    }
+
     // MARK: - Two Profiles
 
     func testProfileSwitcher_TwoProfiles() {

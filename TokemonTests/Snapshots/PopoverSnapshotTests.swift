@@ -17,6 +17,17 @@ import XCTest
 @MainActor
 final class PopoverSnapshotTests: SnapshotTestCase {
 
+    // MARK: - Setup
+
+    override func setUp() {
+        super.setUp()
+        // Clear profile data between tests to prevent profile accumulation.
+        // ProfileManager persists to UserDefaults, so profiles created in one
+        // test would leak into subsequent tests without cleanup.
+        UserDefaults.standard.removeObject(forKey: "tokemon.profiles")
+        UserDefaults.standard.removeObject(forKey: "tokemon.activeProfileId")
+    }
+
     // MARK: - Test Helper
 
     /// Constructs a PopoverContentView with all required environment objects injected.
@@ -41,6 +52,9 @@ final class PopoverSnapshotTests: SnapshotTestCase {
         monitor.stopPolling()  // Prevent network/timer side effects
         monitor.currentUsage = usage
         monitor.showExtraUsage = showExtraUsage
+        monitor.lastUpdated = nil  // Ensure deterministic "Not yet updated" text
+        monitor.error = nil
+        monitor.isRefreshing = false
 
         let alertManager = AlertManager()
         alertManager.currentAlertLevel = alertLevel
