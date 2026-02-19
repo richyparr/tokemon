@@ -23,48 +23,17 @@ struct TokemonApp: App {
     // Track whether chart is shown to adjust popover height
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
 
-    /// Compute popover height based on content visibility
+    /// Compute popover height based on content visibility.
+    /// Delegates to PopoverHeightCalculator (pure function) for testability.
+    /// See PopoverHeightCalculator for base height breakdown.
     private var popoverHeight: CGFloat {
-        // Base heights measured from actual content:
-        // - Account switcher: ~24px
-        // - Usage header (percentage + reset): ~90px
-        // - Divider + spacing: ~24px
-        // - Usage detail section (basic): ~80px
-        // - Divider + spacing: ~24px
-        // - Footer row: ~24px
-        // - Padding: 32px (16 top + 16 bottom)
-        // Total base: ~298px, round to 300
-        let baseHeight: CGFloat = 300
-        let updateBannerHeight: CGFloat = 56  // Update available banner height
-        let chartHeight: CGFloat = 230        // Chart + burn rate section
-        let extraUsageHeight: CGFloat = 75    // Extra usage section (divider + title + 3 rows)
-
-        var height = baseHeight
-
-        // Add height for profile switcher and multi-profile summary when multiple profiles exist
-        if profileManager.profiles.count > 1 {
-            let profileSwitcherHeight: CGFloat = 28   // Switcher dropdown
-            let profileSummaryHeader: CGFloat = 32    // "All Profiles" header + divider
-            let profileRowHeight: CGFloat = 24        // Per profile row
-            height += profileSwitcherHeight + profileSummaryHeader + (CGFloat(profileManager.profiles.count) * profileRowHeight)
-        }
-
-        // Add height for extra usage section if shown
-        if monitor.showExtraUsage && monitor.currentUsage.extraUsageEnabled {
-            height += extraUsageHeight
-        }
-
-        // Add height for update banner if update is available
-        if updateManager.updateAvailable {
-            height += updateBannerHeight
-        }
-
-        // Add height for chart if enabled
-        if showUsageTrend {
-            height += chartHeight
-        }
-
-        return height
+        PopoverHeightCalculator.calculate(
+            profileCount: profileManager.profiles.count,
+            showExtraUsage: monitor.showExtraUsage,
+            extraUsageEnabled: monitor.currentUsage.extraUsageEnabled,
+            updateAvailable: updateManager.updateAvailable,
+            showUsageTrend: showUsageTrend
+        )
     }
 
 

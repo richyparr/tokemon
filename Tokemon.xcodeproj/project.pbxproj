@@ -21,6 +21,7 @@
 		1EC98BE0EEF83AB82D3253FB /* TeamMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E955C2A5890B0C075894F8 /* TeamMember.swift */; };
 		2073158EE576A258567B5760 /* DataSourceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528543DB1B8EEBFF4A3D8C98 /* DataSourceSettings.swift */; };
 		20E83ADC4D8C2C4F256428B8 /* AppearanceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17998F14ADA62C5DE975D0BF /* AppearanceSettings.swift */; };
+		213D909746DF01B8B2C32726 /* PopoverHeightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82951DBDAF0365085FEE269C /* PopoverHeightTests.swift */; };
 		21BD469670450AB0B31B9C57 /* ProjectBreakdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5F964BA40888A39E27B7C1 /* ProjectBreakdownView.swift */; };
 		240E68B4FFFAF8138E0BC792 /* JSONLParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAD0E72AE626C28F7B574BC /* JSONLParserTests.swift */; };
 		28F6F20A336E5B86CED43A71 /* TrialBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B5E56A27CF8EC0DC10E69D /* TrialBannerView.swift */; };
@@ -36,6 +37,7 @@
 		3CF78615169BA04A5244A1DC /* TeamUsageSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998C5E515B435FC23BD49E30 /* TeamUsageSummaryView.swift */; };
 		40BCC8BE40DC889C2C247674 /* RefreshSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F879E1B55BA8115FC47459 /* RefreshSettings.swift */; };
 		41520C80B4B55C83CA5FADBF /* BudgetConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4764D9F9CD710A52DC032685 /* BudgetConfig.swift */; };
+		4369F640B003AC1EEC2885B9 /* PopoverHeightCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863FDB35D9D8D0B48533D3F9 /* PopoverHeightCalculator.swift */; };
 		48C01A20E794D9DE774AA7AA /* ShareableCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C085D68CD94B17B1F2B5D0 /* ShareableCardView.swift */; };
 		49EB318B75A14672D5F2B120 /* UsageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7FB3C0E763DBB7E4771CD3 /* UsageDetailView.swift */; };
 		4FD3B4869C30553228C0AFE9 /* AnalyticsDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E76E7BD17A871792A102FB /* AnalyticsDashboardView.swift */; };
@@ -175,9 +177,11 @@
 		75F879E1B55BA8115FC47459 /* RefreshSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshSettings.swift; sourceTree = "<group>"; };
 		7827A07678EB95D98A1F2993 /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
 		7A064B85F3B914426645FD51 /* BudgetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetManager.swift; sourceTree = "<group>"; };
+		82951DBDAF0365085FEE269C /* PopoverHeightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverHeightTests.swift; sourceTree = "<group>"; };
 		82BFD7FEF50E8CB7314F430B /* TokemonLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokemonLaunchTests.swift; sourceTree = "<group>"; };
 		84F3751311AD475B27A17930 /* UsageChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageChartView.swift; sourceTree = "<group>"; };
 		85E214E6613FA4FD7EB36600 /* ProfilesSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilesSettings.swift; sourceTree = "<group>"; };
+		863FDB35D9D8D0B48533D3F9 /* PopoverHeightCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverHeightCalculator.swift; sourceTree = "<group>"; };
 		869CBFF3C47FDC65143589D3 /* ShareableInsight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareableInsight.swift; sourceTree = "<group>"; };
 		875DB0EB10B1B79E2E22D88F /* UsageSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageSummary.swift; sourceTree = "<group>"; };
 		87FB4549C7815768B282515B /* WebhookConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookConfig.swift; sourceTree = "<group>"; };
@@ -433,6 +437,7 @@
 				0A03BECBF13FB23B8B943CBE /* Extensions.swift */,
 				506522608FCC79F53C20BABB /* GradientColors.swift */,
 				C4011BC5537815D534B3235D /* NSWindow+Position.swift */,
+				863FDB35D9D8D0B48533D3F9 /* PopoverHeightCalculator.swift */,
 				5CCF6411EA5093ACF4A2D082 /* Theme.swift */,
 			);
 			path = Utilities;
@@ -447,6 +452,7 @@
 				CE713D25228307F478EEC7BE /* ConstantsTests.swift */,
 				6AEFA2EC925CC47EDB9CCFF2 /* GradientColorsTests.swift */,
 				DAAD0E72AE626C28F7B574BC /* JSONLParserTests.swift */,
+				82951DBDAF0365085FEE269C /* PopoverHeightTests.swift */,
 				A8AF869280DC4BDCAC7D9887 /* UsageDataPointTests.swift */,
 				A1770D0C60F067900CCD99B6 /* UsageSnapshotTests.swift */,
 				CAEA1A6A9D19B54F4E7AAA4C /* Snapshots */,
@@ -709,6 +715,7 @@
 				A27B110D527D9DC94A0F20F4 /* OrgUsageView.swift in Sources */,
 				DBCEE4B0D8F0752D38D92165 /* PDFReportView.swift in Sources */,
 				CFB8FD6FD96AF09A12338874 /* PopoverContentView.swift in Sources */,
+				4369F640B003AC1EEC2885B9 /* PopoverHeightCalculator.swift in Sources */,
 				9B2BD1084895BE38663DF66B /* Profile.swift in Sources */,
 				6702E69568E378143703DF18 /* ProfileManager.swift in Sources */,
 				965BFFECCD7C521FDB96A100 /* ProfileSwitcherView.swift in Sources */,
@@ -758,6 +765,7 @@
 				1CDB9A4FDDD9B35B144838C4 /* GradientColorsTests.swift in Sources */,
 				240E68B4FFFAF8138E0BC792 /* JSONLParserTests.swift in Sources */,
 				B9D70E32268E1BEA39F4EBF3 /* MockDataFactories.swift in Sources */,
+				213D909746DF01B8B2C32726 /* PopoverHeightTests.swift in Sources */,
 				858BF8B266E9C5CBEB30F483 /* SnapshotTestHelper.swift in Sources */,
 				06CF591C87F0DE88416749BC /* UsageDataPointTests.swift in Sources */,
 				38F5295794D8104D9F11FF99 /* UsageSnapshotTests.swift in Sources */,
