@@ -5,18 +5,18 @@
 See: .planning/PROJECT.md (updated 2026-02-18)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** v4.0 Raycast Integration - Phase 18 Extension Foundation
+**Current focus:** v4.0 Raycast Integration - Phase 19 Dashboard Command
 
 ## Current Position
 
 Phase: 18-extension-foundation
-Plan: 2 of 3 complete (awaiting human checkpoint Task 3 verification)
-Status: In Progress
-Last activity: 2026-02-19 — Plan 02 complete (constants.ts, api.ts, setup.tsx, index.tsx — awaiting Raycast verification)
+Plan: 2 of 2 complete
+Status: Complete
+Last activity: 2026-02-19 — Phase 18 verified (9/9 must-haves passed), human-verified in Raycast
 
-Next: Phase 18, Plan 02 Task 3 checkpoint (human verifies extension loads in Raycast)
+Next: Phase 19 (Dashboard Command)
 
-Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [######....] 2/3
+Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2
 
 ## Shipped Milestones
 
@@ -39,7 +39,7 @@ Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 
 
 **Phase 18 (Raycast Extension Foundation):**
 - Plan 01: 2 min, 2 tasks, 12 files
-- Plan 02: 2 min, 2 tasks, 4 files (awaiting Task 3 checkpoint)
+- Plan 02: 5 min, 3 tasks, 5 files (including human checkpoint)
 
 **v4.0 (TypeScript/React):**
 - Codebase in `tokemon-raycast/` (sibling to Tokemon/ Swift project)
@@ -68,18 +68,16 @@ See PROJECT.md Key Decisions table for full list.
 - useCachedState for instant UI, LocalStorage for persistence
 - OAuth token refresh handled automatically after initial entry
 
-**Phase 18 Plan 01 Decisions:**
+**Phase 18 Decisions:**
 - tokemon-raycast/ placed as sibling to Tokemon/ Swift project (independent git repo)
 - password-type preference for OAuth token (not Keychain) — Keychain causes Store rejection
-- Stub src/index.tsx and src/setup.tsx created so npm run build passes before Plan 02
 - package-lock.json committed (required for Raycast Store submission)
-- author field set to "tokemon" placeholder — user must update to Raycast Store username before publishing
-
-**Phase 18 Plan 02 Decisions:**
-- TokenError extends Error with statusCode: 401 | 403 for typed token error handling
+- author field set to "tokemon" placeholder — user must update before publishing
+- extractToken() handles both full Keychain JSON blob and raw access token transparently
+- oauthToken preference required:false so Setup tutorial is visible on first launch
+- TokenError extends Error with statusCode: 401 | 403 for typed error handling
 - fetchUsage typed as Promise<unknown> — full response typing deferred to Phase 19
 - api.ts has zero Raycast imports — pure utility, testable without Raycast environment
-- useEffect + useState used in index.tsx rather than useCachedPromise to keep api.ts dependency-free
 
 ### Roadmap Evolution
 
@@ -96,5 +94,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Phase 18 Plan 02 Tasks 1-2 complete — constants.ts, api.ts, setup.tsx, index.tsx implemented and committed. Awaiting human Task 3 checkpoint: verify extension loads in Raycast with npm run dev.
-Resume: Phase 18, Plan 02 Task 3 (human verification of extension in Raycast)
+Stopped at: Phase 18 complete and verified. Raycast extension scaffolded at tokemon-raycast/ with setup wizard, token validation, and custom branding.
+Resume: Plan Phase 19 (Dashboard Command)

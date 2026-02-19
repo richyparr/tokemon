@@ -98,8 +98,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 18-01-PLAN.md -- Scaffold project, export icon, configure manifest, MIT license, README
-- [ ] 18-02-PLAN.md -- Setup wizard command, API constants, token validation, stub dashboard
+- [x] 18-01-PLAN.md -- Scaffold project, export icon, configure manifest, MIT license, README
+- [x] 18-02-PLAN.md -- Setup wizard command, API constants, token validation, stub dashboard
 
 ### Phase 19: Dashboard Command
 
@@ -152,7 +152,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 17.1. Automated Testing | v3.0+ | 3/3 | ✓ Complete | 2026-02-19 |
-| 18. Extension Foundation | v4.0 | 0/2 | Planned | - |
+| 18. Extension Foundation | v4.0 | 2/2 | ✓ Complete | 2026-02-19 |
 | 19. Dashboard Command | v4.0 | 0/TBD | Not started | - |
 | 20. Menu Bar Command | v4.0 | 0/TBD | Not started | - |
 | 21. Multi-Profile & Alerts | v4.0 | 0/TBD | Not started | - |

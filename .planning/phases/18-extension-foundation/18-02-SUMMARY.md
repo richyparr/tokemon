@@ -1,29 +1,30 @@
 ---
 phase: 18-extension-foundation
 plan: 02
-subsystem: ui
-tags: [raycast, typescript, react, oauth, api, setup-wizard]
+subsystem: commands
+tags: [raycast, typescript, react, oauth, setup-wizard, dashboard]
 
 # Dependency graph
 requires:
   - 18-01 (extension scaffold, package.json manifest, raycast-env.d.ts types)
 provides:
   - constants.ts: API endpoint constants ported from Swift Constants.swift
-  - api.ts: fetchUsage function with TokenError class, token trimming, proper headers
+  - api.ts: fetchUsage function with TokenError class, extractToken for JSON/raw handling
   - setup.tsx: Setup wizard with markdown guide and openExtensionPreferences action
   - index.tsx: Stub dashboard that reads token from preferences and validates via fetchUsage
 affects:
   - 19-dashboard-command (imports fetchUsage from api.ts, extends index.tsx)
-  - 20-setup-command (extends or replaces setup.tsx)
-  - 21-store-submission
+  - 20-menu-bar-command (reuses api.ts and constants.ts)
+  - 21-multi-profile-alerts (extends preferences and token management)
 
 # Tech tracking
 tech-stack:
   added: []
   patterns:
+    - "extractToken() parses full Keychain JSON blob OR raw access token transparently"
     - "useEffect + useState pattern for async data fetch in Raycast commands"
     - "TokenError class (extends Error) for distinguishing token errors from network errors"
-    - "Token trimming before use to prevent whitespace-only tokens passing required:true check"
+    - "required:false preference + in-command empty check for better first-run UX"
     - "openExtensionPreferences() as primary action in both setup and error recovery flows"
 
 key-files:
@@ -33,84 +34,62 @@ key-files:
   modified:
     - tokemon-raycast/src/setup.tsx
     - tokemon-raycast/src/index.tsx
+    - tokemon-raycast/package.json
 
 key-decisions:
-  - "TokenError extends Error with statusCode field so callers can use instanceof to distinguish token vs network failures"
+  - "extractToken() added to handle both full Keychain JSON blob and raw access token"
+  - "oauthToken preference changed to required:false so Setup tutorial is visible on first launch"
+  - "Setup guide recommends Keychain copy as Option A (paste full JSON, auto-extracted)"
   - "fetchUsage typed as Promise<unknown> — full response typing deferred to Phase 19"
-  - "index.tsx uses useEffect + useState (not useCachedPromise) to keep api.ts dependency-free from @raycast/api"
-  - "setup.tsx detects existing token via getPreferenceValues and shows alternate 'Token Configured' UI"
+  - "api.ts kept as pure utility (no @raycast/api imports) for testability"
+
+patterns-established:
+  - "Pattern: extractToken() for transparent JSON/raw token handling across all commands"
+  - "Pattern: TokenError class with statusCode for typed 401/403 error handling"
+  - "Pattern: required:false preference + in-command empty check for better first-run UX"
 
 # Metrics
-duration: 2min
+duration: 5min
 completed: 2026-02-19
 ---
 
-# Phase 18 Plan 02: Setup Wizard and API Foundation Summary
+# Phase 18 Plan 02: Setup Wizard & Token Validation Summary
 
-**Setup wizard with markdown token guide, fetchUsage with TokenError class and proper OAuth headers, and stub dashboard with token validation — all four source files compile and build cleanly**
+**Setup wizard with markdown token guide, fetchUsage with typed errors, and extractToken for transparent Keychain JSON/raw token handling — human-verified working in Raycast**
 
 ## Performance
 
-- **Duration:** ~2 min
-- **Started:** 2026-02-19T09:22:53Z
-- **Completed:** 2026-02-19T09:24:32Z
-- **Tasks:** 2 of 3 complete (Task 3 is human checkpoint)
-- **Files modified:** 4
+- **Duration:** ~5 min (including human verification)
+- **Completed:** 2026-02-19
+- **Tasks:** 3/3 (2 auto + 1 human checkpoint approved)
+- **Files modified:** 5
 
 ## Accomplishments
 
-- constants.ts: All four API constants ported exactly from Tokemon/Utilities/Constants.swift — USAGE_URL, TOKEN_REFRESH_URL, OAUTH_CLIENT_ID, ANTHROPIC_BETA_HEADER
-- api.ts: fetchUsage exports TokenError class (statusCode 401/403) for typed error handling, trims token before use, sends all required headers (Authorization Bearer, Accept application/json, anthropic-beta, User-Agent)
-- setup.tsx: Renders Detail with markdown guide covering both browser dev tools and Keychain paths; detects existing token and shows variant UI with "Update Token" action; primary action calls openExtensionPreferences()
-- index.tsx: Reads oauthToken from preferences, trims whitespace, calls fetchUsage in useEffect on mount, shows Toast.Style.Failure with "Open Preferences" primaryAction on TokenError, shows Toast.Style.Failure with error message on network failure, shows success stub on valid token
-- npm run build succeeds cleanly; npx tsc --noEmit passes; Prettier formatting verified clean
+- constants.ts: All four API constants ported from Tokemon/Utilities/Constants.swift — USAGE_URL, TOKEN_REFRESH_URL, OAUTH_CLIENT_ID, ANTHROPIC_BETA_HEADER
+- api.ts: fetchUsage with TokenError class (401/403), extractToken for JSON blob + raw token, proper OAuth headers
+- setup.tsx: Markdown guide with Keychain (Option A) and browser DevTools (Option B) paths; token-configured variant
+- index.tsx: Token validation on mount, success stub, failure toast with "Open Preferences" recovery
+- Human verified: extension loads in Raycast with icon, Setup shows tutorial, Dashboard validates token
 
 ## Task Commits
 
-Each task was committed atomically (in tokemon-raycast/ independent git repo):
-
-1. **Task 1: Create API constants and fetch utility** - `e465cb7` (feat)
-2. **Task 2: Implement setup wizard and stub dashboard** - `2ad049f` (feat)
-
-## Files Created/Modified
-
-- `tokemon-raycast/src/constants.ts` — USAGE_URL, TOKEN_REFRESH_URL, OAUTH_CLIENT_ID, ANTHROPIC_BETA_HEADER (ported from Swift Constants.swift)
-- `tokemon-raycast/src/api.ts` — fetchUsage(token: string): Promise<unknown> with TokenError class, token trimming, full OAuth headers, 401/403/network error handling
-- `tokemon-raycast/src/setup.tsx` — Detail view with two-path markdown guide (browser + Keychain); token-configured variant; openExtensionPreferences primary action
-- `tokemon-raycast/src/index.tsx` — getPreferenceValues for token, useEffect fetchUsage call, Toast.Style.Failure on error with openExtensionPreferences action, success stub Detail
-
-## Decisions Made
-
-- `fetchUsage` is typed as `Promise<unknown>` — the plan explicitly defers full response typing to Phase 19
-- `TokenError` uses a `statusCode: 401 | 403` field so Phase 19 can distinguish expired vs missing-scope without string parsing
-- `api.ts` has zero Raycast imports — it is a pure utility so it can be unit-tested independently of the Raycast environment
-- `useEffect + useState` used in `index.tsx` rather than `useCachedPromise` to keep api.ts clean of Raycast dependencies
+1. **Task 1: Create API constants and fetch utility** - `e465cb7`
+2. **Task 2: Implement setup wizard and stub dashboard** - `2ad049f`
+3. **Task 3: Human verification** - Approved
+4. **Post-checkpoint fix: JSON blob extraction** - `56b42fa`
 
 ## Deviations from Plan
 
-### Auto-fixed Issues
+- **extractToken() added** — Discovered during human testing that Keychain stores JSON blob, not raw token. Users paste full JSON, extractToken parses it automatically.
+- **required:false** — Changed from required:true after user testing revealed Raycast's built-in gate prevents Setup tutorial from being visible on first launch.
+- Both deviations improve UX without changing scope.
 
-**1. [Rule 3 - Blocking] Prettier auto-fix via direct npx call**
-- **Found during:** Task 2 verification
-- **Issue:** `ray lint` exits with code 2 due to pre-existing author validation error ("tokemon" not a registered Raycast user), blocking the Prettier fix stage from running
-- **Fix:** Ran `npx prettier --write` directly; all files reported as already correctly formatted. The Prettier "error" in ray lint output was caused by ESLint aborting the pipeline, not actual formatting issues
-- **Pre-existing issues (not deviations):** Invalid author "tokemon" (placeholder documented in 18-01 decisions) and ESLint ERR_PACKAGE_PATH_NOT_EXPORTED (ESLint 8 vs Node 22 incompatibility, noted in 18-01 summary) — both pre-date this plan
+## Issues Encountered
 
-## Pending
-
-- **Task 3 (checkpoint:human-verify):** Human must run `npm run dev` and verify extension loads in Raycast with icon, setup wizard renders correctly, preferences panel opens, and token validation works
+- OAuth access tokens expire every ~4 hours. User's first paste was stale (macOS app had auto-refreshed). Token refresh is Phase 19+ scope — expected limitation.
+- `ray lint` exits with error due to "tokemon" not being a registered Raycast author (placeholder from 18-01), not a code issue.
 
 ## Self-Check: PASSED
 
-Files verified:
-- tokemon-raycast/src/constants.ts — created
-- tokemon-raycast/src/api.ts — created
-- tokemon-raycast/src/setup.tsx — modified (4 → 76 lines)
-- tokemon-raycast/src/index.tsx — modified (3 → 91 lines)
-
-Commits verified:
-- e465cb7 — feat(18-02): add API constants and fetchUsage utility
-- 2ad049f — feat(18-02): implement setup wizard and stub dashboard
-
-Build verified: npm run build exits 0 ("built extension successfully")
-TypeScript verified: npx tsc --noEmit exits 0 (no type errors)
+All 4 source files exist, npm run build passes, human verification approved.
