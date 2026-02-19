@@ -9,14 +9,14 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 
 ## Current Position
 
-Phase: 17.1 (Automated Testing)
-Plan: 3 of 3 complete
-Status: Complete
-Last activity: 2026-02-19 — Plan 03 complete (composite view snapshot tests)
+Phase: 18-extension-foundation
+Plan: 1 of 3 complete
+Status: In Progress
+Last activity: 2026-02-19 — Plan 01 complete (Raycast extension scaffold, icon, tooling, MIT license, README)
 
-Next: Phase 18-21 (Raycast Extension)
+Next: Phase 18, Plan 02 (command implementation)
 
-Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3
+Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [###.......] 1/3
 
 ## Shipped Milestones
 
@@ -37,8 +37,11 @@ Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3
 - Plan 02: 6 min, 2 tasks, 7 files
 - Plan 03: 20 min, 2 tasks, 4 files
 
+**Phase 18 (Raycast Extension Foundation):**
+- Plan 01: 2 min, 2 tasks, 12 files
+
 **v4.0 (TypeScript/React):**
-- Starting fresh codebase in `raycast-extension/`
+- Codebase in `tokemon-raycast/` (sibling to Tokemon/ Swift project)
 - Target: 4 phases, ~8-12 plans
 
 ## Accumulated Context
@@ -64,6 +67,13 @@ See PROJECT.md Key Decisions table for full list.
 - useCachedState for instant UI, LocalStorage for persistence
 - OAuth token refresh handled automatically after initial entry
 
+**Phase 18 Plan 01 Decisions:**
+- tokemon-raycast/ placed as sibling to Tokemon/ Swift project (independent git repo)
+- password-type preference for OAuth token (not Keychain) — Keychain causes Store rejection
+- Stub src/index.tsx and src/setup.tsx created so npm run build passes before Plan 02
+- package-lock.json committed (required for Raycast Store submission)
+- author field set to "tokemon" placeholder — user must update to Raycast Store username before publishing
+
 ### Roadmap Evolution
 
 - Phase 17.1 inserted after Phase 17: Automated Testing — XCTest/XCUITest infrastructure for Swift app UI bugs (URGENT)
@@ -79,5 +89,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Phase 17.1 verified (6/6 criteria passed) and marked complete. 133 tests, 0 failures, 42 snapshot tests with 36 reference PNGs.
-Resume: Plan Phase 18 (Raycast Extension Foundation)
+Stopped at: Phase 18 Plan 01 complete — Raycast extension scaffold with @raycast/api 1.104.5, password preference, 512x512 icon, npm run build passing, MIT license, README. tokemon-raycast/ initialized as independent git repo.
+Resume: Phase 18, Plan 02 (implement Dashboard and Setup commands)
