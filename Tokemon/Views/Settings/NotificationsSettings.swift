@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Settings tab for configuring Slack and Discord webhook alert destinations.
-struct WebhookSettings: View {
+/// Consolidated "Notifications" settings tab merging alerts and webhooks.
+struct NotificationsSettings: View {
+    @Environment(AlertManager.self) private var alertManager
     @Environment(WebhookManager.self) private var webhookManager
 
     @State private var testingSlack = false
@@ -9,11 +10,60 @@ struct WebhookSettings: View {
     @State private var testResult: String?
     @State private var showTestResult = false
 
+    private let thresholdOptions = [50, 60, 70, 80, 90]
+
     var body: some View {
+        @Bindable var alertManager = alertManager
         @Bindable var webhookManager = webhookManager
 
         Form {
-            // MARK: - Slack Section
+            // MARK: - Alert Threshold
+            Section {
+                Picker("Warning threshold", selection: $alertManager.alertThreshold) {
+                    ForEach(thresholdOptions, id: \.self) { value in
+                        Text("\(value)%").tag(value)
+                    }
+                }
+                .pickerStyle(.menu)
+
+                Text("Show visual warning when usage exceeds this percentage")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Alert Threshold")
+            }
+
+            // MARK: - macOS Notifications
+            Section {
+                Toggle("macOS notifications", isOn: $alertManager.notificationsEnabled)
+                    .onChange(of: alertManager.notificationsEnabled) { _, newValue in
+                        if newValue {
+                            alertManager.requestNotificationPermission()
+                        }
+                    }
+
+                Text("Send system notifications when approaching usage limits")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("macOS Notifications")
+            }
+
+            // MARK: - Session Notifications
+            Section {
+                Toggle("Notify when session resets", isOn: Binding(
+                    get: { alertManager.autoStartEnabled },
+                    set: { alertManager.autoStartEnabled = $0 }
+                ))
+
+                Text("Get notified when your usage resets to 0%, indicating a fresh session is available.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Session Notifications")
+            }
+
+            // MARK: - Slack
             Section {
                 Toggle("Enable Slack alerts", isOn: $webhookManager.config.slackEnabled)
 
@@ -51,7 +101,7 @@ struct WebhookSettings: View {
                 Text("Slack")
             }
 
-            // MARK: - Discord Section
+            // MARK: - Discord
             Section {
                 Toggle("Enable Discord alerts", isOn: $webhookManager.config.discordEnabled)
 
@@ -89,7 +139,7 @@ struct WebhookSettings: View {
                 Text("Discord")
             }
 
-            // MARK: - Message Template Section
+            // MARK: - Message Template
             Section {
                 Toggle("Include usage percentage", isOn: $webhookManager.config.includePercentage)
                 Toggle("Include reset time", isOn: $webhookManager.config.includeResetTime)

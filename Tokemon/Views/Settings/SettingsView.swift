@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Main settings window with tabs: Profiles, General, Data Sources, Appearance, Alerts, Analytics, Admin API, and Updates.
-/// Uses native macOS TabView with automatic style for system-consistent settings.
+/// Main settings window with consolidated tabs: Profiles, General, Appearance, Notifications,
+/// Terminal, Analytics, Budget, Admin, and Team (conditional).
 struct SettingsView: View {
     @Environment(UsageMonitor.self) private var monitor
     @Environment(AlertManager.self) private var alertManager
@@ -14,21 +14,10 @@ struct SettingsView: View {
                     Label("Profiles", systemImage: "person.2")
                 }
 
-            GeneralSettings()
-                .tabItem {
-                    Label("Updates", systemImage: "arrow.triangle.2.circlepath.circle")
-                }
-
-            RefreshSettings()
+            GeneralSettingsTab()
                 .environment(monitor)
                 .tabItem {
                     Label("General", systemImage: "gear")
-                }
-
-            DataSourceSettings()
-                .environment(monitor)
-                .tabItem {
-                    Label("Sources", systemImage: "arrow.triangle.2.circlepath")
                 }
 
             AppearanceSettings()
@@ -38,30 +27,25 @@ struct SettingsView: View {
                     Label("Appearance", systemImage: "paintbrush")
                 }
 
+            NotificationsSettings()
+                .environment(alertManager)
+                .tabItem {
+                    Label("Notifications", systemImage: "bell.badge")
+                }
+
             StatuslineSettings()
                 .tabItem {
                     Label("Terminal", systemImage: "terminal")
                 }
 
-            AlertSettings()
-                .environment(alertManager)
+            AnalyticsDashboardView()
                 .tabItem {
-                    Label("Alerts", systemImage: "bell.badge")
-                }
-
-            WebhookSettings()
-                .tabItem {
-                    Label("Webhooks", systemImage: "bell.and.waves.left.and.right")
+                    Label("Analytics", systemImage: "chart.bar.xaxis")
                 }
 
             BudgetDashboardView()
                 .tabItem {
                     Label("Budget", systemImage: "dollarsign.gauge.chart.lefthalf.righthalf")
-                }
-
-            AnalyticsDashboardView()
-                .tabItem {
-                    Label("Analytics", systemImage: "chart.bar.xaxis")
                 }
 
             AdminAPISettings()
@@ -77,6 +61,6 @@ struct SettingsView: View {
                     }
             }
         }
-        .frame(minWidth: 560, minHeight: 400)
+        .frame(minWidth: 720, minHeight: 400)
     }
 }

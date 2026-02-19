@@ -75,7 +75,7 @@ actor AdminAPIClient {
         ]
 
         if let page = page {
-            queryItems.append(URLQueryItem(name: "next_page", value: page))
+            queryItems.append(URLQueryItem(name: "page", value: page))
         }
 
         components.queryItems = queryItems
@@ -253,12 +253,12 @@ actor AdminAPIClient {
                 URLQueryItem(name: "starting_at", value: formatter.string(from: startingAt)),
                 URLQueryItem(name: "ending_at", value: formatter.string(from: endingAt)),
                 URLQueryItem(name: "bucket_width", value: bucketWidth),
-                URLQueryItem(name: "group_by", value: "user_id"),
+                URLQueryItem(name: "group_by[]", value: "user_id"),
                 URLQueryItem(name: "limit", value: "31"),
             ]
 
             if let page = nextPage {
-                queryItems.append(URLQueryItem(name: "next_page", value: page))
+                queryItems.append(URLQueryItem(name: "page", value: page))
             }
 
             components.queryItems = queryItems
@@ -333,11 +333,11 @@ actor AdminAPIClient {
             URLQueryItem(name: "starting_at", value: formatter.string(from: startingAt)),
             URLQueryItem(name: "ending_at", value: formatter.string(from: endingAt)),
             URLQueryItem(name: "bucket_width", value: bucketWidth),
-            URLQueryItem(name: "limit", value: "31"), // Max daily buckets per request
+            URLQueryItem(name: "limit", value: "31"),
         ]
 
         if let page = page {
-            queryItems.append(URLQueryItem(name: "next_page", value: page))
+            queryItems.append(URLQueryItem(name: "page", value: page))
         }
 
         components.queryItems = queryItems
@@ -365,6 +365,8 @@ actor AdminAPIClient {
         case 404:
             throw AdminAPIError.notFound
         default:
+            let body = String(data: data, encoding: .utf8) ?? "no body"
+            print("[AdminAPI] cost_report error \(httpResponse.statusCode): \(body)")
             throw AdminAPIError.serverError(httpResponse.statusCode)
         }
     }
@@ -447,12 +449,12 @@ actor AdminAPIClient {
                 URLQueryItem(name: "starting_at", value: formatter.string(from: startingAt)),
                 URLQueryItem(name: "ending_at", value: formatter.string(from: endingAt)),
                 URLQueryItem(name: "bucket_width", value: bucketWidth),
-                URLQueryItem(name: "group_by", value: "workspace"),
+                URLQueryItem(name: "group_by[]", value: "workspace_id"),
                 URLQueryItem(name: "limit", value: "31"),
             ]
 
             if let page = nextPage {
-                queryItems.append(URLQueryItem(name: "next_page", value: page))
+                queryItems.append(URLQueryItem(name: "page", value: page))
             }
 
             components.queryItems = queryItems
@@ -487,6 +489,8 @@ actor AdminAPIClient {
             case 404:
                 throw AdminAPIError.notFound
             default:
+                let body = String(data: data, encoding: .utf8) ?? "no body"
+                print("[AdminAPI] cost_report (workspace) error \(httpResponse.statusCode): \(body)")
                 throw AdminAPIError.serverError(httpResponse.statusCode)
             }
         } while nextPage != nil

@@ -8,8 +8,8 @@ import XCTest
 ///
 /// Tests the tabs most likely to have layout issues at the standard settings window size.
 /// Complex tabs that depend on API state or external services (AdminAPISettings,
-/// TeamDashboardView, AnalyticsDashboardView, BudgetDashboardView, WebhookSettings)
-/// are skipped as they require complex external state.
+/// TeamDashboardView, AnalyticsDashboardView, BudgetDashboardView) are skipped as
+/// they require complex external state.
 ///
 /// Each tab view is tested independently with its required environment objects.
 @MainActor
@@ -20,14 +20,15 @@ final class SettingsSnapshotTests: SnapshotTestCase {
     private let settingsWidth: CGFloat = 560
     private let settingsHeight: CGFloat = 400
 
-    // MARK: - GeneralSettings (Updates tab)
+    // MARK: - GeneralSettingsTab
 
-    func testGeneralSettings_Default() {
-        // GeneralSettings requires UpdateManager. UpdateManager init() sets up Sparkle,
-        // but defaults are safe (updateAvailable=false, isChecking=false, error=nil).
+    func testGeneralSettingsTab_Default() {
+        let monitor = UsageMonitor()
+        monitor.stopPolling()
         let updateManager = UpdateManager()
 
-        let view = GeneralSettings()
+        let view = GeneralSettingsTab()
+            .environment(monitor)
             .environment(updateManager)
 
         let vc = view.snapshotController(width: settingsWidth, height: settingsHeight)
@@ -50,26 +51,15 @@ final class SettingsSnapshotTests: SnapshotTestCase {
         assertSnapshot(of: vc, as: .image(precision: snapshotPrecision))
     }
 
-    // MARK: - AlertSettings
+    // MARK: - NotificationsSettings
 
-    func testAlertSettings_Default() {
+    func testNotificationsSettings_Default() {
         let alertManager = AlertManager()
+        let webhookManager = WebhookManager()
 
-        let view = AlertSettings()
+        let view = NotificationsSettings()
             .environment(alertManager)
-
-        let vc = view.snapshotController(width: settingsWidth, height: settingsHeight)
-        assertSnapshot(of: vc, as: .image(precision: snapshotPrecision))
-    }
-
-    // MARK: - RefreshSettings
-
-    func testRefreshSettings_Default() {
-        let monitor = UsageMonitor()
-        monitor.stopPolling()
-
-        let view = RefreshSettings()
-            .environment(monitor)
+            .environment(webhookManager)
 
         let vc = view.snapshotController(width: settingsWidth, height: settingsHeight)
         assertSnapshot(of: vc, as: .image(precision: snapshotPrecision))

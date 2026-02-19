@@ -58,18 +58,18 @@ struct BudgetDashboardView: View {
                     }
 
                 if budgetManager.config.isEnabled {
-                    HStack {
-                        Text("$")
-                            .foregroundStyle(.secondary)
-                        TextField(
-                            "Monthly limit",
-                            value: $budgetManager.config.monthlyLimitDollars,
-                            format: .number.precision(.fractionLength(2))
-                        )
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 120)
-                        Text("/ month")
-                            .foregroundStyle(.secondary)
+                    LabeledContent("Monthly budget") {
+                        HStack(spacing: 4) {
+                            Text("$")
+                                .foregroundStyle(.secondary)
+                            TextField(
+                                "",
+                                value: $budgetManager.config.monthlyLimitDollars,
+                                format: .number.precision(.fractionLength(2))
+                            )
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 100)
+                        }
                     }
                     .onChange(of: budgetManager.config.monthlyLimitDollars) { _, _ in
                         budgetManager.saveConfig()

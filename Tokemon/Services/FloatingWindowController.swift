@@ -89,7 +89,7 @@ final class FloatingWindowController {
 
         // Create panel with compact size
         let newPanel = FloatingPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 140, height: 80),
+            contentRect: NSRect(x: 0, y: 0, width: 160, height: 80),
             styleMask: [.titled, .closable, .fullSizeContentView, .nonactivatingPanel],
             backing: .buffered,
             defer: false
