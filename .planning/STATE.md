@@ -10,13 +10,13 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 ## Current Position
 
 Phase: 18-extension-foundation
-Plan: 1 of 3 complete
+Plan: 2 of 3 complete (awaiting human checkpoint Task 3 verification)
 Status: In Progress
-Last activity: 2026-02-19 — Plan 01 complete (Raycast extension scaffold, icon, tooling, MIT license, README)
+Last activity: 2026-02-19 — Plan 02 complete (constants.ts, api.ts, setup.tsx, index.tsx — awaiting Raycast verification)
 
-Next: Phase 18, Plan 02 (command implementation)
+Next: Phase 18, Plan 02 Task 3 checkpoint (human verifies extension loads in Raycast)
 
-Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [###.......] 1/3
+Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [######....] 2/3
 
 ## Shipped Milestones
 
@@ -39,6 +39,7 @@ Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 
 
 **Phase 18 (Raycast Extension Foundation):**
 - Plan 01: 2 min, 2 tasks, 12 files
+- Plan 02: 2 min, 2 tasks, 4 files (awaiting Task 3 checkpoint)
 
 **v4.0 (TypeScript/React):**
 - Codebase in `tokemon-raycast/` (sibling to Tokemon/ Swift project)
@@ -74,6 +75,12 @@ See PROJECT.md Key Decisions table for full list.
 - package-lock.json committed (required for Raycast Store submission)
 - author field set to "tokemon" placeholder — user must update to Raycast Store username before publishing
 
+**Phase 18 Plan 02 Decisions:**
+- TokenError extends Error with statusCode: 401 | 403 for typed token error handling
+- fetchUsage typed as Promise<unknown> — full response typing deferred to Phase 19
+- api.ts has zero Raycast imports — pure utility, testable without Raycast environment
+- useEffect + useState used in index.tsx rather than useCachedPromise to keep api.ts dependency-free
+
 ### Roadmap Evolution
 
 - Phase 17.1 inserted after Phase 17: Automated Testing — XCTest/XCUITest infrastructure for Swift app UI bugs (URGENT)
@@ -89,5 +96,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Phase 18 Plan 01 complete — Raycast extension scaffold with @raycast/api 1.104.5, password preference, 512x512 icon, npm run build passing, MIT license, README. tokemon-raycast/ initialized as independent git repo.
-Resume: Phase 18, Plan 02 (implement Dashboard and Setup commands)
+Stopped at: Phase 18 Plan 02 Tasks 1-2 complete — constants.ts, api.ts, setup.tsx, index.tsx implemented and committed. Awaiting human Task 3 checkpoint: verify extension loads in Raycast with npm run dev.
+Resume: Phase 18, Plan 02 Task 3 (human verification of extension in Raycast)
