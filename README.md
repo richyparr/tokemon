@@ -1,6 +1,6 @@
 # Tokemon
 
-A macOS menu bar app that monitors your Claude AI usage in real-time so you never hit a rate limit by surprise.
+A macOS menu bar app that monitors your Claude usage in real-time so you never hit a rate limit by surprise.
 
 ![macOS 14+](https://img.shields.io/badge/macOS-14.0%2B-blue)
 ![Swift 6](https://img.shields.io/badge/Swift-6.0-orange)
@@ -33,7 +33,7 @@ Tokemon sits in your menu bar and shows your current Claude usage at a glance. I
 - Webhook alerts to **Slack** and **Discord** with customizable templates
 
 ### Multi-profile support
-- Manage multiple Claude accounts/profiles
+- Manage multiple accounts/profiles
 - Switch between profiles from the popover
 - Per-profile alert thresholds
 - Credentials synced from system Keychain or entered manually
@@ -41,7 +41,7 @@ Tokemon sits in your menu bar and shows your current Claude usage at a glance. I
 ### Analytics & export
 - Usage trend charts with burn rate calculation
 - 30/90-day usage history
-- Project-by-project token breakdown (via Claude Code JSONL logs)
+- Project-by-project token breakdown (via JSONL logs)
 - Export to PDF, CSV, or shareable usage cards
 
 ### Budget tracking (Admin API)
@@ -59,7 +59,7 @@ Tokemon sits in your menu bar and shows your current Claude usage at a glance. I
 
 ### Theming
 - Native (follows system light/dark), Light, or Dark theme
-- Dark theme uses warm Anthropic-inspired orange accents
+- Dark theme with warm orange accents
 
 ## Installation
 
@@ -88,19 +88,19 @@ The built app will be in your Xcode DerivedData directory.
 
 ## How it works
 
-Tokemon reads your Claude usage through two data sources:
+Tokemon reads your usage through two data sources:
 
-1. **OAuth API** (primary) — Queries Anthropic's usage endpoint using credentials from your macOS Keychain. This gives you accurate 5-hour session percentages, 7-day rolling usage, and reset timers. Credentials are picked up automatically if you're signed into Claude Code.
+1. **OAuth** (primary) — Queries the usage endpoint using credentials from your macOS Keychain. This gives you accurate 5-hour session percentages, 7-day rolling usage, and reset timers. Credentials are picked up automatically if you're signed into Claude Code.
 
-2. **JSONL logs** (fallback) — Parses Claude Code's local conversation logs in `~/.claude/projects/` to estimate token usage when OAuth isn't available.
+2. **JSONL logs** (fallback) — Parses local conversation logs in `~/.claude/projects/` to estimate token usage when OAuth isn't available.
 
-No data leaves your machine except API calls to Anthropic's own endpoints. No telemetry, no analytics, no accounts.
+No data leaves your machine except calls to the usage endpoint. No telemetry, no analytics, no accounts.
 
 ## Requirements
 
 - macOS 14.0 (Sonoma) or later
 - A Claude Pro, Team, or Enterprise subscription
-- For budget/team features: an Anthropic Admin API key
+- For budget/team features: an Admin API key
 
 ## Settings
 
@@ -108,7 +108,7 @@ Right-click the menu bar icon or press Cmd+, to access settings:
 
 | Tab | What it configures |
 |-----|--------------------|
-| **Profiles** | Add/manage Claude accounts, sync from Keychain |
+| **Profiles** | Add/manage accounts, sync from Keychain |
 | **General** | Refresh interval, data sources, launch at login |
 | **Appearance** | Theme, menu bar icon style, monochrome mode |
 | **Notifications** | Alert thresholds, Slack/Discord webhooks |
@@ -121,7 +121,7 @@ Right-click the menu bar icon or press Cmd+, to access settings:
 
 - All data is stored locally on your Mac
 - Credentials are stored in the macOS Keychain
-- The only network calls are to `api.anthropic.com` (usage data) and `console.anthropic.com` (token refresh)
+- The only network calls are to the usage and token refresh endpoints
 - No telemetry, tracking, or third-party services
 - The app is not sandboxed (it needs access to `~/.claude` for JSONL parsing)
 
