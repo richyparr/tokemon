@@ -9,14 +9,14 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 
 ## Current Position
 
-Phase: 17.1 (Automated Testing) — INSERTED
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-02-19 — Phase 17.1 inserted for Swift app testing
+Phase: 17.1 (Automated Testing)
+Plan: 1 of 3 complete
+Status: Executing
+Last activity: 2026-02-19 — Plan 01 complete (test infrastructure)
 
-Next: Phase 18-21 (v4.0 Raycast Integration)
+Next: Plan 02 (menu bar snapshot tests), then Plan 03, then Phase 18-21
 
-Progress: [##########################] v1-v3 complete | v4.0 [░░░░░░░░░░] 0%
+Progress: [##########################] v1-v3 complete | 17.1 [###░░░░░░░] 1/3
 
 ## Shipped Milestones
 
@@ -32,6 +32,9 @@ Progress: [##########################] v1-v3 complete | v4.0 [░░░░░░
 - Lines of code: 14,418 Swift
 - Timeline: 6 days (Feb 11-17, 2026)
 
+**Phase 17.1 (Automated Testing):**
+- Plan 01: 57 min, 2 tasks, 13 files
+
 **v4.0 (TypeScript/React):**
 - Starting fresh codebase in `raycast-extension/`
 - Target: 4 phases, ~8-12 plans
@@ -41,6 +44,12 @@ Progress: [##########################] v1-v3 complete | v4.0 [░░░░░░
 ### Decisions
 
 See PROJECT.md Key Decisions table for full list.
+
+**Phase 17.1 Decisions:**
+- PRODUCT_MODULE_NAME set to lowercase 'tokemon' to match SPM convention
+- Sparkle added to project.yml (was missing from xcodegen config)
+- Bundle.module replaced with Bundle.main for Xcode project compatibility
+- SnapshotTestCase uses record:.missing for auto-record on first run
 
 **v4.0 Architecture Decisions (from research):**
 - Standalone extension (no Tokemon.app dependency)
@@ -64,6 +73,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Phase 17.1 fully planned (3 plans, 2 waves, verified). Restarting session for bypass permissions.
-Resume file: .planning/phases/17.1-automated-testing/.continue-here.md
-Resume: Run `/gsd:execute-phase 17.1`
+Stopped at: Completed 17.1-01-PLAN.md (test infrastructure). 91 unit tests passing.
+Resume: Continue with 17.1-02-PLAN.md (menu bar snapshot tests)
