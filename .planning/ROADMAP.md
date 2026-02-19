@@ -69,9 +69,9 @@ See [v3.0-ROADMAP.md](milestones/v3.0-ROADMAP.md) for full details.
 **Plans:** 3 plans
 
 Plans:
-- [ ] 17.1-01-PLAN.md -- Add SnapshotTesting dependency, create test helpers and mock factories, fix existing tests
-- [ ] 17.1-02-PLAN.md -- Extract popover height calculator, snapshot tests for leaf views (Header, Detail, FloatingWindow)
-- [ ] 17.1-03-PLAN.md -- Snapshot tests for composite views (Popover, Settings tabs, ProfileSwitcher)
+- [x] 17.1-01-PLAN.md -- Add SnapshotTesting dependency, create test helpers and mock factories, fix existing tests
+- [x] 17.1-02-PLAN.md -- Extract popover height calculator, snapshot tests for leaf views (Header, Detail, FloatingWindow)
+- [x] 17.1-03-PLAN.md -- Snapshot tests for composite views (Popover, Settings tabs, ProfileSwitcher)
 
 ---
 
@@ -147,7 +147,7 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 17.1. Automated Testing | v3.0+ | 0/3 | Planned | - |
+| 17.1. Automated Testing | v3.0+ | 3/3 | ✓ Complete | 2026-02-19 |
 | 18. Extension Foundation | v4.0 | 0/TBD | Not started | - |
 | 19. Dashboard Command | v4.0 | 0/TBD | Not started | - |
 | 20. Menu Bar Command | v4.0 | 0/TBD | Not started | - |
