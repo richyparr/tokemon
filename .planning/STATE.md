@@ -10,13 +10,13 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 ## Current Position
 
 Phase: 17.1 (Automated Testing)
-Plan: 1 of 3 complete
+Plan: 2 of 3 complete
 Status: Executing
-Last activity: 2026-02-19 — Plan 01 complete (test infrastructure)
+Last activity: 2026-02-19 — Plan 02 complete (menu bar snapshot tests)
 
-Next: Plan 02 (menu bar snapshot tests), then Plan 03, then Phase 18-21
+Next: Plan 03 (composite view snapshot tests), then Phase 18-21
 
-Progress: [##########################] v1-v3 complete | 17.1 [###░░░░░░░] 1/3
+Progress: [##########################] v1-v3 complete | 17.1 [######░░░░] 2/3
 
 ## Shipped Milestones
 
@@ -34,6 +34,7 @@ Progress: [##########################] v1-v3 complete | 17.1 [###░░░░░
 
 **Phase 17.1 (Automated Testing):**
 - Plan 01: 57 min, 2 tasks, 13 files
+- Plan 02: 6 min, 2 tasks, 7 files
 
 **v4.0 (TypeScript/React):**
 - Starting fresh codebase in `raycast-extension/`
@@ -50,6 +51,8 @@ See PROJECT.md Key Decisions table for full list.
 - Sparkle added to project.yml (was missing from xcodegen config)
 - Bundle.module replaced with Bundle.main for Xcode project compatibility
 - SnapshotTestCase uses record:.missing for auto-record on first run
+- PopoverHeightCalculator extracted as enum with static function for testable height computation
+- Snapshot tests use @MainActor to match UsageMonitor/AlertManager isolation
 
 **v4.0 Architecture Decisions (from research):**
 - Standalone extension (no Tokemon.app dependency)
@@ -73,5 +76,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 17.1-01-PLAN.md (test infrastructure). 91 unit tests passing.
-Resume: Continue with 17.1-02-PLAN.md (menu bar snapshot tests)
+Stopped at: Completed 17.1-02-PLAN.md (menu bar snapshot tests). 118 tests passing (91 unit + 27 snapshot).
+Resume: Continue with 17.1-03-PLAN.md (composite view snapshot tests)
