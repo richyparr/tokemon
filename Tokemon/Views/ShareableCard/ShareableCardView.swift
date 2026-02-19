@@ -8,13 +8,13 @@ import AppKit
 struct ShareableCardView: View {
     // Pre-load logo images (must be done before ImageRenderer context)
     private static let logoWhite: NSImage? = {
-        guard let url = Bundle.module.url(forResource: "tokemon_logo_white", withExtension: "png"),
+        guard let url = Bundle.main.url(forResource: "tokemon_logo_white", withExtension: "png"),
               let image = NSImage(contentsOf: url) else { return nil }
         return image
     }()
 
     private static let logoColor: NSImage? = {
-        guard let url = Bundle.module.url(forResource: "tokemon_logo", withExtension: "png"),
+        guard let url = Bundle.main.url(forResource: "tokemon_logo", withExtension: "png"),
               let image = NSImage(contentsOf: url) else { return nil }
         return image
     }()

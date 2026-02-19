@@ -2,69 +2,90 @@ import XCTest
 @testable import tokemon
 
 /// Unit tests for AlertManager alert level calculations
+@MainActor
 final class AlertManagerTests: XCTestCase {
 
-    // MARK: - Alert Level Tests
+    // MARK: - Helpers
 
-    func testAlertLevel_BelowWarning_ReturnsNormal() {
-        // Default threshold is 80%, so 70% should be normal
-        let level = AlertManager.calculateAlertLevel(for: 70.0, threshold: 80)
-        XCTAssertEqual(level, .normal)
+    /// Create an OAuth snapshot at the given percentage for alert testing
+    private func oauthSnapshot(percentage: Double, resetsAt: Date? = Date().addingTimeInterval(3600)) -> UsageSnapshot {
+        UsageSnapshot(
+            primaryPercentage: percentage,
+            fiveHourUtilization: percentage,
+            sevenDayUtilization: nil,
+            sevenDayOpusUtilization: nil,
+            sevenDaySonnetUtilization: nil,
+            resetsAt: resetsAt,
+            sevenDayResetsAt: nil,
+            sevenDaySonnetResetsAt: nil,
+            source: .oauth,
+            inputTokens: nil,
+            outputTokens: nil,
+            cacheCreationTokens: nil,
+            cacheReadTokens: nil,
+            model: nil,
+            extraUsageEnabled: false,
+            extraUsageMonthlyLimitCents: nil,
+            extraUsageSpentCents: nil,
+            extraUsageUtilization: nil
+        )
     }
 
-    func testAlertLevel_AtWarningThreshold_ReturnsWarning() {
-        let level = AlertManager.calculateAlertLevel(for: 80.0, threshold: 80)
-        XCTAssertEqual(level, .warning)
+    // MARK: - Alert Level Tests (via checkUsage)
+
+    func testCheckUsage_BelowThreshold_RemainsNormal() {
+        let manager = AlertManager()
+        manager.checkUsage(oauthSnapshot(percentage: 70.0))
+        XCTAssertEqual(manager.currentAlertLevel, .normal)
     }
 
-    func testAlertLevel_AboveWarningBelowCritical_ReturnsWarning() {
-        let level = AlertManager.calculateAlertLevel(for: 85.0, threshold: 80)
-        XCTAssertEqual(level, .warning)
+    func testCheckUsage_AtThreshold_BecomesWarning() {
+        let manager = AlertManager()
+        // Default threshold is 80
+        manager.checkUsage(oauthSnapshot(percentage: 80.0))
+        XCTAssertEqual(manager.currentAlertLevel, .warning)
     }
 
-    func testAlertLevel_AtCriticalThreshold_ReturnsCritical() {
-        // Critical is typically threshold + 10%
-        let level = AlertManager.calculateAlertLevel(for: 90.0, threshold: 80)
-        XCTAssertEqual(level, .critical)
+    func testCheckUsage_AboveThreshold_BecomesWarning() {
+        let manager = AlertManager()
+        manager.checkUsage(oauthSnapshot(percentage: 85.0))
+        XCTAssertEqual(manager.currentAlertLevel, .warning)
     }
 
-    func testAlertLevel_AboveCritical_ReturnsCritical() {
-        let level = AlertManager.calculateAlertLevel(for: 95.0, threshold: 80)
-        XCTAssertEqual(level, .critical)
+    func testCheckUsage_AtHundredPercent_BecomesCritical() {
+        let manager = AlertManager()
+        manager.checkUsage(oauthSnapshot(percentage: 100.0))
+        XCTAssertEqual(manager.currentAlertLevel, .critical)
     }
 
-    func testAlertLevel_AtHundredPercent_ReturnsCritical() {
-        let level = AlertManager.calculateAlertLevel(for: 100.0, threshold: 80)
-        XCTAssertEqual(level, .critical)
-    }
-
-    // MARK: - Custom Threshold Tests
-
-    func testAlertLevel_CustomLowThreshold() {
-        // With threshold at 50%, 45% should be normal
-        let level = AlertManager.calculateAlertLevel(for: 45.0, threshold: 50)
-        XCTAssertEqual(level, .normal)
-
-        // 55% should be warning
-        let warningLevel = AlertManager.calculateAlertLevel(for: 55.0, threshold: 50)
-        XCTAssertEqual(warningLevel, .warning)
-    }
-
-    func testAlertLevel_CustomHighThreshold() {
-        // With threshold at 95%, 90% should be normal
-        let level = AlertManager.calculateAlertLevel(for: 90.0, threshold: 95)
-        XCTAssertEqual(level, .normal)
+    func testCheckUsage_AboveHundredPercent_BecomesCritical() {
+        let manager = AlertManager()
+        manager.checkUsage(oauthSnapshot(percentage: 105.0))
+        XCTAssertEqual(manager.currentAlertLevel, .critical)
     }
 
     // MARK: - Edge Cases
 
-    func testAlertLevel_ZeroUsage_ReturnsNormal() {
-        let level = AlertManager.calculateAlertLevel(for: 0.0, threshold: 80)
-        XCTAssertEqual(level, .normal)
+    func testCheckUsage_ZeroUsage_RemainsNormal() {
+        let manager = AlertManager()
+        manager.checkUsage(oauthSnapshot(percentage: 0.0))
+        XCTAssertEqual(manager.currentAlertLevel, .normal)
     }
 
-    func testAlertLevel_NegativeUsage_ReturnsNormal() {
-        let level = AlertManager.calculateAlertLevel(for: -10.0, threshold: 80)
-        XCTAssertEqual(level, .normal)
+    func testResetNotificationState_ResetsToNormal() {
+        let manager = AlertManager()
+        manager.checkUsage(oauthSnapshot(percentage: 100.0))
+        XCTAssertEqual(manager.currentAlertLevel, .critical)
+
+        manager.resetNotificationState()
+        XCTAssertEqual(manager.currentAlertLevel, .normal)
+    }
+
+    // MARK: - Alert Level Enum Tests
+
+    func testAlertLevel_Comparable() {
+        XCTAssertTrue(AlertManager.AlertLevel.normal < AlertManager.AlertLevel.warning)
+        XCTAssertTrue(AlertManager.AlertLevel.warning < AlertManager.AlertLevel.critical)
+        XCTAssertFalse(AlertManager.AlertLevel.critical < AlertManager.AlertLevel.normal)
     }
 }

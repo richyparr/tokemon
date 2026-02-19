@@ -55,7 +55,7 @@ final class StatuslineExporter {
         let destPath = statuslineDirectory.appendingPathComponent("tokemon-statusline.sh")
 
         // Get the shell script from the app bundle
-        guard let sourceURL = Bundle.module.url(forResource: "tokemon-statusline", withExtension: "sh") else {
+        guard let sourceURL = Bundle.main.url(forResource: "tokemon-statusline", withExtension: "sh") else {
             // Script not found in bundle - this is expected during development
             return
         }

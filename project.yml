@@ -11,7 +11,6 @@ settings:
   base:
     SWIFT_VERSION: "6.0"
     MACOSX_DEPLOYMENT_TARGET: "14.0"
-    PRODUCT_NAME: Tokemon
     MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
 
@@ -25,6 +24,12 @@ packages:
   KeychainAccess:
     url: https://github.com/kishikawakatsumi/KeychainAccess.git
     from: "4.2.2"
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle.git
+    from: "2.6.0"
+  SnapshotTesting:
+    url: https://github.com/pointfreeco/swift-snapshot-testing.git
+    from: "1.18.0"
 
 targets:
   Tokemon:
@@ -40,6 +45,8 @@ targets:
     settings:
       base:
         INFOPLIST_FILE: Tokemon/Info.plist
+        PRODUCT_NAME: Tokemon
+        PRODUCT_MODULE_NAME: tokemon
         PRODUCT_BUNDLE_IDENTIFIER: ai.tokemon.app
         LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks"
         COMBINE_HIDPI_IMAGES: YES
@@ -51,6 +58,7 @@ targets:
       - package: MenuBarExtraAccess
       - package: SettingsAccess
       - package: KeychainAccess
+      - package: Sparkle
     entitlements:
       path: Tokemon/Tokemon.entitlements
       properties:
@@ -64,11 +72,16 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: ai.tokemon.app.tests
+        PRODUCT_NAME: TokemonTests
+        PRODUCT_MODULE_NAME: TokemonTests
+        GENERATE_INFOPLIST_FILE: YES
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Tokemon.app/Contents/MacOS/Tokemon"
         BUNDLE_LOADER: "$(TEST_HOST)"
         LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks @loader_path/../Frameworks"
     dependencies:
       - target: Tokemon
+      - package: SnapshotTesting
+        product: SnapshotTesting
 
   TokemonUITests:
     type: bundle.ui-testing
@@ -78,6 +91,9 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: ai.tokemon.app.uitests
+        PRODUCT_NAME: TokemonUITests
+        PRODUCT_MODULE_NAME: TokemonUITests
+        GENERATE_INFOPLIST_FILE: YES
         TEST_TARGET_NAME: Tokemon
         LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks @loader_path/../Frameworks"
     dependencies:

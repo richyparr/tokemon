@@ -11,54 +11,62 @@ final class UsageDataPointTests: XCTestCase {
         let point = UsageDataPoint(
             timestamp: timestamp,
             primaryPercentage: 75.5,
-            secondaryPercentage: 50.0,
-            inputTokens: 1000,
-            outputTokens: 500
+            sevenDayPercentage: 50.0,
+            source: "oauth"
         )
 
         XCTAssertEqual(point.timestamp, timestamp)
         XCTAssertEqual(point.primaryPercentage, 75.5)
-        XCTAssertEqual(point.secondaryPercentage, 50.0)
-        XCTAssertEqual(point.inputTokens, 1000)
-        XCTAssertEqual(point.outputTokens, 500)
+        XCTAssertEqual(point.sevenDayPercentage, 50.0)
+        XCTAssertEqual(point.source, "oauth")
     }
 
-    func testInit_WithNilSecondaryPercentage() {
+    func testInit_WithNilSevenDayPercentage() {
         let point = UsageDataPoint(
             timestamp: Date(),
             primaryPercentage: 50.0,
-            secondaryPercentage: nil,
-            inputTokens: 0,
-            outputTokens: 0
+            sevenDayPercentage: nil,
+            source: "oauth"
         )
 
-        XCTAssertNil(point.secondaryPercentage)
+        XCTAssertNil(point.sevenDayPercentage)
     }
 
-    // MARK: - Computed Properties Tests
-
-    func testTotalTokens_ReturnsSum() {
+    func testInit_WithDefaultSource() {
         let point = UsageDataPoint(
             timestamp: Date(),
-            primaryPercentage: 50.0,
-            secondaryPercentage: nil,
-            inputTokens: 1000,
-            outputTokens: 500
+            primaryPercentage: 50.0
         )
 
-        XCTAssertEqual(point.totalTokens, 1500)
+        XCTAssertEqual(point.source, "oauth")
     }
 
-    func testTotalTokens_ZeroValues() {
-        let point = UsageDataPoint(
-            timestamp: Date(),
-            primaryPercentage: 0.0,
-            secondaryPercentage: nil,
-            inputTokens: 0,
-            outputTokens: 0
+    func testInit_FromUsageSnapshot() {
+        let snapshot = UsageSnapshot(
+            primaryPercentage: 75.0,
+            fiveHourUtilization: 75.0,
+            sevenDayUtilization: 30.0,
+            sevenDayOpusUtilization: nil,
+            sevenDaySonnetUtilization: nil,
+            resetsAt: nil,
+            sevenDayResetsAt: nil,
+            sevenDaySonnetResetsAt: nil,
+            source: .oauth,
+            inputTokens: nil,
+            outputTokens: nil,
+            cacheCreationTokens: nil,
+            cacheReadTokens: nil,
+            model: nil,
+            extraUsageEnabled: false,
+            extraUsageMonthlyLimitCents: nil,
+            extraUsageSpentCents: nil,
+            extraUsageUtilization: nil
         )
 
-        XCTAssertEqual(point.totalTokens, 0)
+        let point = UsageDataPoint(from: snapshot)
+        XCTAssertEqual(point.primaryPercentage, 75.0)
+        XCTAssertEqual(point.sevenDayPercentage, 30.0)
+        XCTAssertEqual(point.source, "oauth")
     }
 
     // MARK: - Identifiable Tests
@@ -66,17 +74,11 @@ final class UsageDataPointTests: XCTestCase {
     func testIdentifiable_UniqueIds() {
         let point1 = UsageDataPoint(
             timestamp: Date(),
-            primaryPercentage: 50.0,
-            secondaryPercentage: nil,
-            inputTokens: 1000,
-            outputTokens: 500
+            primaryPercentage: 50.0
         )
         let point2 = UsageDataPoint(
             timestamp: Date(),
-            primaryPercentage: 60.0,
-            secondaryPercentage: nil,
-            inputTokens: 2000,
-            outputTokens: 1000
+            primaryPercentage: 60.0
         )
 
         XCTAssertNotEqual(point1.id, point2.id)

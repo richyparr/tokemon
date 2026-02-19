@@ -54,6 +54,7 @@
 		71EF6A05E33796E5D828A782 /* UsageChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F3751311AD475B27A17930 /* UsageChartView.swift */; };
 		72E21FC160B5F432DCCA53CE /* ForecastingEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1538D77697CB5060DD7C7D /* ForecastingEngine.swift */; };
 		75C14174F8D38D9C79DC0AAA /* tokemon_logo_white.png in Resources */ = {isa = PBXBuildFile; fileRef = F48A86AFA95D5A0B9F8C993D /* tokemon_logo_white.png */; };
+		768CF3D5E58161B5351A71E0 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = C28FB0DF4449DE2C5469DF7C /* SnapshotTesting */; };
 		7B290189E89AF0F599A4EF14 /* MemberUsageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF39096943554DA0BC88042F /* MemberUsageRow.swift */; };
 		7EFD68CEA419818262CC80EB /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B830AEBD28764DAA036C497D /* Constants.swift */; };
 		82E6AE6FAF6EB25F103395AB /* BurnRateCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4923FCCB67284A6461E2BA7 /* BurnRateCalculatorTests.swift */; };
@@ -92,6 +93,7 @@
 		D2401EFE6B2F42731C96381A /* AdminAPISettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46FD9FDE832A7ED9CC89275 /* AdminAPISettings.swift */; };
 		D33543E0C22FC00AA4BA6485 /* TokemonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFF2DB16CA2B60EFD601809 /* TokemonApp.swift */; };
 		D7B4CF396B195380D6CDCAA0 /* NSWindow+Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4011BC5537815D534B3235D /* NSWindow+Position.swift */; };
+		D84A037152FA75C7ABA0818B /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 35FB9E6C7B4BF8DB4774FA6E /* Sparkle */; };
 		D90C2E7E897679A6A8250A83 /* ExtendedHistoryChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632F4DD45617A3937991AB99 /* ExtendedHistoryChartView.swift */; };
 		D9708BF0C97DC2A59C28BB63 /* WebhookSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4223BFEE7B6D0449BF7809A8 /* WebhookSettings.swift */; };
 		DBCEE4B0D8F0752D38D92165 /* PDFReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA75BD5F57DDDD22F9C62DCB /* PDFReportView.swift */; };
@@ -225,6 +227,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1C4C434B4423CDD311CD9CE1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				768CF3D5E58161B5351A71E0 /* SnapshotTesting in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9A1FCFF5D66CD2A998B8D513 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -232,6 +242,7 @@
 				E6E75261A9479ECC5008EC41 /* MenuBarExtraAccess in Frameworks */,
 				13C100983FC17FC4ED4A4568 /* SettingsAccess in Frameworks */,
 				B58770A4FACBA7687336BCD7 /* KeychainAccess in Frameworks */,
+				D84A037152FA75C7ABA0818B /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -521,6 +532,7 @@
 			buildConfigurationList = C3729CF28B0748369D01231F /* Build configuration list for PBXNativeTarget "TokemonTests" */;
 			buildPhases = (
 				6697D9F91DFA03C78DF7A5E0 /* Sources */,
+				1C4C434B4423CDD311CD9CE1 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -529,6 +541,7 @@
 			);
 			name = TokemonTests;
 			packageProductDependencies = (
+				C28FB0DF4449DE2C5469DF7C /* SnapshotTesting */,
 			);
 			productName = TokemonTests;
 			productReference = 21811BC25857B034321570FC /* TokemonTests.xctest */;
@@ -551,6 +564,7 @@
 				E5AEA65AF84DB4C6D79D8464 /* MenuBarExtraAccess */,
 				FBBEA55FE899BD7D573AD896 /* SettingsAccess */,
 				067F2409179AEE12192540D8 /* KeychainAccess */,
+				35FB9E6C7B4BF8DB4774FA6E /* Sparkle */,
 			);
 			productName = Tokemon;
 			productReference = 1BCC9362F58DA463BC842786 /* Tokemon.app */;
@@ -587,6 +601,8 @@
 				5B57348780A5FE7A6C56F4E5 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				4334D9D7F0E170CBA0214EF2 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */,
 				0040C36AF39F4FFCF7B9EFFA /* XCRemoteSwiftPackageReference "SettingsAccess" */,
+				752B6CDBB6500A3F68A485D3 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				C2698397F5C8D218DBA05701 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
@@ -760,6 +776,8 @@
 				INFOPLIST_FILE = Tokemon/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ai.tokemon.app;
+				PRODUCT_MODULE_NAME = tokemon;
+				PRODUCT_NAME = Tokemon;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -769,8 +787,11 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ai.tokemon.app.tests;
+				PRODUCT_MODULE_NAME = TokemonTests;
+				PRODUCT_NAME = TokemonTests;
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tokemon.app/Contents/MacOS/Tokemon";
 			};
@@ -781,8 +802,11 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ai.tokemon.app.uitests;
+				PRODUCT_MODULE_NAME = TokemonUITests;
+				PRODUCT_NAME = TokemonUITests;
 				SDKROOT = macosx;
 				TEST_TARGET_NAME = Tokemon;
 			};
@@ -838,7 +862,7 @@
 				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = Tokemon;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -851,8 +875,11 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ai.tokemon.app.uitests;
+				PRODUCT_MODULE_NAME = TokemonUITests;
+				PRODUCT_NAME = TokemonUITests;
 				SDKROOT = macosx;
 				TEST_TARGET_NAME = Tokemon;
 			};
@@ -863,8 +890,11 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ai.tokemon.app.tests;
+				PRODUCT_MODULE_NAME = TokemonTests;
+				PRODUCT_NAME = TokemonTests;
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tokemon.app/Contents/MacOS/Tokemon";
 			};
@@ -882,6 +912,8 @@
 				INFOPLIST_FILE = Tokemon/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ai.tokemon.app;
+				PRODUCT_MODULE_NAME = tokemon;
+				PRODUCT_NAME = Tokemon;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -943,7 +975,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = Tokemon;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1017,6 +1049,22 @@
 				minimumVersion = 4.2.2;
 			};
 		};
+		752B6CDBB6500A3F68A485D3 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.18.0;
+			};
+		};
+		C2698397F5C8D218DBA05701 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1024,6 +1072,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5B57348780A5FE7A6C56F4E5 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
+		};
+		35FB9E6C7B4BF8DB4774FA6E /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C2698397F5C8D218DBA05701 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+		C28FB0DF4449DE2C5469DF7C /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 752B6CDBB6500A3F68A485D3 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
 		};
 		E5AEA65AF84DB4C6D79D8464 /* MenuBarExtraAccess */ = {
 			isa = XCSwiftPackageProductDependency;

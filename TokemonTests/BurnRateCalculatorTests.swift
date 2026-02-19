@@ -14,10 +14,7 @@ final class BurnRateCalculatorTests: XCTestCase {
     func testCalculateBurnRate_SinglePoint_ReturnsNil() {
         let point = UsageDataPoint(
             timestamp: Date(),
-            primaryPercentage: 50.0,
-            secondaryPercentage: nil,
-            inputTokens: 1000,
-            outputTokens: 500
+            primaryPercentage: 50.0
         )
         let result = BurnRateCalculator.calculateBurnRate(from: [point])
         XCTAssertNil(result)
@@ -26,8 +23,8 @@ final class BurnRateCalculatorTests: XCTestCase {
     func testCalculateBurnRate_IncreasingUsage_ReturnsPositiveRate() {
         let now = Date()
         let points = [
-            UsageDataPoint(timestamp: now.addingTimeInterval(-3600), primaryPercentage: 40.0, secondaryPercentage: nil, inputTokens: 1000, outputTokens: 500),
-            UsageDataPoint(timestamp: now, primaryPercentage: 50.0, secondaryPercentage: nil, inputTokens: 1500, outputTokens: 700),
+            UsageDataPoint(timestamp: now.addingTimeInterval(-3600), primaryPercentage: 40.0),
+            UsageDataPoint(timestamp: now, primaryPercentage: 50.0),
         ]
 
         let result = BurnRateCalculator.calculateBurnRate(from: points)
@@ -40,8 +37,8 @@ final class BurnRateCalculatorTests: XCTestCase {
     func testCalculateBurnRate_DecreasingUsage_ReturnsNegativeRate() {
         let now = Date()
         let points = [
-            UsageDataPoint(timestamp: now.addingTimeInterval(-3600), primaryPercentage: 60.0, secondaryPercentage: nil, inputTokens: 2000, outputTokens: 1000),
-            UsageDataPoint(timestamp: now, primaryPercentage: 40.0, secondaryPercentage: nil, inputTokens: 1000, outputTokens: 500),
+            UsageDataPoint(timestamp: now.addingTimeInterval(-3600), primaryPercentage: 60.0),
+            UsageDataPoint(timestamp: now, primaryPercentage: 40.0),
         ]
 
         let result = BurnRateCalculator.calculateBurnRate(from: points)
@@ -53,42 +50,56 @@ final class BurnRateCalculatorTests: XCTestCase {
 
     // MARK: - Projection Tests
 
-    func testProjectedTimeToThreshold_ZeroBurnRate_ReturnsNil() {
-        let result = BurnRateCalculator.projectedTimeToThreshold(
+    func testProjectTimeToLimit_ZeroBurnRate_ReturnsNil() {
+        let result = BurnRateCalculator.projectTimeToLimit(
             currentUsage: 50.0,
-            burnRatePerHour: 0.0,
-            threshold: 100.0
+            burnRate: 0.0
         )
         XCTAssertNil(result)
     }
 
-    func testProjectedTimeToThreshold_NegativeBurnRate_ReturnsNil() {
-        let result = BurnRateCalculator.projectedTimeToThreshold(
+    func testProjectTimeToLimit_NegativeBurnRate_ReturnsNil() {
+        let result = BurnRateCalculator.projectTimeToLimit(
             currentUsage: 50.0,
-            burnRatePerHour: -5.0,
-            threshold: 100.0
+            burnRate: -5.0
         )
         XCTAssertNil(result, "Should return nil when usage is decreasing")
     }
 
-    func testProjectedTimeToThreshold_AlreadyAtThreshold_ReturnsZero() {
-        let result = BurnRateCalculator.projectedTimeToThreshold(
+    func testProjectTimeToLimit_AlreadyAtLimit_ReturnsNil() {
+        let result = BurnRateCalculator.projectTimeToLimit(
             currentUsage: 100.0,
-            burnRatePerHour: 5.0,
-            threshold: 100.0
+            burnRate: 5.0
         )
-        XCTAssertNotNil(result)
-        XCTAssertEqual(result!, 0, accuracy: 0.01)
+        XCTAssertNil(result, "Should return nil when already at 100%")
     }
 
-    func testProjectedTimeToThreshold_PositiveBurnRate_ReturnsCorrectTime() {
-        // At 50%, burning 5% per hour, should hit 100% in 10 hours
-        let result = BurnRateCalculator.projectedTimeToThreshold(
+    func testProjectTimeToLimit_PositiveBurnRate_ReturnsPositiveTime() {
+        // At 50%, burning 5% per hour, should hit 100% in ~10 hours = 36000 seconds
+        let result = BurnRateCalculator.projectTimeToLimit(
             currentUsage: 50.0,
-            burnRatePerHour: 5.0,
-            threshold: 100.0
+            burnRate: 5.0
         )
         XCTAssertNotNil(result)
-        XCTAssertEqual(result!, 10.0, accuracy: 0.01)
+        if let seconds = result {
+            XCTAssertEqual(seconds, 36000.0, accuracy: 1.0)
+        }
+    }
+
+    // MARK: - Format Tests
+
+    func testFormatTimeRemaining_Hours() {
+        let result = BurnRateCalculator.formatTimeRemaining(7200) // 2 hours
+        XCTAssertEqual(result, "2h 0m")
+    }
+
+    func testFormatTimeRemaining_Minutes() {
+        let result = BurnRateCalculator.formatTimeRemaining(2700) // 45 min
+        XCTAssertEqual(result, "45m")
+    }
+
+    func testFormatTimeRemaining_OverADay() {
+        let result = BurnRateCalculator.formatTimeRemaining(100000) // >24h
+        XCTAssertEqual(result, ">24h")
     }
 }
