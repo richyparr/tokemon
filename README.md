@@ -128,7 +128,7 @@ Right-click the menu bar icon or press Cmd+, to access settings:
 ## Support
 
 - [Report issues](https://github.com/richyparr/tokemon/issues)
-- Website: [tokemon.app](https://tokemon.app)
+- Website: [tokemon.ai](https://tokemon.ai)
 
 ## License
 
