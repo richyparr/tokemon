@@ -2,7 +2,7 @@ import SwiftUI
 import AppKit
 
 /// Compact usage display for the floating window.
-/// Shows usage percentage prominently with status indicator.
+/// Shows one or more usage rows based on the rows passed at init.
 /// Updates live via @Environment(UsageMonitor.self).
 struct FloatingWindowView: View {
     @Environment(UsageMonitor.self) private var monitor
@@ -10,85 +10,107 @@ struct FloatingWindowView: View {
     @Environment(ThemeManager.self) private var themeManager
     @Environment(\.colorScheme) private var colorScheme
 
+    /// Which rows to display, in display order. Set at init by the controller.
+    let rows: [FloatingWindowRow]
+
     /// Computed theme colors based on current theme and color scheme
     private var themeColors: ThemeColors {
         themeManager.colors(for: colorScheme)
     }
 
     var body: some View {
-        floatingContent
-            .preferredColorScheme(themeColors.colorSchemeOverride)
-    }
-
-    private var floatingContent: some View {
-        VStack(spacing: 4) {
-            // Big percentage number
-            Text(percentageText)
-                .font(.system(size: 32, weight: .bold, design: .rounded))
-                .foregroundStyle(usageColor)
-                .monospacedDigit()
-
-            // Status indicator
-            Text(statusText)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+        VStack(spacing: 0) {
+            if rows.isEmpty {
+                // Fallback: show 5-hour usage if no rows specified
+                singleRow(for: .fiveHour, fontSize: 32)
+            } else if rows.count == 1 {
+                singleRow(for: rows[0], fontSize: 32)
+            } else {
+                // Multiple rows with dividers
+                singleRow(for: rows[0], fontSize: 32)
+                ForEach(rows.dropFirst(), id: \.self) { row in
+                    Divider()
+                        .padding(.horizontal, 12)
+                    singleRow(for: row, fontSize: 24)
+                }
+            }
         }
         .padding(EdgeInsets(top: 12, leading: 12, bottom: 16, trailing: 12))
         .frame(minWidth: 120, minHeight: 60)
         .background(themeColors.primaryBackground)
         .tint(themeColors.primaryAccent)
+        .preferredColorScheme(themeColors.colorSchemeOverride)
     }
 
-    // MARK: - Computed Properties
+    // MARK: - Row View
 
-    private var percentageText: String {
-        let usage = monitor.currentUsage
-        if usage.source == .none {
-            return "--%"
+    private func singleRow(for row: FloatingWindowRow, fontSize: CGFloat) -> some View {
+        VStack(spacing: 4) {
+            Text(percentageText(for: row))
+                .font(.system(size: fontSize, weight: .bold, design: .rounded))
+                .foregroundStyle(usageColor(for: row))
+                .monospacedDigit()
+
+            Text(statusText(for: row))
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
-        if usage.hasPercentage {
-            return "\(Int(usage.primaryPercentage))%"
-        }
-        // JSONL fallback: show token count
-        return usage.formattedTokenCount
+        .padding(.vertical, fontSize < 32 ? 4 : 0)
     }
 
-    private var usageColor: Color {
+    // MARK: - Per-Row Computed Properties
+
+    private func percentageText(for row: FloatingWindowRow) -> String {
         let usage = monitor.currentUsage
-        guard usage.hasPercentage else {
-            return Color(nsColor: .secondaryLabelColor)
+
+        if row == .fiveHour {
+            if usage.source == .none {
+                return "--%"
+            }
+            if usage.hasPercentage {
+                return "\(Int(usage.primaryPercentage))%"
+            }
+            return usage.formattedTokenCount
         }
-        let pct = usage.primaryPercentage
-        return Color(nsColor: GradientColors.color(for: pct))
+
+        // 7-day rows
+        if let pct = row.percentage(from: usage) {
+            return "\(Int(pct))%"
+        }
+        return "--%"
     }
 
-    private var statusText: String {
+    private func usageColor(for row: FloatingWindowRow) -> Color {
         let usage = monitor.currentUsage
-        let level = alertManager.currentAlertLevel
 
-        // Priority: error states
-        if case .bothSourcesFailed = monitor.error {
-            return "Data unavailable"
+        if let pct = row.percentage(from: usage) {
+            return Color(nsColor: GradientColors.color(for: pct))
+        }
+        return Color(nsColor: .secondaryLabelColor)
+    }
+
+    private func statusText(for row: FloatingWindowRow) -> String {
+        let usage = monitor.currentUsage
+
+        if row == .fiveHour {
+            let level = alertManager.currentAlertLevel
+            if case .bothSourcesFailed = monitor.error {
+                return "Data unavailable"
+            }
+            if !usage.hasPercentage && usage.source == .jsonl {
+                return "Local session"
+            }
+            if usage.source == .none {
+                return "Loading..."
+            }
+            switch level {
+            case .critical: return "Limit reached"
+            case .warning: return "Approaching limit"
+            case .normal: return row.label
+            }
         }
 
-        // Priority: JSONL mode (no percentage)
-        if !usage.hasPercentage && usage.source == .jsonl {
-            return "Local session"
-        }
-
-        // Priority: no data
-        if usage.source == .none {
-            return "Loading..."
-        }
-
-        // Alert-level status
-        switch level {
-        case .critical:
-            return "Limit reached"
-        case .warning:
-            return "Approaching limit"
-        case .normal:
-            return "5-hour usage"
-        }
+        // 7-day rows: just show the label
+        return row.label
     }
 }

@@ -20,23 +20,6 @@ struct TokemonApp: App {
     @State private var webhookManager = WebhookManager()
     @State private var budgetManager = BudgetManager()
 
-    // Track whether chart is shown to adjust popover height
-    @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
-
-    /// Compute popover height based on content visibility.
-    /// Delegates to PopoverHeightCalculator (pure function) for testability.
-    /// See PopoverHeightCalculator for base height breakdown.
-    private var popoverHeight: CGFloat {
-        PopoverHeightCalculator.calculate(
-            profileCount: profileManager.profiles.count,
-            showExtraUsage: monitor.showExtraUsage,
-            extraUsageEnabled: monitor.currentUsage.extraUsageEnabled,
-            updateAvailable: updateManager.updateAvailable,
-            showUsageTrend: showUsageTrend
-        )
-    }
-
-
     init() {
         // Set notification delegate to handle notifications while app is "active"
         // (Menu bar apps are always considered active)
@@ -73,7 +56,7 @@ struct TokemonApp: App {
                 .environment(updateManager)
                 .environment(webhookManager)
                 .environment(budgetManager)
-                .frame(width: 320, height: popoverHeight)
+                .frame(width: 320)
                 .onAppear {
                     // Ensure status item is updated when popover appears
                     statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
@@ -119,6 +102,7 @@ struct TokemonApp: App {
             FloatingWindowController.shared.setMonitor(monitor)
             FloatingWindowController.shared.setAlertManager(alertManager)
             FloatingWindowController.shared.setThemeManager(themeManager)
+            FloatingWindowController.shared.restoreIfNeeded()
 
             // Enable right-click detection on the status item button
             statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
@@ -391,13 +375,27 @@ final class StatusItemManager {
 
         menu.addItem(NSMenuItem.separator())
 
-        // Toggle Floating Window (Cmd+F)
-        let floatingItem = NSMenuItem(
-            title: FloatingWindowController.shared.isVisible ? "Hide Floating Window" : "Show Floating Window",
-            action: #selector(ContextMenuActions.toggleFloatingWindow),
-            keyEquivalent: "f"
-        )
-        floatingItem.target = actions
+        // Floating Window submenu
+        let floatingSubmenu = NSMenu(title: "Floating Window")
+        let controller = FloatingWindowController.shared
+
+        for row in FloatingWindowRow.allCases {
+            let item = NSMenuItem(title: row.label, action: #selector(ContextMenuActions.toggleFloatingRow(_:)), keyEquivalent: "")
+            item.target = actions
+            item.state = controller.isRowActive(row) ? .on : .off
+            item.representedObject = row.rawValue
+            floatingSubmenu.addItem(item)
+        }
+
+        if controller.isVisible {
+            floatingSubmenu.addItem(NSMenuItem.separator())
+            let hideItem = NSMenuItem(title: "Hide Window", action: #selector(ContextMenuActions.hideFloatingWindow), keyEquivalent: "f")
+            hideItem.target = actions
+            floatingSubmenu.addItem(hideItem)
+        }
+
+        let floatingItem = NSMenuItem(title: "Floating Window", action: nil, keyEquivalent: "")
+        floatingItem.submenu = floatingSubmenu
         menu.addItem(floatingItem)
 
         // Settings... (Cmd+,)
@@ -439,8 +437,14 @@ final class ContextMenuActions: NSObject {
         }
     }
 
-    @objc func toggleFloatingWindow() {
-        FloatingWindowController.shared.toggleFloatingWindow()
+    @objc func toggleFloatingRow(_ sender: NSMenuItem) {
+        guard let rawValue = sender.representedObject as? String,
+              let row = FloatingWindowRow(rawValue: rawValue) else { return }
+        FloatingWindowController.shared.toggleRow(row)
+    }
+
+    @objc func hideFloatingWindow() {
+        FloatingWindowController.shared.hideFloatingWindow()
     }
 
     @objc func openSettings() {

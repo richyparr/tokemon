@@ -32,7 +32,7 @@ final class FloatingWindowSnapshotTests: SnapshotTestCase {
         let themeManager = ThemeManager()
         themeManager.selectedTheme = theme
 
-        let view = FloatingWindowView()
+        let view = FloatingWindowView(rows: [.fiveHour])
             .environment(monitor)
             .environment(alertManager)
             .environment(themeManager)

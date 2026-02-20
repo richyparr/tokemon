@@ -37,6 +37,7 @@
 		32BA7A6E1A4858D8C98E8A67 /* PopoverSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CFBD68F729C826E7243F739 /* PopoverSnapshotTests.swift */; };
 		32E34EAB9EA9CF5C63FAFA00 /* SettingsSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D524B41FB39F203CCBCD5C9C /* SettingsSnapshotTests.swift */; };
 		32E37ED03B8FF3E8421E4F65 /* TokemonLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3912A8273323D5D88BCECBF2 /* TokemonLayoutTests.swift */; };
+		3430370A3BC790CFEDDF248D /* testNotificationsSettings_Default.1.png in Resources */ = {isa = PBXBuildFile; fileRef = 17C76A39457597D6098D6576 /* testNotificationsSettings_Default.1.png */; };
 		37154E5D8DCB20127AF51FF6 /* AnalyticsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9FAE614C01FD1E90FB4550 /* AnalyticsEngine.swift */; };
 		38F5295794D8104D9F11FF99 /* UsageSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1770D0C60F067900CCD99B6 /* UsageSnapshotTests.swift */; };
 		39BD549155AF6BACC0CE1179 /* testHeader_High_80Percent.1.png in Resources */ = {isa = PBXBuildFile; fileRef = E51F23D567CF22ACE960926D /* testHeader_High_80Percent.1.png */; };
@@ -146,6 +147,7 @@
 		EFFA05FE195E9BF770183A32 /* UsageSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DD7E3BE67BDDF4C8230C29 /* UsageSummaryView.swift */; };
 		F5B3F5BBECE7AB0C9DA3FB85 /* testDetail_JSONL_TokenBreakdown.1.png in Resources */ = {isa = PBXBuildFile; fileRef = B4B0A3216281E597E70E1B8B /* testDetail_JSONL_TokenBreakdown.1.png */; };
 		F69A46C7E35EE708E06BB6BE /* TeamDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17840EFA597CFEEFD4E29B99 /* TeamDashboardView.swift */; };
+		FDD9FE13E947C584D8072140 /* testGeneralSettingsTab_Default.1.png in Resources */ = {isa = PBXBuildFile; fileRef = B3B80222F4D578ADEAF1CED7 /* testGeneralSettingsTab_Default.1.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -181,6 +183,7 @@
 		1759B2DC3FFA8846DF6093CC /* SnapshotTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestHelper.swift; sourceTree = "<group>"; };
 		17840EFA597CFEEFD4E29B99 /* TeamDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamDashboardView.swift; sourceTree = "<group>"; };
 		17998F14ADA62C5DE975D0BF /* AppearanceSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettings.swift; sourceTree = "<group>"; };
+		17C76A39457597D6098D6576 /* testNotificationsSettings_Default.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testNotificationsSettings_Default.1.png; sourceTree = "<group>"; };
 		1AF7023982417378ACE7878C /* testPopover_WithChart.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testPopover_WithChart.1.png; sourceTree = "<group>"; };
 		1BCC9362F58DA463BC842786 /* Tokemon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tokemon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DD4AA39EA92C42DD9798910 /* testPopover_Critical_95Percent.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testPopover_Critical_95Percent.1.png; sourceTree = "<group>"; };
@@ -261,6 +264,7 @@
 		AD2197158F3CCE0D24428570 /* testPopover_JSONL_TokenView.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testPopover_JSONL_TokenView.1.png; sourceTree = "<group>"; };
 		AE9CDB41FD36B0FCBFCDB188 /* OrgUsageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgUsageView.swift; sourceTree = "<group>"; };
 		AF39096943554DA0BC88042F /* MemberUsageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberUsageRow.swift; sourceTree = "<group>"; };
+		B3B80222F4D578ADEAF1CED7 /* testGeneralSettingsTab_Default.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testGeneralSettingsTab_Default.1.png; sourceTree = "<group>"; };
 		B4B0A3216281E597E70E1B8B /* testDetail_JSONL_TokenBreakdown.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testDetail_JSONL_TokenBreakdown.1.png; sourceTree = "<group>"; };
 		B5770A7D0DEBD8E1F4470553 /* WebhookManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookManager.swift; sourceTree = "<group>"; };
 		B5CC4575D29912985985D0CD /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
@@ -444,6 +448,8 @@
 			isa = PBXGroup;
 			children = (
 				C83928EC85BAF41A63E4459A /* testAppearanceSettings_Default.1.png */,
+				B3B80222F4D578ADEAF1CED7 /* testGeneralSettingsTab_Default.1.png */,
+				17C76A39457597D6098D6576 /* testNotificationsSettings_Default.1.png */,
 				EB9C650AC0D1B84B5B4C8709 /* testStatuslineSettings_Default.1.png */,
 			);
 			path = SettingsSnapshotTests;
@@ -816,6 +822,7 @@
 				9A1624A25FBB562C0AB90786 /* testFloating_Empty.1.png in Resources */,
 				2ED4F90C016423208F521D1E /* testFloating_JSONL.1.png in Resources */,
 				D01EF62AEF021410DBE5315E /* testFloating_Low_25Percent.1.png in Resources */,
+				FDD9FE13E947C584D8072140 /* testGeneralSettingsTab_Default.1.png in Resources */,
 				B7D3E3F57AA96B86A217FC12 /* testHeader_AllThemes_Medium.theme-Dark.png in Resources */,
 				7B4D487C96871AFF2EC337E5 /* testHeader_AllThemes_Medium.theme-Light.png in Resources */,
 				B963F75F646FDF0747CF8194 /* testHeader_AllThemes_Medium.theme-Native_macOS.png in Resources */,
@@ -825,6 +832,7 @@
 				5F80B9AEC1B8F81E5EC63831 /* testHeader_JSONL_TokenCount.1.png in Resources */,
 				05262B68FCB6FB4B96277B17 /* testHeader_Low_25Percent.1.png in Resources */,
 				0740E67BD021D7F61388080C /* testHeader_Medium_60Percent.1.png in Resources */,
+				3430370A3BC790CFEDDF248D /* testNotificationsSettings_Default.1.png in Resources */,
 				DA4655C0A9C0E4B0AAEA5D5B /* testPopover_AllThemes.Dark.png in Resources */,
 				947DAF6B3AD7DBBF7651AF50 /* testPopover_AllThemes.Light.png in Resources */,
 				24D6359480392AD602E35FB9 /* testPopover_AllThemes.Native_macOS.png in Resources */,
