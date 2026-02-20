@@ -112,7 +112,7 @@ final class SettingsWindowController {
         let newWindow = NSWindow(contentViewController: hostingController)
         newWindow.title = "Tokemon Settings"
         newWindow.styleMask = [.titled, .closable]
-        newWindow.setContentSize(NSSize(width: 450, height: 400))
+        newWindow.setContentSize(NSSize(width: 720, height: 500))
         newWindow.center()
         newWindow.isReleasedWhenClosed = false
 

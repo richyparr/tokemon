@@ -82,6 +82,7 @@ See PROJECT.md Key Decisions table for full list.
 ### Roadmap Evolution
 
 - Phase 17.1 inserted after Phase 17: Automated Testing — XCTest/XCUITest infrastructure for Swift app UI bugs (URGENT)
+- Phase 22 added: Security Hardening — Move profile credentials to Keychain, sanitize error logging, enforce HTTPS webhooks, evaluate sandboxing, fix Keychain write-back conflicts
 
 ### Pending Todos
 

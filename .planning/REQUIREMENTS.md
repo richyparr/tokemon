@@ -62,30 +62,30 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| EXT-01 | TBD | Pending |
-| EXT-02 | TBD | Pending |
-| EXT-03 | TBD | Pending |
-| EXT-04 | TBD | Pending |
-| DASH-01 | TBD | Pending |
-| DASH-02 | TBD | Pending |
-| DASH-03 | TBD | Pending |
-| DASH-04 | TBD | Pending |
-| DASH-05 | TBD | Pending |
-| MENU-01 | TBD | Pending |
-| MENU-02 | TBD | Pending |
-| MENU-03 | TBD | Pending |
-| PROF-01 | TBD | Pending |
-| PROF-02 | TBD | Pending |
-| PROF-03 | TBD | Pending |
-| ALRT-01 | TBD | Pending |
-| ALRT-02 | TBD | Pending |
-| ALRT-03 | TBD | Pending |
+| EXT-01 | Phase 18 | Pending |
+| EXT-02 | Phase 18 | Pending |
+| EXT-03 | Phase 18 | Pending |
+| EXT-04 | Phase 18 | Pending |
+| DASH-01 | Phase 19 | Pending |
+| DASH-02 | Phase 19 | Pending |
+| DASH-03 | Phase 19 | Pending |
+| DASH-04 | Phase 19 | Pending |
+| DASH-05 | Phase 19 | Pending |
+| MENU-01 | Phase 20 | Pending |
+| MENU-02 | Phase 20 | Pending |
+| MENU-03 | Phase 20 | Pending |
+| PROF-01 | Phase 21 | Pending |
+| PROF-02 | Phase 21 | Pending |
+| PROF-03 | Phase 21 | Pending |
+| ALRT-01 | Phase 21 | Pending |
+| ALRT-02 | Phase 21 | Pending |
+| ALRT-03 | Phase 21 | Pending |
 
 **Coverage:**
-- v4.0 requirements: 15 total
-- Mapped to phases: 0
-- Unmapped: 15
+- v4.0 requirements: 18 total
+- Mapped to phases: 18
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-18*
-*Last updated: 2026-02-18 after v4.0 milestone started*
+*Last updated: 2026-02-18 after v4.0 roadmap created*
