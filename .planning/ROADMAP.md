@@ -156,12 +156,23 @@ Plans:
 | 19. Dashboard Command | v4.0 | 0/TBD | Not started | - |
 | 20. Menu Bar Command | v4.0 | 0/TBD | Not started | - |
 | 21. Multi-Profile & Alerts | v4.0 | 0/TBD | Not started | - |
+| 22. Security Hardening | - | 0/2 | Planned | - |
 
 ## Future Backlog
 
 Ideas discussed but deferred for future milestones:
 
 - **User Accounts + Insights Platform** -- Full account system with rich profile data, telemetry with consent, benchmarks & personalized insights, potentially monetizable data asset. Requires: auth system, backend infrastructure, GDPR compliance. (Discussed 2026-02-16, deferred in favor of shipping clean)
+
+### Phase 22: Security Hardening
+
+**Goal:** Harden security posture by moving profile credentials from UserDefaults to Keychain, sanitizing error logging, enforcing HTTPS-only webhook URLs, evaluating app sandboxing, and resolving Keychain write-back conflicts with Claude Code.
+**Depends on:** Phase 21
+**Plans:** 2 plans
+
+Plans:
+- [ ] 22-01-PLAN.md -- Migrate profile credentials to Keychain, disable TokenManager write-back
+- [ ] 22-02-PLAN.md -- Replace print() with OSLog.Logger, enforce HTTPS webhooks, document sandboxing
 
 ---
 
