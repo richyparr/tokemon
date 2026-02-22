@@ -9,14 +9,14 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 
 ## Current Position
 
-Phase: 18-extension-foundation
-Plan: 2 of 2 complete
-Status: Complete
-Last activity: 2026-02-19 — Phase 18 verified (9/9 must-haves passed), human-verified in Raycast
+Phase: 19-dashboard-command
+Plan: 1 of 2 complete
+Status: In Progress
+Last activity: 2026-02-22 — Phase 19 Plan 01 complete (types + utilities, 30 tests passing)
 
-Next: Phase 19 (Dashboard Command)
+Next: Phase 19 Plan 02
 
-Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2
+Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2 | 19 [#####.....] 1/2
 
 ## Shipped Milestones
 
@@ -40,6 +40,9 @@ Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 
 **Phase 18 (Raycast Extension Foundation):**
 - Plan 01: 2 min, 2 tasks, 12 files
 - Plan 02: 5 min, 3 tasks, 5 files (including human checkpoint)
+
+**Phase 19 (Dashboard Command):**
+- Plan 01: 5 min, 2 tasks, 5 files
 
 **v4.0 (TypeScript/React):**
 - Codebase in `tokemon-raycast/` (sibling to Tokemon/ Swift project)
@@ -79,6 +82,12 @@ See PROJECT.md Key Decisions table for full list.
 - fetchUsage typed as Promise<unknown> — full response typing deferred to Phase 19
 - api.ts has zero Raycast imports — pure utility, testable without Raycast environment
 
+**Phase 19 Plan 01 Decisions:**
+- vitest chosen over jest: zero-config TypeScript, ESM-native, lightweight (40 packages)
+- usageColor returns plain strings ("green" etc.) so utils.ts is testable without @raycast/api mock
+- computePace uses ±10 tolerance band to prevent jitter from flipping pace status
+- parseResetDate returns null (not throws) for invalid input — safer for display code
+
 ### Roadmap Evolution
 
 - Phase 17.1 inserted after Phase 17: Automated Testing — XCTest/XCUITest infrastructure for Swift app UI bugs (URGENT)
@@ -95,5 +104,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Session resumed, proceeding to plan Phase 19 (Dashboard Command)
+Stopped at: Completed 19-01-PLAN.md (types + utilities, TDD complete)
 Resume file: none
