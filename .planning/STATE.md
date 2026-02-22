@@ -5,18 +5,18 @@
 See: .planning/PROJECT.md (updated 2026-02-18)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** v4.0 Raycast Integration - Phase 20 Menu Bar Command
+**Current focus:** v4.0 Raycast Integration - Phase 21 Multi-Profile & Alerts
 
 ## Current Position
 
-Phase: 19-dashboard-command
-Plan: 2 of 2 complete
+Phase: 20-menu-bar-command
+Plan: 1 of 1 complete
 Status: Complete
-Last activity: 2026-02-22 — Phase 19 complete (Dashboard command verified in Raycast)
+Last activity: 2026-02-22 — Phase 20 complete (Menu bar command verified in Raycast)
 
-Next: Phase 20 (Menu Bar Command)
+Next: Phase 21 (Multi-Profile & Alerts)
 
-Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2 | 19 [##########] 2/2
+Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2 | 19 [##########] 2/2 | 20 [##########] 1/1
 
 ## Shipped Milestones
 
@@ -44,6 +44,9 @@ Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 
 **Phase 19 (Dashboard Command):**
 - Plan 01: 5 min, 2 tasks, 5 files
 - Plan 02: 5 min, 2 tasks, 1 file (including human checkpoint)
+
+**Phase 20 (Menu Bar Command):**
+- Plan 01: 6 min, 2 tasks, 2 files (including human checkpoint)
 
 **v4.0 (TypeScript/React):**
 - Codebase in `tokemon-raycast/` (sibling to Tokemon/ Swift project)
@@ -92,6 +95,12 @@ See PROJECT.md Key Decisions table for full list.
 - All hooks called unconditionally before early returns — React hook rules compliance
 - Conditional Sonnet/Opus rows only shown when utilization is non-null
 
+**Phase 20 Decisions:**
+- colorMap duplicated per command (not shared) — keeps commands self-contained
+- Icon.CircleFilled + tintColor is only color mechanism for menu bar (title text color not programmable)
+- interval: 5m for background refresh — safe for Store submission
+- No-token returns MenuBarExtra with Icon.Warning (never null — would hide the item)
+
 ### Roadmap Evolution
 
 - Phase 17.1 inserted after Phase 17: Automated Testing — XCTest/XCUITest infrastructure for Swift app UI bugs (URGENT)
@@ -108,5 +117,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Phase 19 complete (Dashboard command verified, all 5 DASH requirements met)
+Stopped at: Phase 20 complete (Menu bar command verified, all 3 MENU requirements met)
 Resume file: none
