@@ -5,18 +5,18 @@
 See: .planning/PROJECT.md (updated 2026-02-18)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** v4.0 Raycast Integration - Phase 19 Dashboard Command
+**Current focus:** v4.0 Raycast Integration - Phase 20 Menu Bar Command
 
 ## Current Position
 
 Phase: 19-dashboard-command
-Plan: 1 of 2 complete
-Status: In Progress
-Last activity: 2026-02-22 — Phase 19 Plan 01 complete (types + utilities, 30 tests passing)
+Plan: 2 of 2 complete
+Status: Complete
+Last activity: 2026-02-22 — Phase 19 complete (Dashboard command verified in Raycast)
 
-Next: Phase 19 Plan 02
+Next: Phase 20 (Menu Bar Command)
 
-Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2 | 19 [#####.....] 1/2
+Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2 | 19 [##########] 2/2
 
 ## Shipped Milestones
 
@@ -43,6 +43,7 @@ Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 
 
 **Phase 19 (Dashboard Command):**
 - Plan 01: 5 min, 2 tasks, 5 files
+- Plan 02: 5 min, 2 tasks, 1 file (including human checkpoint)
 
 **v4.0 (TypeScript/React):**
 - Codebase in `tokemon-raycast/` (sibling to Tokemon/ Swift project)
@@ -82,11 +83,14 @@ See PROJECT.md Key Decisions table for full list.
 - fetchUsage typed as Promise<unknown> — full response typing deferred to Phase 19
 - api.ts has zero Raycast imports — pure utility, testable without Raycast environment
 
-**Phase 19 Plan 01 Decisions:**
+**Phase 19 Decisions:**
 - vitest chosen over jest: zero-config TypeScript, ESM-native, lightweight (40 packages)
 - usageColor returns plain strings ("green" etc.) so utils.ts is testable without @raycast/api mock
 - computePace uses ±10 tolerance band to prevent jitter from flipping pace status
 - parseResetDate returns null (not throws) for invalid input — safer for display code
+- colorMap/paceConfig lookup tables in index.tsx — keeps @raycast/api Color in UI layer only
+- All hooks called unconditionally before early returns — React hook rules compliance
+- Conditional Sonnet/Opus rows only shown when utilization is non-null
 
 ### Roadmap Evolution
 
@@ -104,5 +108,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 19-01-PLAN.md (types + utilities, TDD complete)
+Stopped at: Phase 19 complete (Dashboard command verified, all 5 DASH requirements met)
 Resume file: none
