@@ -131,7 +131,10 @@ Plans:
 2. Menu bar updates automatically without user action
 3. Menu bar color reflects usage level (green/orange/red)
 
-**Plans:** TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 20-01-PLAN.md -- Menu bar command with colored icon, percentage display, and 5m background refresh
 
 ### Phase 21: Multi-Profile & Alerts
 
