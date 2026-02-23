@@ -9,14 +9,14 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 
 ## Current Position
 
-Phase: 20-menu-bar-command
-Plan: 1 of 1 complete
-Status: Complete
-Last activity: 2026-02-22 — Phase 20 complete (Menu bar command verified in Raycast)
+Phase: 21-multi-profile-alerts
+Plan: 1 of ? complete
+Status: In Progress
+Last activity: 2026-02-23 — Phase 21 Plan 01 complete (multi-profile types, profiles command, token resolution)
 
-Next: Phase 21 (Multi-Profile & Alerts)
+Next: Phase 21 Plan 02 (Alerts)
 
-Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2 | 19 [##########] 2/2 | 20 [##########] 1/1
+Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2 | 19 [##########] 2/2 | 20 [##########] 1/1 | 21 [#####-----] 1/?
 
 ## Shipped Milestones
 
@@ -47,6 +47,9 @@ Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 
 
 **Phase 20 (Menu Bar Command):**
 - Plan 01: 6 min, 2 tasks, 2 files (including human checkpoint)
+
+**Phase 21 (Multi-Profile & Alerts):**
+- Plan 01: 2 min, 2 tasks, 6 files
 
 **v4.0 (TypeScript/React):**
 - Codebase in `tokemon-raycast/` (sibling to Tokemon/ Swift project)
@@ -101,6 +104,12 @@ See PROJECT.md Key Decisions table for full list.
 - interval: 5m for background refresh — safe for Store submission
 - No-token returns MenuBarExtra with Icon.Warning (never null — would hide the item)
 
+**Phase 21 Plan 01 Decisions:**
+- useCachedState for activeProfileId enables cross-command sync without LocalStorage polling
+- extractToken called at add-time so stored token is always a raw access token (never a JSON blob)
+- Preference oauthToken retained as backward-compatible fallback (existing users unaffected)
+- SetupCommand now uses hooks for profile resolution (isConfigured reflects active profile state)
+
 ### Roadmap Evolution
 
 - Phase 17.1 inserted after Phase 17: Automated Testing — XCTest/XCUITest infrastructure for Swift app UI bugs (URGENT)
@@ -116,6 +125,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-22
-Stopped at: Phase 20 complete (Menu bar command verified, all 3 MENU requirements met)
+Last session: 2026-02-23
+Stopped at: Completed Phase 21 Plan 01 (multi-profile types + profiles command + token resolution in all commands)
 Resume file: none
