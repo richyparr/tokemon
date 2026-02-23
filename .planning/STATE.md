@@ -10,13 +10,13 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 ## Current Position
 
 Phase: 21-multi-profile-alerts
-Plan: 1 of ? complete
-Status: In Progress
-Last activity: 2026-02-23 — Phase 21 Plan 01 complete (multi-profile types, profiles command, token resolution)
+Plan: 2 of 2 in progress (awaiting human verify checkpoint)
+Status: In Progress — checkpoint
+Last activity: 2026-02-23 — Phase 21 Plan 02 Task 1 complete (settings command + alert logic); awaiting human verify
 
-Next: Phase 21 Plan 02 (Alerts)
+Next: Phase 21 Plan 02 Task 2 human checkpoint (verify profiles, settings, alerts in Raycast)
 
-Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2 | 19 [##########] 2/2 | 20 [##########] 1/1 | 21 [#####-----] 1/?
+Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2 | 19 [##########] 2/2 | 20 [##########] 1/1 | 21 [########--] 1.5/?
 
 ## Shipped Milestones
 
@@ -50,6 +50,7 @@ Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 
 
 **Phase 21 (Multi-Profile & Alerts):**
 - Plan 01: 2 min, 2 tasks, 6 files
+- Plan 02: ~5 min, 1 task complete (Task 2 = human checkpoint), 3 files
 
 **v4.0 (TypeScript/React):**
 - Codebase in `tokemon-raycast/` (sibling to Tokemon/ Swift project)
@@ -110,6 +111,12 @@ See PROJECT.md Key Decisions table for full list.
 - Preference oauthToken retained as backward-compatible fallback (existing users unaffected)
 - SetupCommand now uses hooks for profile resolution (isConfigured reflects active profile state)
 
+**Phase 21 Plan 02 Decisions:**
+- Split SettingsCommand into outer loader + inner AlertSettingsForm: @raycast/utils useForm does not support enableReinitialize in installed version
+- lastAlertedWindowId written to LocalStorage before showToast to prevent race conditions on rapid background refreshes
+- LaunchType.Background guard: alerts only fire on scheduled 5-min interval, not on user-opens
+- Test Alert action uses Toast.Style.Failure (red) to match real alert appearance
+
 ### Roadmap Evolution
 
 - Phase 17.1 inserted after Phase 17: Automated Testing — XCTest/XCUITest infrastructure for Swift app UI bugs (URGENT)
@@ -126,5 +133,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed Phase 21 Plan 01 (multi-profile types + profiles command + token resolution in all commands)
+Stopped at: Phase 21 Plan 02 Task 1 complete — at human-verify checkpoint (Task 2). User must verify profiles and alerts in Raycast.
 Resume file: none
