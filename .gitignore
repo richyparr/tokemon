@@ -21,3 +21,11 @@ build/
 # App bundle (build artifact)
 *.app/
 *.dmg
+
+# Node.js (raycast extension & landing site)
+node_modules/
+dist/
+.next/
+out/
+.vercel/
+test-results/

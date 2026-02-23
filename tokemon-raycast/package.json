@@ -1,0 +1,79 @@
+{
+  "name": "tokemon",
+  "title": "tokemon",
+  "description": "Monitor your Claude AI usage at a glance",
+  "icon": "icon.png",
+  "author": "tokemon",
+  "platforms": [
+    "macOS"
+  ],
+  "categories": [
+    "Developer Tools"
+  ],
+  "license": "MIT",
+  "preferences": [
+    {
+      "name": "oauthToken",
+      "type": "password",
+      "title": "Claude OAuth Token",
+      "description": "Your Claude OAuth access token. Run the Setup command for instructions.",
+      "required": false
+    }
+  ],
+  "commands": [
+    {
+      "name": "index",
+      "title": "Dashboard",
+      "subtitle": "tokemon",
+      "description": "View your Claude session and weekly usage",
+      "mode": "view"
+    },
+    {
+      "name": "setup",
+      "title": "Setup",
+      "subtitle": "tokemon",
+      "description": "Configure your Claude OAuth token",
+      "mode": "view"
+    },
+    {
+      "name": "menu-bar",
+      "title": "Menu Bar",
+      "subtitle": "tokemon",
+      "description": "Claude usage percentage in your menu bar with automatic refresh",
+      "mode": "menu-bar",
+      "interval": "5m"
+    },
+    {
+      "name": "profiles",
+      "title": "Manage Profiles",
+      "subtitle": "tokemon",
+      "description": "Add, switch, and delete Claude OAuth profiles",
+      "mode": "view"
+    },
+    {
+      "name": "settings",
+      "title": "Settings",
+      "subtitle": "tokemon",
+      "description": "Configure usage alerts and extension settings",
+      "mode": "view"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.104.5",
+    "@raycast/utils": "^1.0.0"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^1.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^2.1.9"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint",
+    "publish": "npx @raycast/api@latest publish",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  }
+}
