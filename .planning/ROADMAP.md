@@ -153,8 +153,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 21-01-PLAN.md -- Profile types, profiles command (add/switch/delete), token resolution in dashboard and menu bar
-- [ ] 21-02-PLAN.md -- Settings command with threshold config, alert logic in menu bar background refresh, human verification
+- [x] 21-01-PLAN.md -- Profile types, profiles command (add/switch/delete), token resolution in dashboard and menu bar
+- [x] 21-02-PLAN.md -- Settings command with threshold config, alert logic in menu bar background refresh, human verification
 
 ---
 
@@ -166,7 +166,7 @@ Plans:
 | 18. Extension Foundation | v4.0 | 2/2 | ✓ Complete | 2026-02-19 |
 | 19. Dashboard Command | v4.0 | 2/2 | ✓ Complete | 2026-02-22 |
 | 20. Menu Bar Command | v4.0 | 1/1 | ✓ Complete | 2026-02-22 |
-| 21. Multi-Profile & Alerts | v4.0 | 0/2 | Not started | - |
+| 21. Multi-Profile & Alerts | v4.0 | 2/2 | ✓ Complete | 2026-02-24 |
 | 22. Security Hardening | - | 0/2 | Planned | - |
 
 ## Future Backlog

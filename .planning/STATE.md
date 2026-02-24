@@ -5,18 +5,18 @@
 See: .planning/PROJECT.md (updated 2026-02-18)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** v4.0 Raycast Integration - Phase 21 Multi-Profile & Alerts
+**Current focus:** v4.0 Raycast Integration — Phase 21 complete, Phase 22 Security Hardening next
 
 ## Current Position
 
-Phase: 21-multi-profile-alerts
-Plan: 2 of 2 in progress (awaiting human verify checkpoint)
-Status: In Progress — checkpoint
-Last activity: 2026-02-23 — Phase 21 Plan 02 Task 1 complete (settings command + alert logic); awaiting human verify
+Phase: 21-multi-profile-alerts COMPLETE
+Plan: 2 of 2 complete
+Status: Phase complete — all v4.0 Raycast phases (18-21) done
+Last activity: 2026-02-24 — Phase 21 verified (6/6 criteria), human checkpoint approved
 
-Next: Phase 21 Plan 02 Task 2 human checkpoint (verify profiles, settings, alerts in Raycast)
+Next: Phase 22 Security Hardening (planned, 2 plans) OR v4.0 milestone completion
 
-Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2 | 19 [##########] 2/2 | 20 [##########] 1/1 | 21 [########--] 1.5/?
+Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 18 [##########] 2/2 | 19 [##########] 2/2 | 20 [##########] 1/1 | 21 [##########] 2/2
 
 ## Shipped Milestones
 
@@ -50,11 +50,11 @@ Progress: [##########################] v1-v3 complete | 17.1 [##########] 3/3 | 
 
 **Phase 21 (Multi-Profile & Alerts):**
 - Plan 01: 2 min, 2 tasks, 6 files
-- Plan 02: ~5 min, 1 task complete (Task 2 = human checkpoint), 3 files
+- Plan 02: 7 min, 2 tasks, 4 files (including human checkpoint, across 2 sessions)
 
 **v4.0 (TypeScript/React):**
 - Codebase in `tokemon-raycast/` (sibling to Tokemon/ Swift project)
-- Target: 4 phases, ~8-12 plans
+- 4 phases complete, 7 plans total
 
 ## Accumulated Context
 
@@ -113,14 +113,26 @@ See PROJECT.md Key Decisions table for full list.
 
 **Phase 21 Plan 02 Decisions:**
 - Split SettingsCommand into outer loader + inner AlertSettingsForm: @raycast/utils useForm does not support enableReinitialize in installed version
-- lastAlertedWindowId written to LocalStorage before showToast to prevent race conditions on rapid background refreshes
+- lastAlertedWindowId written to LocalStorage before showHUD to prevent race conditions on rapid background refreshes
 - LaunchType.Background guard: alerts only fire on scheduled 5-min interval, not on user-opens
-- Test Alert action uses Toast.Style.Failure (red) to match real alert appearance
+- Refactored alert from useEffect to onData callback for reliability
+- Switched from showToast to showHUD for better background alert visibility
+- Memoized TokenSource in useTokenSource to prevent useCachedPromise re-triggering
 
 ### Roadmap Evolution
 
 - Phase 17.1 inserted after Phase 17: Automated Testing — XCTest/XCUITest infrastructure for Swift app UI bugs (URGENT)
 - Phase 22 added: Security Hardening — Move profile credentials to Keychain, sanitize error logging, enforce HTTPS webhooks, evaluate sandboxing, fix Keychain write-back conflicts
+
+### Uncommitted macOS App Changes
+
+The following Tokemon macOS app changes were made ad-hoc (outside GSD phases) and are uncommitted:
+- Traffic Light menu bar icon style (MenuBarIconStyle.swift, MenuBarIconRenderer.swift, AppearanceSettings.swift)
+- Settings tab truncation fix (SettingsView.swift minWidth 720→880)
+- Popover flash fix (PopoverHeightCalculator restored in TokemonApp.swift, FloatingWindowController orderFront)
+- TokenManager: Keychain JSON prefix tolerance, removed debug print
+- UsageMonitor: minor formatting
+- homebrew-tokemon: version bump to 3.0.12
 
 ### Pending Todos
 
@@ -132,6 +144,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-23
-Stopped at: Phase 21 Plan 02 Task 1 complete — at human-verify checkpoint (Task 2). User must verify profiles and alerts in Raycast.
+Last session: 2026-02-24
+Stopped at: Phase 21 complete. v4.0 Raycast phases (18-21) all done. Uncommitted macOS app changes pending.
 Resume file: none
