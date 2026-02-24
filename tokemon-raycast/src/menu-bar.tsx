@@ -6,15 +6,13 @@ import {
   launchCommand,
   LaunchType,
   LocalStorage,
-  showToast,
-  Toast,
+  showHUD,
   environment,
 } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { useEffect } from "react";
 import { fetchUsageWithRefresh, TokenError } from "./api";
 import { usageColor, formatPercentage, parseResetDate, formatCountdown } from "./utils";
-import type { AlertSettings } from "./types";
+import type { AlertSettings, UsageData } from "./types";
 import { ALERT_SETTINGS_KEY, DEFAULT_ALERT_SETTINGS } from "./types";
 import { useTokenSource } from "./useTokenSource";
 
@@ -23,6 +21,29 @@ function parseAlertSettings(raw: string | undefined): AlertSettings {
     return raw ? JSON.parse(raw) : DEFAULT_ALERT_SETTINGS;
   } catch {
     return DEFAULT_ALERT_SETTINGS;
+  }
+}
+
+async function checkAlert(data: UsageData) {
+  if (environment.launchType !== LaunchType.Background) return;
+
+  const raw = await LocalStorage.getItem<string>(ALERT_SETTINGS_KEY);
+  const settings = parseAlertSettings(raw);
+
+  if (!settings.enabled) return;
+
+  const utilization = data.five_hour?.utilization ?? 0;
+  const windowId = data.five_hour?.resets_at ?? "unknown";
+
+  if (utilization >= settings.threshold && settings.lastAlertedWindowId !== windowId) {
+    const updated: AlertSettings = { ...settings, lastAlertedWindowId: windowId };
+    await LocalStorage.setItem(ALERT_SETTINGS_KEY, JSON.stringify(updated));
+
+    try {
+      await showHUD(`⚠️ Claude usage at ${Math.round(utilization)}% (threshold: ${settings.threshold}%)`);
+    } catch {
+      // Swallow HUD errors silently — never crash the menu bar
+    }
   }
 }
 
@@ -46,42 +67,11 @@ export default function MenuBarCommand() {
     {
       execute: token.length > 0 && !tokenLoading,
       keepPreviousData: true,
+      onData: (fetchedData) => {
+        checkAlert(fetchedData).catch(() => {});
+      },
     },
   );
-
-  // Alert checking — only fires on background refresh, deduplicated by window ID
-  useEffect(() => {
-    if (!data) return;
-    if (environment.launchType !== LaunchType.Background) return;
-
-    async function checkAlert() {
-      const raw = await LocalStorage.getItem<string>(ALERT_SETTINGS_KEY);
-      const settings = parseAlertSettings(raw);
-
-      if (!settings.enabled) return;
-
-      const utilization = data?.five_hour?.utilization ?? 0;
-      const windowId = data?.five_hour?.resets_at ?? "unknown";
-
-      if (utilization >= settings.threshold && settings.lastAlertedWindowId !== windowId) {
-        // Update deduplication key FIRST to prevent race conditions
-        const updated: AlertSettings = { ...settings, lastAlertedWindowId: windowId };
-        await LocalStorage.setItem(ALERT_SETTINGS_KEY, JSON.stringify(updated));
-
-        try {
-          await showToast({
-            style: Toast.Style.Failure,
-            title: "Claude usage alert",
-            message: `Session at ${Math.round(utilization)}% — threshold: ${settings.threshold}%`,
-          });
-        } catch {
-          // Swallow toast errors silently — never crash the menu bar
-        }
-      }
-    }
-
-    checkAlert().catch(() => {});
-  }, [data]);
 
   // No token — show warning icon with setup prompt
   if (!token && !tokenLoading) {

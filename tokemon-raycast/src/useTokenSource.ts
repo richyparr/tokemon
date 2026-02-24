@@ -1,6 +1,6 @@
 import { getPreferenceValues, LocalStorage } from "@raycast/api";
 import { useCachedState, useLocalStorage } from "@raycast/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { extractToken } from "./api";
 import type { TokenSource } from "./api";
 import type { OAuthCredentials, Profile } from "./types";
@@ -18,6 +18,7 @@ interface UseTokenSourceResult {
 /**
  * Shared hook that resolves the current token source.
  * Active profile > preference fallback. Includes credentials if available.
+ * Returns a memoized TokenSource so useCachedPromise doesn't re-trigger on every render.
  */
 export function useTokenSource(): UseTokenSourceResult {
   const { oauthToken } = getPreferenceValues<Preferences>();
@@ -40,39 +41,40 @@ export function useTokenSource(): UseTokenSourceResult {
     });
   }, []);
 
-  if (profilesLoading || !prefCredsLoaded) {
-    // Still loading — return a temporary source using preference token to avoid flicker
-    const fallbackToken = extractToken(oauthToken);
-    if (!fallbackToken) return { tokenSource: null, isLoading: true };
-    return {
-      tokenSource: { accessToken: fallbackToken, origin: "preference" },
-      isLoading: true,
-    };
-  }
+  const isLoading = profilesLoading || !prefCredsLoaded;
 
+  // Derive stable primitives for the memo dependency array
   const activeProfile = profiles?.find((p) => p.id === activeProfileId);
+  const resolvedToken = isLoading
+    ? extractToken(oauthToken)
+    : activeProfile
+      ? activeProfile.token
+      : extractToken(oauthToken);
+  const resolvedOrigin = isLoading
+    ? "preference"
+    : activeProfile
+      ? activeProfile.id
+      : "preference";
+  const resolvedCredentials = isLoading
+    ? undefined
+    : activeProfile
+      ? activeProfile.credentials
+      : prefCredentials;
 
-  if (activeProfile) {
+  // Serialize credentials to a stable string for memo comparison
+  const credentialsKey = resolvedCredentials
+    ? `${resolvedCredentials.accessToken}:${resolvedCredentials.refreshToken}:${resolvedCredentials.expiresAt}`
+    : "";
+
+  const tokenSource = useMemo<TokenSource | null>(() => {
+    if (!resolvedToken) return null;
     return {
-      tokenSource: {
-        accessToken: activeProfile.token,
-        credentials: activeProfile.credentials,
-        origin: activeProfile.id,
-      },
-      isLoading: false,
+      accessToken: resolvedToken,
+      credentials: resolvedCredentials,
+      origin: resolvedOrigin,
     };
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resolvedToken, resolvedOrigin, credentialsKey]);
 
-  // Preference fallback
-  const token = extractToken(oauthToken);
-  if (!token) return { tokenSource: null, isLoading: false };
-
-  return {
-    tokenSource: {
-      accessToken: token,
-      credentials: prefCredentials,
-      origin: "preference",
-    },
-    isLoading: false,
-  };
+  return { tokenSource, isLoading };
 }
