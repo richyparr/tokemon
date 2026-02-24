@@ -61,20 +61,21 @@ Match Claude Usage Tracker feature-for-feature in FREE tier, then differentiate 
 
 ---
 
-## In Progress
+### v4.0 Raycast Integration (2026-02-24)
 
-### v4.0 Raycast Integration
+**Phases:** 18-21 | **Plans:** 7 | **Requirements:** 18
 
-**Phases:** 18+ | **Plans:** TBD | **Requirements:** TBD
+Standalone Raycast extension bringing Tokemon's usage monitoring to developers where they already work. TypeScript/React with @raycast/api, fetching data directly via OAuth without Tokemon.app dependency.
 
-Bring Tokemon's usage monitoring to Raycast as a standalone extension.
+**Key Accomplishments:**
+- Raycast extension scaffolded with TypeScript, OAuth token setup wizard, and custom branding
+- Usage dashboard command with live countdown, pace indicator, and color-coded display
+- Menu bar command with persistent usage percentage, colored icon, and 5-minute background refresh
+- Multi-profile management with add/switch/delete and cross-command sync via useCachedState
+- Threshold alert system with configurable settings, showHUD notifications, and per-window deduplication
 
-**Target Features:**
-- Usage dashboard command (session %, weekly %, reset timer)
-- Menu bar integration
-- Alert configuration commands
-- Profile switching from Raycast
+**Stats:** 1,453 LOC TypeScript/React | 6 days (Feb 18-24) | 48 tests passing
 
-**Architecture:** Standalone — fetches data directly via OAuth, no Tokemon.app required.
+**Archive:** [v4.0-ROADMAP.md](milestones/v4.0-ROADMAP.md) | [v4.0-REQUIREMENTS.md](milestones/v4.0-REQUIREMENTS.md)
 
-**Roadmap:** [ROADMAP.md](ROADMAP.md)
+---

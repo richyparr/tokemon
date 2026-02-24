@@ -5,7 +5,7 @@
 - **v1.0 MVP** -- Phases 1-5 (shipped 2026-02-14) -- [Archive](milestones/v1.0-ROADMAP.md)
 - **v2.0 Pro Features** -- Phases 6-9 (shipped 2026-02-15) -- [Archive](milestones/v2.0-ROADMAP.md)
 - **v3.0 Competitive Parity & Growth** -- Phases 11-17 (shipped 2026-02-17) -- [Archive](milestones/v3.0-ROADMAP.md)
-- **v4.0 Raycast Integration** -- Phases 18-21 (in progress)
+- **v4.0 Raycast Integration** -- Phases 18-21 (shipped 2026-02-24) -- [Archive](milestones/v4.0-ROADMAP.md)
 
 ## Phases
 
@@ -49,112 +49,36 @@ See [v3.0-ROADMAP.md](milestones/v3.0-ROADMAP.md) for full details.
 
 </details>
 
----
+<details>
+<summary>v3.0+ Automated Testing (Phase 17.1) -- COMPLETE 2026-02-19</summary>
 
-## Phase 17.1: Automated Testing (INSERTED)
+- [x] Phase 17.1: Automated Testing (3/3 plans) -- completed 2026-02-19
 
-**Goal:** Build XCTest and XCUITest infrastructure to catch UI bugs, especially height/layout issues, with snapshot testing for visual regression detection.
+</details>
 
-**Depends on:** Phase 17 (v3.0 complete)
-**Scope:** Swift/macOS app only (not Raycast extension)
+<details>
+<summary>v4.0 Raycast Integration (Phases 18-21) -- SHIPPED 2026-02-24</summary>
 
-**Success Criteria** (what must be TRUE):
-1. XCTest target configured in Xcode project
-2. XCUITest target configured for UI automation
-3. Snapshot testing infrastructure in place (Point-Free SnapshotTesting)
-4. Critical UI components have snapshot tests
-5. Height/layout issues identified and documented
-6. CI-ready test commands work (`swift test` or `xcodebuild test`)
+- [x] Phase 18: Extension Foundation (2/2 plans) -- completed 2026-02-19
+- [x] Phase 19: Dashboard Command (2/2 plans) -- completed 2026-02-22
+- [x] Phase 20: Menu Bar Command (1/1 plan) -- completed 2026-02-22
+- [x] Phase 21: Multi-Profile & Alerts (2/2 plans) -- completed 2026-02-24
 
-**Plans:** 3 plans
+See [v4.0-ROADMAP.md](milestones/v4.0-ROADMAP.md) for full details.
 
-Plans:
-- [x] 17.1-01-PLAN.md -- Add SnapshotTesting dependency, create test helpers and mock factories, fix existing tests
-- [x] 17.1-02-PLAN.md -- Extract popover height calculator, snapshot tests for leaf views (Header, Detail, FloatingWindow)
-- [x] 17.1-03-PLAN.md -- Snapshot tests for composite views (Popover, Settings tabs, ProfileSwitcher)
+</details>
 
 ---
 
-## v4.0 Raycast Integration (Phases 18-21)
+### Phase 22: Security Hardening
 
-**Milestone Goal:** Bring Tokemon's usage monitoring to Raycast as a standalone TypeScript/React extension, reaching developers where they already work.
-
-**Architecture:** Standalone extension fetching data directly via OAuth. Works without Tokemon.app running. New codebase in `raycast-extension/` directory.
-
-**Total Requirements:** 18 | **Phases:** 4
-
-### Phase 18: Extension Foundation
-
-**Goal:** Scaffold a working Raycast extension with credential handling and custom branding
-**Depends on:** Nothing (first phase of v4.0)
-**Requirements:** EXT-01, EXT-02, EXT-03, EXT-04
-
-**Success Criteria** (what must be TRUE):
-1. User can install extension via `npm install && npm run dev`
-2. Extension appears in Raycast with Tokemon icon
-3. User can enter OAuth token via setup wizard
-4. Extension stores credentials securely in Raycast LocalStorage
-
+**Goal:** Harden security posture by moving profile credentials from UserDefaults to Keychain, sanitizing error logging, enforcing HTTPS-only webhook URLs, evaluating app sandboxing, and resolving Keychain write-back conflicts with Claude Code.
+**Depends on:** Phase 21
 **Plans:** 2 plans
 
 Plans:
-- [x] 18-01-PLAN.md -- Scaffold project, export icon, configure manifest, MIT license, README
-- [x] 18-02-PLAN.md -- Setup wizard command, API constants, token validation, stub dashboard
-
-### Phase 19: Dashboard Command
-
-**Goal:** Users can view their Claude usage stats in a Raycast command
-**Depends on:** Phase 18
-**Requirements:** DASH-01, DASH-02, DASH-03, DASH-04, DASH-05
-
-**Success Criteria** (what must be TRUE):
-1. User sees session usage percentage in dashboard
-2. User sees weekly usage percentage in dashboard
-3. User sees reset countdown timer
-4. User sees pace indicator (on track / ahead / behind)
-5. User can manually refresh data with Cmd+R
-
-**Plans:** 2 plans
-
-Plans:
-- [x] 19-01-PLAN.md -- TDD: TypeScript types for API response and pure utility functions (countdown, pace, formatting)
-- [x] 19-02-PLAN.md -- Dashboard UI with Detail.Metadata, live countdown timer, and Cmd+R refresh
-
-### Phase 20: Menu Bar Command
-
-**Goal:** Usage percentage persists in Raycast menu bar with automatic refresh
-**Depends on:** Phase 19
-**Requirements:** MENU-01, MENU-02, MENU-03
-
-**Success Criteria** (what must be TRUE):
-1. Usage percentage displays in Raycast menu bar
-2. Menu bar updates automatically without user action
-3. Menu bar color reflects usage level (green/orange/red)
-
-**Plans:** 1 plan
-
-Plans:
-- [x] 20-01-PLAN.md -- Menu bar command with colored icon, percentage display, and 5m background refresh
-
-### Phase 21: Multi-Profile & Alerts
-
-**Goal:** Power users can manage multiple accounts and configure threshold alerts
-**Depends on:** Phase 20
-**Requirements:** PROF-01, PROF-02, PROF-03, ALRT-01, ALRT-02, ALRT-03
-
-**Success Criteria** (what must be TRUE):
-1. User can add multiple profiles with different OAuth tokens
-2. User can switch between profiles
-3. User can delete profiles
-4. User can configure usage threshold percentage for alerts
-5. User receives Raycast notification when threshold is reached
-6. User can test alert from settings command
-
-**Plans:** 2 plans
-
-Plans:
-- [x] 21-01-PLAN.md -- Profile types, profiles command (add/switch/delete), token resolution in dashboard and menu bar
-- [x] 21-02-PLAN.md -- Settings command with threshold config, alert logic in menu bar background refresh, human verification
+- [ ] 22-01-PLAN.md -- Migrate profile credentials to Keychain, disable TokenManager write-back
+- [ ] 22-02-PLAN.md -- Replace print() with OSLog.Logger, enforce HTTPS webhooks, document sandboxing
 
 ---
 
@@ -175,19 +99,9 @@ Ideas discussed but deferred for future milestones:
 
 - **User Accounts + Insights Platform** -- Full account system with rich profile data, telemetry with consent, benchmarks & personalized insights, potentially monetizable data asset. Requires: auth system, backend infrastructure, GDPR compliance. (Discussed 2026-02-16, deferred in favor of shipping clean)
 
-### Phase 22: Security Hardening
-
-**Goal:** Harden security posture by moving profile credentials from UserDefaults to Keychain, sanitizing error logging, enforcing HTTPS-only webhook URLs, evaluating app sandboxing, and resolving Keychain write-back conflicts with Claude Code.
-**Depends on:** Phase 21
-**Plans:** 2 plans
-
-Plans:
-- [ ] 22-01-PLAN.md -- Migrate profile credentials to Keychain, disable TokenManager write-back
-- [ ] 22-02-PLAN.md -- Replace print() with OSLog.Logger, enforce HTTPS webhooks, document sandboxing
-
 ---
 
 *v1.0 shipped: 2026-02-14*
 *v2.0 shipped: 2026-02-15*
 *v3.0 shipped: 2026-02-17*
-*v4.0 roadmap created: 2026-02-18*
+*v4.0 shipped: 2026-02-24*

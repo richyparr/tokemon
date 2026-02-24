@@ -2,24 +2,26 @@
 
 ## Current State
 
-**Version:** v3.0 shipped 2026-02-17
-**Status:** Planning v4.0 — Raycast Integration
+**Version:** v4.0 shipped 2026-02-24
+**Status:** v4.0 complete — planning next steps
 
-Native macOS menu bar utility for monitoring Claude usage with live OAuth data, extended analytics, Pro licensing, multi-profile support, terminal statusline, and team features.
+Native macOS menu bar utility + Raycast extension for monitoring Claude usage with live OAuth data, extended analytics, Pro licensing, multi-profile support, terminal statusline, and team features.
 
-**Codebase:** 14,418 LOC Swift | 17 phases | 43 plans
+**Codebase:** 14,418 LOC Swift + 1,453 LOC TypeScript/React | 21 phases | 50 plans
 
-## Current Milestone: v4.0 Raycast Integration
+<details>
+<summary>v4.0 Raycast Integration (shipped 2026-02-24)</summary>
 
-**Goal:** Bring Tokemon's usage monitoring to Raycast as a standalone extension, reaching developers where they already work.
+**Raycast Extension (standalone, no Tokemon.app dependency):**
+- [x] Usage dashboard command (session %, weekly %, reset timer, pace indicator)
+- [x] Menu bar integration (colored icon, 5-min background refresh)
+- [x] Alert configuration (threshold settings, showHUD notifications, per-window dedup)
+- [x] Profile switching (add/switch/delete, cross-command sync)
+- [x] Setup wizard with token validation
 
-**Target features:**
-- [ ] Usage dashboard command (session %, weekly %, reset timer)
-- [ ] Menu bar integration (usage in Raycast menu bar)
-- [ ] Alert configuration commands
-- [ ] Profile switching from Raycast
+**Architecture:** TypeScript/React with @raycast/api. OAuth token via password preference. vitest for testing (48 tests).
 
-**Architecture:** Standalone extension — fetches data directly via OAuth, works without Tokemon.app running.
+</details>
 
 <details>
 <summary>v3.0 Competitive Parity & Growth (shipped 2026-02-17)</summary>
@@ -43,7 +45,7 @@ Native macOS menu bar utility for monitoring Claude usage with live OAuth data, 
 
 ## What This Is
 
-A native macOS app for monitoring Claude usage across all your sources — Claude Code CLI, Claude.ai, and the Claude API. Provides at-a-glance usage stats, limit warnings, cost tracking, and extended analytics through a lightweight, customizable interface. Paid Pro features with 2-week trial.
+A native macOS app and Raycast extension for monitoring Claude usage across all your sources — Claude Code CLI, Claude.ai, and the Claude API. Provides at-a-glance usage stats, limit warnings, cost tracking, and extended analytics through a lightweight, customizable interface. Paid Pro features with 2-week trial. Raycast extension works standalone without Tokemon.app.
 
 ## Core Value
 
@@ -70,18 +72,17 @@ A native macOS app for monitoring Claude usage across all your sources — Claud
 - PDF and CSV export
 - Shareable usage cards with clipboard copy
 
-### Active (v4.0)
+**v3.0 (shipped 2026-02-17):**
+- Multi-profile, menu bar customization, terminal statusline, Homebrew, code signing, Sparkle, auto-start (FREE)
+- Team dashboard, webhooks, budget tracking, forecasting (PRO)
 
-**Raycast Extension:**
-- [ ] Usage dashboard command
-- [ ] Menu bar integration
-- [ ] Alert configuration
-- [ ] Profile switching
+**v4.0 (shipped 2026-02-24):**
+- Raycast extension with dashboard, menu bar, profiles, and alerts
+- 18/18 requirements complete
 
-### Shipped (v3.0) — 2026-02-17
+### Active
 
-**FREE Tier:** Multi-profile, menu bar customization, terminal statusline, Homebrew, code signing, Sparkle, auto-start
-**PRO Tier:** Team dashboard, webhooks, budget tracking, forecasting
+None — between milestones.
 
 ### Out of Scope
 
@@ -90,19 +91,19 @@ A native macOS app for monitoring Claude usage across all your sources — Claud
 - Multi-provider monitoring (Copilot, Cursor, Gemini) — Claude-only for best-in-class experience
 - Claude.ai scraping — too fragile, using OAuth instead
 - Open source — closed source for monetization
-- iOS companion app — deferred to v4+
 
-### Deferred (v4+)
+### Deferred
 
 - Web dashboard interface
-- Raycast/Alfred extensions
+- Alfred extension
 - Localization (8 languages)
+- iOS companion app
 
 ## Constraints
 
-- **Tech stack**: Native Swift/SwiftUI — no Electron or web wrappers
-- **Platform**: macOS only (iOS deferred to v3)
-- **Distribution**: Paid via GitHub + LemonSqueezy (not App Store)
+- **Tech stack**: Native Swift/SwiftUI (macOS app) + TypeScript/React (Raycast extension)
+- **Platform**: macOS only (iOS deferred)
+- **Distribution**: Paid via GitHub + LemonSqueezy (not App Store); Raycast via Store
 - **Performance**: Lightweight — minimal CPU/memory footprint for background monitoring
 - **Monetization**: $3/mo or $29/yr subscription with 2-week trial
 
@@ -124,12 +125,17 @@ A native macOS app for monitoring Claude usage across all your sources — Claud
 | Hourly downsampling for 90-day history | Reduces storage from ~25MB to ~2.4MB per account | Good |
 | Solid colors only in ImageRenderer views | Workaround for macOS gradient rendering bug | Good |
 | NSSavePanel standalone presentation | LSUIElement apps have no reliable key window | Good |
-
 | Multi-profile via copy/switch | Claude Usage Tracker approach — copy credentials to app storage, write back on switch | Good |
 | Homebrew tap for distribution | Developer trust requirement, industry standard | Good |
 | Apple code signing | User security requirement, enables notarization | Good |
 | ForecastingEngine static methods | Follows BurnRateCalculator pattern — stateless, testable | Good |
 | Custom ArcShape gauge | Full visual control vs system Gauge, 270-degree arc | Good |
+| Standalone Raycast extension | No Tokemon.app dependency — works independently via OAuth | Good |
+| Password preference for token | Keychain access causes Raycast Store rejection | Good |
+| vitest over jest | Zero-config TypeScript, ESM-native, lightweight | Good |
+| useCachedState for profile sync | Cross-command sync without LocalStorage polling | Good |
+| showHUD for background alerts | More visible than Toast during background refresh | Good |
+| Memoized TokenSource | Prevents useCachedPromise re-triggering on render | Good |
 
 ---
-*Last updated: 2026-02-17 after v4.0 milestone started*
+*Last updated: 2026-02-24 after v4.0 milestone shipped*
