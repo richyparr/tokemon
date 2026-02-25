@@ -51,8 +51,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-black text-[#ededed] overflow-x-hidden`}
-        style={{ margin: 0 }}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased text-[#ededed] overflow-x-hidden`}
+        style={{ margin: 0, background: "radial-gradient(ellipse 80% 50% at 50% 0%, #0a0a0a, #000 50%)" }}
       >
         {children}
       </body>

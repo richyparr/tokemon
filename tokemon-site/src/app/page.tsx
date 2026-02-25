@@ -20,7 +20,7 @@ const features: {
   reverse?: boolean;
 }[] = [
   {
-    label: "The problem",
+    label: "Usage visibility",
     title: "You don\u2019t know if you\u2019ll hit the limit before your session resets",
     desc: "Claude rate limits reset on a rolling window. Without visibility into your usage trend, you\u2019re flying blind \u2014 burning through tokens with no idea when you\u2019ll hit the wall.",
     solution:
@@ -33,7 +33,7 @@ const features: {
     alt: "Usage trend chart with burn rate",
   },
   {
-    label: "The problem",
+    label: "Project tracking",
     title: "You have no idea which projects are eating your tokens",
     desc: "If you\u2019re billing clients for token usage or managing a budget across projects, you need to know where tokens are going. Manually tracking this is impossible.",
     solution:
@@ -47,7 +47,7 @@ const features: {
     reverse: true,
   },
   {
-    label: "The problem",
+    label: "Budget management",
     title: "Your team is burning through API budget with zero visibility",
     desc: "You\u2019ve set a monthly budget but have no idea how much has been spent, what the daily run rate is, or whether you\u2019ll blow past the limit before month-end.",
     solution:
@@ -60,7 +60,7 @@ const features: {
     alt: "Budget tracking with gauge and forecast",
   },
   {
-    label: "The problem",
+    label: "Team analytics",
     title: "As an admin, you can\u2019t see who\u2019s using what",
     desc: "Managing a team\u2019s Claude usage shouldn\u2019t require digging through billing dashboards. You need a quick view of total cost, total tokens, and usage patterns across your organization.",
     solution:
@@ -74,7 +74,7 @@ const features: {
     reverse: true,
   },
   {
-    label: "The problem",
+    label: "Reporting & export",
     title: "You need to justify token costs to clients or management",
     desc: "\u201cWe used a lot of tokens\u201d doesn\u2019t cut it. You need real data in a format people can read \u2014 whether you\u2019re a freelancer billing clients or a team lead reporting to management.",
     solution:
@@ -88,13 +88,13 @@ const features: {
   },
 ];
 
-const grid = [
-  ["Slack & Discord alerts", "Webhook notifications before you hit limits. Set thresholds at 50%, 70%, 90% \u2014 get a ping in your team channel, not a surprise in your IDE."],
-  ["Terminal statusline", "Live in the terminal? Export usage to your shell prompt via ~/.tokemon/statusline. One-click zsh/bash setup with ANSI color coding."],
-  ["Usage summaries by period", "Filter analytics by 24h, 7 days, 30 days, or 90 days. See how your usage patterns change over time and identify high-consumption periods."],
-  ["Multi-profile support", "Manage personal and work accounts with independent credentials and alert thresholds. Switch between profiles instantly."],
-  ["5 menu bar styles", "Percentage, battery, progress bar, icon + bar, or compact number. Optional monochrome mode to match native macOS styling."],
-  ["Three themes", "Native macOS (follows system), Light, or Dark with warm orange accents. Your choice across every window and panel."],
+const grid: [string, string, string][] = [
+  ["\u{1F514}", "Slack & Discord alerts", "Webhook notifications before you hit limits. Set thresholds at 50%, 70%, 90% \u2014 get a ping in your team channel, not a surprise in your IDE."],
+  ["\u{25B6}\u{FE0E}", "Terminal statusline", "Live in the terminal? Export usage to your shell prompt via ~/.tokemon/statusline. One-click zsh/bash setup with ANSI color coding."],
+  ["\u{1F4CA}", "Usage summaries by period", "Filter analytics by 24h, 7 days, 30 days, or 90 days. See how your usage patterns change over time and identify high-consumption periods."],
+  ["\u{1F465}", "Multi-profile support", "Manage personal and work accounts with independent credentials and alert thresholds. Switch between profiles instantly."],
+  ["\u{1F3A8}", "6 menu bar styles", "Percentage, battery, progress bar, icon + bar, compact number, or traffic light. Optional monochrome mode to match native macOS styling."],
+  ["\u{1F317}", "Three themes", "Native macOS (follows system), Light, or Dark with warm orange accents. Your choice across every window and panel."],
 ];
 
 const raycastFeatures = [
@@ -158,10 +158,17 @@ export default function Home() {
           </p>
           <HeroCTA />
           <TerminalInstall />
-          <div className="mt-16">
+          {/* #5 Social proof badge */}
+          <div className="mt-6 inline-flex items-center gap-2 text-[13px] text-[#555]">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path d="M8 1l2.245 4.55 5.02.73-3.633 3.54.858 5L8 12.67 3.51 15.82l.858-5L.735 7.28l5.02-.73L8 1z" fill="#e8853b"/>
+            </svg>
+            Open source &mdash; loved by developers who ship with Claude
+          </div>
+          <div className="mt-12">
             <Image
-              src="/ss-bg-2.png"
-              alt="Tokemon popover showing usage trend chart and burn rate"
+              src="/ss-bg-1.png"
+              alt="Tokemon popover showing real-time Claude usage"
               width={480}
               height={560}
               priority
@@ -197,8 +204,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Feature sections ── */}
-      {features.map((f, i) => (
+      {/* ── Feature grid (capabilities overview) ── */}
+      <section className="py-24">
+        <div className={cx}>
+          <h2 className="text-center text-3xl md:text-5xl font-bold tracking-tight mb-14">
+            Built for power users
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#1a1a1a] border border-[#1a1a1a] rounded-2xl overflow-hidden">
+            {grid.map(([icon, title, desc]) => (
+              <div key={title} className="bg-[#111] p-8 transition-colors duration-200 hover:bg-[#151515] border-t-2 border-t-[#e8853b]/10">
+                <div className="text-xl mb-3" aria-hidden="true">{icon}</div>
+                <h3 className="text-[15px] font-semibold mb-2">{title}</h3>
+                <p className="text-sm text-[#777] leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Feature deep-dives (first 3) ── */}
+      {features.slice(0, 3).map((f, i) => (
         <div key={i}>
           <div className={divider} />
           <section className="py-24">
@@ -221,7 +246,7 @@ export default function Home() {
                     width={520}
                     height={400}
                     className="rounded-xl border border-[#252525] max-w-full h-auto"
-                    style={{ boxShadow: "0 16px 48px rgba(0,0,0,0.5)" }}
+                    style={{ boxShadow: "0 16px 48px rgba(0,0,0,0.5), 0 0 80px rgba(232,133,59,0.06)" }}
                   />
                 </div>
               </div>
@@ -229,25 +254,6 @@ export default function Home() {
           </section>
         </div>
       ))}
-
-      <div className={divider} />
-
-      {/* ── Feature grid ── */}
-      <section className="py-24">
-        <div className={cx}>
-          <h2 className="text-center text-3xl md:text-5xl font-bold tracking-tight mb-14">
-            And everything else you&apos;d expect
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#1a1a1a] border border-[#1a1a1a] rounded-2xl overflow-hidden">
-            {grid.map(([title, desc]) => (
-              <div key={title} className="bg-[#111] p-8 transition-colors duration-200 hover:bg-[#151515]">
-                <h3 className="text-[15px] font-semibold mb-2">{title}</h3>
-                <p className="text-sm text-[#777] leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <div className={divider} />
 
@@ -262,12 +268,6 @@ export default function Home() {
         <div className={`${cx} relative`}>
           <div className="text-center mb-14">
             <div className="inline-flex items-center gap-2 text-[13px] text-[#e8853b] border border-[#e8853b]/20 px-4 py-1.5 rounded-full mb-8 tracking-wide bg-[#e8853b]/5">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="opacity-80">
-                <path d="M3.5 1L8 5.5L12.5 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M1 3.5L5.5 8L1 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M3.5 15L8 10.5L12.5 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M15 12.5L10.5 8L15 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
               New in v4.0
             </div>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
@@ -298,11 +298,50 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Feature deep-dives (remaining 2) ── */}
+      {features.slice(3).map((f, i) => (
+        <div key={i + 3}>
+          <div className={divider} />
+          <section className="py-24">
+            <div className={cx}>
+              <div className={`grid grid-cols-1 md:grid-cols-2 gap-16 items-center${f.reverse ? " md:[direction:rtl]" : ""}`}>
+                <div className={f.reverse ? "md:[direction:ltr]" : ""}>
+                  <div className="text-xs font-semibold uppercase tracking-widest text-[#e8853b] mb-4">{f.label}</div>
+                  <h2 className="text-2xl md:text-4xl font-bold tracking-tight mb-4 leading-tight">{f.title}</h2>
+                  <p className="text-base text-[#777] leading-relaxed">{f.desc}</p>
+                  <p className="text-base text-[#777] leading-relaxed mt-3">{f.solution}</p>
+                  <div className="mt-5 p-4 px-5 bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl text-sm text-[#777] leading-relaxed">
+                    <strong className="text-[#ededed]">{f.quote.b}</strong>
+                    {f.quote.t}
+                  </div>
+                </div>
+                <div className={`flex justify-center${f.reverse ? " md:[direction:ltr]" : ""}`}>
+                  <Image
+                    src={f.img}
+                    alt={f.alt}
+                    width={520}
+                    height={400}
+                    className="rounded-xl border border-[#252525] max-w-full h-auto"
+                    style={{ boxShadow: "0 16px 48px rgba(0,0,0,0.5), 0 0 80px rgba(232,133,59,0.06)" }}
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      ))}
+
       <div className={divider} />
 
       {/* ── CTA ── */}
-      <section className="py-24 text-center">
-        <div className={cx}>
+      <section className="py-24 text-center relative overflow-hidden">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: "radial-gradient(ellipse 50% 50% at 50% 50%, rgba(232,133,59,0.03) 0%, transparent 70%)",
+          }}
+        />
+        <div className={`${cx} relative`}>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Start monitoring in 30 seconds</h2>
           <p className="text-[#777] text-[17px] mb-10 max-w-[480px] mx-auto">Free, open source, no account needed. Just install and go.</p>
           <div className="flex gap-3 justify-center flex-wrap mb-8">
@@ -336,7 +375,7 @@ export default function Home() {
       {/* ── Footer ── */}
       <footer className="border-t border-[#1a1a1a] py-10">
         <div className={`${cx} flex flex-col sm:flex-row justify-between items-center gap-4`}>
-          <div className="text-[13px] text-[#555]">Tokemon &mdash; macOS 14+ &amp; Raycast</div>
+          <div className="text-[13px] text-[#555]">Built for developers who ship with Claude</div>
           <div className="flex gap-6 text-[13px]">
             <a href="https://github.com/richyparr/tokemon" className="text-[#555] hover:text-[#ededed] transition-colors">GitHub</a>
             <a href="https://github.com/richyparr/tokemon/releases/latest" className="text-[#555] hover:text-[#ededed] transition-colors">Releases</a>

@@ -8,13 +8,13 @@ export default defineConfig({
   retries: 0,
   reporter: [["html", { open: "never" }]],
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3001",
     screenshot: "on",
     video: "retain-on-failure",
   },
   webServer: {
-    command: "npm run dev",
-    port: 3000,
+    command: "npm run dev -- -p 3001",
+    port: 3001,
     reuseExistingServer: true,
     timeout: 30_000,
   },
