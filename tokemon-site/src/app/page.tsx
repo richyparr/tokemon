@@ -156,16 +156,15 @@ export default function Home() {
             Tokemon shows your Claude usage in real-time &mdash; from your menu bar, a floating window, or Raycast.
             Track session limits, burn rate, project costs, and team budgets.
           </p>
-          <HeroCTA />
-          <TerminalInstall />
-          {/* #5 Social proof badge */}
-          <div className="mt-6 inline-flex items-center gap-2 text-[13px] text-[#555]">
+          <div className="mb-8 inline-flex items-center gap-2 text-[13px] text-[#555]">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <path d="M8 1l2.245 4.55 5.02.73-3.633 3.54.858 5L8 12.67 3.51 15.82l.858-5L.735 7.28l5.02-.73L8 1z" fill="#e8853b"/>
             </svg>
             Open source &mdash; loved by developers who ship with Claude
           </div>
-          <div className="mt-12">
+          <HeroCTA />
+          <TerminalInstall />
+          <div className="mt-16">
             <Image
               src="/ss-bg-1.png"
               alt="Tokemon popover showing real-time Claude usage"
