@@ -84,13 +84,24 @@ struct TokenManager {
             throw TokenError.noCredentials
         }
 
-        guard let data = json.data(using: .utf8) else {
+        return try decodeCredentials(from: json)
+    }
+
+    /// Decode credentials from a JSON string, tolerating a leading length-prefix byte
+    /// that Claude Code may prepend to the Keychain value.
+    private static func decodeCredentials(from json: String) throws -> ClaudeCredentials {
+        guard let data = json.data(using: .utf8), !data.isEmpty else {
+            throw TokenError.noCredentials
+        }
+
+        // Claude Code may store credentials with a leading non-JSON byte (e.g. 0x07).
+        // Find the opening brace and decode from there.
+        guard let braceIndex = data.firstIndex(of: UInt8(ascii: "{")) else {
             throw TokenError.noCredentials
         }
 
         do {
-            let credentials = try JSONDecoder().decode(ClaudeCredentials.self, from: data)
-            return credentials
+            return try JSONDecoder().decode(ClaudeCredentials.self, from: data[braceIndex...])
         } catch {
             throw TokenError.decodingError(error)
         }
@@ -204,7 +215,6 @@ struct TokenManager {
         // Write back to Keychain using the current username as account
         // WARNING: This may conflict with Claude Code's own Keychain access
         let username = NSUserName()
-        print("[Tokemon] Writing refreshed credentials back to Keychain (potential conflict with Claude Code)")
         try keychain.set(jsonString, key: username)
     }
 
@@ -221,11 +231,7 @@ struct TokenManager {
             throw TokenError.noCredentials
         }
 
-        guard let data = json.data(using: .utf8) else {
-            throw TokenError.noCredentials
-        }
-
-        return try JSONDecoder().decode(ClaudeCredentials.self, from: data)
+        return try decodeCredentials(from: json)
     }
 
     /// Get valid access token for a specific account, checking expiry with a 10-minute buffer.

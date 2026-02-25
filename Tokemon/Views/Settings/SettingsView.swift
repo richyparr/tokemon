@@ -61,6 +61,6 @@ struct SettingsView: View {
                     }
             }
         }
-        .frame(minWidth: 720, minHeight: 400)
+        .frame(minWidth: 880, minHeight: 400)
     }
 }

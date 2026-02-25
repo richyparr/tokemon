@@ -144,9 +144,9 @@ final class FloatingWindowController {
     /// Show the floating window, creating it if necessary.
     /// Position is restored from UserDefaults if previously saved.
     func showFloatingWindow() {
-        // If panel already exists, just bring it forward
+        // If panel already exists, just bring it forward (without stealing key/focus)
         if let existingPanel = panel {
-            existingPanel.makeKeyAndOrderFront(nil)
+            existingPanel.orderFront(nil)
             return
         }
 
@@ -193,7 +193,7 @@ final class FloatingWindowController {
         newPanel.contentViewController = hostingController
 
         self.panel = newPanel
-        newPanel.makeKeyAndOrderFront(nil)
+        newPanel.orderFront(nil)
 
         // Watch for close-button (X) clicks so we nil out our reference
         NotificationCenter.default.addObserver(

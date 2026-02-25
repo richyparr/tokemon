@@ -133,7 +133,7 @@ struct PopoverContentView: View {
 
                 // Refresh button
                 Button {
-                    Task { await monitor.refresh() }
+                    monitor.manualRefresh()
                 } label: {
                     Image(systemName: "arrow.clockwise")
                         .foregroundStyle(.secondary)

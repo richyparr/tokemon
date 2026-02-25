@@ -197,7 +197,8 @@ final class UsageMonitor {
     /// Error notification: OAuth failure notifies user once, then goes silent.
     func refresh() async {
         // Don't refresh if manual retry is required
-        guard !requiresManualRetry else { return }
+        guard !requiresManualRetry else { return
+        }
 
         isRefreshing = true
         defer { isRefreshing = false }
