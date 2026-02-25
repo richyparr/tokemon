@@ -37,6 +37,8 @@ struct AppearanceSettings: View {
             return "Lightning bolt icon with percentage text"
         case .compact:
             return "Minimal number display without % sign"
+        case .trafficLight:
+            return "Colored circle with percentage text (green/amber/orange/red)"
         }
     }
 

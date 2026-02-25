@@ -32,6 +32,8 @@ struct MenuBarIconRenderer {
             return renderIconAndBar(percentage: percentage, isMonochrome: isMonochrome, hasData: hasData, suffix: suffix)
         case .compact:
             return renderCompact(percentage: percentage, isMonochrome: isMonochrome, hasData: hasData)
+        case .trafficLight:
+            return renderTrafficLight(percentage: percentage, isMonochrome: isMonochrome, hasData: hasData, suffix: suffix)
         }
     }
 
@@ -244,5 +246,52 @@ struct MenuBarIconRenderer {
             .foregroundColor: color,
         ]
         return (image: nil, title: NSAttributedString(string: text, attributes: attributes))
+    }
+
+    // MARK: - Traffic Light Style (colored circle + text)
+
+    private static func renderTrafficLight(
+        percentage: Double,
+        isMonochrome: Bool,
+        hasData: Bool,
+        suffix: String?
+    ) -> (image: NSImage?, title: NSAttributedString?) {
+        let color = GradientColors.nsColor(for: percentage, isMonochrome: isMonochrome)
+        let result = NSMutableAttributedString()
+
+        // Draw a filled circle as an image attachment (sized to match Raycast menu bar icon)
+        let circleSize: CGFloat = 13
+        let circleImage = NSImage(size: NSSize(width: circleSize, height: circleSize), flipped: false) { rect in
+            let circlePath = NSBezierPath(ovalIn: rect)
+            color.setFill()
+            circlePath.fill()
+            return true
+        }
+
+        let attachment = NSTextAttachment()
+        attachment.image = circleImage
+        // Vertically center the circle with the text baseline
+        attachment.bounds = CGRect(x: 0, y: -2, width: circleSize, height: circleSize)
+        result.append(NSAttributedString(attachment: attachment))
+
+        // Space + percentage text
+        let text: String
+        if hasData {
+            var base = " \(Int(percentage))%"
+            if let suffix = suffix {
+                base = "\(base) \(suffix)"
+            }
+            text = base
+        } else {
+            text = " --"
+        }
+
+        let textAttributes: [NSAttributedString.Key: Any] = [
+            .font: NSFont.monospacedDigitSystemFont(ofSize: 13, weight: .medium),
+            .foregroundColor: color,
+        ]
+        result.append(NSAttributedString(string: text, attributes: textAttributes))
+
+        return (image: nil, title: result)
     }
 }

@@ -18,6 +18,9 @@ enum MenuBarIconStyle: String, CaseIterable, Identifiable {
     /// Abbreviated percentage text without the % sign (e.g., "42")
     case compact
 
+    /// Colored circle (traffic light) with percentage text (e.g., "● 42%")
+    case trafficLight
+
     var id: String { rawValue }
 
     /// Human-readable display name for the settings UI
@@ -28,6 +31,7 @@ enum MenuBarIconStyle: String, CaseIterable, Identifiable {
         case .progressBar: return "Progress Bar"
         case .iconAndBar: return "Icon & Bar"
         case .compact: return "Compact"
+        case .trafficLight: return "Traffic Light"
         }
     }
 
@@ -39,6 +43,7 @@ enum MenuBarIconStyle: String, CaseIterable, Identifiable {
         case .progressBar: return "chart.bar.fill"
         case .iconAndBar: return "bolt.fill"
         case .compact: return "number"
+        case .trafficLight: return "circle.fill"
         }
     }
 }
