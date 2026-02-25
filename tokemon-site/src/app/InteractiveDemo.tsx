@@ -137,7 +137,7 @@ function DemoTerminal({
 }) {
   return (
     <div
-      className="absolute top-[36px] left-[12px] right-[12px] bottom-[12px] rounded-lg overflow-hidden flex flex-col"
+      className="absolute top-[46px] left-[12px] right-[12px] bottom-[12px] rounded-lg overflow-hidden flex flex-col"
       style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.5)" }}
     >
       {/* Title bar */}
@@ -152,7 +152,7 @@ function DemoTerminal({
       {/* Body */}
       <div
         ref={termRef}
-        className="flex-1 bg-[#1e1e1e] p-3 font-mono text-[11px] leading-[17px] overflow-y-auto overflow-x-hidden scrollbar-hide"
+        className="flex-1 bg-[#1e1e1e] p-3 font-mono text-[11px] leading-[17px] overflow-y-auto overflow-x-hidden scrollbar-hide text-left"
       >
         {LINES.slice(0, visibleCount).map((line, i) => (
           <div key={i} className="whitespace-pre min-h-[17px]">
@@ -413,7 +413,7 @@ export function InteractiveDemo() {
       </div>
 
       {/* Hint */}
-      <div className="absolute bottom-1.5 left-0 right-0 text-center text-[9px] text-white/20 z-10 pointer-events-none">
+      <div className="absolute top-[30px] left-0 right-0 text-center text-[9px] text-white/25 z-10 pointer-events-none">
         Click the menu bar icon to see the popover
       </div>
     </div>

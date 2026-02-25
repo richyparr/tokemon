@@ -5,7 +5,7 @@ import FadeContent from "@/components/FadeContent";
 export function HeroCTA() {
   return (
     <>
-      <div className="flex gap-3 justify-center flex-wrap mb-6">
+      <div className="flex gap-3 justify-center md:justify-start flex-wrap mb-6">
         <FadeContent blur duration={800} delay={200} threshold={0.1}>
           <a
             href="https://github.com/richyparr/tokemon/releases/latest"
