@@ -162,11 +162,19 @@ test.describe("Hero section", () => {
     await expect(page.getByText("loved by developers who ship with Claude")).toBeVisible();
   });
 
-  test("hero screenshot loads", async ({ page }) => {
+  test("hero has interactive demo or screenshot", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    const heroImg = page.locator("section").first().locator('img[alt*="Tokemon popover"], img[alt*="Claude usage"]');
-    await expect(heroImg).toBeVisible();
+    const viewport = page.viewportSize();
+    if (viewport && viewport.width >= 768) {
+      // Desktop: interactive demo visible
+      const demo = page.locator('[aria-label*="Interactive demo"]');
+      await expect(demo).toBeVisible();
+    } else {
+      // Mobile: static screenshot visible
+      const heroImg = page.locator("section").first().locator('img[alt*="Tokemon popover"], img[alt*="Claude usage"]');
+      await expect(heroImg).toBeVisible();
+    }
   });
 });
 

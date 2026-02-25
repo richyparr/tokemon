@@ -3,6 +3,7 @@ import { HeroTyping } from "./HeroTyping";
 import { HeroBackground } from "./HeroBackground";
 import { HeroCTA } from "./HeroCTA";
 import { TerminalInstall } from "./TerminalInstall";
+import { InteractiveDemo } from "./InteractiveDemo";
 
 /* ─── shared constants ─── */
 const cx = "max-w-[1080px] mx-auto px-6"; // container
@@ -165,13 +166,18 @@ export default function Home() {
           <HeroCTA />
           <TerminalInstall />
           <div className="mt-16">
+            {/* Interactive demo on desktop */}
+            <div className="hidden md:block">
+              <InteractiveDemo />
+            </div>
+            {/* Static screenshot on mobile */}
             <Image
               src="/ss-bg-1.png"
               alt="Tokemon popover showing real-time Claude usage"
               width={480}
               height={560}
               priority
-              className="mx-auto rounded-xl border border-[#252525]"
+              className="mx-auto rounded-xl border border-[#252525] md:hidden"
               style={{ boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 120px rgba(232,133,59,0.15)" }}
             />
           </div>
