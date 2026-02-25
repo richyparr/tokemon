@@ -97,6 +97,13 @@ const grid = [
   ["Three themes", "Native macOS (follows system), Light, or Dark with warm orange accents. Your choice across every window and panel."],
 ];
 
+const raycastFeatures = [
+  ["Usage dashboard", "Session percentage, weekly utilization, pace indicator, and reset countdown \u2014 all in a single Raycast command. Cmd+R to refresh."],
+  ["Menu bar presence", "Usage percentage lives in your Raycast menu bar with a colored indicator (green/yellow/orange/red) that updates every 5 minutes."],
+  ["Multi-profile", "Switch between personal and work Claude accounts instantly. Each profile has its own OAuth token and usage tracking."],
+  ["Threshold alerts", "Set a usage percentage and get a notification before you hit the limit. Alerts fire once per session window \u2014 never spammy."],
+];
+
 const actions: [string, string, number, number][] = [
   ["/ss-ctx-2.png", "Coding in your editor", 1852, 1090],
   ["/ss-ctx-3.png", "Browsing the web", 1852, 1090],
@@ -137,7 +144,7 @@ export default function Home() {
         <HeroBackground />
         <div className={`${cx} relative z-10`}>
           <div className="inline-block text-[13px] text-[#777] border border-[#1a1a1a] px-4 py-1.5 rounded-full mb-8 tracking-wide bg-black shadow-[0_0_0_20px_black,0_0_40px_30px_black]">
-            Free &amp; open source for macOS
+            Free &amp; open source for macOS &amp; Raycast
           </div>
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.08] tracking-tight mb-6 h-[170px] sm:h-[200px] md:h-[240px]">
             Never hit a{" "}
@@ -146,8 +153,8 @@ export default function Home() {
             by surprise again
           </h1>
           <p className="text-lg text-[#777] max-w-[540px] mx-auto mb-12 leading-relaxed">
-            Tokemon floats on your screen showing Claude usage in real-time. Track session limits, weekly utilization,
-            burn rate, project costs, and team budgets &mdash; all from your menu bar.
+            Tokemon shows your Claude usage in real-time &mdash; from your menu bar, a floating window, or Raycast.
+            Track session limits, burn rate, project costs, and team budgets.
           </p>
           <HeroCTA />
           <TerminalInstall />
@@ -176,8 +183,8 @@ export default function Home() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {actions.map(([src, label, w, h]) => (
-              <div key={src} className="relative rounded-xl overflow-hidden border border-[#1a1a1a]">
-                <Image src={src} alt={label} width={w} height={h} className="w-full block" />
+              <div key={src} className="relative rounded-xl overflow-hidden border border-[#1a1a1a] group">
+                <Image src={src} alt={label} width={w} height={h} className="w-full block transition-transform duration-500 group-hover:scale-[1.02]" />
                 <div
                   className="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg text-[13px] text-[#999]"
                   style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}
@@ -194,7 +201,7 @@ export default function Home() {
       {features.map((f, i) => (
         <div key={i}>
           <div className={divider} />
-          <section className="py-28">
+          <section className="py-24">
             <div className={cx}>
               <div className={`grid grid-cols-1 md:grid-cols-2 gap-16 items-center${f.reverse ? " md:[direction:rtl]" : ""}`}>
                 <div className={f.reverse ? "md:[direction:ltr]" : ""}>
@@ -202,7 +209,7 @@ export default function Home() {
                   <h2 className="text-2xl md:text-4xl font-bold tracking-tight mb-4 leading-tight">{f.title}</h2>
                   <p className="text-base text-[#777] leading-relaxed">{f.desc}</p>
                   <p className="text-base text-[#777] leading-relaxed mt-3">{f.solution}</p>
-                  <div className="mt-5 p-4 px-5 bg-[#111] border border-[#1a1a1a] rounded-xl text-sm text-[#777] leading-relaxed">
+                  <div className="mt-5 p-4 px-5 bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl text-sm text-[#777] leading-relaxed">
                     <strong className="text-[#ededed]">{f.quote.b}</strong>
                     {f.quote.t}
                   </div>
@@ -226,14 +233,14 @@ export default function Home() {
       <div className={divider} />
 
       {/* ── Feature grid ── */}
-      <section className="pb-28">
+      <section className="py-24">
         <div className={cx}>
           <h2 className="text-center text-3xl md:text-5xl font-bold tracking-tight mb-14">
             And everything else you&apos;d expect
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#1a1a1a] border border-[#1a1a1a] rounded-2xl overflow-hidden">
             {grid.map(([title, desc]) => (
-              <div key={title} className="bg-[#111] p-8">
+              <div key={title} className="bg-[#111] p-8 transition-colors duration-200 hover:bg-[#151515]">
                 <h3 className="text-[15px] font-semibold mb-2">{title}</h3>
                 <p className="text-sm text-[#777] leading-relaxed">{desc}</p>
               </div>
@@ -242,27 +249,86 @@ export default function Home() {
         </div>
       </section>
 
+      <div className={divider} />
+
+      {/* ── Raycast ── */}
+      <section className="py-24 relative overflow-hidden">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(232,133,59,0.04) 0%, transparent 70%)",
+          }}
+        />
+        <div className={`${cx} relative`}>
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center gap-2 text-[13px] text-[#e8853b] border border-[#e8853b]/20 px-4 py-1.5 rounded-full mb-8 tracking-wide bg-[#e8853b]/5">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="opacity-80">
+                <path d="M3.5 1L8 5.5L12.5 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M1 3.5L5.5 8L1 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M3.5 15L8 10.5L12.5 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M15 12.5L10.5 8L15 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              New in v4.0
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
+              Now available in Raycast
+            </h2>
+            <p className="text-[#777] text-[17px] max-w-[560px] mx-auto leading-relaxed">
+              Your Claude usage inside the launcher you already use. No app switching, no menu bar clicking &mdash; just hit your hotkey.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-[#1a1a1a] border border-[#1a1a1a] rounded-2xl overflow-hidden mb-10">
+            {raycastFeatures.map(([title, desc]) => (
+              <div key={title} className="bg-[#111] p-8 transition-colors duration-200 hover:bg-[#151515]">
+                <h3 className="text-[15px] font-semibold mb-2">{title}</h3>
+                <p className="text-sm text-[#777] leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <p className="text-sm text-[#555] mb-3">Install from the Raycast Store, or clone and build locally:</p>
+            <div className="inline-block rounded-lg border border-[#252525] bg-[#0a0a0a] px-5 py-3 font-mono text-[13px] text-[#999]">
+              <span className="text-[#28c840]">~</span>
+              <span className="text-[#555] mx-1.5">$</span>
+              git clone &amp;&amp; cd tokemon-raycast &amp;&amp; npm i &amp;&amp; npm run dev
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className={divider} />
+
       {/* ── CTA ── */}
-      <section className="py-20 pb-28 text-center">
+      <section className="py-24 text-center">
         <div className={cx}>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Start monitoring in 30 seconds</h2>
-          <p className="text-[#777] text-[17px] mb-10">Free, open source, no account needed. Just install and go.</p>
-          <div className="flex gap-3 justify-center flex-wrap mb-6">
+          <p className="text-[#777] text-[17px] mb-10 max-w-[480px] mx-auto">Free, open source, no account needed. Just install and go.</p>
+          <div className="flex gap-3 justify-center flex-wrap mb-8">
             <a
               href="https://github.com/richyparr/tokemon/releases/latest"
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-xl text-[15px] font-medium bg-[#ededed] text-black hover:opacity-85 transition-opacity"
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-xl text-[15px] font-medium bg-[#ededed] text-black hover:bg-white transition-colors"
             >
               Download for macOS
             </a>
             <a
               href="https://github.com/richyparr/tokemon"
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-xl text-[15px] font-medium border border-[#1a1a1a] text-[#777] hover:border-[#333] hover:text-[#ededed] transition-colors"
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-xl text-[15px] font-medium border border-[#252525] text-[#777] hover:border-[#444] hover:text-[#ededed] transition-colors"
             >
               View on GitHub
             </a>
           </div>
-          <div className="font-mono text-[13px] text-[#777] mt-5">
-            <span className="text-[#e8853b]">$</span> brew tap richyparr/tokemon && brew install --cask tokemon
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 justify-center items-center font-mono text-[13px] text-[#555]">
+            <div>
+              <span className="text-[#777] mr-2">macOS</span>
+              <span className="text-[#e8853b]">$</span> brew install --cask tokemon
+            </div>
+            <div className="hidden sm:block text-[#252525]">|</div>
+            <div>
+              <span className="text-[#777] mr-2">Raycast</span>
+              <span className="text-[#e8853b]">$</span> npm run dev
+            </div>
           </div>
         </div>
       </section>
@@ -270,11 +336,11 @@ export default function Home() {
       {/* ── Footer ── */}
       <footer className="border-t border-[#1a1a1a] py-10">
         <div className={`${cx} flex flex-col sm:flex-row justify-between items-center gap-4`}>
-          <div className="text-[13px] text-[#777]">Tokemon &mdash; macOS 14+ &middot; Free &amp; open source</div>
+          <div className="text-[13px] text-[#555]">Tokemon &mdash; macOS 14+ &amp; Raycast</div>
           <div className="flex gap-6 text-[13px]">
-            <a href="https://github.com/richyparr/tokemon" className="text-[#777] hover:text-[#ededed] transition-colors">GitHub</a>
-            <a href="https://github.com/richyparr/tokemon/releases/latest" className="text-[#777] hover:text-[#ededed] transition-colors">Releases</a>
-            <a href="https://github.com/richyparr/tokemon/issues" className="text-[#777] hover:text-[#ededed] transition-colors">Issues</a>
+            <a href="https://github.com/richyparr/tokemon" className="text-[#555] hover:text-[#ededed] transition-colors">GitHub</a>
+            <a href="https://github.com/richyparr/tokemon/releases/latest" className="text-[#555] hover:text-[#ededed] transition-colors">Releases</a>
+            <a href="https://github.com/richyparr/tokemon/issues" className="text-[#555] hover:text-[#ededed] transition-colors">Issues</a>
           </div>
         </div>
       </footer>

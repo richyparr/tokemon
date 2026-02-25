@@ -14,15 +14,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://tokemon.ai"),
-  title: "Tokemon — Claude Usage Monitor for macOS",
+  title: "Tokemon — Claude Usage Monitor for macOS & Raycast",
   description:
-    "A floating window that shows your Claude rate limits in real-time. Track session limits, burn rate, project costs, and team budgets from your menu bar.",
+    "Monitor your Claude usage in real-time from your menu bar or Raycast. Track session limits, burn rate, project costs, and team budgets — never hit a rate limit by surprise.",
   openGraph: {
     type: "website",
     siteName: "Tokemon",
-    title: "Tokemon — Claude Usage Monitor for macOS",
+    title: "Tokemon — Claude Usage Monitor for macOS & Raycast",
     description:
-      "A floating window that shows your Claude rate limits in real-time. Track session limits, burn rate, project costs, and team budgets from your menu bar.",
+      "Monitor your Claude usage in real-time from your menu bar or Raycast. Track session limits, burn rate, project costs, and team budgets — never hit a rate limit by surprise.",
     url: "https://tokemon.ai",
     images: [
       {
@@ -35,9 +35,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tokemon — Claude Usage Monitor for macOS",
+    title: "Tokemon — Claude Usage Monitor for macOS & Raycast",
     description:
-      "A floating window that shows your Claude rate limits in real-time. Never hit a limit by surprise again.",
+      "Monitor your Claude usage in real-time from your menu bar or Raycast. Never hit a rate limit by surprise again.",
     images: ["/og.png"],
   },
   icons: { icon: "/icon.png", apple: "/icon.png" },
