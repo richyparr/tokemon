@@ -17,6 +17,9 @@ enum PopoverHeightCalculator {
     static let profileSwitcherHeight: CGFloat = 28
     static let profileSummaryHeader: CGFloat = 32
     static let profileRowHeight: CGFloat = 24
+    static let errorBannerHeight: CGFloat = 80
+    static let errorRetryButtonHeight: CGFloat = 35
+    static let criticalAlertHeight: CGFloat = 34
 
     /// Calculate the total popover height based on which content sections are visible.
     ///
@@ -26,13 +29,19 @@ enum PopoverHeightCalculator {
     ///   - extraUsageEnabled: Whether the account has extra usage billing enabled.
     ///   - updateAvailable: Whether an app update is available (shows banner).
     ///   - showUsageTrend: Whether the usage trend chart is enabled.
+    ///   - hasError: Whether an error state is active (shows ErrorBannerView).
+    ///   - requiresManualRetry: Whether the error shows a retry button (adds extra height).
+    ///   - isCriticalAlert: Whether the header shows a critical usage alert banner.
     /// - Returns: The calculated height in points for the popover frame.
     static func calculate(
         profileCount: Int,
         showExtraUsage: Bool,
         extraUsageEnabled: Bool,
         updateAvailable: Bool,
-        showUsageTrend: Bool
+        showUsageTrend: Bool,
+        hasError: Bool = false,
+        requiresManualRetry: Bool = false,
+        isCriticalAlert: Bool = false
     ) -> CGFloat {
         var height = baseHeight
 
@@ -50,6 +59,17 @@ enum PopoverHeightCalculator {
 
         if showUsageTrend {
             height += chartHeight
+        }
+
+        if hasError {
+            height += errorBannerHeight
+            if requiresManualRetry {
+                height += errorRetryButtonHeight
+            }
+        }
+
+        if isCriticalAlert {
+            height += criticalAlertHeight
         }
 
         return height

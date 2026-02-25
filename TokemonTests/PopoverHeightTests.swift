@@ -112,6 +112,60 @@ final class PopoverHeightTests: XCTestCase {
         XCTAssertEqual(height, 300, "Zero profiles (edge case) should not add profile switcher height")
     }
 
+    // MARK: - Error Banner Tests
+
+    func testWithError_AddsErrorBannerHeight() {
+        let height = PopoverHeightCalculator.calculate(
+            profileCount: 1,
+            showExtraUsage: false,
+            extraUsageEnabled: false,
+            updateAvailable: false,
+            showUsageTrend: false,
+            hasError: true
+        )
+        XCTAssertEqual(height, 380, "Error banner adds 80 to base 300 = 380")
+    }
+
+    func testWithError_AndRetryButton() {
+        let height = PopoverHeightCalculator.calculate(
+            profileCount: 1,
+            showExtraUsage: false,
+            extraUsageEnabled: false,
+            updateAvailable: false,
+            showUsageTrend: false,
+            hasError: true,
+            requiresManualRetry: true
+        )
+        XCTAssertEqual(height, 415, "Error + retry adds 80 + 35 to base 300 = 415")
+    }
+
+    func testRetryWithoutError_NoAddition() {
+        let height = PopoverHeightCalculator.calculate(
+            profileCount: 1,
+            showExtraUsage: false,
+            extraUsageEnabled: false,
+            updateAvailable: false,
+            showUsageTrend: false,
+            hasError: false,
+            requiresManualRetry: true
+        )
+        XCTAssertEqual(height, 300, "Retry without error should not add height")
+    }
+
+    // MARK: - Critical Alert Tests
+
+    func testCriticalAlert_AddsAlertHeight() {
+        let height = PopoverHeightCalculator.calculate(
+            profileCount: 1,
+            showExtraUsage: false,
+            extraUsageEnabled: false,
+            updateAvailable: false,
+            showUsageTrend: false,
+            isCriticalAlert: true
+        )
+        XCTAssertEqual(height, 334, "Critical alert adds 34 to base 300 = 334")
+    }
+
     // MARK: - Combined Tests
 
     func testAllExtras_Combined() {
@@ -124,5 +178,20 @@ final class PopoverHeightTests: XCTestCase {
         )
         // 300 (base) + 132 (3 profiles: 28+32+72) + 75 (extra) + 56 (update) + 230 (chart) = 793
         XCTAssertEqual(height, 793, "All extras with 3 profiles: 300 + 132 + 75 + 56 + 230 = 793")
+    }
+
+    func testError_WithAllOtherExtras() {
+        let height = PopoverHeightCalculator.calculate(
+            profileCount: 2,
+            showExtraUsage: true,
+            extraUsageEnabled: true,
+            updateAvailable: true,
+            showUsageTrend: false,
+            hasError: true,
+            requiresManualRetry: true,
+            isCriticalAlert: true
+        )
+        // 300 + 108 (2 profiles) + 75 (extra) + 56 (update) + 80 (error) + 35 (retry) + 34 (critical) = 688
+        XCTAssertEqual(height, 688, "Error + retry + critical + extras: 300 + 108 + 75 + 56 + 80 + 35 + 34 = 688")
     }
 }

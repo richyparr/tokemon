@@ -19,6 +19,7 @@ struct TokemonApp: App {
     @State private var updateManager = UpdateManager()
     @State private var webhookManager = WebhookManager()
     @State private var budgetManager = BudgetManager()
+    @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
 
     init() {
         // Set notification delegate to handle notifications while app is "active"
@@ -46,6 +47,19 @@ struct TokemonApp: App {
         }
     }
 
+    private var popoverHeight: CGFloat {
+        PopoverHeightCalculator.calculate(
+            profileCount: profileManager.profiles.count,
+            showExtraUsage: monitor.showExtraUsage,
+            extraUsageEnabled: monitor.currentUsage.extraUsageEnabled,
+            updateAvailable: updateManager.updateAvailable,
+            showUsageTrend: showUsageTrend,
+            hasError: monitor.error != nil,
+            requiresManualRetry: monitor.requiresManualRetry,
+            isCriticalAlert: alertManager.currentAlertLevel == .critical
+        )
+    }
+
     var body: some Scene {
         MenuBarExtra {
             PopoverContentView()
@@ -56,7 +70,7 @@ struct TokemonApp: App {
                 .environment(updateManager)
                 .environment(webhookManager)
                 .environment(budgetManager)
-                .frame(width: 320)
+                .frame(width: 320, height: popoverHeight)
                 .onAppear {
                     // Ensure status item is updated when popover appears
                     statusItemManager.update(with: monitor.currentUsage, error: monitor.error, alertLevel: alertManager.currentAlertLevel)
@@ -433,7 +447,7 @@ final class ContextMenuActions: NSObject {
 
     @objc func refreshNow() {
         Task { @MainActor in
-            await monitor.refresh()
+            monitor.manualRefresh()
         }
     }
 
