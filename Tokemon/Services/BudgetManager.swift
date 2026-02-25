@@ -195,7 +195,6 @@ final class BudgetManager {
             config.monthlyLimitDollars
         )
         content.sound = .default
-        content.interruptionLevel = .timeSensitive
 
         let uniqueId = "tokemon.budget.\(threshold).\(Date().timeIntervalSince1970)"
 

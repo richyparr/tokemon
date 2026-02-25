@@ -45,6 +45,12 @@ struct NotificationsSettings: View {
                 Text("Send system notifications when approaching usage limits")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+
+                if alertManager.notificationsEnabled {
+                    Button("Send test notification") {
+                        alertManager.sendTestNotification()
+                    }
+                }
             } header: {
                 Text("macOS Notifications")
             }

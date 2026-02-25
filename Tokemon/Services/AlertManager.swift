@@ -200,7 +200,6 @@ final class AlertManager {
         content.subtitle = "Claude Code"
         content.body = "Your usage has reset to 0%. A fresh session is ready."
         content.sound = .default
-        content.interruptionLevel = .timeSensitive
 
         let uniqueId = "tokemon.session-reset.\(Date().timeIntervalSince1970)"
 
@@ -215,6 +214,38 @@ final class AlertManager {
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("[AlertManager] Session reset notification error: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    // MARK: - Test Notification
+
+    /// Send a test notification to verify system notifications are working.
+    func sendTestNotification() {
+        guard hasAppBundle else {
+            print("[AlertManager] No app bundle, skipping test notification")
+            return
+        }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Test Notification"
+        content.subtitle = "Tokemon"
+        content.body = "Notifications are working. You'll see alerts like this when usage thresholds are reached."
+        content.sound = .default
+
+        let request = UNNotificationRequest(
+            identifier: "tokemon.test.\(Date().timeIntervalSince1970)",
+            content: content,
+            trigger: nil
+        )
+
+        print("[AlertManager] Sending test notification")
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("[AlertManager] Test notification error: \(error.localizedDescription)")
+            } else {
+                print("[AlertManager] Test notification sent successfully")
             }
         }
     }
@@ -272,13 +303,11 @@ final class AlertManager {
             content.subtitle = "Claude Code"
             content.body = "You've used \(percentage)% of your 5-hour limit. Consider pacing yourself."
             content.sound = .default
-            content.interruptionLevel = .timeSensitive
         case .critical:
             content.title = "Usage Limit Reached"
             content.subtitle = "Claude Code"
             content.body = "You've hit 100% of your 5-hour usage limit. Wait for reset or use a different account."
-            content.sound = UNNotificationSound.defaultCritical
-            content.interruptionLevel = .critical
+            content.sound = .default
         case .normal:
             return
         }
