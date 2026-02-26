@@ -6,7 +6,7 @@ import { TerminalInstall } from "./TerminalInstall";
 import { InteractiveDemo } from "./InteractiveDemo";
 
 /* ─── shared constants ─── */
-const cx = "max-w-[1080px] mx-auto px-6"; // container
+const cx = "max-w-[1200px] mx-auto px-6"; // container
 const divider = "h-px bg-gradient-to-r from-transparent via-[#1a1a1a] to-transparent";
 
 /* ─── data ─── */
@@ -141,45 +141,51 @@ export default function Home() {
       </nav>
 
       {/* ── Hero ── */}
-      <section className="relative pt-40 pb-10 text-center overflow-hidden">
+      <section className="relative pt-32 md:pt-36 pb-10 text-center md:text-left overflow-hidden">
         <HeroBackground />
         <div className={`${cx} relative z-10`}>
-          <div className="inline-block text-[13px] text-[#777] border border-[#1a1a1a] px-4 py-1.5 rounded-full mb-8 tracking-wide bg-black shadow-[0_0_0_20px_black,0_0_40px_30px_black]">
-            Free &amp; open source for macOS &amp; Raycast
-          </div>
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.08] tracking-tight mb-6 h-[170px] sm:h-[200px] md:h-[240px]">
-            Never hit a{" "}
-            <HeroTyping />
-            <br />
-            by surprise again
-          </h1>
-          <p className="text-lg text-[#777] max-w-[540px] mx-auto mb-12 leading-relaxed">
-            Tokemon shows your Claude usage in real-time &mdash; from your menu bar, a floating window, or Raycast.
-            Track session limits, burn rate, project costs, and team budgets.
-          </p>
-          <div className="mb-8 inline-flex items-center gap-2 text-[13px] text-[#555]">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <path d="M8 1l2.245 4.55 5.02.73-3.633 3.54.858 5L8 12.67 3.51 15.82l.858-5L.735 7.28l5.02-.73L8 1z" fill="#e8853b"/>
-            </svg>
-            Open source &mdash; loved by developers who ship with Claude
-          </div>
-          <HeroCTA />
-          <TerminalInstall />
-          <div className="mt-16">
-            {/* Interactive demo on desktop */}
-            <div className="hidden md:block">
-              <InteractiveDemo />
+          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-8 md:gap-12 items-start">
+            {/* Left: text content */}
+            <div>
+              <div className="inline-block text-[13px] text-[#777] border border-[#1a1a1a] px-4 py-1.5 rounded-full mb-8 tracking-wide bg-black shadow-[0_0_0_20px_black,0_0_40px_30px_black]">
+                Free &amp; open source for macOS &amp; Raycast
+              </div>
+              <h1 className="text-4xl sm:text-5xl md:text-[42px] lg:text-5xl font-bold leading-[1.08] tracking-tight mb-5 h-[130px] sm:h-[155px] md:h-[140px] lg:h-[160px]">
+                Never hit a{" "}
+                <HeroTyping />
+                <br />
+                by surprise again
+              </h1>
+              <p className="text-[16px] text-[#777] max-w-[540px] mx-auto md:mx-0 mb-8 leading-relaxed">
+                Tokemon shows your Claude usage in real-time &mdash; from your menu bar, a floating window, or Raycast.
+                Track session limits, burn rate, project costs, and team budgets.
+              </p>
+              <div className="mb-6 inline-flex items-center gap-2 text-[13px] text-[#555]">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1l2.245 4.55 5.02.73-3.633 3.54.858 5L8 12.67 3.51 15.82l.858-5L.735 7.28l5.02-.73L8 1z" fill="#e8853b"/>
+                </svg>
+                Open source &mdash; loved by developers who ship with Claude
+              </div>
+              <HeroCTA />
             </div>
-            {/* Static screenshot on mobile */}
-            <Image
-              src="/ss-bg-1.png"
-              alt="Tokemon popover showing real-time Claude usage"
-              width={480}
-              height={560}
-              priority
-              className="mx-auto rounded-xl border border-[#252525] md:hidden"
-              style={{ boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 120px rgba(232,133,59,0.15)" }}
-            />
+            {/* Right: interactive demo */}
+            <div>
+              <div className="hidden md:block">
+                <InteractiveDemo />
+              </div>
+              <Image
+                src="/ss-bg-1.png"
+                alt="Tokemon popover showing real-time Claude usage"
+                width={480}
+                height={560}
+                priority
+                className="mx-auto rounded-xl border border-[#252525] md:hidden mt-8"
+                style={{ boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 120px rgba(232,133,59,0.15)" }}
+              />
+            </div>
+          </div>
+          <div className="mt-8 text-center">
+            <TerminalInstall />
           </div>
         </div>
       </section>
