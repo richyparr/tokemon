@@ -144,7 +144,7 @@ export default function Home() {
       <section className="relative pt-32 md:pt-36 pb-10 text-center md:text-left overflow-hidden">
         <HeroBackground />
         <div className={`${cx} relative z-10`}>
-          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-8 md:gap-12 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-8 md:gap-12 items-start">
             {/* Left: text content */}
             <div>
               <div className="inline-block text-[13px] text-[#777] border border-[#1a1a1a] px-4 py-1.5 rounded-full mb-8 tracking-wide bg-black shadow-[0_0_0_20px_black,0_0_40px_30px_black]">
