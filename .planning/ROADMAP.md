@@ -70,15 +70,27 @@ See [v4.0-ROADMAP.md](milestones/v4.0-ROADMAP.md) for full details.
 
 ---
 
-### Phase 22: Security Hardening
+<details>
+<summary>Phase 22: Security Hardening -- COMPLETE 2026-03-08</summary>
 
-**Goal:** Harden security posture by moving profile credentials from UserDefaults to Keychain, sanitizing error logging, enforcing HTTPS-only webhook URLs, evaluating app sandboxing, and resolving Keychain write-back conflicts with Claude Code.
-**Depends on:** Phase 21
-**Plans:** 2 plans
+- [x] Phase 22: Security Hardening (ad-hoc) -- completed 2026-03-08
+
+**Note:** Completed ad-hoc outside GSD plans. Key work: dictionary-based keychain merging to preserve Claude Code fields, keychain re-read fallback for token refresh conflicts, 429 rate limit handling, `/exit` + `/login` user guidance for OAuth failures.
+
+</details>
+
+---
+
+### Phase 23: SEO & Content Marketing
+
+**Goal:** Drive organic traffic and awareness for Tokemon through an MDX blog system with SEO-targeted guides and comparison pages, Article JSON-LD structured data, dynamic OG images, sitemap coverage, and navigation integration.
+**Depends on:** Phase 22
+**Plans:** 3 plans
 
 Plans:
-- [ ] 22-01-PLAN.md -- Migrate profile credentials to Keychain, disable TokenManager write-back
-- [ ] 22-02-PLAN.md -- Replace print() with OSLog.Logger, enforce HTTPS webhooks, document sandboxing
+- [ ] 23-01-PLAN.md — MDX blog infrastructure (deps, config, blog pages, seed post)
+- [ ] 23-02-PLAN.md — Blog content + SEO metadata (2 more posts, JSON-LD, OG images, sitemap, nav)
+- [ ] 23-03-PLAN.md — Comparison pages + E2E tests (vs ccusage, vs ClaudeBar, test suite)
 
 ---
 
@@ -91,7 +103,8 @@ Plans:
 | 19. Dashboard Command | v4.0 | 2/2 | ✓ Complete | 2026-02-22 |
 | 20. Menu Bar Command | v4.0 | 1/1 | ✓ Complete | 2026-02-22 |
 | 21. Multi-Profile & Alerts | v4.0 | 2/2 | ✓ Complete | 2026-02-24 |
-| 22. Security Hardening | - | 0/2 | Planned | - |
+| 22. Security Hardening | - | ad-hoc | ✓ Complete | 2026-03-08 |
+| 23. SEO & Content Marketing | - | 0/3 | In Progress | - |
 
 ## Future Backlog
 
