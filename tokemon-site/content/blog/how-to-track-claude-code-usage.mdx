@@ -1,0 +1,102 @@
+export const metadata = {
+  title: "How to Track Claude Code Usage in Real-Time",
+  description:
+    "Learn how to monitor Claude Code token usage, track burn rates, and avoid rate limits with Tokemon — a free, open-source Claude usage tracker for macOS.",
+  date: "2026-03-10",
+  author: "Richard Parr",
+  tags: ["claude-code", "usage-tracking", "tokemon"],
+};
+
+If you use Claude Code daily, you have probably hit a rate limit at the worst possible time. Mid-flow, deep in a refactor, and suddenly you are locked out for hours. The frustrating part? There is no built-in way to see how much usage you have left.
+
+That is exactly why I built [Tokemon](https://tokemon.ai) — a free, open-source macOS app that sits in your menu bar and shows your Claude usage in real-time.
+
+## The Problem: Flying Blind with Claude Code
+
+Anthropic's Claude Pro and Max plans come with usage limits, but the feedback loop is terrible. You get a vague warning when you are close to the limit, and then you are cut off. There is no dashboard, no token counter, no burn rate indicator.
+
+For developers using Claude Code as their daily driver, this is a real productivity killer. You might be:
+
+- **Halfway through a complex debugging session** when you hit the wall
+- **Running expensive operations** (large file analysis, multi-step refactors) without knowing the cost
+- **Sharing a team account** with no visibility into who is consuming what
+
+## The Solution: Tokemon
+
+Tokemon monitors your Claude usage directly from your macOS menu bar. One glance tells you everything you need to know:
+
+- **Current usage percentage** — see exactly where you stand
+- **Burn rate** — how fast you are consuming tokens per hour
+- **Time remaining** — estimated time until your limit resets
+- **Per-project tracking** — know which projects are consuming the most
+
+### Installing Tokemon
+
+Getting started takes less than a minute. Install via Homebrew:
+
+```bash
+brew install richyparr/tap/tokemon
+```
+
+Or download the latest release directly from the [GitHub releases page](https://github.com/richyparr/tokemon/releases/latest).
+
+Once installed, Tokemon lives in your menu bar and starts monitoring automatically. No configuration required — it reads usage data directly from Claude's API.
+
+## Key Features
+
+### Menu Bar Monitoring
+
+Tokemon displays your usage right in the macOS menu bar. You can customize what is shown — percentage, token count, or a traffic light indicator that changes color as you approach your limit.
+
+```
+Menu Bar Examples:
+  ● 42%          — Green: plenty of capacity
+  ● 78%          — Yellow: moderate usage
+  ● 95%          — Red: approaching limit
+```
+
+### Burn Rate Tracking
+
+The burn rate tells you how fast you are consuming tokens. This is critical for planning your work sessions. If you are burning through tokens at 5% per hour, you know you have roughly 6 hours of heavy usage left on a fresh reset.
+
+### Per-Project Cost Tracking
+
+Tokemon breaks down usage by project, so you can see exactly which codebases are consuming the most tokens. This is invaluable for teams sharing an account or for individual developers working across multiple projects.
+
+### Smart Alerts
+
+Set threshold alerts at any percentage. Get a notification at 80% so you can wrap up your current task before hitting the wall. No more mid-session surprises.
+
+### Raycast Extension
+
+If you use Raycast, Tokemon has a dedicated extension that lets you check your Claude usage without even looking at the menu bar. Just open Raycast, type "claude", and see your current status.
+
+## How It Works
+
+Tokemon reads your Claude usage data through Anthropic's API. It runs entirely on your Mac — no data is sent to any third-party server. Your API credentials stay local, and the app is fully open-source so you can verify this yourself.
+
+The app polls for usage updates on a configurable interval (default: every 30 seconds) and caches the data locally. This means minimal API overhead and instant access to your usage stats.
+
+## Tips for Managing Claude Usage
+
+Here are some strategies that work well with Tokemon's monitoring:
+
+1. **Front-load expensive operations** — Do your big refactors and file analysis early in the reset window when you have full capacity.
+
+2. **Set alerts at 75%** — This gives you a buffer to finish your current task and plan your remaining usage.
+
+3. **Monitor burn rate patterns** — If you notice certain types of work burn through tokens faster, you can adjust your workflow accordingly.
+
+4. **Use project tracking** — If one project is consuming disproportionate resources, consider whether you can optimize your prompts or break work into smaller chunks.
+
+## Getting Started
+
+Ready to stop guessing about your Claude usage? Install Tokemon and take control:
+
+```bash
+brew install richyparr/tap/tokemon
+```
+
+It is free, open-source, and takes less than a minute to set up. Check out the [Tokemon website](https://tokemon.ai) for more details, or browse the source on [GitHub](https://github.com/richyparr/tokemon).
+
+Never hit a Claude rate limit by surprise again.
