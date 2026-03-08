@@ -1,8 +1,10 @@
 import type { MetadataRoute } from "next";
 import { getPostSlugs } from "@/lib/blog";
+import { getCompareSlugs } from "@/lib/compare";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const blogSlugs = getPostSlugs();
+  const compareSlugs = getCompareSlugs();
 
   return [
     {
@@ -19,6 +21,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...blogSlugs.map((slug) => ({
       url: `https://tokemon.ai/blog/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+    ...compareSlugs.map((slug) => ({
+      url: `https://tokemon.ai/compare/${slug}`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.7,
