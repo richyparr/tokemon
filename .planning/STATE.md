@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
+stopped_at: Completed 23-01-PLAN.md
+last_updated: "2026-03-08T14:35:11.501Z"
+last_activity: 2026-03-08 — Completed 23-01 MDX blog infrastructure
+progress:
+  total_phases: 1
+  completed_phases: 0
+  total_plans: 3
+  completed_plans: 1
+  percent: 93
+---
+
 # Project State
 
 ## Project Reference
@@ -5,18 +21,16 @@
 See: .planning/PROJECT.md (updated 2026-02-24)
 
 **Core value:** Know your Claude usage at a glance before hitting limits.
-**Current focus:** v4.0 shipped — between milestones
+**Current focus:** Phase 23 — SEO & Content Marketing
 
 ## Current Position
 
-Phase: All v4.0 phases complete (18-21)
-Plan: N/A — milestone archived
-Status: v4.0 Raycast Integration shipped
-Last activity: 2026-02-24 — v4.0 milestone archived
+Phase: 23-seo-content-marketing (Plan 1 of 3)
+Plan: 23-01 complete, next: 23-02
+Status: Executing Phase 23 SEO & Content Marketing
+Last activity: 2026-03-08 — Completed 23-01 MDX blog infrastructure
 
-Next: Start next milestone or work on Phase 22 (Security Hardening)
-
-Progress: [##########################] v1-v4 complete
+Progress: [█████████░] 93%
 
 ## Shipped Milestones
 
@@ -40,6 +54,11 @@ Progress: [##########################] v1-v4 complete
 
 See PROJECT.md Key Decisions table for full list.
 
+**Phase 23-01:**
+- Used fs-based metadata extraction instead of dynamic imports to avoid Turbopack warnings
+- Used @plugin directive for Tailwind Typography (v4 CSS syntax)
+- String-based rehype/remark plugin references for Turbopack compatibility
+
 ### Uncommitted macOS App Changes
 
 The following Tokemon macOS app changes were made ad-hoc (outside GSD phases) and are uncommitted:
@@ -60,6 +79,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-24
-Stopped at: v4.0 milestone archived. Uncommitted macOS app changes pending.
-Resume file: none
+Last session: 2026-03-08T14:35:11.499Z
+Stopped at: Completed 23-01-PLAN.md
+Resume file: None

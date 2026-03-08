@@ -85,7 +85,7 @@ See [v4.0-ROADMAP.md](milestones/v4.0-ROADMAP.md) for full details.
 
 **Goal:** Drive organic traffic and awareness for Tokemon through an MDX blog system with SEO-targeted guides and comparison pages, Article JSON-LD structured data, dynamic OG images, sitemap coverage, and navigation integration.
 **Depends on:** Phase 22
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 Plans:
 - [ ] 23-01-PLAN.md — MDX blog infrastructure (deps, config, blog pages, seed post)
@@ -104,7 +104,7 @@ Plans:
 | 20. Menu Bar Command | v4.0 | 1/1 | ✓ Complete | 2026-02-22 |
 | 21. Multi-Profile & Alerts | v4.0 | 2/2 | ✓ Complete | 2026-02-24 |
 | 22. Security Hardening | - | ad-hoc | ✓ Complete | 2026-03-08 |
-| 23. SEO & Content Marketing | - | 0/3 | In Progress | - |
+| 23. SEO & Content Marketing | 1/3 | In Progress|  | - |
 
 ## Future Backlog
 
