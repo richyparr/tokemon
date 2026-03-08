@@ -74,7 +74,7 @@ struct ErrorBannerView: View {
     private var userFriendlyMessage: String {
         switch error {
         case .oauthFailed:
-            return "Using backup data source"
+            return "Using local session logs"
         case .oauthRateLimited:
             return "Reading from local session logs"
         case .jsonlFailed:
@@ -90,8 +90,8 @@ struct ErrorBannerView: View {
 
     private var technicalDescription: String {
         switch error {
-        case .oauthFailed(let msg):
-            return msg
+        case .oauthFailed:
+            return "The usage API is unavailable. Showing token counts from local session logs (percentages and cost data are not available). To restore full data, run /exit then /login in Claude Code to refresh credentials."
         case .oauthRateLimited:
             return "The usage API is rate limited during active Claude Code sessions. Showing live token counts from session logs. Percentages will resume when the session ends."
         case .jsonlFailed(let msg):
@@ -99,7 +99,7 @@ struct ErrorBannerView: View {
         case .bothSourcesFailed(let msg):
             return msg
         case .tokenExpired:
-            return "OAuth access token has expired. Please re-open Claude Code to refresh credentials."
+            return "OAuth access token has expired. Run /exit then /login in Claude Code to refresh credentials."
         case .insufficientScope:
             return "Claude Code needs to be re-authenticated with /login to grant usage data access."
         }

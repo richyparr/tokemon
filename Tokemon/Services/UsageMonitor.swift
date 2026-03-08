@@ -248,7 +248,7 @@ final class UsageMonitor {
                 if !oauthFailureNotified {
                     oauthFailureNotified = true
                     print("[Tokemon] OAuth unavailable, switching to backup data source")
-                    self.error = .oauthFailed("Switching to backup data source")
+                    self.error = .oauthFailed("Switching to local session logs")
                 }
             }
         }
@@ -272,8 +272,8 @@ final class UsageMonitor {
                     // Rate limited during active session is expected -- no banner needed
                     error = nil
                 } else {
-                    // Genuine OAuth failure -- show backup source message
-                    error = .oauthFailed("Using backup data source (local session logs)")
+                    // Genuine OAuth failure -- show backup source message with refresh guidance
+                    error = .oauthFailed("Using local session logs. To restore full data, run /exit then /login in Claude Code.")
                 }
                 // Reset total retry counter on any success
                 retryCount = 0
