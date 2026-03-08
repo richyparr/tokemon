@@ -19,15 +19,16 @@ test.describe("Section structure and order", () => {
 
     // Expected section order (top to bottom)
     const expectedOrder = [
-      "Your usage, always visible", // Floating window showcase
-      "Built for power users", // Feature grid (moved up)
+      "Real-Time Claude Usage Tracking", // Floating window showcase
+      "Monitor Claude Rate Limits", // Feature grid
       /hit the limit/, // Deep-dive 1: usage trends
       /projects.*eating/, // Deep-dive 2: project breakdown
       /team.*burning/, // Deep-dive 3: team budget
       "Now available in Raycast", // Raycast section
       /admin.*can.t see/, // Deep-dive 4: org analytics
       /justify token costs/, // Deep-dive 5: export
-      "Start monitoring in 30 seconds", // CTA
+      "Learn More", // Blog links section
+      "Start Tracking Claude Usage", // CTA
     ];
 
     // Verify order by checking each expected heading appears after the previous
@@ -44,7 +45,7 @@ test.describe("Section structure and order", () => {
   });
 
   test("feature grid appears before first deep-dive section", async ({ page }) => {
-    const featureGrid = page.getByText("Built for power users");
+    const featureGrid = page.getByText("Monitor Claude Rate Limits");
     const firstDeepDive = page.getByText("hit the limit before your session resets");
 
     const gridBox = await featureGrid.boundingBox();
@@ -80,7 +81,7 @@ test.describe("Feature grid", () => {
   });
 
   test("has correct headline", async ({ page }) => {
-    await expect(page.getByText("Built for power users")).toBeVisible();
+    await expect(page.getByText("Monitor Claude Rate Limits")).toBeVisible();
   });
 
   test("displays all 6 feature cards", async ({ page }) => {
@@ -208,7 +209,7 @@ test.describe("CTA section", () => {
   test("has download and GitHub buttons", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    const cta = page.getByText("Start monitoring in 30 seconds").locator("..");
+    const cta = page.getByText("Start Tracking Claude Usage in 30 Seconds").locator("..");
     await expect(cta.getByText("Download for macOS")).toBeVisible();
     await expect(cta.getByText("View on GitHub")).toBeVisible();
   });

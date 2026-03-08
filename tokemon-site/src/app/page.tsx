@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { HeroTyping } from "./HeroTyping";
 import { HeroBackground } from "./HeroBackground";
 import { HeroCTA } from "./HeroCTA";
@@ -127,6 +128,9 @@ export default function Home() {
             tokemon
           </div>
           <div className="flex items-center gap-8 text-sm">
+            <Link href="/blog" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">
+              Blog
+            </Link>
             <a href="https://github.com/richyparr/tokemon" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">
               GitHub
             </a>
@@ -156,6 +160,7 @@ export default function Home() {
                 <br />
                 by surprise again
               </h1>
+              <p className="text-[13px] text-[#555] tracking-wide mb-4">Claude Code Usage Monitor for macOS &amp; Raycast</p>
               <p className="text-[16px] text-[#777] max-w-[540px] mx-auto md:mx-0 mb-8 leading-relaxed">
                 Tokemon shows your Claude usage in real-time &mdash; from your menu bar, a floating window, or Raycast.
                 Track session limits, burn rate, project costs, and team budgets.
@@ -195,7 +200,7 @@ export default function Home() {
       {/* ── Floating window in action ── */}
       <section className="py-20 pb-28">
         <div className={cx}>
-          <h2 className="text-center text-3xl md:text-5xl font-bold tracking-tight mb-3">Your usage, always visible</h2>
+          <h2 className="text-center text-3xl md:text-5xl font-bold tracking-tight mb-3">Real-Time Claude Usage Tracking</h2>
           <p className="text-center text-[#777] text-[17px] mb-12">
             A compact floating window that stays on top of everything &mdash; fullscreen videos, browsers, your IDE. No clicking, no switching.
           </p>
@@ -219,7 +224,7 @@ export default function Home() {
       <section className="py-24">
         <div className={cx}>
           <h2 className="text-center text-3xl md:text-5xl font-bold tracking-tight mb-14">
-            Built for power users
+            Monitor Claude Rate Limits &amp; More
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#1a1a1a] border border-[#1a1a1a] rounded-2xl overflow-hidden">
             {grid.map(([icon, title, desc]) => (
@@ -344,6 +349,32 @@ export default function Home() {
 
       <div className={divider} />
 
+      {/* ── From the Blog ── */}
+      <section className="py-24">
+        <div className={cx}>
+          <h2 className="text-center text-3xl md:text-5xl font-bold tracking-tight mb-4">Learn More</h2>
+          <p className="text-center text-[#777] text-[17px] mb-12 max-w-[560px] mx-auto">
+            Guides and tips for getting the most out of Claude Code without hitting rate limits.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <Link href="/blog/how-to-track-claude-code-usage" className="group block rounded-xl border border-[#1a1a1a] bg-[#111] p-6 hover:border-[#e8853b]/30 transition-colors">
+              <h3 className="text-[15px] font-semibold mb-2 group-hover:text-[#e8853b] transition-colors">How to Track Claude Code Usage</h3>
+              <p className="text-sm text-[#777] leading-relaxed">Step-by-step guide to monitoring your Claude Code token usage, burn rate, and session limits.</p>
+            </Link>
+            <Link href="/blog/avoid-claude-rate-limits" className="group block rounded-xl border border-[#1a1a1a] bg-[#111] p-6 hover:border-[#e8853b]/30 transition-colors">
+              <h3 className="text-[15px] font-semibold mb-2 group-hover:text-[#e8853b] transition-colors">How to Avoid Claude Rate Limits</h3>
+              <p className="text-sm text-[#777] leading-relaxed">Practical strategies to avoid hitting Claude rate limits and manage your 5-hour rolling window.</p>
+            </Link>
+            <Link href="/blog/claude-token-monitoring-guide" className="group block rounded-xl border border-[#1a1a1a] bg-[#111] p-6 hover:border-[#e8853b]/30 transition-colors">
+              <h3 className="text-[15px] font-semibold mb-2 group-hover:text-[#e8853b] transition-colors">Claude Token Monitoring Guide</h3>
+              <p className="text-sm text-[#777] leading-relaxed">Everything you need to know about monitoring Claude token usage, costs, and choosing the right tool.</p>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <div className={divider} />
+
       {/* ── CTA ── */}
       <section className="py-24 text-center relative overflow-hidden">
         <div
@@ -353,7 +384,7 @@ export default function Home() {
           }}
         />
         <div className={`${cx} relative`}>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Start monitoring in 30 seconds</h2>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Start Tracking Claude Usage in 30 Seconds</h2>
           <p className="text-[#777] text-[17px] mb-10 max-w-[480px] mx-auto">Free, open source, no account needed. Just install and go.</p>
           <div className="flex gap-3 justify-center flex-wrap mb-8">
             <a
@@ -388,6 +419,7 @@ export default function Home() {
         <div className={`${cx} flex flex-col sm:flex-row justify-between items-center gap-4`}>
           <div className="text-[13px] text-[#555]">Built for developers who ship with Claude</div>
           <div className="flex gap-6 text-[13px]">
+            <Link href="/blog" className="text-[#555] hover:text-[#ededed] transition-colors">Blog</Link>
             <a href="https://github.com/richyparr/tokemon" className="text-[#555] hover:text-[#ededed] transition-colors">GitHub</a>
             <a href="https://github.com/richyparr/tokemon/releases/latest" className="text-[#555] hover:text-[#ededed] transition-colors">Releases</a>
             <a href="https://github.com/richyparr/tokemon/issues" className="text-[#555] hover:text-[#ededed] transition-colors">Issues</a>
