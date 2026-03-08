@@ -50,10 +50,36 @@ export default async function BlogPostPage({
     const Content = mod.default;
     const metadata = mod.metadata as BlogPostMetadata;
 
+    const articleJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: metadata.title,
+      description: metadata.description,
+      datePublished: metadata.date,
+      dateModified: metadata.date,
+      author: {
+        "@type": "Person",
+        name: "Richard Parr",
+        url: "https://github.com/richyparr",
+      },
+      publisher: {
+        "@type": "Organization",
+        name: "Tokemon",
+        url: "https://tokemon.ai",
+      },
+      mainEntityOfPage: `https://tokemon.ai/blog/${slug}`,
+    };
+
     return (
-      <BlogLayout metadata={metadata}>
-        <Content />
-      </BlogLayout>
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        />
+        <BlogLayout metadata={metadata}>
+          <Content />
+        </BlogLayout>
+      </>
     );
   } catch {
     notFound();
