@@ -124,6 +124,7 @@ final class UsageMonitor {
     /// Errors that can occur during usage monitoring
     enum MonitorError: Error, Sendable {
         case oauthFailed(String)
+        case oauthRateLimited
         case jsonlFailed(String)
         case bothSourcesFailed(String)
         case tokenExpired
@@ -214,6 +215,7 @@ final class UsageMonitor {
                 // Reset retry counters on success
                 oauthRetryCount = 0
                 retryCount = 0
+                oauthFailureNotified = false
                 // Notify status item, alert manager, and statusline exporter
                 onUsageChanged?(currentUsage)
                 onAlertCheck?(currentUsage)
@@ -226,6 +228,18 @@ final class UsageMonitor {
                 }
                 await refreshAllProfiles()
                 return
+            } catch OAuthClient.OAuthError.rateLimited {
+                // Rate limited (429) -- common during active Claude Code sessions.
+                // Keep the last successful OAuth data instead of falling back to JSONL.
+                if currentUsage.source == .oauth {
+                    print("[Tokemon] Rate limited, keeping cached OAuth data")
+                    lastUpdated = Date()
+                    error = .oauthRateLimited
+                    return
+                }
+                // No cached OAuth data yet -- fall through to JSONL with rate-limit context
+                print("[Tokemon] Rate limited, no cached OAuth data, trying JSONL")
+                oauthState = .failed("Rate limited")
             } catch {
                 oauthState = .failed(error.localizedDescription)
                 oauthRetryCount += 1
@@ -240,6 +254,11 @@ final class UsageMonitor {
         }
 
         // Step 2: Try JSONL fallback
+        let isRateLimited = {
+            if case .failed(let msg) = oauthState, msg == "Rate limited" { return true }
+            return false
+        }()
+
         if jsonlEnabled {
             do {
                 // Use 5-hour window to match the OAuth endpoint's window
@@ -248,12 +267,13 @@ final class UsageMonitor {
                 currentUsage = JSONLParser.toSnapshot(from: aggregate)
                 jsonlState = .available
                 lastUpdated = Date()
-                // Clear the error -- we have data, even if from fallback
-                if oauthEnabled {
-                    // Keep the informational message about fallback, but don't block
-                    error = .oauthFailed("Using backup data source (local session logs)")
-                } else {
+                // Set error context based on WHY we fell back
+                if !oauthEnabled || isRateLimited {
+                    // Rate limited during active session is expected -- no banner needed
                     error = nil
+                } else {
+                    // Genuine OAuth failure -- show backup source message
+                    error = .oauthFailed("Using backup data source (local session logs)")
                 }
                 // Reset total retry counter on any success
                 retryCount = 0

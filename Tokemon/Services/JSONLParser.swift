@@ -25,6 +25,7 @@ struct JSONLParser {
         var cacheCreationTokens: Int = 0
         var cacheReadTokens: Int = 0
         var sessionCount: Int = 0
+        var model: String?
 
         /// Total tokens across all categories
         var totalTokens: Int {
@@ -231,6 +232,10 @@ struct JSONLParser {
                 aggregate.cacheCreationTokens += sessionUsage.cacheCreationTokens
                 aggregate.cacheReadTokens += sessionUsage.cacheReadTokens
                 aggregate.sessionCount += 1
+                // Capture model from the most recent session (first in sorted order)
+                if aggregate.model == nil, let model = sessionUsage.model {
+                    aggregate.model = model
+                }
             }
         }
 
@@ -264,7 +269,7 @@ struct JSONLParser {
             outputTokens: aggregate.outputTokens,
             cacheCreationTokens: aggregate.cacheCreationTokens,
             cacheReadTokens: aggregate.cacheReadTokens,
-            model: nil,
+            model: aggregate.model,
             extraUsageEnabled: false,
             extraUsageMonthlyLimitCents: nil,
             extraUsageSpentCents: nil,

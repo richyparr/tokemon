@@ -75,6 +75,8 @@ struct ErrorBannerView: View {
         switch error {
         case .oauthFailed:
             return "Using backup data source"
+        case .oauthRateLimited:
+            return "Reading from local session logs"
         case .jsonlFailed:
             return "Could not read local session logs"
         case .bothSourcesFailed:
@@ -90,6 +92,8 @@ struct ErrorBannerView: View {
         switch error {
         case .oauthFailed(let msg):
             return msg
+        case .oauthRateLimited:
+            return "The usage API is rate limited during active Claude Code sessions. Showing live token counts from session logs. Percentages will resume when the session ends."
         case .jsonlFailed(let msg):
             return msg
         case .bothSourcesFailed(let msg):
@@ -107,6 +111,8 @@ struct ErrorBannerView: View {
             return "exclamationmark.triangle.fill"
         case .tokenExpired, .insufficientScope:
             return "key.fill"
+        case .oauthRateLimited:
+            return "bolt.fill"
         default:
             return "info.circle.fill"
         }
@@ -118,6 +124,8 @@ struct ErrorBannerView: View {
             return .orange
         case .tokenExpired, .insufficientScope:
             return .yellow
+        case .oauthRateLimited:
+            return .green
         default:
             return .blue
         }

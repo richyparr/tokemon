@@ -11,6 +11,7 @@ struct OAuthClient {
         case invalidResponse
         case tokenExpired
         case insufficientScope
+        case rateLimited
         case httpError(Int, String?)
         case networkError(Error)
 
@@ -22,6 +23,8 @@ struct OAuthClient {
                 return "OAuth access token has expired"
             case .insufficientScope:
                 return "OAuth token missing required scope for usage data"
+            case .rateLimited:
+                return "Usage API rate limited (common during active Claude Code sessions)"
             case .httpError(let code, let body):
                 if let body = body {
                     return "HTTP \(code): \(body)"
@@ -39,6 +42,7 @@ struct OAuthClient {
     /// - Parameter accessToken: A valid OAuth access token with `user:profile` scope.
     /// - Returns: The decoded `OAuthUsageResponse`.
     /// - Throws: `OAuthError` for HTTP errors, network failures, or invalid responses.
+    ///           Throws `.rateLimited` specifically for 429 so callers can handle it gracefully.
     static func fetchUsage(accessToken: String) async throws -> OAuthUsageResponse {
         guard let url = URL(string: Constants.oauthUsageURL) else {
             throw OAuthError.invalidResponse
@@ -74,6 +78,8 @@ struct OAuthClient {
             throw OAuthError.tokenExpired
         case 403:
             throw OAuthError.insufficientScope
+        case 429:
+            throw OAuthError.rateLimited
         default:
             let bodyString = String(data: data, encoding: .utf8)
             throw OAuthError.httpError(httpResponse.statusCode, bodyString)
@@ -85,8 +91,9 @@ struct OAuthClient {
     /// Flow:
     /// 1. Try to get access token from Keychain
     /// 2. If expired, attempt refresh using refresh token
-    /// 3. Call the usage endpoint
-    /// 4. If 401 returned, attempt one refresh cycle and retry
+    /// 3. If refresh fails, re-read keychain (Claude Code may have already refreshed)
+    /// 4. Call the usage endpoint
+    /// 5. If 401 returned, attempt one refresh cycle and retry (with same re-read fallback)
     ///
     /// - Returns: The decoded `OAuthUsageResponse`.
     /// - Throws: `OAuthError` or `TokenManager.TokenError` if all attempts fail.
@@ -96,18 +103,18 @@ struct OAuthClient {
         do {
             accessToken = try TokenManager.getAccessToken()
         } catch TokenManager.TokenError.expired {
-            // Token expired -- attempt refresh
-            let refreshedToken = try await performTokenRefresh()
-            return try await fetchUsage(accessToken: refreshedToken)
+            // Token expired -- attempt refresh, with keychain re-read fallback
+            let resolvedToken = try await refreshWithKeychainFallback()
+            return try await fetchUsage(accessToken: resolvedToken)
         }
 
         // Token is valid -- try the API call
         do {
             return try await fetchUsage(accessToken: accessToken)
         } catch OAuthError.tokenExpired {
-            // Server returned 401 despite our local check -- attempt refresh once
-            let refreshedToken = try await performTokenRefresh()
-            return try await fetchUsage(accessToken: refreshedToken)
+            // Server returned 401 despite our local check -- attempt refresh with fallback
+            let resolvedToken = try await refreshWithKeychainFallback()
+            return try await fetchUsage(accessToken: resolvedToken)
         }
     }
 
@@ -158,6 +165,33 @@ struct OAuthClient {
 
     // MARK: - Private Helpers
 
+    /// Attempt token refresh, falling back to a keychain re-read if refresh fails.
+    ///
+    /// During an active Claude Code session, both Tokemon and Claude Code share the same
+    /// keychain credentials. If Claude Code refreshes first, the refresh token Tokemon holds
+    /// is already consumed. This method catches that failure and re-reads the keychain to
+    /// pick up the fresh token Claude Code has written.
+    ///
+    /// - Returns: A valid access token string.
+    /// - Throws: If both refresh and keychain re-read fail.
+    private static func refreshWithKeychainFallback() async throws -> String {
+        do {
+            return try await performTokenRefresh()
+        } catch {
+            print("[Tokemon] Token refresh failed (\(error.localizedDescription)), re-reading keychain...")
+
+            // Claude Code may have already refreshed -- re-read keychain for fresh credentials.
+            // Use actual expiry (no proactive buffer) since the token may still be valid.
+            if let fallbackToken = try? TokenManager.getAccessTokenIgnoringBuffer() {
+                print("[Tokemon] Found valid token from keychain re-read (Claude Code likely refreshed)")
+                return fallbackToken
+            }
+
+            // Keychain re-read also failed -- propagate the original refresh error
+            throw error
+        }
+    }
+
     /// Perform the full token refresh cycle: get refresh token, refresh, update Keychain.
     /// - Returns: The new access token string.
     /// - Throws: Token or network errors if refresh fails.
@@ -165,7 +199,7 @@ struct OAuthClient {
         let refreshToken = try TokenManager.getRefreshToken()
         let tokenResponse = try await TokenManager.refreshAccessToken(refreshToken: refreshToken)
 
-        // Update the Keychain with new credentials
+        // Update the Keychain with new credentials (preserves unknown fields)
         try TokenManager.updateKeychainCredentials(response: tokenResponse)
 
         return tokenResponse.accessToken

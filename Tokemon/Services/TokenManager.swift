@@ -131,6 +131,29 @@ struct TokenManager {
         return oauth.accessToken
     }
 
+    /// Get a valid access token using ACTUAL expiry (no proactive buffer).
+    /// Used as a fallback when token refresh fails — the token written by Claude Code
+    /// may still be valid even though it's within the 10-minute buffer window.
+    /// - Returns: The OAuth access token string.
+    /// - Throws: `TokenError.expired` if the token is truly expired,
+    ///           `TokenError.insufficientScope` if `user:profile` scope is missing.
+    static func getAccessTokenIgnoringBuffer() throws -> String {
+        let credentials = try getCredentials()
+        let oauth = credentials.claudeAiOauth
+
+        // Check ACTUAL expiry -- no proactive buffer
+        let expiresAtDate = Date(timeIntervalSince1970: Double(oauth.expiresAt) / 1000.0)
+        if expiresAtDate < Date() {
+            throw TokenError.expired
+        }
+
+        if !oauth.scopes.contains("user:profile") {
+            throw TokenError.insufficientScope
+        }
+
+        return oauth.accessToken
+    }
+
     /// Get the refresh token for token renewal.
     /// - Returns: The OAuth refresh token string.
     /// - Throws: `TokenError.noCredentials` if credentials not found.
@@ -184,26 +207,40 @@ struct TokenManager {
     /// - Parameter response: The token refresh response containing new tokens.
     /// - Throws: `TokenError` if reading or writing the Keychain fails.
     ///
-    /// - Note: Writing back to the Keychain may conflict with Claude Code's own token management.
-    ///   This is implemented but should be monitored for issues. If conflicts arise, disable
-    ///   the write-back and notify users to re-authenticate Claude Code instead.
+    /// Uses dictionary-based merging to preserve ALL fields Claude Code stores in the
+    /// Keychain entry. Previous implementation used Codable encode which stripped unknown
+    /// fields, potentially corrupting Claude Code's credentials during active sessions.
     static func updateKeychainCredentials(response: OAuthTokenResponse) throws {
         let keychain = Keychain(service: Constants.keychainService)
+        let username = NSUserName()
 
-        // Read current credentials
-        var credentials = try getCredentials()
+        // Read raw JSON from keychain to preserve all fields
+        guard let rawJSON = try keychain.getString(username),
+              let rawData = rawJSON.data(using: .utf8), !rawData.isEmpty else {
+            throw TokenError.noCredentials
+        }
 
-        // Update with refreshed values
-        credentials.claudeAiOauth.accessToken = response.accessToken
-        credentials.claudeAiOauth.refreshToken = response.refreshToken
+        // Handle leading non-JSON byte that Claude Code may prepend
+        guard let braceIndex = rawData.firstIndex(of: UInt8(ascii: "{")) else {
+            throw TokenError.noCredentials
+        }
 
-        // Compute new expiresAt from expiresIn (convert seconds to milliseconds)
+        // Parse as mutable dictionaries to preserve ALL original fields
+        guard var root = try JSONSerialization.jsonObject(with: rawData[braceIndex...]) as? [String: Any],
+              var oauth = root["claudeAiOauth"] as? [String: Any] else {
+            throw TokenError.noCredentials
+        }
+
+        // Update ONLY the refreshed fields, preserving everything else
+        oauth["accessToken"] = response.accessToken
+        oauth["refreshToken"] = response.refreshToken
         let newExpiresAt = Int64(Date().timeIntervalSince1970 * 1000) + Int64(response.expiresIn) * 1000
-        credentials.claudeAiOauth.expiresAt = newExpiresAt
+        oauth["expiresAt"] = newExpiresAt
 
-        // Encode back to JSON
-        let encoder = JSONEncoder()
-        let updatedData = try encoder.encode(credentials)
+        root["claudeAiOauth"] = oauth
+
+        // Encode back preserving all original fields
+        let updatedData = try JSONSerialization.data(withJSONObject: root)
         guard let jsonString = String(data: updatedData, encoding: .utf8) else {
             throw TokenError.decodingError(
                 NSError(domain: "TokenManager", code: -1, userInfo: [
@@ -212,9 +249,6 @@ struct TokenManager {
             )
         }
 
-        // Write back to Keychain using the current username as account
-        // WARNING: This may conflict with Claude Code's own Keychain access
-        let username = NSUserName()
         try keychain.set(jsonString, key: username)
     }
 
@@ -266,22 +300,38 @@ struct TokenManager {
     }
 
     /// Update Keychain credentials for a specific account after token refresh.
+    /// Uses dictionary-based merging to preserve all fields Claude Code stores.
     /// - Parameters:
     ///   - response: The token refresh response containing new tokens.
     ///   - username: The Keychain account key for the target account.
     /// - Throws: `TokenError` if reading or writing the Keychain fails.
     static func updateKeychainCredentials(response: OAuthTokenResponse, for username: String) throws {
         let keychain = Keychain(service: Constants.keychainService)
-        var credentials = try getCredentials(username: username)
 
-        credentials.claudeAiOauth.accessToken = response.accessToken
-        credentials.claudeAiOauth.refreshToken = response.refreshToken
+        // Read raw JSON to preserve all fields
+        guard let rawJSON = try keychain.getString(username),
+              let rawData = rawJSON.data(using: .utf8), !rawData.isEmpty else {
+            throw TokenError.noCredentials
+        }
 
+        guard let braceIndex = rawData.firstIndex(of: UInt8(ascii: "{")) else {
+            throw TokenError.noCredentials
+        }
+
+        guard var root = try JSONSerialization.jsonObject(with: rawData[braceIndex...]) as? [String: Any],
+              var oauth = root["claudeAiOauth"] as? [String: Any] else {
+            throw TokenError.noCredentials
+        }
+
+        // Update ONLY the refreshed fields
+        oauth["accessToken"] = response.accessToken
+        oauth["refreshToken"] = response.refreshToken
         let newExpiresAt = Int64(Date().timeIntervalSince1970 * 1000) + Int64(response.expiresIn) * 1000
-        credentials.claudeAiOauth.expiresAt = newExpiresAt
+        oauth["expiresAt"] = newExpiresAt
 
-        let encoder = JSONEncoder()
-        let updatedData = try encoder.encode(credentials)
+        root["claudeAiOauth"] = oauth
+
+        let updatedData = try JSONSerialization.data(withJSONObject: root)
         guard let jsonString = String(data: updatedData, encoding: .utf8) else {
             throw TokenError.decodingError(
                 NSError(domain: "TokenManager", code: -1, userInfo: [
