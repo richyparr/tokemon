@@ -1,0 +1,122 @@
+export const metadata = {
+  title: "How to Avoid Claude Rate Limits: A Developer's Guide",
+  description:
+    "Practical strategies to avoid Claude rate limits, understand the 5-hour rolling window, and monitor your usage in real-time so you never get locked out mid-session.",
+  date: "2026-03-12",
+  author: "Richard Parr",
+  tags: ["claude-code", "rate-limits", "tips"],
+};
+
+If you have ever been deep in a coding session with Claude Code and suddenly hit a rate limit, you know how frustrating it is. One moment you are in flow, refactoring a complex module or debugging a tricky issue. The next moment, you are locked out with no clear indication of when you can resume.
+
+This guide covers everything you need to know about Claude rate limits and practical strategies to avoid hitting them.
+
+## What Are Claude Rate Limits?
+
+Anthropic enforces usage limits on Claude Pro and Max plans based on a **5-hour rolling window**. This means your usage over the past 5 hours determines whether you can continue making requests. The exact caps depend on your subscription tier and the model you are using:
+
+- **Claude Pro ($20/month):** Moderate usage allowance, sufficient for regular development sessions
+- **Claude Max ($100/month):** 5x the Pro limits, designed for heavy daily usage
+- **Claude Max ($200/month):** 20x the Pro limits, for teams and power users
+
+The limits are not measured in a simple token count. Anthropic uses a composite metric that factors in input tokens, output tokens, and the computational cost of your requests.
+
+## What a Rate Limit Looks Like
+
+When you hit the limit, Claude Code will display an error in your terminal:
+
+```
+Claude is unable to respond right now due to rate limiting.
+Your rate limit will reset in approximately 3 hours and 42 minutes.
+```
+
+There is no gradual degradation. You go from full access to completely locked out. And because the window is rolling, heavy usage at the start of a session means you might hit the wall right when you need Claude the most.
+
+## Why Rate Limits Hit at the Worst Time
+
+Rate limits tend to strike when you are doing the most intensive work:
+
+- **Large file analysis** consumes significant input tokens as Claude reads through your codebase
+- **Multi-step refactors** generate high output token counts with each iteration
+- **Context-heavy debugging** where you provide logs, stack traces, and multiple files
+- **Back-to-back sessions** where usage from your previous session is still counted in the rolling window
+
+The common pattern: you start a focused coding session, work intensively for 2-3 hours, and hit the limit right when you are in the middle of something complex.
+
+## Practical Strategies to Avoid Rate Limits
+
+### 1. Monitor Your Usage in Real-Time
+
+The most effective strategy is knowing where you stand before you hit the wall. [Tokemon](https://tokemon.ai) sits in your macOS menu bar and shows your current usage percentage, burn rate per hour, and estimated time until you would hit your limit.
+
+```
+Menu Bar: 42% used | 6.5%/hr burn rate | ~8h remaining
+```
+
+When you can see your usage climbing, you can adjust your workflow before it is too late. If your burn rate shows you will hit the limit in 2 hours, you can prioritize your most critical tasks.
+
+### 2. Spread Work Across Sessions
+
+Instead of marathon coding sessions, break your work into shorter blocks. Since the rate limit uses a 5-hour rolling window, usage from 5+ hours ago no longer counts against you. A pattern that works well:
+
+- **Session 1 (2 hours):** Heavy refactoring and complex tasks
+- **Break (1-2 hours):** Code review, documentation, manual testing
+- **Session 2 (2 hours):** Resume with a partially refreshed window
+
+### 3. Use Smaller Models for Simple Tasks
+
+Not every task requires the most powerful model. For simple operations like formatting code, writing comments, or generating boilerplate, consider using a lighter model. Claude Code supports model switching, and simpler tasks on smaller models consume fewer resources against your rate limit.
+
+### 4. Reduce Context Window Size
+
+Large context windows are one of the biggest rate limit consumers. Be intentional about what you include:
+
+- **Close unnecessary files** in your editor before starting a Claude Code session
+- **Use `.claudeignore`** to exclude large directories (node_modules, build output, test fixtures)
+- **Be specific in prompts** instead of asking Claude to "look at the whole project"
+- **Break large files** into smaller, focused modules when possible
+
+### 5. Front-Load Expensive Operations
+
+If you know a task will be token-intensive (analyzing a large codebase, multi-file refactoring), do it early in your rate limit window when you have maximum capacity. Save lighter tasks like code review and documentation for when your usage is higher.
+
+### 6. Set Usage Alerts
+
+Configure alerts at 70-80% usage so you have time to wrap up your current task gracefully. With [Tokemon](https://tokemon.ai), you can set threshold alerts that notify you via macOS notifications, Slack, or Discord before you hit the wall.
+
+## What to Do When You Hit a Rate Limit
+
+If you do hit a rate limit, here is how to handle it:
+
+1. **Check your remaining wait time.** The error message tells you approximately when your limit resets, but it is an estimate based on your rolling window.
+
+2. **Check your burn rate.** If you are using Tokemon, the burn rate indicator shows how quickly your usage will decay. A high burn rate from recent intensive work means you might need to wait longer.
+
+3. **Use the downtime productively.** Review code you have already written, write tests manually, update documentation, or plan your next session.
+
+4. **Do not switch to a new account.** Anthropic monitors for this and it violates the terms of service.
+
+## Monitoring Tools Comparison
+
+| Feature | Tokemon | Manual Tracking | Terminal Check |
+|---------|---------|-----------------|----------------|
+| Real-time usage % | Yes | No | Partial |
+| Burn rate calculation | Yes | No | No |
+| Time-to-limit estimate | Yes | No | No |
+| Per-project breakdown | Yes | No | No |
+| Threshold alerts | Yes | No | No |
+| Always visible | Menu bar | No | On demand |
+
+## The Bottom Line
+
+Rate limits do not have to be a surprise. The key is visibility: if you can see your usage in real-time, you can make informed decisions about how to spend your remaining capacity. Front-load heavy work, spread sessions across time, reduce unnecessary context, and most importantly, monitor your usage so you always know where you stand.
+
+## Get Started with Tokemon
+
+Stop guessing about your Claude usage. [Download Tokemon](https://tokemon.ai) for free and get real-time visibility into your rate limit status from your macOS menu bar. It takes less than a minute to set up:
+
+```bash
+brew install richyparr/tap/tokemon
+```
+
+Open source, free, and designed for developers who ship with Claude every day.

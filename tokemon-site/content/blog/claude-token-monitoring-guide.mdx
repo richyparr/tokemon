@@ -1,0 +1,168 @@
+export const metadata = {
+  title: "The Complete Guide to Claude Token Usage Monitoring",
+  description:
+    "Learn how to monitor Claude token usage, understand input and output tokens, track costs across projects, and choose the right monitoring tool for your workflow.",
+  date: "2026-03-14",
+  author: "Richard Parr",
+  tags: ["claude-code", "tokens", "monitoring", "analytics"],
+};
+
+If you use Claude Code for daily development work, understanding and monitoring your token usage is essential. Tokens directly determine your rate limits, influence your costs, and affect how efficiently you can work. Yet most developers have no visibility into how many tokens they are consuming or where those tokens are going.
+
+This guide covers everything you need to know about Claude tokens, why monitoring matters, and how to set up effective tracking for your workflow.
+
+## What Are Tokens in Claude's Context?
+
+Tokens are the fundamental unit of text processing for large language models. In Claude's case, a token roughly corresponds to 3-4 characters of English text, or about 0.75 words. Every interaction with Claude involves two types of tokens:
+
+- **Input tokens:** Everything you send to Claude, including your prompt, file contents, conversation history, and system instructions. In Claude Code, this includes all the files in your context window.
+- **Output tokens:** Everything Claude generates in response, including code, explanations, and tool calls.
+
+A typical Claude Code interaction might look like:
+
+```
+Input:  ~15,000 tokens (your prompt + context files)
+Output: ~2,000 tokens  (generated code + explanation)
+Total:  ~17,000 tokens per exchange
+```
+
+Over a full coding session, these add up quickly. A 3-hour session might consume hundreds of thousands of tokens.
+
+## Why Token Monitoring Matters
+
+### Rate Limit Management
+
+Your token usage directly maps to your rate limits. Anthropic uses a rolling 5-hour window to measure consumption, and when you exceed your tier's allocation, you are locked out until usage decays. Without monitoring, you are flying blind, with no way to predict when you will hit the wall.
+
+Knowing your current usage percentage and burn rate lets you plan your work sessions effectively. If you can see you are at 60% with 3 hours of heavy work ahead, you can adjust your approach before getting locked out.
+
+### Cost Tracking
+
+For teams on API plans, every token has a direct dollar cost. Without tracking, monthly bills can surprise you:
+
+- **Claude 3.5 Sonnet:** $3 per million input tokens, $15 per million output tokens
+- **Claude 3.5 Opus:** $15 per million input tokens, $75 per million output tokens
+
+A team of 5 developers using Claude Code heavily can easily generate $500-2,000/month in token costs. Knowing which projects consume the most tokens helps with budget allocation and identifying optimization opportunities.
+
+### Project Cost Allocation
+
+If you work across multiple projects, whether as a freelancer billing clients or a team lead managing resources, you need per-project token breakdowns. Questions like "How much did the authentication refactor cost?" or "Which client project is consuming the most resources?" are impossible to answer without monitoring.
+
+## Monitoring Tools Compared
+
+There are several approaches to monitoring Claude token usage, each with different tradeoffs.
+
+### Tokemon (macOS Menu Bar + Raycast)
+
+[Tokemon](https://tokemon.ai) is a native macOS app that lives in your menu bar and provides real-time Claude usage monitoring.
+
+**Key capabilities:**
+- Real-time usage percentage visible in the menu bar at all times
+- Burn rate calculation showing tokens consumed per hour
+- Time-to-limit estimate based on current pace
+- Per-project breakdown showing token consumption by codebase
+- Team budget tracking with Admin API integration
+- Threshold alerts via macOS notifications, Slack, and Discord
+- Export to PDF and CSV for invoicing and reporting
+- Raycast extension for keyboard-driven access
+- Terminal statusline integration for CLI workflows
+
+**Best for:** Developers who want always-visible monitoring without interrupting their workflow.
+
+### ccusage (CLI Tool)
+
+ccusage is a command-line tool that analyzes Claude Code's local JSONL session logs to calculate token usage after the fact.
+
+**Key capabilities:**
+- Parses local session logs for historical usage data
+- Shows token counts by model and session
+- Open source with 4,800+ GitHub stars
+
+**Limitations:** CLI-only (no persistent visibility), post-hoc analysis only (not real-time), no burn rate or forecasting, no team/budget features.
+
+**Best for:** Developers who prefer CLI tools and only need occasional usage checks.
+
+### Manual Tracking
+
+Keeping track of usage manually by checking Anthropic's dashboard or estimating based on session activity.
+
+**Limitations:** Requires active effort, no real-time data, no per-project breakdown, easy to forget.
+
+**Best for:** Light usage where rate limits are rarely a concern.
+
+### Comparison Table
+
+| Feature | Tokemon | ccusage | Manual |
+|---------|---------|---------|--------|
+| Real-time monitoring | Yes | No | No |
+| Always-visible display | Menu bar | No | No |
+| Burn rate & forecasting | Yes | No | No |
+| Per-project breakdown | Yes | Limited | No |
+| Team/budget tracking | Yes | No | No |
+| Export (PDF/CSV) | Yes | No | No |
+| Alerts & notifications | Yes | No | No |
+| Raycast integration | Yes | No | No |
+| Terminal statusline | Yes | No | No |
+| Cost | Free | Free | Free |
+| Platform | macOS | Cross-platform | Any |
+
+## Setting Up Tokemon for Token Monitoring
+
+Getting started with Tokemon takes less than a minute.
+
+### Step 1: Install
+
+Install via Homebrew:
+
+```bash
+brew install richyparr/tap/tokemon
+```
+
+Or download directly from [GitHub releases](https://github.com/richyparr/tokemon/releases/latest).
+
+### Step 2: Authenticate
+
+Launch Tokemon and sign in with your Claude account. Tokemon uses OAuth to securely access your usage data. No API keys are stored.
+
+### Step 3: Configure Your Display
+
+Choose your preferred menu bar style:
+- **Percentage:** `42%` at a glance
+- **Battery gauge:** Visual fill indicator
+- **Progress bar:** Linear usage display
+- **Traffic light:** Color-coded status (green/yellow/red)
+- **Compact number:** Minimal footprint
+
+### Step 4: Set Alerts
+
+Configure threshold alerts to get notified before you hit your rate limit. Recommended thresholds:
+- **50%:** Awareness check, consider pacing
+- **75%:** Start wrapping up intensive work
+- **90%:** Critical, save your progress
+
+### Step 5: Enable Project Tracking
+
+Tokemon automatically parses your Claude Code session logs and breaks down usage by project directory. No additional configuration needed. View your per-project breakdown in the Tokemon popover or Raycast extension.
+
+## Tips for Optimizing Token Usage
+
+1. **Review your per-project breakdown weekly.** Identify which projects consume disproportionate resources and look for optimization opportunities.
+
+2. **Watch your burn rate, not just your percentage.** A burn rate of 15%/hr means you have roughly 6.5 hours of runway. A burn rate of 3%/hr gives you over 30 hours.
+
+3. **Use the forecasting feature.** Tokemon estimates when you will hit your limit based on current pace. If the estimate drops below your remaining work time, adjust your approach.
+
+4. **Export data for team discussions.** Use PDF or CSV exports to share usage patterns with your team or attach to client invoices.
+
+5. **Set up Slack or Discord alerts for teams.** Webhook notifications ensure the whole team knows when usage is climbing.
+
+## Get Started
+
+Ready to take control of your Claude token usage? [Download Tokemon](https://tokemon.ai) and start monitoring in seconds.
+
+```bash
+brew install richyparr/tap/tokemon
+```
+
+Free, open source, and built for developers who rely on Claude every day. Never be surprised by a rate limit again.
