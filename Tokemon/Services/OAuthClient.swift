@@ -4,6 +4,22 @@ import Foundation
 /// Handles authentication, token refresh, and error mapping.
 struct OAuthClient {
 
+    /// Write diagnostic log to ~/.tokemon/oauth-debug.log
+    private static func debugLog(_ message: String) {
+        let line = "[\(ISO8601DateFormatter().string(from: Date()))] \(message)\n"
+        print(line, terminator: "")
+        let logDir = NSString(string: "~/.tokemon").expandingTildeInPath
+        let logPath = "\(logDir)/oauth-debug.log"
+        try? FileManager.default.createDirectory(atPath: logDir, withIntermediateDirectories: true, attributes: nil)
+        if let handle = FileHandle(forWritingAtPath: logPath) {
+            handle.seekToEndOfFile()
+            handle.write(line.data(using: .utf8) ?? Data())
+            handle.closeFile()
+        } else {
+            FileManager.default.createFile(atPath: logPath, contents: line.data(using: .utf8))
+        }
+    }
+
     // MARK: - Types
 
     /// Errors that can occur during OAuth API calls
@@ -39,11 +55,11 @@ struct OAuthClient {
     // MARK: - API Methods
 
     /// Fetch usage data from the OAuth endpoint using a provided access token.
+    /// On 429, retries once after a 2s delay then gives up (rate limit is persistent during active sessions).
     /// - Parameter accessToken: A valid OAuth access token with `user:profile` scope.
     /// - Returns: The decoded `OAuthUsageResponse`.
     /// - Throws: `OAuthError` for HTTP errors, network failures, or invalid responses.
-    ///           Throws `.rateLimited` specifically for 429 so callers can handle it gracefully.
-    static func fetchUsage(accessToken: String) async throws -> OAuthUsageResponse {
+    static func fetchUsage(accessToken: String, canRetry: Bool = true) async throws -> OAuthUsageResponse {
         guard let url = URL(string: Constants.oauthUsageURL) else {
             throw OAuthError.invalidResponse
         }
@@ -70,18 +86,34 @@ struct OAuthClient {
         switch httpResponse.statusCode {
         case 200:
             do {
-                return try JSONDecoder().decode(OAuthUsageResponse.self, from: data)
+                let response = try JSONDecoder().decode(OAuthUsageResponse.self, from: data)
+                debugLog("API 200, 5h=\(response.fiveHour?.utilization ?? -1)%")
+                return response
             } catch {
+                debugLog("API 200 but decode failed: \(error)")
                 throw OAuthError.invalidResponse
             }
         case 401:
+            debugLog("API 401 (token expired)")
             throw OAuthError.tokenExpired
         case 403:
+            debugLog("API 403 (insufficient scope)")
             throw OAuthError.insufficientScope
         case 429:
+            debugLog("API 429")
+
+            // Single retry after 2s — rate limit is persistent during active sessions,
+            // so more retries just waste time
+            if canRetry {
+                debugLog("Retrying in 2s...")
+                try await Task.sleep(nanoseconds: 2_000_000_000)
+                return try await fetchUsage(accessToken: accessToken, canRetry: false)
+            }
+
             throw OAuthError.rateLimited
         default:
             let bodyString = String(data: data, encoding: .utf8)
+            debugLog("API \(httpResponse.statusCode): \(bodyString ?? "no body")")
             throw OAuthError.httpError(httpResponse.statusCode, bodyString)
         }
     }
@@ -102,10 +134,15 @@ struct OAuthClient {
 
         do {
             accessToken = try TokenManager.getAccessToken()
+            debugLog("got access token (expires check passed)")
         } catch TokenManager.TokenError.expired {
             // Token expired -- attempt refresh, with keychain re-read fallback
+            debugLog("token expired, attempting refresh")
             let resolvedToken = try await refreshWithKeychainFallback()
             return try await fetchUsage(accessToken: resolvedToken)
+        } catch {
+            debugLog("getAccessToken failed: \(error)")
+            throw error
         }
 
         // Token is valid -- try the API call
@@ -113,6 +150,7 @@ struct OAuthClient {
             return try await fetchUsage(accessToken: accessToken)
         } catch OAuthError.tokenExpired {
             // Server returned 401 despite our local check -- attempt refresh with fallback
+            debugLog("API returned 401, attempting refresh")
             let resolvedToken = try await refreshWithKeychainFallback()
             return try await fetchUsage(accessToken: resolvedToken)
         }
@@ -176,15 +214,20 @@ struct OAuthClient {
     /// - Throws: If both refresh and keychain re-read fail.
     private static func refreshWithKeychainFallback() async throws -> String {
         do {
-            return try await performTokenRefresh()
+            let token = try await performTokenRefresh()
+            debugLog("token refresh succeeded")
+            return token
         } catch {
-            print("[Tokemon] Token refresh failed (\(error.localizedDescription)), re-reading keychain...")
+            debugLog("token refresh failed: \(error), re-reading keychain...")
 
             // Claude Code may have already refreshed -- re-read keychain for fresh credentials.
             // Use actual expiry (no proactive buffer) since the token may still be valid.
-            if let fallbackToken = try? TokenManager.getAccessTokenIgnoringBuffer() {
-                print("[Tokemon] Found valid token from keychain re-read (Claude Code likely refreshed)")
+            do {
+                let fallbackToken = try TokenManager.getAccessTokenIgnoringBuffer()
+                debugLog("found valid token from keychain re-read")
                 return fallbackToken
+            } catch {
+                debugLog("keychain re-read also failed: \(error)")
             }
 
             // Keychain re-read also failed -- propagate the original refresh error

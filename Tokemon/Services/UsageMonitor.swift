@@ -44,11 +44,36 @@ final class UsageMonitor {
     @ObservationIgnored
     var oauthFailureNotified: Bool = false
 
+    /// Timestamp of the last SUCCESSFUL OAuth data fetch (not rate-limited cache hits)
+    @ObservationIgnored
+    private var lastOAuthFetchTime: Date?
+
+    /// Maximum age (in seconds) for cached OAuth data before falling through to JSONL on rate limit.
+    /// During active Claude Code sessions, the usage API is persistently rate-limited (429).
+    /// 5 minutes of cache is a reasonable tradeoff: percentage drift is small (~1-3%) and
+    /// the alternative (JSONL) shows only token counts with no percentage.
+    @ObservationIgnored
+    private let maxCachedDataAge: TimeInterval = 300
+
     // MARK: - Computed Properties
 
     /// Menu bar display text, delegated to the current usage snapshot
     var menuBarText: String {
         currentUsage.menuBarText
+    }
+
+    /// How old the current OAuth data is (nil if source is not OAuth or no fetch recorded)
+    var oauthDataAge: TimeInterval? {
+        guard currentUsage.source == .oauth, let fetchTime = lastOAuthFetchTime else { return nil }
+        return Date().timeIntervalSince(fetchTime)
+    }
+
+    /// Whether the current display is showing cached (stale) OAuth data due to rate limiting
+    var isShowingCachedData: Bool {
+        if case .oauthRateLimited = error, currentUsage.source == .oauth {
+            return true
+        }
+        return false
     }
 
     // MARK: - Settings (UserDefaults-backed)
@@ -211,6 +236,7 @@ final class UsageMonitor {
                 currentUsage = response.toSnapshot()
                 oauthState = .available
                 lastUpdated = Date()
+                lastOAuthFetchTime = Date()
                 error = nil
                 // Reset retry counters on success
                 oauthRetryCount = 0
@@ -230,17 +256,20 @@ final class UsageMonitor {
                 return
             } catch OAuthClient.OAuthError.rateLimited {
                 // Rate limited (429) -- common during active Claude Code sessions.
-                // Keep the last successful OAuth data instead of falling back to JSONL.
-                if currentUsage.source == .oauth {
-                    print("[Tokemon] Rate limited, keeping cached OAuth data")
-                    lastUpdated = Date()
+                // Only keep cached data if it's recent enough to still be accurate.
+                let cachedAge = lastOAuthFetchTime.map { Date().timeIntervalSince($0) }
+                if let age = cachedAge, currentUsage.source == .oauth, age < maxCachedDataAge {
+                    print("[Tokemon] Rate limited, keeping cached OAuth data (\(Int(age))s old)")
+                    // Don't update lastUpdated -- the data itself hasn't changed
                     error = .oauthRateLimited
                     return
                 }
-                // No cached OAuth data yet -- fall through to JSONL with rate-limit context
-                print("[Tokemon] Rate limited, no cached OAuth data, trying JSONL")
+                // Cached data is stale or doesn't exist -- fall through to JSONL
+                let ageStr = cachedAge.map { "\(Int($0))s" } ?? "none"
+                print("[Tokemon] Rate limited, cached data too old (\(ageStr)), trying JSONL")
                 oauthState = .failed("Rate limited")
             } catch {
+                print("[Tokemon] OAuth failed: \(error) — \(error.localizedDescription)")
                 oauthState = .failed(error.localizedDescription)
                 oauthRetryCount += 1
 
@@ -327,6 +356,7 @@ final class UsageMonitor {
         oauthRetryCount = 0
         requiresManualRetry = false
         oauthFailureNotified = false
+        lastOAuthFetchTime = nil
         oauthState = .available
         jsonlState = .available
         startPolling()

@@ -30,7 +30,7 @@ struct SettingsView: View {
             NotificationsSettings()
                 .environment(alertManager)
                 .tabItem {
-                    Label("Notifications", systemImage: "bell.badge")
+                    Label("Alerts", systemImage: "bell.badge")
                 }
 
             StatuslineSettings()
