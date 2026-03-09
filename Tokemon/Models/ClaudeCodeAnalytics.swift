@@ -51,15 +51,15 @@ struct ClaudeCodeAnalyticsResponse: Codable, Sendable {
             case estimatedCost = "estimated_cost"
         }
 
-        /// Cost in dollars (API returns cents).
+        /// Cost in dollars (API returns cents as a string).
         var estimatedCostDollars: Double {
             guard let cost = estimatedCost else { return 0 }
-            return Double(cost.amount) / 100.0
+            return (Double(cost.amount) ?? 0) / 100.0
         }
     }
 
     struct EstimatedCost: Codable, Sendable {
         let currency: String
-        let amount: Int
+        let amount: String
     }
 }
