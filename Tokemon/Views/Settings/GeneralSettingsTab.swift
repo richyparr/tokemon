@@ -9,11 +9,11 @@ struct GeneralSettingsTab: View {
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
     @State private var launchAtLogin: Bool = SMAppService.mainApp.status == .enabled
 
-    /// Available refresh intervals (in seconds)
+    /// Available refresh intervals (in seconds).
+    /// Usage API rate limits to ~1 request per 2 minutes, so 2.5 min is the minimum.
     private let intervals: [(label: String, value: TimeInterval)] = [
-        ("30 seconds", 30),
-        ("1 minute", 60),
-        ("2 minutes", 120),
+        ("2.5 minutes", 150),
+        ("3 minutes", 180),
         ("5 minutes", 300),
         ("10 minutes", 600),
     ]

@@ -14,8 +14,9 @@ enum Constants {
     /// macOS Keychain service name where Claude Code stores credentials
     static let keychainService = "Claude Code-credentials"
 
-    /// Default polling interval in seconds
-    static let defaultRefreshInterval: TimeInterval = 60
+    /// Default polling interval in seconds.
+    /// The usage API rate limits to ~1 request per 2 minutes, so 150s is the safe minimum.
+    static let defaultRefreshInterval: TimeInterval = 150
 
     /// Path to Claude Code project session files
     static let claudeProjectsPath = "~/.claude/projects/"

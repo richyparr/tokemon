@@ -49,11 +49,10 @@ final class UsageMonitor {
     private var lastOAuthFetchTime: Date?
 
     /// Maximum age (in seconds) for cached OAuth data before falling through to JSONL on rate limit.
-    /// During active Claude Code sessions, the usage API is persistently rate-limited (429).
-    /// 5 minutes of cache is a reasonable tradeoff: percentage drift is small (~1-3%) and
-    /// the alternative (JSONL) shows only token counts with no percentage.
+    /// The usage API rate limits to ~1 request per 2 minutes, so cached data within 10 minutes
+    /// is still reasonably accurate. The alternative (JSONL) shows only token counts with no percentage.
     @ObservationIgnored
-    private let maxCachedDataAge: TimeInterval = 300
+    private let maxCachedDataAge: TimeInterval = 600
 
     // MARK: - Computed Properties
 
@@ -78,14 +77,20 @@ final class UsageMonitor {
 
     // MARK: - Settings (UserDefaults-backed)
 
+    /// Minimum polling interval — usage API rate limits to ~1 request per 2 minutes.
+    @ObservationIgnored
+    private let minimumRefreshInterval: TimeInterval = 150
+
     /// Polling interval in seconds
     var refreshInterval: TimeInterval {
         get {
             let stored = UserDefaults.standard.double(forKey: "refreshInterval")
-            return stored > 0 ? stored : Constants.defaultRefreshInterval
+            let interval = stored > 0 ? stored : Constants.defaultRefreshInterval
+            // Enforce minimum to respect API rate limits
+            return max(interval, minimumRefreshInterval)
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: "refreshInterval")
+            UserDefaults.standard.set(max(newValue, minimumRefreshInterval), forKey: "refreshInterval")
         }
     }
 

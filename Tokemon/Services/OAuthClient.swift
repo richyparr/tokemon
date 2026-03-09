@@ -55,11 +55,11 @@ struct OAuthClient {
     // MARK: - API Methods
 
     /// Fetch usage data from the OAuth endpoint using a provided access token.
-    /// On 429, retries once after a 2s delay then gives up (rate limit is persistent during active sessions).
+    /// On 429, throws immediately — the rate limit window is ~2 minutes so retrying is wasteful.
     /// - Parameter accessToken: A valid OAuth access token with `user:profile` scope.
     /// - Returns: The decoded `OAuthUsageResponse`.
     /// - Throws: `OAuthError` for HTTP errors, network failures, or invalid responses.
-    static func fetchUsage(accessToken: String, canRetry: Bool = true) async throws -> OAuthUsageResponse {
+    static func fetchUsage(accessToken: String) async throws -> OAuthUsageResponse {
         guard let url = URL(string: Constants.oauthUsageURL) else {
             throw OAuthError.invalidResponse
         }
@@ -69,7 +69,7 @@ struct OAuthClient {
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("oauth-2025-04-20", forHTTPHeaderField: "anthropic-beta")
-        request.setValue("Tokemon/1.0", forHTTPHeaderField: "User-Agent")
+        request.setValue("claude-code/1.0", forHTTPHeaderField: "User-Agent")
 
         let data: Data
         let response: URLResponse
@@ -100,16 +100,8 @@ struct OAuthClient {
             debugLog("API 403 (insufficient scope)")
             throw OAuthError.insufficientScope
         case 429:
-            debugLog("API 429")
-
-            // Single retry after 2s — rate limit is persistent during active sessions,
-            // so more retries just waste time
-            if canRetry {
-                debugLog("Retrying in 2s...")
-                try await Task.sleep(nanoseconds: 2_000_000_000)
-                return try await fetchUsage(accessToken: accessToken, canRetry: false)
-            }
-
+            let retryAfter = httpResponse.value(forHTTPHeaderField: "Retry-After") ?? "?"
+            debugLog("API 429, Retry-After: \(retryAfter)")
             throw OAuthError.rateLimited
         default:
             let bodyString = String(data: data, encoding: .utf8)
