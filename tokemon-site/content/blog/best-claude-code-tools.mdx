@@ -1,0 +1,220 @@
+export const metadata = {
+  title: "Best Claude Code Extensions and Tools for Developers in 2026",
+  description:
+    "The essential tools and extensions every Claude Code developer needs. From usage monitoring to productivity boosters, here are the best tools to supercharge your Claude Code workflow.",
+  date: "2026-03-05",
+  author: "Richard Parr",
+  tags: [
+    "claude code tools",
+    "claude code extensions",
+    "developer tools",
+    "claude code productivity",
+    "ai coding tools",
+  ],
+};
+
+Claude Code has become the go-to AI coding assistant for developers who live in the terminal. But out of the box, it is missing some essentials — usage visibility, cost tracking, and workflow integration. The good news is that a growing ecosystem of tools fills those gaps.
+
+Here is a rundown of the best Claude Code tools and extensions available right now, from usage monitoring to automation.
+
+## 1. Usage Monitoring — Tokemon
+
+The single most important tool you can add to your Claude Code setup is a usage monitor. Without one, you are flying blind — no idea how close you are to a rate limit until you slam into it mid-session.
+
+[Tokemon](https://tokemon.ai) is a free, open-source macOS app that sits in your menu bar and shows your Claude usage in real-time. At a glance, you can see your current usage percentage, burn rate, estimated time remaining, and per-project breakdown.
+
+### Why it matters
+
+Anthropic does not provide a built-in usage dashboard for Claude Pro or Max subscribers. You get a vague warning near the limit and then a hard cutoff. Tokemon solves this by polling the API and giving you continuous visibility.
+
+### Getting started
+
+Install via Homebrew in seconds:
+
+```bash
+brew install richyparr/tap/tokemon
+```
+
+Once installed, it runs in the background and starts tracking automatically. No configuration needed.
+
+Tokemon also has a **Raycast extension** for developers who prefer keyboard-driven workflows. Open Raycast, type "claude", and your usage stats appear instantly — no need to look at the menu bar at all.
+
+For a deeper dive into usage tracking, see [How to Track Claude Code Usage](/blog/how-to-track-claude-code-usage). You can also see how Tokemon stacks up against alternatives in our comparisons of [Tokemon vs ccusage](/compare/tokemon-vs-ccusage) and [Tokemon vs ClaudeBar](/compare/tokemon-vs-claudebar).
+
+## 2. Terminal Integration — Statusline and Shell Prompts
+
+If you spend your day in the terminal, you want usage data right where you work. Tokemon includes a **statusline feature** that integrates with tmux and other terminal multiplexers, putting your Claude usage stats directly in your terminal status bar.
+
+You can also wire Tokemon's data into your shell prompt. A simple script in your `.zshrc` or `.bashrc` can display your current usage percentage next to your prompt:
+
+```bash
+# Example: Add Claude usage to your prompt
+export PS1="$(tokemon status --short) $PS1"
+```
+
+This means you never need to context-switch away from your terminal to check usage. Every time you glance at your prompt, you know where you stand.
+
+### Why it matters
+
+Developers using Claude Code are already in the terminal. Surfacing usage data there — instead of requiring a separate app window or browser tab — removes friction and keeps you in flow.
+
+## 3. IDE Extensions — VS Code Integration
+
+Claude Code ships with a built-in VS Code extension that bridges the gap between your editor and the terminal-based AI assistant. When you run Claude Code from VS Code's integrated terminal, the extension provides:
+
+- **Inline diff previews** — See proposed changes before accepting them
+- **File navigation** — Claude Code can open files directly in your editor
+- **Terminal integration** — A dedicated Claude Code panel within VS Code
+
+### Setting it up
+
+Install the Claude Code VS Code extension from the marketplace, or let Claude Code configure it automatically:
+
+```bash
+claude install-extension
+```
+
+Once installed, the extension activates whenever Claude Code is running in a VS Code terminal. It adds a sidebar panel and enhances the diff experience so you can review changes visually before they hit your codebase.
+
+### Why it matters
+
+While Claude Code is fundamentally a terminal tool, most developers still use VS Code for browsing code and reviewing diffs. The extension lets you get the best of both worlds without leaving your editor.
+
+## 4. Prompt Management — CLAUDE.md and Custom Slash Commands
+
+One of Claude Code's most underrated features is its support for persistent instructions through `CLAUDE.md` files. These markdown files let you define project-specific context, coding standards, and behavioral rules that Claude Code follows automatically.
+
+### CLAUDE.md files
+
+You can place `CLAUDE.md` at multiple levels:
+
+- **`~/.claude/CLAUDE.md`** — Global instructions that apply to every project
+- **`./CLAUDE.md`** — Project-root instructions for a specific codebase
+- **`./.claude/CLAUDE.md`** — Alternative project-level location
+
+Use these to define your preferred tech stack, testing patterns, git workflow, naming conventions, and anything else you would otherwise repeat in every prompt.
+
+### Custom slash commands
+
+You can create reusable commands by adding markdown files to a `.claude/commands/` directory in your project:
+
+```
+.claude/commands/
+  review.md
+  test.md
+  deploy.md
+```
+
+Each file contains a prompt template. Running `/review` in Claude Code will execute the instructions in `review.md`. This is powerful for standardizing team workflows — everyone gets the same review checklist, the same deploy procedure, the same testing protocol.
+
+### Why it matters
+
+Prompt engineering is repetitive. CLAUDE.md files and custom commands let you encode your best prompts once and reuse them forever. This is especially valuable for teams where consistency matters.
+
+## 5. Cost Tracking — Budget Monitoring and the Admin API
+
+For developers on API-based plans or teams managing multiple Claude Code users, cost tracking is essential. Tokemon integrates with the **Anthropic Admin API** to provide detailed cost analytics:
+
+- **Daily and weekly spend breakdowns** — See exactly how much you are spending
+- **Budget alerts** — Set spending thresholds and get notified before you exceed them
+- **Per-project cost attribution** — Know which projects are driving your bill
+
+### Setting it up
+
+Connect Tokemon to the Admin API by providing your organization's API key in Tokemon's settings. Once connected, cost data appears alongside your usage metrics in the menu bar dashboard.
+
+For strategies on keeping costs under control, check out [How to Reduce Claude API Costs](/blog/reduce-claude-api-costs).
+
+### Why it matters
+
+Claude Code can burn through API credits fast, especially with large codebases or multi-step operations. Without cost visibility, you might not realize how much you are spending until the invoice arrives.
+
+## 6. Team Management — Organization Analytics
+
+If you manage a team of developers using Claude Code, you need visibility into aggregate usage. Tokemon's **team dashboard** provides organization-level analytics:
+
+- **Per-user usage breakdowns** — See who is consuming the most resources
+- **Usage trends over time** — Identify patterns and plan capacity
+- **Rate limit forecasting** — Predict when team members will hit limits
+
+This is particularly useful for organizations on Claude Max plans where multiple developers share a usage pool, or for teams on API plans where cost allocation matters.
+
+### Why it matters
+
+Without team-level visibility, managers are left guessing. One developer burning through the team's allocation can block everyone else. Team analytics let you spot imbalances early and redistribute work accordingly.
+
+## 7. Automation — Hooks and MCP Servers
+
+Claude Code supports **hooks** — scripts that run automatically at specific points in the workflow. You can configure hooks for:
+
+- **Pre-tool execution** — Run validation before Claude Code modifies files
+- **Post-tool execution** — Trigger linting, formatting, or tests after changes
+- **Notification triggers** — Send Slack messages or log events when Claude Code completes tasks
+
+Hooks are configured in your Claude Code settings file and can run any shell command or script.
+
+### MCP Servers
+
+The Model Context Protocol (MCP) extends Claude Code's capabilities by connecting it to external services. MCP servers give Claude Code the ability to:
+
+- **Query databases** directly during coding sessions
+- **Interact with APIs** like Stripe, Vercel, or Supabase
+- **Access design tools** like Figma for design-to-code workflows
+
+You can configure MCP servers in your project's `.claude/settings.json` or globally in `~/.claude/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "my-server": {
+      "command": "npx",
+      "args": ["my-mcp-server"]
+    }
+  }
+}
+```
+
+### Why it matters
+
+Hooks and MCP servers turn Claude Code from a smart autocomplete into a full automation platform. Instead of manually switching between tools, Claude Code can interact with your entire development infrastructure directly.
+
+## 8. Debugging — /doctor and Log Analysis
+
+When Claude Code is not behaving as expected, the built-in `/doctor` command is your first stop. It runs a diagnostic check on your Claude Code installation and reports:
+
+- **Configuration issues** — Invalid settings, missing API keys, permission problems
+- **Connection status** — Whether Claude Code can reach the Anthropic API
+- **Extension health** — Status of VS Code integration and MCP servers
+- **Version information** — Whether you are running the latest version
+
+### Log analysis
+
+Claude Code stores session logs locally that you can inspect for debugging. These logs include the full conversation history, tool calls, and any errors that occurred. You can find them at:
+
+```bash
+ls ~/.claude/logs/
+```
+
+Reviewing logs is invaluable when Claude Code produces unexpected results — you can trace exactly what happened, what context it had, and where things went wrong.
+
+### Why it matters
+
+Claude Code is powerful but not infallible. Having debugging tools at your fingertips means you can quickly diagnose and fix issues instead of wasting time guessing.
+
+## The Essential Setup
+
+If you take away one thing from this guide, it is this: install Tokemon. Usage visibility is the single biggest quality-of-life improvement you can make to your Claude Code workflow. Everything else builds on top of that foundation.
+
+Here is the quick-start:
+
+```bash
+# Install Tokemon for usage monitoring
+brew install richyparr/tap/tokemon
+
+# Install Claude Code VS Code extension
+claude install-extension
+```
+
+Then set up a `CLAUDE.md` in your project root with your coding standards, create a few custom slash commands for common workflows, and you are running a setup that most Claude Code developers would envy.
+
+Tokemon is free, open-source, and built specifically for developers who rely on Claude Code every day. [Download it at tokemon.ai](https://tokemon.ai) and stop flying blind.

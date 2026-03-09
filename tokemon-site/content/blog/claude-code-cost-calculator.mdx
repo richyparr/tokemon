@@ -1,0 +1,150 @@
+export const metadata = {
+  title: "Claude Code Cost Calculator: How Much Does Claude Code Really Cost?",
+  description:
+    "Calculate your real Claude Code costs based on usage patterns. Understand token pricing for Opus, Sonnet, and Haiku models, plus how prompt caching and extended thinking affect your bill.",
+  date: "2026-03-06",
+  author: "Richard Parr",
+  tags: ["claude code cost", "cost calculator", "claude pricing", "token pricing", "api costs", "claude code budget"],
+};
+
+If you use Claude Code through the API, every interaction has a price tag. But figuring out what you actually pay each month is harder than it looks. Between input tokens, output tokens, cache writes, cache reads, and extended thinking, the math gets complicated fast.
+
+This guide breaks down exactly how Claude Code pricing works, gives you realistic cost estimates for different usage patterns, and shows you how to track spending so nothing surprises you.
+
+## Claude API Pricing by Model
+
+Claude offers three model tiers, each with different price-performance tradeoffs. Pricing is measured per million tokens (MTok).
+
+| Model | Input | Output | Cache Write | Cache Read |
+|-------|-------|--------|-------------|------------|
+| Claude Opus | $15 / MTok | $75 / MTok | $18.75 / MTok | $1.50 / MTok |
+| Claude Sonnet | $3 / MTok | $15 / MTok | $3.75 / MTok | $0.30 / MTok |
+| Claude Haiku | ~$0.25 / MTok | ~$1.25 / MTok | ~$0.30 / MTok | ~$0.03 / MTok |
+
+*Haiku pricing is approximate. Check [Anthropic's pricing page](https://www.anthropic.com/pricing) for the latest rates. All models are subject to pricing changes.*
+
+The key insight: output tokens cost 5x more than input tokens across all models. This means Claude's responses are the expensive part, not your prompts.
+
+## How Claude Code Uses Tokens
+
+Understanding where tokens go helps you predict costs. Every Claude Code interaction involves several token categories:
+
+**System prompt (~3,000-5,000 tokens per request).** Claude Code sends a large system prompt with every API call. This includes instructions for tool use, coding conventions, and behavioral guidelines. You pay for this on every exchange.
+
+**Code context (~5,000-50,000+ tokens per request).** When Claude reads files, searches your codebase, or processes tool outputs, all of that content becomes input tokens. Large codebases with many open files drive this number up.
+
+**Conversation history (grows over a session).** Each follow-up message includes the full conversation so far. A long session can mean 100,000+ tokens of history per request by the end.
+
+**Tool calls and responses (~500-5,000 tokens each).** Every file read, grep search, or bash command generates tokens in both directions. A single complex task might involve 10-20 tool calls.
+
+**Claude's responses (~500-3,000 tokens each).** Code generation, explanations, and reasoning. These are output tokens, the most expensive category.
+
+## Typical Cost Scenarios
+
+Here are realistic monthly cost estimates based on common usage patterns, assuming Claude Sonnet as the primary model.
+
+### Light Usage: 2-3 Hours per Day
+
+A developer using Claude Code for focused tasks like code reviews, small bug fixes, and occasional feature scaffolding.
+
+- ~50 exchanges per day
+- ~20,000 tokens per exchange (input + output average)
+- ~1 million tokens per day
+- **~$15-25/month** at Sonnet pricing
+
+### Heavy Usage: 6-8 Hours per Day
+
+A developer using Claude Code as their primary coding partner for full-day sessions, large refactors, and complex feature development.
+
+- ~150-200 exchanges per day
+- ~30,000 tokens per exchange (larger context windows)
+- ~5 million tokens per day
+- **~$75-150/month** at Sonnet pricing
+
+### Team of 5 Developers: Mixed Usage
+
+A small team with varying usage patterns, some heavy users and some light, running Sonnet for most tasks with occasional Opus for complex reasoning.
+
+- ~15 million tokens per day across the team
+- Mix of Sonnet (80%) and Opus (20%)
+- **~$400-800/month** for the team
+
+These estimates assume prompt caching is active, which significantly reduces repeat costs. Without caching, expect 30-50% higher numbers.
+
+## The Hidden Costs You Might Miss
+
+### Extended Thinking Tokens
+
+When Claude uses extended thinking (the reasoning process before generating a response), those thinking tokens are billed as output tokens. Since output tokens are 5x more expensive than input, extended thinking can substantially increase costs.
+
+A single complex reasoning task might generate 5,000-10,000 thinking tokens before producing any visible output. At Opus output pricing ($75/MTok), that is $0.375-$0.75 just for the thinking step of one exchange.
+
+### Cache Creation Tokens
+
+Prompt caching saves money on repeated content, but the first time content is cached, you pay a 25% premium (the cache write cost). This is a one-time cost per cache entry, so it pays for itself quickly if the content is reused. But if your sessions are short and cache entries expire before being reused, you may pay the write premium without getting the read discount.
+
+### Conversation Length Compounding
+
+Every message in a conversation resends the entire history. A 50-message session means message 50 includes all previous messages as input tokens. This creates a compounding cost curve: the first 10 messages might cost $0.10 total, but messages 40-50 might cost $0.50 each because of the accumulated context.
+
+**Tip:** Start new conversations regularly rather than extending existing ones to keep costs linear instead of exponential. For more strategies, read our guide on [how to reduce Claude API costs](/blog/reduce-claude-api-costs).
+
+## How Prompt Caching Saves You Money
+
+Prompt caching is the single biggest cost saver for Claude Code users. Here is how it works:
+
+1. Repeated content (system prompts, unchanged file contents, conversation history) gets cached after the first request.
+2. Cached reads cost **90% less** than standard input tokens.
+3. The cache persists for 5 minutes (extended by each cache hit).
+
+For Claude Sonnet, this means cached input drops from $3/MTok to $0.30/MTok. Since system prompts and conversation history make up the majority of input tokens in a typical session, caching can reduce your effective input costs by 60-80%.
+
+| Scenario | Without Caching | With Caching | Savings |
+|----------|-----------------|--------------|---------|
+| 3-hour Sonnet session | ~$8.00 | ~$3.50 | 56% |
+| Full-day Opus session | ~$45.00 | ~$20.00 | 55% |
+| Team monthly (Sonnet) | ~$1,200 | ~$550 | 54% |
+
+The takeaway: caching works best for longer, continuous sessions where the same context is reused many times. Short, isolated queries get less benefit.
+
+## Max Plan vs API: When the Flat Rate Wins
+
+Anthropic offers subscription plans alongside pay-per-token API access. The question is: at what point does a flat monthly rate beat usage-based pricing?
+
+**Claude Max at $100/month** gives you a fixed token allocation with no per-token billing. If your API costs would exceed $100/month, the Max plan saves money and removes the mental overhead of cost tracking.
+
+Based on the scenarios above:
+
+- **Light usage ($15-25/month):** API is cheaper. Stick with pay-per-token.
+- **Heavy usage ($75-150/month):** Max plan breaks even or saves money, especially with the predictability benefit.
+- **Very heavy usage ($200+/month):** Max plan saves significantly. The more you use, the more you save.
+
+For a deeper comparison including Pro and Team plans, see our breakdown of [Claude Max vs Pro vs Team](/blog/claude-max-vs-pro-vs-team).
+
+**Important consideration:** Max plan users still face rate limits. If you hit your limit frequently, you are effectively paying for capacity you cannot use. Monitoring your usage is critical regardless of which plan you choose.
+
+## How Tokemon Tracks Your Claude Code Costs
+
+Knowing these numbers in theory is useful. Seeing them in real time is better. [Tokemon](https://tokemon.ai) is a macOS menu bar app that gives you live visibility into your Claude Code spending.
+
+**Per-project cost breakdown.** Tokemon automatically attributes token usage to each project directory. Answer questions like "How much did the auth refactor cost?" or "Which client project is burning the most tokens?" without manual tracking.
+
+**Budget alerts.** Set daily, weekly, or monthly cost thresholds and get notified via macOS notifications, Slack, or Discord before you exceed them. No more bill shock.
+
+**Real-time burn rate.** See how fast you are consuming tokens per hour and get a forecast of when you will hit your limit. Adjust your workflow before you get locked out.
+
+**Export for invoicing.** Generate PDF and CSV reports to attach to client invoices or share with your team for budget reviews.
+
+For a complete walkthrough of setting up cost tracking, read [how to track Claude Code usage](/blog/how-to-track-claude-code-usage).
+
+## Start Tracking Your Costs
+
+The difference between developers who manage Claude Code costs well and those who get surprised by their bills is visibility. You cannot optimize what you cannot see.
+
+[Download Tokemon](https://tokemon.ai) and get real-time cost tracking in your menu bar.
+
+```bash
+brew install richyparr/tap/tokemon
+```
+
+Free, native to macOS, and built for developers who want to know exactly where their tokens are going. Stop estimating. Start measuring.

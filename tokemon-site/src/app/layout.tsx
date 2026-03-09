@@ -61,30 +61,58 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: "Tokemon",
-  applicationCategory: "DeveloperApplication",
-  operatingSystem: "macOS 14+",
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Tokemon",
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "macOS 14+",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    description:
+      "Open-source Claude usage monitor for macOS and Raycast. Track token limits, burn rate, per-project costs, and team budgets in real-time.",
+    url: "https://tokemon.ai",
+    downloadUrl: "https://github.com/richyparr/tokemon/releases/latest",
+    softwareVersion: "4.0.0",
+    author: {
+      "@type": "Person",
+      name: "Richard Parr",
+      url: "https://github.com/richyparr",
+    },
+    license: "https://opensource.org/licenses/MIT",
+    screenshot: "https://tokemon.ai/og.png",
   },
-  description:
-    "Open-source Claude usage monitor for macOS and Raycast. Track token limits, burn rate, per-project costs, and team budgets in real-time.",
-  url: "https://tokemon.ai",
-  downloadUrl: "https://github.com/richyparr/tokemon/releases/latest",
-  softwareVersion: "4.0.0",
-  author: {
-    "@type": "Person",
-    name: "Richard Parr",
-    url: "https://github.com/richyparr",
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Tokemon",
+    url: "https://tokemon.ai",
+    logo: "https://tokemon.ai/icon.png",
+    sameAs: [
+      "https://github.com/richyparr/tokemon",
+    ],
+    founder: {
+      "@type": "Person",
+      name: "Richard Parr",
+      url: "https://github.com/richyparr",
+    },
   },
-  license: "https://opensource.org/licenses/MIT",
-  screenshot: "https://tokemon.ai/og.png",
-};
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Tokemon",
+    url: "https://tokemon.ai",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: "https://tokemon.ai/blog?q={search_term_string}",
+      "query-input": "required name=search_term_string",
+    },
+  },
+];
 
 export default function RootLayout({
   children,

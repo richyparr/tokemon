@@ -69,8 +69,37 @@ export default async function ComparePostPage({
         "@type": "Organization",
         name: "Tokemon",
         url: "https://tokemon.ai",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://tokemon.ai/icon.png",
+        },
       },
       mainEntityOfPage: `https://tokemon.ai/compare/${slug}`,
+    };
+
+    const breadcrumbJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "https://tokemon.ai",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Compare",
+          item: "https://tokemon.ai/compare",
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: metadata.title,
+          item: `https://tokemon.ai/compare/${slug}`,
+        },
+      ],
     };
 
     return (
@@ -78,6 +107,10 @@ export default async function ComparePostPage({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
         />
         <BlogLayout metadata={metadata}>
           <Content />

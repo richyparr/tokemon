@@ -1,0 +1,236 @@
+export const metadata = {
+  title: "How to Reduce Claude API Costs: 7 Proven Strategies",
+  description:
+    "Practical strategies to reduce your Claude API spending without sacrificing output quality. Learn about prompt caching, model selection, batch processing, and real-time cost monitoring.",
+  date: "2026-03-08",
+  author: "Richard Parr",
+  tags: ["claude api costs", "reduce api costs", "claude pricing", "prompt caching", "anthropic billing", "cost optimization"],
+};
+
+Claude API costs can add up fast, especially when you are running automated pipelines, processing large codebases, or using extended thinking for complex reasoning tasks. The good news is that Anthropic provides several built-in mechanisms to cut costs significantly, and with the right workflow habits, you can reduce your spending by 50-90% without sacrificing output quality.
+
+Here are seven proven strategies to bring your Claude API bill under control.
+
+## 1. Use Prompt Caching for Repeated Context
+
+Prompt caching is the single biggest cost saver for most API users. When you send the same system prompt or context block across multiple requests, Anthropic can cache that content and charge you a fraction of the normal input token price. Cached input tokens cost **90% less** than regular input tokens.
+
+To enable caching, add a `cache_control` block to any content you want reused across requests:
+
+```json
+{
+  "model": "claude-sonnet-4-20250514",
+  "max_tokens": 1024,
+  "system": [
+    {
+      "type": "text",
+      "text": "You are an expert code reviewer. Review the following code for bugs, security vulnerabilities, and performance issues. Provide specific line references and suggested fixes.",
+      "cache_control": { "type": "ephemeral" }
+    }
+  ],
+  "messages": [
+    {
+      "role": "user",
+      "content": "Review this function:\n\nfunction processPayment(amount, userId) { ... }"
+    }
+  ]
+}
+```
+
+The `ephemeral` type tells Anthropic to cache this content for the duration of your session (typically 5 minutes of inactivity before expiration). Every subsequent request that includes the same cached block skips the full input token charge.
+
+Where this matters most:
+
+- **Long system prompts** that stay the same across requests (coding standards, persona definitions, output format rules)
+- **Few-shot examples** you include for consistent output quality
+- **Large reference documents** like API specs or codebases that you query repeatedly
+
+If your system prompt is 2,000 tokens and you make 100 requests, caching saves you roughly 180,000 input tokens worth of cost. At Claude Sonnet pricing, that adds up.
+
+## 2. Choose the Right Model for Each Task
+
+Not every request needs your most expensive model. Anthropic offers three tiers, and using the right one for each task can cut your costs dramatically:
+
+| Model | Best For | Relative Cost |
+|-------|----------|---------------|
+| **Haiku** | Classification, extraction, simple Q&A, routing | Lowest |
+| **Sonnet** | Code generation, analysis, most development work | Mid |
+| **Opus** | Complex multi-step reasoning, research, architecture decisions | Highest |
+
+A practical pattern is to use Haiku as a router. Send incoming requests to Haiku first to classify complexity, then route to Sonnet or Opus only when needed:
+
+```python
+import anthropic
+
+client = anthropic.Anthropic()
+
+# Step 1: Classify with Haiku (cheap)
+classification = client.messages.create(
+    model="claude-haiku-4-20250514",
+    max_tokens=50,
+    messages=[{
+        "role": "user",
+        "content": f"Classify this task as SIMPLE, MODERATE, or COMPLEX: {user_request}"
+    }]
+)
+
+# Step 2: Route to appropriate model
+complexity = classification.content[0].text.strip()
+model = {
+    "SIMPLE": "claude-haiku-4-20250514",
+    "MODERATE": "claude-sonnet-4-20250514",
+    "COMPLEX": "claude-opus-4-20250514"
+}.get(complexity, "claude-sonnet-4-20250514")
+
+response = client.messages.create(
+    model=model,
+    max_tokens=4096,
+    messages=[{"role": "user", "content": user_request}]
+)
+```
+
+For most development workflows, Sonnet handles 80%+ of tasks at a fraction of Opus pricing. Reserve Opus for the tasks that genuinely need it: complex architectural decisions, multi-file refactors with tricky dependencies, or nuanced code review.
+
+## 3. Use Batch Processing for Non-Urgent Work
+
+Anthropic's Message Batches API offers a **50% discount** on all token costs. The tradeoff is that batch results are delivered within 24 hours instead of in real-time. For any workload that does not need an immediate response, this is free money.
+
+```python
+import anthropic
+
+client = anthropic.Anthropic()
+
+batch = client.messages.batches.create(
+    requests=[
+        {
+            "custom_id": "review-auth-module",
+            "params": {
+                "model": "claude-sonnet-4-20250514",
+                "max_tokens": 4096,
+                "messages": [{"role": "user", "content": "Review auth.py for security issues..."}]
+            }
+        },
+        {
+            "custom_id": "review-payment-module",
+            "params": {
+                "model": "claude-sonnet-4-20250514",
+                "max_tokens": 4096,
+                "messages": [{"role": "user", "content": "Review payments.py for security issues..."}]
+            }
+        }
+    ]
+)
+
+# Poll for results or use a webhook
+print(f"Batch ID: {batch.id}")
+```
+
+Good candidates for batching:
+
+- **Code review** across multiple files or PRs
+- **Documentation generation** for entire modules
+- **Test generation** for a suite of functions
+- **Data extraction** or analysis pipelines that run on a schedule
+
+## 4. Optimize Your Prompt Length
+
+Every token in your prompt costs money. Bloated system prompts are one of the most common sources of waste, especially when they accumulate over time as you add instructions.
+
+**Before (468 tokens):**
+```
+You are an AI assistant that helps developers write code. You should always write
+clean, well-documented code. Make sure to follow best practices. When writing code,
+always include error handling. You should use TypeScript when possible. Please make
+sure the code is production-ready and follows SOLID principles. Always add comments
+to explain complex logic. Use meaningful variable names...
+```
+
+**After (97 tokens):**
+```
+Expert TypeScript developer. Write production-ready code with error handling,
+SOLID principles, and clear comments on complex logic.
+```
+
+Both produce equivalent output quality. The second version saves 371 tokens per request. Over thousands of requests, that is a meaningful cost reduction.
+
+Other ways to trim tokens:
+
+- **Remove redundant instructions.** Claude already writes clean code by default. You do not need to tell it to "use meaningful variable names."
+- **Use references instead of inline content.** Instead of pasting an entire file, point to the specific function or section you need help with.
+- **Set `max_tokens` appropriately.** If you only need a short answer, do not leave `max_tokens` at 4096. This does not directly reduce input cost, but it prevents paying for unnecessarily long outputs.
+
+## 5. Monitor Usage in Real-Time with Tokemon
+
+You cannot optimize what you cannot measure. One of the most common reasons API costs spiral is that developers have no visibility into where their tokens are going until the monthly bill arrives.
+
+[Tokemon](https://tokemon.ai) sits in your macOS menu bar and gives you real-time visibility into your Claude usage: total spend, tokens consumed, burn rate per hour, and per-project cost breakdowns. If you are running Claude Code for development work, Tokemon tracks every request automatically so you can see exactly which projects and tasks are consuming the most tokens.
+
+```
+Menu Bar: $12.40 today | 847K tokens | $1.80/hr burn rate
+```
+
+This kind of visibility changes how you work. When you can see that a particular refactoring task has consumed $8 in tokens, you can decide whether to continue with Claude or handle the remaining work manually. Without monitoring, that feedback loop does not exist.
+
+For a deeper dive into tracking your usage, see the [Claude Token Monitoring Guide](/blog/claude-token-monitoring-guide).
+
+## 6. Set Budget Alerts
+
+Real-time monitoring is only useful if you act on it. Budget alerts give you automatic notifications when your spending crosses a threshold, so you can catch runaway costs before they become a problem.
+
+Common scenarios where alerts save money:
+
+- **A misconfigured loop** that sends thousands of API requests
+- **An oversized context window** that is silently burning through tokens
+- **A teammate's pipeline** that starts consuming more than expected
+
+With [Tokemon](https://tokemon.ai), you can set threshold alerts at custom dollar amounts or usage percentages. Get notified via macOS notifications when your daily or hourly spend exceeds what you expect. This is especially valuable for teams where multiple developers are sharing an API key.
+
+If you are also concerned about rate limits alongside costs, the [guide to avoiding Claude rate limits](/blog/avoid-claude-rate-limits) covers how usage alerts help with both problems.
+
+## 7. Use Extended Thinking Wisely
+
+Extended thinking gives Claude the ability to reason through complex problems step by step before producing a final answer. It produces noticeably better results for hard problems, but thinking tokens cost money just like output tokens.
+
+The key parameter is `budget_tokens`, which caps how many tokens Claude can spend on its internal reasoning:
+
+```python
+response = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=16000,
+    thinking={
+        "type": "enabled",
+        "budget_tokens": 5000  # Cap thinking at 5K tokens
+    },
+    messages=[{
+        "role": "user",
+        "content": "Analyze this function for edge cases and potential bugs..."
+    }]
+)
+```
+
+Without a budget, Claude might use 10,000-20,000 thinking tokens on a problem that only needed 3,000. Setting `budget_tokens` gives you control over that cost.
+
+Guidelines for setting thinking budgets:
+
+- **Simple analysis:** 2,000-4,000 tokens
+- **Code review with reasoning:** 5,000-8,000 tokens
+- **Complex architectural decisions:** 10,000-15,000 tokens
+- **Skip thinking entirely** for straightforward tasks like formatting, extraction, or classification
+
+For more on how token usage translates to real costs in Claude Code workflows, see [How to Track Claude Code Usage](/blog/how-to-track-claude-code-usage).
+
+## The Bottom Line
+
+Reducing Claude API costs is not about using the API less. It is about using it smarter. Prompt caching alone can cut input costs by 90%. Choosing the right model for each task prevents overpaying for simple work. Batch processing gives you a flat 50% discount for anything that does not need a real-time response. And monitoring your usage ensures you always know where your money is going.
+
+The biggest wins come from combining these strategies. Cache your system prompts, route simple tasks to Haiku, batch non-urgent work, and monitor everything. Most teams that adopt this approach see their API costs drop by 40-60% within the first month.
+
+## Start Monitoring Your Claude Costs
+
+Stop waiting for your monthly bill to find out what you spent. [Download Tokemon](https://tokemon.ai) for free and get real-time cost tracking, per-project breakdowns, and budget alerts from your macOS menu bar.
+
+```bash
+brew install richyparr/tap/tokemon
+```
+
+Open source, free, and built for developers who need to keep their Claude API costs under control.

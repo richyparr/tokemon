@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getPostSlugs } from "@/lib/blog";
-import { getCompareSlugs } from "@/lib/compare";
+import { getPosts } from "@/lib/blog";
+import { getComparePages } from "@/lib/compare";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const blogSlugs = getPostSlugs();
-  const compareSlugs = getCompareSlugs();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const posts = await getPosts();
+  const comparePages = await getComparePages();
 
   return [
     {
@@ -25,15 +25,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
-    ...blogSlugs.map((slug) => ({
-      url: `https://tokemon.ai/blog/${slug}`,
-      lastModified: new Date(),
+    ...posts.map((post) => ({
+      url: `https://tokemon.ai/blog/${post.slug}`,
+      lastModified: new Date(post.date),
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
-    ...compareSlugs.map((slug) => ({
-      url: `https://tokemon.ai/compare/${slug}`,
-      lastModified: new Date(),
+    ...comparePages.map((page) => ({
+      url: `https://tokemon.ai/compare/${page.slug}`,
+      lastModified: new Date(page.date),
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),

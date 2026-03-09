@@ -1,0 +1,112 @@
+export const metadata = {
+  title: "Tokemon vs Manual Tracking: Why Spreadsheets Don't Work for Claude Usage",
+  description:
+    "Stop tracking Claude API usage in spreadsheets. See why automated monitoring with Tokemon saves time, catches cost spikes instantly, and gives you data you can't get manually.",
+  date: "2026-03-08",
+  author: "Richard Parr",
+  tags: ["tokemon", "manual tracking", "spreadsheets", "usage monitoring", "comparison"],
+  competitor: "Manual Tracking / Spreadsheets",
+};
+
+If you are tracking your Claude API usage in a spreadsheet — or worse, checking the billing page manually every few hours — you are not alone. Most developers start this way. But manual tracking breaks down fast once you are using Claude Code daily. Here is why, and when it actually makes sense to keep things simple.
+
+## How Manual Tracking Usually Works
+
+Most developers who track their Claude usage manually follow some variation of this workflow:
+
+1. **Check the Anthropic billing page** — Log in to console.anthropic.com, navigate to usage, and note the current spend
+2. **Save numbers in a spreadsheet** — Copy the daily total into a Google Sheet or CSV with a date column
+3. **Parse API response headers** — Some developers read the `x-ratelimit-*` headers from API responses to estimate remaining capacity
+4. **Set calendar reminders** — A daily or weekly reminder to go check the billing dashboard
+5. **Mental math** — Rough estimates like "I have used about $30 this week, so I should be fine"
+
+This approach works when your usage is low and predictable. It stops working the moment your usage is not.
+
+## The Problems with Manual Tracking
+
+### You Only See What You Remember to Check
+
+Manual tracking is inherently delayed. If a runaway Claude Code session burns through $40 in an afternoon, you will not know until your next scheduled check. By then, the damage is done. There is no alert, no notification, no circuit breaker.
+
+### No Per-Project Visibility
+
+The Anthropic billing page shows your total spend. It does not tell you which project consumed what. If you are working across three codebases, you have no idea which one is driving 80% of your costs. For freelancers billing clients or teams allocating budgets, this is a dealbreaker.
+
+### It Is Tedious and Error-Prone
+
+Copying numbers into a spreadsheet every day is exactly the kind of repetitive task that developers automate in every other part of their workflow — except, for some reason, their own tool spending. Typos happen. Days get skipped. The spreadsheet slowly becomes unreliable.
+
+### No Burn Rate or Forecasting
+
+A spreadsheet of daily totals tells you what happened yesterday. It does not tell you how fast you are burning through your budget right now. It cannot forecast whether you will hit your limit by Thursday or cruise through the month comfortably.
+
+### No Alerts
+
+You cannot set a threshold on a spreadsheet. There is no way to get a notification when your spend crosses $50, or when your hourly burn rate doubles because you kicked off a large refactoring session.
+
+## What Tokemon Automates
+
+[Tokemon](https://tokemon.ai) replaces the entire manual workflow with a menu bar app that runs in the background on your Mac:
+
+- **Real-time usage polling** — Your current spend is always visible in the menu bar, updated automatically
+- **Per-project breakdowns** — See exactly which codebase is consuming tokens, without any manual tagging or logging
+- **Burn rate calculation** — Know your tokens-per-hour rate and whether it is trending up or down
+- **Budget alerts** — Set dollar thresholds and get notified before you overshoot, not after
+- **Forecasting** — See projected spend for the day, week, and month based on your current trajectory
+- **Export and reporting** — Generate CSV or JSON exports for client billing or expense reports, no manual data entry required
+
+For a deeper look at controlling costs, see [How to Reduce Claude API Costs](/blog/reduce-claude-api-costs) and use the [Claude Code Cost Calculator](/blog/claude-code-cost-calculator) to estimate your monthly spend.
+
+## Comparison Table
+
+| Capability | Manual / Spreadsheets | Tokemon |
+|---|---|---|
+| **Setup time** | None | Under 1 minute |
+| **Daily time investment** | 15–30 min checking and logging | 0 min — always visible |
+| **Real-time visibility** | No — delayed by hours or days | Yes — menu bar + Raycast |
+| **Per-project breakdown** | No — total spend only | Yes — automatic project detection |
+| **Burn rate tracking** | No | Yes — tokens/hour with trends |
+| **Budget alerts** | No | Yes — configurable thresholds |
+| **Forecasting** | Manual extrapolation at best | Yes — projected daily/weekly/monthly |
+| **Export for billing** | Manual CSV maintenance | One-click CSV/JSON export |
+| **Error risk** | High — typos, missed days | None — automated collection |
+| **Cost** | Free | Free & open source |
+
+## The Time Savings Are Real
+
+A conservative estimate: checking the billing page, updating a spreadsheet, and doing rough mental math takes 15 to 30 minutes per day. Over a month, that is 7 to 15 hours spent on a task that produces worse data than an automated tool running silently in your menu bar.
+
+Tokemon takes zero minutes per day. You glance at the menu bar when you want to, click for details when you need them, and get alerted automatically when something requires attention. The time you save goes back into actual development work.
+
+## When Manual Tracking Is Fine
+
+Manual tracking is not always wrong. It is a reasonable choice if:
+
+- **Your usage is very low** — If you spend under $10/month on Claude, the billing page once a week is probably enough
+- **You are on a one-off project** — If you are using Claude Code for a single short project and will not need ongoing tracking, a spreadsheet is fine
+- **You do not bill clients** — If you are not allocating costs to specific projects or clients, per-project breakdowns are less important
+- **You are just exploring** — If you are still evaluating whether Claude Code fits your workflow, manual checks give you a sense of usage before committing to tooling
+
+In short, manual tracking works when the stakes are low and the usage is occasional.
+
+## When You Need Tokemon
+
+Automated monitoring becomes essential when:
+
+- **You use Claude Code daily** — Daily usage means daily cost variability. You need real-time visibility, not yesterday's numbers
+- **You bill clients for AI usage** — Per-project tracking and exportable reports are not optional when clients expect line-item billing
+- **You manage a team** — Multiple developers on multiple projects means the billing page total is meaningless without breakdowns
+- **You have budget constraints** — If you have a monthly budget you cannot exceed, you need alerts before you cross the line, not a spreadsheet entry after
+- **You have been surprised by a bill** — If it has happened once, it will happen again. Alerts and burn rate tracking prevent the next surprise
+
+## Getting Started with Tokemon
+
+Install Tokemon with Homebrew and replace your spreadsheet in under a minute:
+
+```bash
+brew install richyparr/tap/tokemon
+```
+
+It is free, open-source, and runs entirely on your Mac. No data leaves your machine — your usage metrics and API credentials stay local.
+
+[Download Tokemon](https://tokemon.ai) and stop spending your time tracking what a tool can track for you.

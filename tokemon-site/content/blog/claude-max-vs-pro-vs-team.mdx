@@ -1,0 +1,145 @@
+export const metadata = {
+  title: "Claude Max vs Pro vs Team: Which Plan Do You Need in 2026?",
+  description:
+    "Compare Claude Max, Pro, and Team plans side by side. Understand pricing, rate limits, token allocations, and which plan is best for solo developers, freelancers, and teams.",
+  date: "2026-03-09",
+  author: "Richard Parr",
+  tags: ["claude plans", "claude pricing", "claude max", "claude pro", "claude team", "anthropic pricing"],
+};
+
+Choosing the right Claude plan can save you hundreds of dollars a year — or cost you hours of lost productivity if you pick wrong. Anthropic now offers five tiers, from free to enterprise, and the differences are not always obvious from the pricing page alone.
+
+This guide breaks down every plan, compares rate limits and token allocations, and helps you decide which one actually fits your workflow.
+
+## The Plans at a Glance
+
+Anthropic currently offers five Claude plans. Here is what each one costs and who it targets:
+
+| | **Free** | **Pro** | **Max (5x)** | **Max (20x)** | **Team** | **Enterprise** |
+|---|---|---|---|---|---|---|
+| **Price** | $0 | $20/mo | $100/mo | $200/mo | $25–30/seat/mo | Custom |
+| **Claude Code** | No | Yes | Yes | Yes | Yes | Yes |
+| **Usage vs Free** | 1x | ~3–5x | 5x of Pro | 20x of Pro | ~3–5x per seat | Custom |
+| **Model Access** | Sonnet | Opus, Sonnet, Haiku | Opus, Sonnet, Haiku | Opus, Sonnet, Haiku | Opus, Sonnet, Haiku | All models |
+| **Priority** | Low | Standard | High | Highest | Standard | Dedicated |
+| **Max Output** | Standard | Standard | Extended | Extended | Standard | Custom |
+| **Best For** | Casual use | Daily developers | Heavy daily use | Power users / AI-first devs | Small-medium teams | Large orgs |
+
+The jump from Pro to Max is where things get interesting. Let's dig into each tier.
+
+## Free Tier
+
+The free plan gives you access to Claude's web interface with limited daily usage. You get access to Sonnet — which is capable for general tasks — but you do not get access to Claude Code, Opus, or any of the more powerful features.
+
+**Best for:** Trying out Claude for the first time, occasional questions, non-developers who need a general AI assistant.
+
+**Limitations:** You will hit rate limits fast. There is no Claude Code access, which makes this plan a non-starter for developers who want AI-assisted coding.
+
+## Pro — $20/month
+
+The Pro plan is where Claude becomes genuinely useful for development work. You get Claude Code access, Opus model availability, and roughly 3–5x the usage of the free tier.
+
+For many developers, Pro is the sweet spot. You can run a solid day of Claude Code sessions without issues — as long as you are not running marathon coding sessions or processing massive codebases.
+
+**Best for:** Solo developers who use Claude Code regularly but not all day, every day. If you are using Claude for a few hours per day across one or two projects, Pro is usually enough.
+
+**Where it breaks down:** If you regularly find yourself hitting rate limits mid-afternoon, or if you are using Claude Code as your primary development workflow, Pro will feel constrained. That is when Max starts making sense.
+
+If you are on Pro and want to make the most of your allocation, check out [How to Avoid Claude Rate Limits](/blog/avoid-claude-rate-limits) for practical strategies.
+
+## Max — $100/month (5x) or $200/month (20x)
+
+Max is Anthropic's power-user tier, and it comes in two flavors:
+
+- **Max 5x ($100/mo):** Five times the usage of Pro. This is roughly 15–25x the free tier.
+- **Max 20x ($200/mo):** Twenty times the usage of Pro. This is the highest individual allocation Anthropic offers.
+
+Both Max tiers include extended output length, which means Claude can generate longer responses — useful for large code generation, documentation, and complex multi-file refactors. You also get higher priority, so you are less likely to be queued during peak hours.
+
+### Max 5x — The Freelancer Sweet Spot
+
+If you are a freelancer or a developer who uses Claude Code as a core part of your daily workflow, the 5x tier often hits the right balance. You get enough headroom to work a full 8-hour day without constantly watching your usage, and the extended output is a meaningful upgrade for code generation tasks.
+
+**Best for:** Full-time developers and freelancers who rely on Claude Code daily. If you were regularly hitting Pro limits 3+ times per week, this is the upgrade that fixes it.
+
+### Max 20x — AI-First Development
+
+The 20x tier is for developers who have restructured their workflow around Claude. If you are using Claude Code as your primary development tool — writing, reviewing, refactoring, and debugging through it — the 20x tier gives you essentially unlimited usage for a typical workday.
+
+**Best for:** AI-first developers, indie hackers shipping fast, developers working across many projects simultaneously. If Claude Code is your primary way of writing software, this tier removes the usage ceiling.
+
+**The cost question:** $200/month sounds steep, but consider the math. If Claude Code saves you even two hours per week at a $100/hour freelance rate, it pays for itself four times over. For most power users, the constraint is not the cost — it is whether you can actually use that much.
+
+## Team — $25–30/seat/month
+
+The Team plan is designed for organizations with multiple Claude users. Each seat gets roughly Pro-level usage (3–5x of free), plus team management features:
+
+- **Centralized billing** — one invoice for the whole team
+- **Admin controls** — manage who has access and to which features
+- **Shared workspace** — team members can collaborate on conversations
+- **Usage analytics** — basic visibility into team-wide usage (though not as detailed as you might want)
+
+**Best for:** Small to medium teams (3–20 people) where multiple developers need Claude Code access. The per-seat cost is actually cheaper than Pro if you are paying annually, and the admin features justify the slight premium.
+
+**Where it falls short:** Team plans give each user roughly the same allocation as Pro. If you have power users on your team who need Max-level usage, they will still hit rate limits. Anthropic does not currently offer a "Team Max" tier, which means heavy users on team plans may need a separate Max subscription for their individual work.
+
+For teams trying to manage shared usage, tracking who is consuming what becomes critical. More on that below.
+
+## Enterprise — Custom Pricing
+
+Enterprise plans are negotiated directly with Anthropic and include dedicated capacity, custom rate limits, SSO, advanced security features, and priority support. If you have 50+ seats or need guaranteed SLAs, this is the path.
+
+**Best for:** Large organizations with compliance requirements, dedicated capacity needs, or high-volume usage across many teams.
+
+## How to Actually Choose
+
+Here is the decision framework I recommend:
+
+1. **Start with Pro.** It is $20/month and covers most developers' needs. Do not over-buy capacity you will not use.
+
+2. **Track your actual usage.** Before upgrading, know your real consumption patterns. Are you hitting limits daily, or just occasionally? This is where [monitoring your Claude usage](/blog/how-to-track-claude-code-usage) becomes essential.
+
+3. **Upgrade to Max 5x if you hit Pro limits more than 3x per week.** The jump from $20 to $100 is significant, but if rate limits are costing you productive hours, the math works out.
+
+4. **Only go Max 20x if you genuinely use Claude Code 6+ hours per day.** Most developers overestimate how much they will use. Track first, upgrade second.
+
+5. **Choose Team when you have 3+ people who need access.** The admin features and centralized billing are worth the slight premium over individual Pro plans.
+
+## Why Usage Tracking Matters on Every Plan
+
+Regardless of which plan you choose, flying blind on usage is a mistake. Every tier has limits, and hitting them unexpectedly disrupts your workflow.
+
+This is exactly why I built [Tokemon](https://tokemon.ai). It sits in your macOS menu bar and shows you:
+
+- **Exactly where you stand** against your plan's limits in real-time
+- **Your burn rate** — how fast you are consuming tokens per hour, so you can pace your work
+- **Per-project breakdowns** — know which codebases are eating your allocation
+- **Smart alerts** — get notified at 75% or 80% so you can wrap up before hitting the wall
+
+For **Pro users**, Tokemon helps you decide whether upgrading to Max is actually necessary. You might find that adjusting your workflow saves you $80/month. For **Max users**, it ensures you are getting value from the higher tier — if you never cross 5x usage, you do not need 20x. For **Team users**, per-project tracking shows which team members and projects consume the most, helping you allocate resources effectively.
+
+Check out the [Claude Token Monitoring Guide](/blog/claude-token-monitoring-guide) for a deeper dive on setting up effective usage monitoring.
+
+If you have looked at other monitoring tools, the [Tokemon vs ccusage comparison](/compare/tokemon-vs-ccusage) breaks down why a native menu bar app provides better visibility than CLI-based alternatives.
+
+## The Bottom Line
+
+Do not pay for capacity you do not need, and do not stay on a plan that costs you productivity. The right approach:
+
+1. **Start on Pro** ($20/month) and install [Tokemon](https://tokemon.ai) to track your real usage patterns.
+2. **Review after two weeks.** If you are consistently hitting limits, upgrade to Max 5x.
+3. **Reassess monthly.** Your usage patterns will change as you learn to work with Claude more effectively.
+
+Most developers land on Pro or Max 5x. The 20x tier and Team plans serve specific use cases — make sure yours is one of them before committing.
+
+## Get Started
+
+Install Tokemon to start tracking your Claude usage today, regardless of your plan:
+
+```bash
+brew install richyparr/tap/tokemon
+```
+
+Or download it from the [Tokemon website](https://tokemon.ai). It is free, open-source, and takes less than a minute to set up.
+
+Know your usage. Choose your plan wisely. Never hit a rate limit by surprise.

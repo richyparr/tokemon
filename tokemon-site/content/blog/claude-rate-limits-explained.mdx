@@ -1,0 +1,200 @@
+export const metadata = {
+  title: "Understanding Claude Rate Limits: The Complete 2026 Guide",
+  description:
+    "Everything you need to know about Claude rate limits in 2026. How the 5-hour rolling window works, per-model limits, what happens when you hit them, and how to monitor your usage in real-time.",
+  date: "2026-03-07",
+  author: "Richard Parr",
+  tags: ["claude rate limits", "rate limiting", "claude usage", "5-hour window", "token limits", "anthropic rate limits"],
+};
+
+Claude rate limits are the single biggest friction point for developers who rely on Claude for daily coding work. Whether you are on a Pro subscription using Claude Code or building with the API, understanding exactly how these limits work is the difference between a productive day and hours spent staring at a cooldown timer.
+
+This is the definitive guide. Everything you need to know about how Claude rate limits work in 2026, from the rolling window mechanics to per-model API tiers to practical strategies for staying under the cap.
+
+## How Claude Rate Limits Work
+
+Anthropic applies rate limits differently depending on whether you are using a consumer subscription (Pro, Max, Team) or the developer API. The mechanics are fundamentally different, so it is important to understand which system applies to you.
+
+### Consumer Plans: The 5-Hour Rolling Window
+
+If you are on Claude Pro, Max, or Team, your usage is governed by a **5-hour rolling window**. This is not a fixed daily reset. Instead, Anthropic continuously looks at your total usage over the past 5 hours and compares it against your plan's allowance.
+
+Think of it like a conveyor belt. Every request you make gets placed on the belt. After 5 hours, that request falls off the end and no longer counts against you. The result is a dynamic limit that constantly shifts based on your recent activity.
+
+Here is a concrete example of how the rolling window plays out during a typical workday:
+
+```
+9:00 AM  - Start coding session, 0% used
+10:00 AM - Heavy refactoring, 35% used
+11:00 AM - Debugging with logs, 65% used
+12:00 PM - More coding, 85% used
+1:00 PM  - Light usage, 90% used
+2:00 PM  - 9 AM usage drops off → back to ~55% used
+3:00 PM  - 10 AM usage drops off → back to ~30% used
+```
+
+Your 9 AM usage expires at 2 PM. Your 10 AM usage expires at 3 PM. The window is always sliding, which means heavy early usage naturally decays over time without you needing to do anything.
+
+### What Counts Against the Limit
+
+Anthropic does not publish the exact formula, but rate limit consumption is based on a composite metric that includes:
+
+- **Input tokens** (your prompts, context, files read by Claude)
+- **Output tokens** (Claude's responses, generated code)
+- **Computational cost** (some operations are weighted more heavily)
+
+Longer conversations with large context windows burn through your limit faster than short, focused requests.
+
+## Pro vs Max vs Team: Consumer Plan Limits
+
+Each subscription tier gets a different share of the rate limit pool:
+
+| Plan | Monthly Cost | Rate Limit Allowance | Best For |
+|------|-------------|---------------------|----------|
+| Pro | $20/month | Base allowance | Regular development, moderate daily usage |
+| Max | $100/month | 5x Pro limits | Heavy daily usage, professional developers |
+| Max | $200/month | 20x Pro limits | Teams, power users, all-day coding sessions |
+| Team | $30/user/month | Higher than Pro | Collaborative teams with shared billing |
+
+The key takeaway: if you consistently hit rate limits on Pro, upgrading to Max at $100/month gives you 5x the headroom. For developers who use Claude as their primary coding tool, the $200/month Max tier with 20x limits is often worth it just to eliminate rate limit interruptions entirely.
+
+## API Rate Limits: RPM, TPM, and RPD
+
+If you are building applications with the Claude API, rate limits work completely differently. Instead of a rolling window, the API enforces three separate limits measured per minute or per day:
+
+| Metric | What It Measures | How It Resets |
+|--------|-----------------|---------------|
+| **RPM** (Requests Per Minute) | Number of API calls per minute | Resets every 60 seconds |
+| **TPM** (Tokens Per Minute) | Total input + output tokens per minute | Resets every 60 seconds |
+| **RPD** (Requests Per Day) | Total API calls per day | Resets every 24 hours |
+
+### API Rate Limits by Tier
+
+Anthropic assigns API accounts to usage tiers based on spend history. Higher tiers unlock higher limits:
+
+| Tier | RPM | TPM (Input) | TPM (Output) |
+|------|-----|-------------|--------------|
+| Tier 1 (Free/New) | 50 | 20,000 | 8,000 |
+| Tier 2 | 1,000 | 80,000 | 16,000 |
+| Tier 3 | 2,000 | 160,000 | 32,000 |
+| Tier 4 | 4,000 | 400,000 | 80,000 |
+
+*Note: Limits vary by model. Claude Opus has lower limits than Sonnet at the same tier. Check the [Anthropic docs](https://docs.anthropic.com/en/docs/about-claude/models) for current per-model figures.*
+
+You move up tiers automatically as your cumulative API spend increases. There is no manual upgrade process.
+
+## What Happens When You Hit the Limit
+
+The experience is different depending on whether you are on a consumer plan or the API.
+
+### Consumer Plans (Pro/Max/Team)
+
+When you exhaust your 5-hour rolling window on a consumer plan, Claude Code displays an error in your terminal:
+
+```
+Claude is unable to respond right now due to rate limiting.
+Your rate limit will reset in approximately 3 hours and 42 minutes.
+```
+
+On the claude.ai web interface, you may be downgraded to a smaller, faster model instead of being fully locked out. Either way, you lose access to the full-capability model until enough of your older usage falls off the rolling window.
+
+There is no gradual degradation in Claude Code. You go from full access to locked out with no middle ground.
+
+### API: 429 Errors and Retry-After Headers
+
+When you exceed an API rate limit, the API returns a **429 Too Many Requests** HTTP status code. The response includes headers that tell you exactly what happened:
+
+```
+HTTP/1.1 429 Too Many Requests
+retry-after: 30
+x-ratelimit-limit-requests: 1000
+x-ratelimit-remaining-requests: 0
+x-ratelimit-reset-requests: 2026-03-07T14:30:00Z
+```
+
+The `retry-after` header tells you how many seconds to wait before retrying. Properly handling 429 responses with exponential backoff is essential for any production application using the Claude API. If you keep sending requests after getting a 429, Anthropic may impose longer cooldowns.
+
+## How to Check Your Current Usage
+
+Knowing where you stand relative to your limit is critical. Here are your options:
+
+### Anthropic Console (API Users)
+
+If you are using the API, the [Anthropic Console](https://console.anthropic.com) shows your current usage, remaining quota, and tier status. You can also check rate limit headers on every API response to see your remaining requests and tokens for the current window.
+
+### API Response Headers
+
+Every API response includes rate limit information in the headers:
+
+```
+x-ratelimit-limit-tokens: 80000
+x-ratelimit-remaining-tokens: 45200
+x-ratelimit-reset-tokens: 2026-03-07T14:31:00Z
+```
+
+You can parse these headers in your application to implement proactive throttling before you actually hit the limit.
+
+### Tokemon (Consumer Plan Users)
+
+For Claude Pro and Max users, there is no built-in dashboard showing your rolling window usage. This is where [Tokemon](https://tokemon.ai) fills the gap. It sits in your macOS menu bar and gives you real-time visibility into:
+
+- **Current usage percentage** against your plan's limit
+- **Burn rate per hour** so you can see how fast you are consuming capacity
+- **Estimated time until limit** based on your current trajectory
+- **Per-project breakdown** to see which projects are consuming the most
+
+```
+Menu Bar: 58% used | 12%/hr burn rate | ~3.5h remaining
+```
+
+Without this kind of visibility, you are essentially driving without a fuel gauge.
+
+## How Tokemon Helps You Stay Under Limits
+
+[Tokemon](https://tokemon.ai) is specifically built to solve the rate limit visibility problem for Claude Code users. Here is what it calculates and why it matters:
+
+**Burn rate calculation.** Tokemon tracks your token consumption over time and calculates how fast you are burning through your allowance. A burn rate of 15%/hr means you have roughly 6-7 hours of headroom if you maintain that pace. A burn rate of 30%/hr means you will hit the wall in about 3 hours.
+
+**Estimated time until limit.** Based on your current burn rate and remaining capacity, Tokemon projects when you will hit the rate limit. This lets you plan your session: if you have 2 hours left, you can prioritize the most critical tasks.
+
+**Threshold alerts.** Set alerts at 70% or 80% usage. Tokemon sends macOS notifications, Slack messages, or Discord alerts so you can wrap up your current task before getting locked out. No more mid-refactor surprises.
+
+**Per-project tracking.** See which projects are consuming the most tokens. If one project is dominating your usage, you can shift to lighter tasks on that project and save capacity for others.
+
+For a deeper dive into token monitoring, see the [Claude Token Monitoring Guide](/blog/claude-token-monitoring-guide).
+
+## Tips to Stay Under Rate Limits
+
+These strategies work for both consumer plans and API usage. For a more detailed playbook, read [How to Avoid Claude Rate Limits](/blog/avoid-claude-rate-limits).
+
+1. **Monitor before you code.** Check your current usage before starting an intensive session. If you are already at 60%, plan accordingly.
+
+2. **Reduce context size.** Use a `.claudeignore` file to exclude `node_modules`, build artifacts, and test fixtures. Every file Claude reads counts against your limit.
+
+3. **Be specific in prompts.** "Fix the auth bug in `src/lib/auth.ts`" consumes far fewer tokens than "Look at the whole project and find any auth issues."
+
+4. **Use the right model.** Not every task needs the most powerful model. Simple formatting, boilerplate generation, and documentation can use lighter models that consume less of your rate limit budget.
+
+5. **Spread sessions across time.** The 5-hour rolling window means usage from 5+ hours ago no longer counts. Two focused 2-hour sessions separated by a break are more sustainable than one 4-hour marathon.
+
+6. **Front-load expensive work.** Large codebase analysis, multi-file refactors, and complex debugging should happen at the start of your window when you have maximum capacity.
+
+7. **Set alerts at 75%.** Give yourself a 25% buffer to finish your current task gracefully instead of getting cut off mid-flow.
+
+8. **Track your usage over time.** [Tracking your Claude Code usage](/blog/how-to-track-claude-code-usage) day over day helps you understand your patterns and plan your subscription tier accordingly.
+
+## The Bottom Line
+
+Claude rate limits are not arbitrary restrictions. They are a resource allocation system, and understanding how they work gives you a significant advantage. The 5-hour rolling window for consumer plans rewards paced, intentional usage. API rate limits reward proper request management and backoff handling.
+
+The biggest mistake developers make is treating rate limits as something that happens *to* them. With the right monitoring in place, you can see the limit coming and adapt before it disrupts your workflow.
+
+## Get Started with Tokemon
+
+Stop guessing about your Claude usage. [Download Tokemon](https://tokemon.ai) for free and get real-time visibility into your rate limit status from your macOS menu bar. It takes less than a minute to set up:
+
+```bash
+brew install richyparr/tap/tokemon
+```
+
+Open source, free, and designed for developers who ship with Claude every day.

@@ -1,0 +1,104 @@
+export const metadata = {
+  title: "Tokemon vs Claude Console Dashboard: Which Is Better for Usage Monitoring?",
+  description:
+    "Compare Tokemon with the built-in Anthropic Console dashboard. See why developers prefer a dedicated menu bar monitor over checking a web dashboard for Claude usage tracking.",
+  date: "2026-03-09",
+  author: "Richard Parr",
+  tags: ["tokemon", "claude console", "usage monitoring", "comparison"],
+  competitor: "Claude Console Dashboard",
+};
+
+Every Claude user has access to the Anthropic Console dashboard. It is the official web interface for managing your account, reviewing usage, and handling billing. So why would you need anything else? This comparison explores what the Console dashboard does well, where it falls short for active developers, and how **Tokemon** fills the gaps.
+
+## What is the Claude Console Dashboard?
+
+The [Anthropic Console](https://console.anthropic.com) is the official web-based management portal for your Claude account. It provides usage summaries, billing history, API key management, and team administration. If you have a Claude plan — whether individual or team — the Console is where you go to review your spending, check your current billing cycle, and manage organization settings.
+
+The Console dashboard shows your total token usage over time, broken down by model. It displays cost summaries for your current and previous billing periods, and it provides the administrative controls you need to manage API keys, team members, and plan details.
+
+## What is Tokemon?
+
+[Tokemon](https://tokemon.ai) is a macOS menu bar app built for developers who use Claude Code every day. Instead of opening a browser and logging into a dashboard, you glance at your menu bar. Tokemon shows your current usage percentage, burn rate, time remaining until your limit resets, and per-project breakdowns — all updated in real-time without leaving your editor.
+
+## Feature Comparison
+
+| Feature | Tokemon | Claude Console Dashboard |
+|---|---|---|
+| **Interface** | macOS menu bar + popover | Web browser |
+| **Access method** | Always visible — one click | Navigate to site, log in |
+| **Real-time updates** | Yes — live refresh every 30s | Manual — refresh the page |
+| **Per-project breakdown** | Yes — see usage by codebase | No — aggregate totals only |
+| **Burn rate tracking** | Yes — tokens/hour with trends | No |
+| **Time remaining estimate** | Yes — countdown to reset | Shows reset date only |
+| **Budget alerts** | Yes — configurable thresholds | Email notifications for spending limits |
+| **Raycast integration** | Yes — dedicated extension | No |
+| **Export & reporting** | Yes — CSV, JSON, charts | Limited — downloadable invoices |
+| **Multi-profile support** | Yes — switch between accounts | One account per session |
+| **Team administration** | Basic — team budget tracking | Full — members, roles, API keys |
+| **Billing management** | No — view only | Yes — plans, payment methods, invoices |
+| **API key management** | No | Yes |
+| **Platform** | macOS | Any browser |
+| **Price** | Free & open source | Included with Claude plan |
+
+## Key Differences
+
+### Accessibility
+
+This is the most significant difference. The Console requires you to open a browser, navigate to the site, and log in. That means context-switching away from your editor, your terminal, and your flow state. Tokemon sits in your menu bar, always one click away. You can check your usage in two seconds without ever leaving your development environment.
+
+### Real-Time Awareness vs. Periodic Review
+
+The Console gives you a snapshot of your usage at the moment you load the page. If you want updated numbers, you refresh. Tokemon continuously polls and updates your usage data, so the number in your menu bar always reflects your current position. This matters when you are deep in a coding session and need to know whether you are approaching a rate limit — you should not have to break your concentration to find out. For more on setting up real-time tracking, see our [Claude Token Monitoring Guide](/blog/claude-token-monitoring-guide).
+
+### Project-Level Tracking
+
+The Console shows aggregate usage across your entire account. If you work on multiple codebases with Claude Code, there is no way to see which project consumed the most tokens. Tokemon breaks your usage down by project, so you know exactly where your budget is going. This is especially valuable for freelancers billing clients or teams allocating costs across products.
+
+### Burn Rate and Forecasting
+
+Knowing you have used 60% of your limit tells you something. Knowing you are burning tokens at a rate that will hit 100% in two hours tells you a lot more. Tokemon calculates your burn rate in real-time and estimates when you will exhaust your current allocation, giving you the information you need to pace your work or prioritize tasks.
+
+### Alerts and Notifications
+
+The Console offers email-based spending alerts, which are useful for billing oversight but not for in-the-moment decisions. Tokemon provides configurable threshold alerts — set warnings at 50%, 75%, 90%, or any level you choose — that appear as native macOS notifications while you work. You find out immediately, not the next time you check your email.
+
+## When the Console Dashboard Is Enough
+
+The Console is the right tool when you need to:
+
+- **Review billing and invoices** — The Console is the authoritative source for your payment history, plan details, and downloadable invoices
+- **Manage team members and API keys** — Adding users, rotating keys, and setting organization-level permissions are Console-only operations
+- **Check usage occasionally** — If you use Claude a few times a week and just want a periodic check on your spending, the Console covers that without any additional software
+- **Perform administrative tasks** — Plan upgrades, payment method changes, and account settings live in the Console
+
+## When Tokemon Is Better
+
+Tokemon is the better choice when you need to:
+
+- **Monitor usage during active development** — If you are coding with Claude Code for hours every day, real-time visibility prevents surprises
+- **Track multiple projects** — Per-project breakdowns help you understand and allocate your usage across codebases
+- **Avoid rate limits proactively** — Burn rate tracking and time-remaining estimates let you pace your work instead of hitting a wall
+- **Stay in your flow** — A menu bar glance takes two seconds; switching to a browser dashboard takes thirty and breaks your concentration
+- **Get instant alerts** — Native macOS notifications at custom thresholds keep you informed without checking email
+
+For a complete walkthrough of setting up usage tracking, see [How to Track Claude Code Usage](/blog/how-to-track-claude-code-usage).
+
+## The Verdict: They Are Complementary
+
+The Console dashboard and Tokemon are not really competitors — they serve different purposes in your workflow. The Console is your administrative hub: billing, team management, API keys, and account settings. Tokemon is your operational monitor: real-time usage, burn rate, per-project tracking, and proactive alerts.
+
+Think of it like a car dashboard. The Console is the dealership service portal where you review your maintenance history and manage your account. Tokemon is the speedometer and fuel gauge — the instruments you need while you are actually driving. You need both, but you check them at very different times for very different reasons.
+
+Most developers use the Console when they need to review a bill, add a team member, or rotate an API key. They use Tokemon all day, every day, to stay aware of their usage while writing code.
+
+## Getting Started with Tokemon
+
+Install Tokemon alongside your Console dashboard and get the best of both worlds:
+
+```bash
+brew install richyparr/tap/tokemon
+```
+
+It is free, open-source, and takes less than a minute to set up. Your usage data stays entirely on your Mac — nothing is sent to any third-party server.
+
+[Download Tokemon](https://tokemon.ai) and turn your Claude Console data into always-on, real-time monitoring.
