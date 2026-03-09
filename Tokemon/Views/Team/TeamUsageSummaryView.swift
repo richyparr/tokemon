@@ -1,9 +1,10 @@
 import SwiftUI
 
 /// Displays organization-level aggregates for Team Dashboard.
-/// Shows total tokens, active members count, and average per member.
+/// Shows total tokens, total cost, active members count, and average per member.
 struct TeamUsageSummaryView: View {
     let totalTokens: Int
+    let totalCost: Double
     let memberCount: Int
     let period: String
 
@@ -16,6 +17,7 @@ struct TeamUsageSummaryView: View {
         LazyVGrid(columns: [
             GridItem(.flexible()),
             GridItem(.flexible()),
+            GridItem(.flexible()),
             GridItem(.flexible())
         ], spacing: 12) {
             statCard(
@@ -23,6 +25,13 @@ struct TeamUsageSummaryView: View {
                 value: formatTokens(totalTokens),
                 icon: "number",
                 color: .blue
+            )
+
+            statCard(
+                title: "Total Spent",
+                value: formatCost(totalCost),
+                icon: "dollarsign.circle.fill",
+                color: .pink
             )
 
             statCard(
@@ -74,5 +83,16 @@ struct TeamUsageSummaryView: View {
             return String(format: "%.1fK", Double(count) / 1_000)
         }
         return "\(count)"
+    }
+
+    private func formatCost(_ cost: Double) -> String {
+        if cost >= 1000 {
+            return String(format: "$%.0f", cost)
+        } else if cost >= 1 {
+            return String(format: "$%.2f", cost)
+        } else if cost > 0 {
+            return String(format: "$%.3f", cost)
+        }
+        return "$0.00"
     }
 }

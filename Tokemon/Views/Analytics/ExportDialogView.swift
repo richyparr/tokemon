@@ -6,7 +6,7 @@ import SwiftUI
 /// Step 3: Exporting state with progress indicator
 struct ExportDialogView: View {
     let format: ExportFormat
-    let onExport: (ExportConfig) async -> Bool
+    let onExport: (ExportConfig, @Sendable @escaping (ExportProgress) -> Void) async -> Bool
     let onCancel: () -> Void
 
     enum Step {
@@ -21,6 +21,9 @@ struct ExportDialogView: View {
     @State private var customStartDate: Date = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
     @State private var customEndDate: Date = Date()
     @State private var exportStatus: String = "Preparing export..."
+    @State private var exportProgress: Double = 0
+    @State private var exportError: String?
+    @State private var exportTask: Task<Void, Never>?
 
     private var hasAdminKey: Bool {
         AdminAPIClient.shared.hasAdminKey()
@@ -191,20 +194,56 @@ struct ExportDialogView: View {
             Text("Exporting \(formatTitle)")
                 .font(.headline)
 
-            VStack(spacing: 16) {
-                ProgressView()
-                    .scaleEffect(1.5)
+            if let error = exportError {
+                VStack(spacing: 12) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.title)
+                        .foregroundStyle(.orange)
 
-                Text(exportStatus)
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                    Text(error)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .frame(height: 100)
+
+                HStack {
+                    Button("Cancel") {
+                        onCancel()
+                    }
+                    .buttonStyle(.bordered)
+
+                    Spacer()
+
+                    Button("Retry") {
+                        exportError = nil
+                        startExport()
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            } else {
+                VStack(spacing: 16) {
+                    ProgressView(value: exportProgress)
+                        .progressViewStyle(.linear)
+
+                    Text(exportStatus)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+
+                    Text("\(Int(exportProgress * 100))%")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                        .monospacedDigit()
+                }
+                .frame(height: 100)
+
+                Button("Cancel") {
+                    exportTask?.cancel()
+                    onCancel()
+                }
+                .buttonStyle(.bordered)
             }
-            .frame(height: 100)
-
-            Text("This may take a moment for large date ranges...")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
         }
         .padding(20)
     }
@@ -218,30 +257,27 @@ struct ExportDialogView: View {
             customEndDate: selectedPreset == .custom ? customEndDate : nil
         )
 
-        // Update status based on source
-        if selectedSource == .organization {
-            exportStatus = "Fetching data from Admin API..."
-        } else {
-            exportStatus = "Preparing local data..."
-        }
-
+        exportStatus = "Preparing export..."
+        exportProgress = 0
         step = .exporting
 
-        Task {
-            // Small delay to let the UI update
+        exportTask = Task {
             try? await Task.sleep(for: .milliseconds(100))
 
-            if selectedSource == .organization {
-                exportStatus = "Fetching usage data (\(numberOfDays) days)..."
+            if Task.isCancelled { return }
+
+            let success = await onExport(config) { progress in
+                Task { @MainActor in
+                    exportStatus = progress.message
+                    exportProgress = progress.fraction
+                }
             }
 
-            let success = await onExport(config)
+            if Task.isCancelled { return }
 
             if !success {
-                // If export failed/cancelled, go back to date selection
-                step = .selectDateRange
+                exportError = "Export failed. The API may be unavailable or the request timed out."
             }
-            // If success, the dialog will be dismissed by the parent
         }
     }
 

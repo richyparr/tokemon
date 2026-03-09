@@ -23,6 +23,7 @@
 		16D479E936306EE35AF6663A /* ProfileSwitcherSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF7F675C24FABDE0763E3478 /* ProfileSwitcherSnapshotTests.swift */; };
 		1CDB9A4FDDD9B35B144838C4 /* GradientColorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEFA2EC925CC47EDB9CCFF2 /* GradientColorsTests.swift */; };
 		1EC98BE0EEF83AB82D3253FB /* TeamMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E955C2A5890B0C075894F8 /* TeamMember.swift */; };
+		86097C3B8AB1B6FEAE16D2F6 /* ClaudeCodeAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8A0D5DB2DDC7242998D114 /* ClaudeCodeAnalytics.swift */; };
 		20E83ADC4D8C2C4F256428B8 /* AppearanceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17998F14ADA62C5DE975D0BF /* AppearanceSettings.swift */; };
 		213D909746DF01B8B2C32726 /* PopoverHeightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82951DBDAF0365085FEE269C /* PopoverHeightTests.swift */; };
 		21BD469670450AB0B31B9C57 /* ProjectBreakdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5F964BA40888A39E27B7C1 /* ProjectBreakdownView.swift */; };
@@ -306,6 +307,7 @@
 		F4DBC4EAD457C5A4743DDB75 /* testProfileSwitcher_TwoProfiles.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testProfileSwitcher_TwoProfiles.1.png; sourceTree = "<group>"; };
 		F50CB0D87AE15BE7C5107185 /* testPopover_OAuthBasic_50Percent.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testPopover_OAuthBasic_50Percent.1.png; sourceTree = "<group>"; };
 		F8E955C2A5890B0C075894F8 /* TeamMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamMember.swift; sourceTree = "<group>"; };
+		BE8A0D5DB2DDC7242998D114 /* ClaudeCodeAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeCodeAnalytics.swift; sourceTree = "<group>"; };
 		FE3D8EDBAAB76B22A7CD7CD8 /* ProjectUsage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectUsage.swift; sourceTree = "<group>"; };
 		FF7F675C24FABDE0763E3478 /* ProfileSwitcherSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSwitcherSnapshotTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -687,6 +689,7 @@
 				869CBFF3C47FDC65143589D3 /* ShareableInsight.swift */,
 				032C71F1CB61FBE62EAF0BF2 /* StatuslineConfig.swift */,
 				F8E955C2A5890B0C075894F8 /* TeamMember.swift */,
+				BE8A0D5DB2DDC7242998D114 /* ClaudeCodeAnalytics.swift */,
 				DB4FFB2CA14B9B4513CD976F /* UsageDataPoint.swift */,
 				2923EBB067DA976637EB72FB /* UsageSnapshot.swift */,
 				875DB0EB10B1B79E2E22D88F /* UsageSummary.swift */,
@@ -944,6 +947,7 @@
 				2A91726755746879EE0A3C7C /* StatuslineSettings.swift in Sources */,
 				F69A46C7E35EE708E06BB6BE /* TeamDashboardView.swift in Sources */,
 				1EC98BE0EEF83AB82D3253FB /* TeamMember.swift in Sources */,
+				86097C3B8AB1B6FEAE16D2F6 /* ClaudeCodeAnalytics.swift in Sources */,
 				3CF78615169BA04A5244A1DC /* TeamUsageSummaryView.swift in Sources */,
 				CCADCBB89587BA689E6EFE06 /* Theme.swift in Sources */,
 				D33543E0C22FC00AA4BA6485 /* TokemonApp.swift in Sources */,

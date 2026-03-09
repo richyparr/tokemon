@@ -85,6 +85,7 @@ actor AdminAPIClient {
         }
 
         var request = URLRequest(url: url)
+        request.timeoutInterval = 30
         request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
         request.setValue(adminKey, forHTTPHeaderField: "x-api-key")
 
@@ -119,10 +120,12 @@ actor AdminAPIClient {
     func fetchAllUsageData(
         startingAt: Date,
         endingAt: Date,
-        bucketWidth: String = "1d"
+        bucketWidth: String = "1d",
+        onPageFetched: (@Sendable (Int) -> Void)? = nil
     ) async throws -> AdminUsageResponse {
         var allBuckets: [AdminUsageResponse.UsageBucket] = []
         var nextPage: String? = nil
+        var pageCount = 0
 
         repeat {
             let response = try await fetchUsageReport(
@@ -133,6 +136,8 @@ actor AdminAPIClient {
             )
 
             allBuckets.append(contentsOf: response.data)
+            pageCount += 1
+            onPageFetched?(pageCount)
 
             // Continue if there's more data and we have a page token
             if response.hasMore, let page = response.nextPage {
@@ -171,16 +176,16 @@ actor AdminAPIClient {
         }
 
         var allMembers: [TeamMember] = []
-        var nextPage: String? = nil
+        var afterId: String? = nil
 
         repeat {
-            guard var components = URLComponents(string: "\(baseURL)/members") else {
+            guard var components = URLComponents(string: "\(baseURL)/users") else {
                 throw AdminAPIError.invalidURL
             }
 
             var queryItems = [URLQueryItem(name: "limit", value: "100")]
-            if let page = nextPage {
-                queryItems.append(URLQueryItem(name: "next_page", value: page))
+            if let cursor = afterId {
+                queryItems.append(URLQueryItem(name: "after_id", value: cursor))
             }
             components.queryItems = queryItems
 
@@ -189,6 +194,7 @@ actor AdminAPIClient {
             }
 
             var request = URLRequest(url: url)
+            request.timeoutInterval = 30
             request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
             request.setValue(adminKey, forHTTPHeaderField: "x-api-key")
 
@@ -204,8 +210,8 @@ actor AdminAPIClient {
                 let membersResponse = try decoder.decode(OrganizationMembersResponse.self, from: data)
                 allMembers.append(contentsOf: membersResponse.data)
 
-                if membersResponse.hasMore, let page = membersResponse.nextPage {
-                    nextPage = page
+                if membersResponse.hasMore, let lastId = membersResponse.lastId {
+                    afterId = lastId
                 } else {
                     break
                 }
@@ -214,9 +220,11 @@ actor AdminAPIClient {
             case 404:
                 throw AdminAPIError.notFound
             default:
+                let body = String(data: data, encoding: .utf8) ?? "no body"
+                NSLog("[AdminAPI] users error %d: %@ URL: %@", httpResponse.statusCode, body, url.absoluteString)
                 throw AdminAPIError.serverError(httpResponse.statusCode)
             }
-        } while nextPage != nil
+        } while afterId != nil
 
         return allMembers
     }
@@ -253,7 +261,6 @@ actor AdminAPIClient {
                 URLQueryItem(name: "starting_at", value: formatter.string(from: startingAt)),
                 URLQueryItem(name: "ending_at", value: formatter.string(from: endingAt)),
                 URLQueryItem(name: "bucket_width", value: bucketWidth),
-                URLQueryItem(name: "group_by[]", value: "user_id"),
                 URLQueryItem(name: "limit", value: "31"),
             ]
 
@@ -268,6 +275,7 @@ actor AdminAPIClient {
             }
 
             var request = URLRequest(url: url)
+            request.timeoutInterval = 30
             request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
             request.setValue(adminKey, forHTTPHeaderField: "x-api-key")
 
@@ -293,6 +301,8 @@ actor AdminAPIClient {
             case 404:
                 throw AdminAPIError.notFound
             default:
+                let body = String(data: data, encoding: .utf8) ?? "no body"
+                NSLog("[AdminAPI] usage-by-member error %d: %@ URL: %@", httpResponse.statusCode, body, url.absoluteString)
                 throw AdminAPIError.serverError(httpResponse.statusCode)
             }
         } while nextPage != nil
@@ -347,6 +357,7 @@ actor AdminAPIClient {
         }
 
         var request = URLRequest(url: url)
+        request.timeoutInterval = 30
         request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
         request.setValue(adminKey, forHTTPHeaderField: "x-api-key")
 
@@ -371,6 +382,93 @@ actor AdminAPIClient {
         }
     }
 
+    /// Fetch Claude Code analytics for a date range, aggregating per-user cost.
+    /// The API returns one day at a time, so this fetches each day and aggregates.
+    /// - Parameters:
+    ///   - startingAt: Start date
+    ///   - endingAt: End date
+    /// - Returns: Dictionary mapping email address to total estimated cost in dollars.
+    func fetchClaudeCodeCostByUser(
+        startingAt: Date,
+        endingAt: Date
+    ) async throws -> [String: Double] {
+        guard let adminKey = try? keychain.get(keychainKey) else {
+            throw AdminAPIError.notConfigured
+        }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        var costByEmail: [String: Double] = [:]
+        let calendar = Calendar.current
+        var currentDate = startingAt
+
+        while currentDate < endingAt {
+            let dateString = dateFormatter.string(from: currentDate)
+            var nextPage: String? = nil
+
+            repeat {
+                guard var components = URLComponents(string: "\(baseURL)/usage_report/claude_code") else {
+                    throw AdminAPIError.invalidURL
+                }
+
+                var queryItems = [
+                    URLQueryItem(name: "starting_at", value: dateString),
+                    URLQueryItem(name: "limit", value: "1000"),
+                ]
+                if let page = nextPage {
+                    queryItems.append(URLQueryItem(name: "page", value: page))
+                }
+                components.queryItems = queryItems
+
+                guard let url = components.url else {
+                    throw AdminAPIError.invalidURL
+                }
+
+                var request = URLRequest(url: url)
+                request.timeoutInterval = 30
+                request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+                request.setValue(adminKey, forHTTPHeaderField: "x-api-key")
+
+                let (data, response) = try await URLSession.shared.data(for: request)
+
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    throw AdminAPIError.invalidResponse
+                }
+
+                switch httpResponse.statusCode {
+                case 200:
+                    let decoded = try JSONDecoder().decode(ClaudeCodeAnalyticsResponse.self, from: data)
+                    for record in decoded.data {
+                        if let email = record.actor.emailAddress {
+                            costByEmail[email, default: 0] += record.totalEstimatedCost
+                        }
+                    }
+                    if decoded.hasMore, let page = decoded.nextPage {
+                        nextPage = page
+                    } else {
+                        nextPage = nil
+                    }
+                case 401, 403:
+                    throw AdminAPIError.unauthorized
+                case 404:
+                    throw AdminAPIError.notFound
+                case 429:
+                    // Rate limited — return what we have so far
+                    return costByEmail
+                default:
+                    throw AdminAPIError.serverError(httpResponse.statusCode)
+                }
+            } while nextPage != nil
+
+            // Rate limit protection: pause between day requests
+            try await Task.sleep(nanoseconds: 200_000_000) // 200ms
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? endingAt
+        }
+
+        return costByEmail
+    }
+
     /// Fetch all cost data for a date range, handling pagination automatically.
     /// The Admin API returns at most 31 daily buckets per request, so this method
     /// loops through all pages and returns a combined response.
@@ -383,10 +481,12 @@ actor AdminAPIClient {
     func fetchAllCostData(
         startingAt: Date,
         endingAt: Date,
-        bucketWidth: String = "1d"
+        bucketWidth: String = "1d",
+        onPageFetched: (@Sendable (Int) -> Void)? = nil
     ) async throws -> AdminCostResponse {
         var allBuckets: [AdminCostResponse.CostBucket] = []
         var nextPage: String? = nil
+        var pageCount = 0
 
         repeat {
             let response = try await fetchCostReport(
@@ -397,6 +497,8 @@ actor AdminAPIClient {
             )
 
             allBuckets.append(contentsOf: response.data)
+            pageCount += 1
+            onPageFetched?(pageCount)
 
             // Continue if there's more data and we have a page token
             if response.hasMore, let page = response.nextPage {
@@ -464,6 +566,7 @@ actor AdminAPIClient {
             }
 
             var request = URLRequest(url: url)
+            request.timeoutInterval = 30
             request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
             request.setValue(adminKey, forHTTPHeaderField: "x-api-key")
 

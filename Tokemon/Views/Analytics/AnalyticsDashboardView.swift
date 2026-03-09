@@ -46,8 +46,8 @@ struct AnalyticsDashboardView: View {
             .sheet(item: $pendingExportFormat) { format in
                 ExportDialogView(
                     format: format,
-                    onExport: { config in
-                        let success = await performConfiguredExport(config)
+                    onExport: { config, progress in
+                        let success = await performConfiguredExport(config, progress: progress)
                         if success {
                             pendingExportFormat = nil
                         }
@@ -113,97 +113,125 @@ struct AnalyticsDashboardView: View {
 
     // MARK: - Export Actions
 
-    private func performConfiguredExport(_ config: ExportConfig) async -> Bool {
+    private func performConfiguredExport(_ config: ExportConfig, progress: @escaping (ExportProgress) -> Void) async -> Bool {
         switch config.format {
         case .pdf:
-            return await performPDFExport(config: config)
+            return await performPDFExport(config: config, progress: progress)
         case .csv:
-            return await performCSVExport(config: config)
+            return await performCSVExport(config: config, progress: progress)
         case .card:
-            return await performCardCopy(config: config)
+            return await performCardCopy(config: config, progress: progress)
         }
     }
 
-    private func performPDFExport(config: ExportConfig) async -> Bool {
+    private func performPDFExport(config: ExportConfig, progress: @escaping (ExportProgress) -> Void) async -> Bool {
         isExporting = true
         defer { isExporting = false }
 
         let range = config.dateRange
 
+        var adminUsageData: AdminUsageResponse? = nil
+        var adminCostData: AdminCostResponse? = nil
+        var localWeeklySummaries: [UsageSummary] = []
+        var localMonthlySummaries: [UsageSummary] = []
+        var localProjectBreakdown: [ProjectUsage] = []
+
         if config.source == .organization {
+            let estPages = config.estimatedPages
+            let totalSteps = estPages * 2 + 2
+
             do {
-                // Use paginated fetch for large date ranges
-                let usageResponse = try await AdminAPIClient.shared.fetchAllUsageData(
+                progress(.fetching(step: "Fetching usage data...", current: 0, total: totalSteps))
+                adminUsageData = try await AdminAPIClient.shared.fetchAllUsageData(
                     startingAt: range.start,
                     endingAt: range.end,
                     bucketWidth: "1d"
-                )
-                let costResponse = try await AdminAPIClient.shared.fetchAllCostData(
+                ) { page in
+                    progress(.fetching(
+                        step: "Fetching usage data (page \(page))...",
+                        current: page,
+                        total: totalSteps
+                    ))
+                }
+
+                progress(.fetching(step: "Fetching cost data...", current: estPages, total: totalSteps))
+                adminCostData = try await AdminAPIClient.shared.fetchAllCostData(
                     startingAt: range.start,
                     endingAt: range.end,
                     bucketWidth: "1d"
-                )
-
-                let reportView = PDFReportView(
-                    accountName: "Organization",
-                    generatedDate: Date(),
-                    adminUsageData: usageResponse,
-                    adminCostData: costResponse
-                )
-
-                return await ExportManager.exportPDF(
-                    reportView: reportView,
-                    suggestedFilename: config.suggestedFilename
-                )
+                ) { page in
+                    progress(.fetching(
+                        step: "Fetching cost data (page \(page))...",
+                        current: estPages + page,
+                        total: totalSteps
+                    ))
+                }
             } catch {
                 print("[Export] Failed to fetch Admin API data: \(error)")
                 return false
             }
         } else {
-            // Local data export - filter to date range
+            progress(.fetching(step: "Preparing local data...", current: 1, total: 3))
             let filteredHistory = monitor.usageHistory.filter { point in
                 point.timestamp >= range.start && point.timestamp <= range.end
             }
-
-            let weeklySummaries = AnalyticsEngine.weeklySummaries(from: filteredHistory)
-            let monthlySummaries = AnalyticsEngine.monthlySummaries(from: filteredHistory)
-            let projectBreakdown = AnalyticsEngine.projectBreakdown(since: range.start)
-
-            let reportView = PDFReportView(
-                accountName: NSUserName(),
-                generatedDate: Date(),
-                weeklySummaries: weeklySummaries,
-                monthlySummaries: monthlySummaries,
-                projectBreakdown: projectBreakdown,
-                totalDataPoints: filteredHistory.count
-            )
-
-            return await ExportManager.exportPDF(
-                reportView: reportView,
-                suggestedFilename: config.suggestedFilename
-            )
+            localWeeklySummaries = AnalyticsEngine.weeklySummaries(from: filteredHistory)
+            localMonthlySummaries = AnalyticsEngine.monthlySummaries(from: filteredHistory)
+            localProjectBreakdown = AnalyticsEngine.projectBreakdown(since: range.start)
         }
+
+        progress(.generating("Generating PDF..."))
+
+        let accountName = config.source == .organization ? "Organization" : NSUserName()
+        let pages = PDFReportBuilder.buildPages(
+            accountName: accountName,
+            generatedDate: Date(),
+            config: config,
+            adminUsageData: adminUsageData,
+            adminCostData: adminCostData,
+            localWeeklySummaries: localWeeklySummaries,
+            localMonthlySummaries: localMonthlySummaries,
+            localProjectBreakdown: localProjectBreakdown
+        )
+
+        progress(.saving())
+
+        return await ExportManager.exportMultiPagePDF(
+            pages: pages,
+            suggestedFilename: config.suggestedFilename
+        )
     }
 
-    private func performCSVExport(config: ExportConfig) async -> Bool {
+    private func performCSVExport(config: ExportConfig, progress: @escaping (ExportProgress) -> Void) async -> Bool {
         isExporting = true
         defer { isExporting = false }
 
         let range = config.dateRange
 
         if config.source == .organization {
+            let estPages = config.estimatedPages
+            let totalSteps = estPages * 2 + 1
+
             do {
-                // Use paginated fetch for large date ranges
+                progress(.fetching(step: "Fetching usage data...", current: 0, total: totalSteps))
                 let usageResponse = try await AdminAPIClient.shared.fetchAllUsageData(
                     startingAt: range.start,
                     endingAt: range.end,
                     bucketWidth: "1d"
-                )
+                ) { page in
+                    progress(.fetching(step: "Fetching usage data (page \(page))...", current: page, total: totalSteps))
+                }
+
+                progress(.fetching(step: "Fetching cost data...", current: estPages, total: totalSteps))
                 let costResponse = try await AdminAPIClient.shared.fetchAllCostData(
                     startingAt: range.start,
                     endingAt: range.end,
                     bucketWidth: "1d"
-                )
+                ) { page in
+                    progress(.fetching(step: "Fetching cost data (page \(page))...", current: estPages + page, total: totalSteps))
+                }
+
+                progress(.saving())
 
                 return await ExportManager.exportAdminCSV(
                     from: usageResponse,
@@ -215,10 +243,11 @@ struct AnalyticsDashboardView: View {
                 return false
             }
         } else {
-            // Local data export - filter to date range
+            progress(.fetching(step: "Preparing local data...", current: 1, total: 2))
             let filteredHistory = monitor.usageHistory.filter { point in
                 point.timestamp >= range.start && point.timestamp <= range.end
             }
+            progress(.saving())
             return await ExportManager.exportCSV(
                 from: filteredHistory,
                 suggestedFilename: config.suggestedFilename
@@ -226,17 +255,21 @@ struct AnalyticsDashboardView: View {
         }
     }
 
-    private func performCardCopy(config: ExportConfig) async -> Bool {
+    private func performCardCopy(config: ExportConfig, progress: @escaping (ExportProgress) -> Void) async -> Bool {
         let range = config.dateRange
 
         if config.source == .organization {
             do {
+                progress(.fetching(step: "Fetching usage data...", current: 0, total: 2))
                 let usageResponse = try await AdminAPIClient.shared.fetchAllUsageData(
                     startingAt: range.start,
                     endingAt: range.end,
                     bucketWidth: "1d"
-                )
+                ) { page in
+                    progress(.fetching(step: "Fetching usage data (page \(page))...", current: page, total: page + 1))
+                }
 
+                progress(.generating("Creating card..."))
                 let periodLabel = "\(config.datePreset.rawValue) (Org)"
                 let card = ShareableCardView(
                     periodLabel: periodLabel,

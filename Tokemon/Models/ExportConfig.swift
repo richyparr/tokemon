@@ -185,4 +185,28 @@ struct ExportConfig: Sendable {
     var isLargeExport: Bool {
         source == .organization && numberOfDays > 90
     }
+
+    /// Estimated number of API pages needed (31 buckets per page for daily data).
+    var estimatedPages: Int {
+        max(1, Int(ceil(Double(numberOfDays) / 31.0)))
+    }
+}
+
+/// Progress update for export operations.
+struct ExportProgress: Sendable {
+    let message: String
+    let fraction: Double
+
+    static func fetching(step: String, current: Int, total: Int) -> ExportProgress {
+        let fraction = Double(current) / Double(total)
+        return ExportProgress(message: step, fraction: min(fraction, 0.99))
+    }
+
+    static func generating(_ message: String) -> ExportProgress {
+        ExportProgress(message: message, fraction: 0.95)
+    }
+
+    static func saving() -> ExportProgress {
+        ExportProgress(message: "Choose where to save...", fraction: 0.98)
+    }
 }

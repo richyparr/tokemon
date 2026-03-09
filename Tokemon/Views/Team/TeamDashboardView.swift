@@ -1,13 +1,14 @@
 import SwiftUI
 
-/// Main Team Dashboard for viewing organization-wide usage by member.
-/// Requires Admin API key. Shows aggregated stats and per-member breakdown.
+/// Main Team Dashboard for viewing organization-wide usage.
+/// Requires Admin API key. Shows aggregated stats and member list with per-user cost.
 struct TeamDashboardView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var members: [TeamMember] = []
-    @State private var usageByMember: [String: Int] = [:]
     @State private var orgTotalTokens: Int = 0
+    @State private var orgTotalCost: Double = 0
+    @State private var costByEmail: [String: Double] = [:]
     @State private var selectedPeriod: Period = .week
 
     enum Period: String, CaseIterable {
@@ -26,7 +27,6 @@ struct TeamDashboardView: View {
 
     var body: some View {
         if !AdminAPIClient.shared.hasAdminKey() {
-            // Admin API not configured
             VStack(spacing: 16) {
                 Image(systemName: "building.2")
                     .font(.system(size: 48))
@@ -44,7 +44,6 @@ struct TeamDashboardView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
-            // Team Dashboard content
             Form {
                 Section {
                     teamHeader
@@ -53,12 +52,13 @@ struct TeamDashboardView: View {
                 Section {
                     TeamUsageSummaryView(
                         totalTokens: orgTotalTokens,
-                        memberCount: activeMemberCount,
+                        totalCost: orgTotalCost,
+                        memberCount: members.count,
                         period: selectedPeriod.rawValue
                     )
                 }
 
-                Section("Members (\(activeMemberCount))") {
+                Section("Members (\(members.count))") {
                     membersList
                 }
             }
@@ -111,27 +111,25 @@ struct TeamDashboardView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 20)
-        } else if let error = errorMessage {
+        } else if members.isEmpty && errorMessage != nil {
             HStack {
                 Image(systemName: "exclamationmark.triangle")
                     .foregroundStyle(.orange)
-                Text(error)
+                Text(errorMessage!)
                     .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 20)
-        } else if sortedMembers.isEmpty {
+        } else if members.isEmpty {
             Text("No team members found")
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 20)
         } else {
-            ForEach(Array(sortedMembers.enumerated()), id: \.element.id) { index, member in
-                MemberUsageRow(
+            ForEach(sortedMembers) { member in
+                MemberRow(
                     member: member,
-                    tokenCount: usageByMember[member.id] ?? 0,
-                    orgTotal: orgTotalTokens,
-                    rank: index + 1
+                    cost: costByEmail[member.email] ?? 0
                 )
             }
         }
@@ -140,11 +138,7 @@ struct TeamDashboardView: View {
     // MARK: - Computed
 
     private var sortedMembers: [TeamMember] {
-        members.sorted { (usageByMember[$0.id] ?? 0) > (usageByMember[$1.id] ?? 0) }
-    }
-
-    private var activeMemberCount: Int {
-        usageByMember.values.filter { $0 > 0 }.count
+        members.sorted { (costByEmail[$0.email] ?? 0) > (costByEmail[$1.email] ?? 0) }
     }
 
     // MARK: - Data Loading
@@ -156,38 +150,127 @@ struct TeamDashboardView: View {
         let endDate = Date()
         let startDate = endDate.addingTimeInterval(-Double(selectedPeriod.days) * 24 * 3600)
 
+        // Fetch members first — required for the view
         do {
-            // Fetch members and usage in parallel
-            async let membersTask = AdminAPIClient.shared.fetchOrganizationMembers()
+            members = try await AdminAPIClient.shared.fetchOrganizationMembers()
+        } catch {
+            errorMessage = "Failed to load members: \(error.localizedDescription)"
+            isLoading = false
+            return
+        }
+
+        // Fetch org usage and cost — best effort, don't block member display
+        do {
             async let usageTask = AdminAPIClient.shared.fetchUsageByMember(
                 startingAt: startDate,
                 endingAt: endDate
             )
+            async let costTask = AdminAPIClient.shared.fetchCostReport(
+                startingAt: startDate,
+                endingAt: endDate
+            )
 
-            let fetchedMembers = try await membersTask
             let usageResponse = try await usageTask
+            orgTotalTokens = usageResponse.data.reduce(0) { $0 + $1.totalTokens }
 
-            // Aggregate usage by user
-            var usageMap: [String: Int] = [:]
-            var totalTokens = 0
-
-            for bucket in usageResponse.data {
-                for result in bucket.results {
-                    if let userId = result.userId {
-                        usageMap[userId, default: 0] += result.totalTokens
-                        totalTokens += result.totalTokens
-                    }
-                }
-            }
-
-            members = fetchedMembers
-            usageByMember = usageMap
-            orgTotalTokens = totalTokens
-
+            let costResponse = try await costTask
+            orgTotalCost = costResponse.totalCost
         } catch {
-            errorMessage = error.localizedDescription
+            // Non-fatal: members still show
         }
 
         isLoading = false
+
+        // Fetch per-user cost in background — doesn't block UI
+        Task {
+            do {
+                let costs = try await AdminAPIClient.shared.fetchClaudeCodeCostByUser(
+                    startingAt: startDate,
+                    endingAt: endDate
+                )
+                costByEmail = costs
+            } catch {
+                // Non-fatal: members show without cost breakdown
+            }
+        }
+    }
+}
+
+// MARK: - Member Row
+
+/// Displays a team member with their name, email, role, and estimated cost.
+private struct MemberRow: View {
+    let member: TeamMember
+    let cost: Double
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "person.circle.fill")
+                .font(.title2)
+                .foregroundStyle(.secondary)
+
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 6) {
+                    Text(member.name.isEmpty ? "Unknown" : member.name)
+                        .font(.callout)
+                        .fontWeight(.medium)
+
+                    Text(roleBadgeText)
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 1)
+                        .background(roleBadgeColor.opacity(0.2))
+                        .foregroundStyle(roleBadgeColor)
+                        .cornerRadius(3)
+                }
+
+                Text(member.email)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+
+            Spacer()
+
+            // Per-member cost
+            Text(formatCost(cost))
+                .font(.callout)
+                .fontWeight(.semibold)
+                .monospacedDigit()
+                .foregroundStyle(cost > 0 ? .primary : .secondary)
+        }
+        .padding(.vertical, 4)
+    }
+
+    private var roleBadgeText: String {
+        switch member.role {
+        case "admin": return "Admin"
+        case "developer": return "Developer"
+        case "billing": return "Billing"
+        case "claude_code_user": return "Claude Code"
+        default: return "User"
+        }
+    }
+
+    private var roleBadgeColor: Color {
+        switch member.role {
+        case "admin": return .blue
+        case "developer": return .green
+        case "billing": return .orange
+        case "claude_code_user": return .purple
+        default: return .secondary
+        }
+    }
+
+    private func formatCost(_ cost: Double) -> String {
+        if cost >= 1000 {
+            return String(format: "$%.0f", cost)
+        } else if cost >= 1 {
+            return String(format: "$%.2f", cost)
+        } else if cost > 0 {
+            return String(format: "$%.3f", cost)
+        }
+        return "$0.00"
     }
 }

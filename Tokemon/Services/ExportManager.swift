@@ -122,6 +122,7 @@ struct ExportManager {
         panel.canCreateDirectories = true
         panel.title = "Export Usage Report"
         panel.prompt = "Export"
+        panel.level = .floating
 
         let response = await panel.begin()
         guard response == .OK, let destinationURL = panel.url else {
@@ -162,6 +163,7 @@ struct ExportManager {
         panel.canCreateDirectories = true
         panel.title = "Export Usage Report"
         panel.prompt = "Export"
+        panel.level = .floating
 
         // Use standalone panel (not beginSheetModal -- no reliable key window in LSUIElement app)
         let response = await panel.begin()
@@ -230,6 +232,7 @@ struct ExportManager {
         panel.canCreateDirectories = true
         panel.title = "Export Usage Data"
         panel.prompt = "Export"
+        panel.level = .floating
 
         // Use standalone panel (not beginSheetModal)
         let response = await panel.begin()
@@ -338,6 +341,7 @@ struct ExportManager {
         panel.canCreateDirectories = true
         panel.title = "Export Organization Usage Data"
         panel.prompt = "Export"
+        panel.level = .floating
 
         let response = await panel.begin()
         guard response == .OK, let destinationURL = panel.url else {
@@ -369,6 +373,7 @@ struct ExportManager {
         panel.canCreateDirectories = true
         panel.title = "Export Organization Usage Data"
         panel.prompt = "Export"
+        panel.level = .floating
 
         let response_panel = await panel.begin()
         guard response_panel == .OK, let destinationURL = panel.url else {
