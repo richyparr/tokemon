@@ -104,12 +104,20 @@ export default function BlogLayout({
               Monitor your Claude usage in real-time from your macOS menu bar.
               Open-source and always free.
             </p>
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 bg-[#e8853b] hover:bg-[#d4742f] text-white font-medium px-6 py-3 rounded-lg transition-colors"
-            >
-              Download Tokemon
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 bg-[#e8853b] hover:bg-[#d4742f] text-white font-medium px-6 py-3 rounded-lg transition-colors"
+              >
+                Download Tokemon
+              </Link>
+              <a
+                href="https://buymeacoffee.com/richyparr"
+                className="inline-flex items-center gap-2 bg-[#FFDD00] hover:bg-[#FFE840] text-black font-medium px-6 py-3 rounded-lg transition-colors"
+              >
+                Buy me a coffee
+              </a>
+            </div>
           </div>
         </div>
       </div>

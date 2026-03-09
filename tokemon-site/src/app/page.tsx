@@ -490,6 +490,27 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Support ── */}
+      <section className="py-16">
+        <div className={cx}>
+          <div className="max-w-xl mx-auto text-center">
+            <h2 className="text-2xl font-bold tracking-tight mb-3">Support Tokemon</h2>
+            <p className="text-[#777] text-[15px] mb-6">
+              Tokemon is free and open source. If it saves you time, consider buying me a coffee.
+            </p>
+            <a
+              href="https://buymeacoffee.com/richyparr"
+              className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl text-[15px] font-medium bg-[#FFDD00] text-[#000] hover:bg-[#FFE840] transition-colors"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.216 6.415l-.132-.666c-.119-.598-.388-1.163-1.001-1.379-.197-.069-.42-.098-.57-.241-.152-.143-.196-.366-.231-.572a7.36 7.36 0 00-.512-1.954C17.088.842 15.95.08 14.81.08c-.593 0-1.172.158-1.768.258a14.4 14.4 0 01-2.13.207c-.679 0-1.35-.07-2.012-.207-.572-.1-1.136-.258-1.72-.258-1.133 0-2.266.76-2.942 1.942a7.36 7.36 0 00-.512 1.954c-.036.206-.08.43-.231.572-.15.143-.373.172-.57.241-.613.216-.882.781-1.001 1.379l-.132.666A1.502 1.502 0 002.28 7.93l1.466 7.486a4.73 4.73 0 004.633 3.845h7.242a4.73 4.73 0 004.633-3.845L21.72 7.93a1.502 1.502 0 00-.504-1.515z" fill="#000"/>
+              </svg>
+              Buy me a coffee
+            </a>
+          </div>
+        </div>
+      </section>
+
       <div className={divider} />
 
       {/* ── Footer ── */}
