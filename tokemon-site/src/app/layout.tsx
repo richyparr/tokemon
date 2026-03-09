@@ -29,6 +29,9 @@ export const metadata: Metadata = {
     "AI token usage",
     "Claude burn rate",
   ],
+  alternates: {
+    canonical: "https://tokemon.ai",
+  },
   openGraph: {
     type: "website",
     siteName: "Tokemon",

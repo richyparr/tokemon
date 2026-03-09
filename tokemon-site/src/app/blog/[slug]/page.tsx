@@ -25,6 +25,9 @@ export async function generateMetadata({
     return {
       title: `${metadata.title} | Tokemon`,
       description: metadata.description,
+      alternates: {
+        canonical: `https://tokemon.ai/blog/${slug}`,
+      },
       openGraph: {
         type: "article",
         title: metadata.title,

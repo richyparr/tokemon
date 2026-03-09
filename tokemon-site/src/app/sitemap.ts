@@ -19,6 +19,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
+    {
+      url: "https://tokemon.ai/compare",
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
     ...blogSlugs.map((slug) => ({
       url: `https://tokemon.ai/blog/${slug}`,
       lastModified: new Date(),

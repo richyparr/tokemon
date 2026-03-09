@@ -113,10 +113,57 @@ const actions: [string, string, number, number][] = [
   ["/ss-bg-7.png", "Floating window close-up", 422, 292],
 ];
 
+/* ─── FAQ data for schema ─── */
+const faqs: { q: string; a: string }[] = [
+  {
+    q: "What is Tokemon?",
+    a: "Tokemon is a free, open-source Claude usage monitor for macOS and Raycast. It tracks your token limits, burn rate, per-project costs, and team budgets in real-time from your menu bar or a floating window.",
+  },
+  {
+    q: "How does Tokemon track Claude usage?",
+    a: "Tokemon reads your local Claude session data and polls your usage percentage every 30 seconds. For organization-level data, it connects to the Anthropic Admin API to fetch cost reports and team analytics.",
+  },
+  {
+    q: "Is Tokemon free?",
+    a: "Yes, Tokemon is completely free and open source under the MIT license. There are no paid plans or subscriptions.",
+  },
+  {
+    q: "Does Tokemon work with Claude Code?",
+    a: "Yes, Tokemon is designed specifically for developers using Claude Code and the Claude API. It monitors your usage whether you're working in the terminal, your IDE, or the browser.",
+  },
+  {
+    q: "How do I install Tokemon?",
+    a: "You can install Tokemon via Homebrew with 'brew install --cask tokemon', or download the latest release from GitHub. The Raycast extension can be installed from the Raycast Store.",
+  },
+  {
+    q: "Can Tokemon track team or organization usage?",
+    a: "Yes, by connecting your Anthropic Admin API key, Tokemon shows organization-wide analytics including total cost, token usage, and a member-by-member breakdown.",
+  },
+];
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.a,
+    },
+  })),
+};
+
 /* ─── page ─── */
 export default function Home() {
   return (
     <>
+      {/* FAQ structured data for rich snippets */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
       {/* ── Nav ── */}
       <nav
         className="fixed top-0 left-0 right-0 z-50 border-b border-[#1a1a1a]"
@@ -130,6 +177,9 @@ export default function Home() {
           <div className="flex items-center gap-8 text-sm">
             <Link href="/blog" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">
               Blog
+            </Link>
+            <Link href="/compare" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">
+              Compare
             </Link>
             <a href="https://github.com/richyparr/tokemon" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">
               GitHub
@@ -414,12 +464,41 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── FAQ ── */}
+      <section className="py-24">
+        <div className={cx}>
+          <h2 className="text-center text-3xl md:text-5xl font-bold tracking-tight mb-4">Frequently Asked Questions</h2>
+          <p className="text-center text-[#777] text-[17px] mb-12 max-w-[560px] mx-auto">
+            Everything you need to know about monitoring your Claude usage.
+          </p>
+          <div className="max-w-3xl mx-auto space-y-4">
+            {faqs.map((faq) => (
+              <details
+                key={faq.q}
+                className="group rounded-xl border border-[#1a1a1a] bg-[#111] overflow-hidden"
+              >
+                <summary className="cursor-pointer px-6 py-5 text-[15px] font-semibold text-[#ededed] flex items-center justify-between hover:bg-[#151515] transition-colors list-none">
+                  {faq.q}
+                  <span className="text-[#555] text-lg transition-transform group-open:rotate-45 ml-4 flex-shrink-0">+</span>
+                </summary>
+                <div className="px-6 pb-5 text-sm text-[#777] leading-relaxed">
+                  {faq.a}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div className={divider} />
+
       {/* ── Footer ── */}
       <footer className="border-t border-[#1a1a1a] py-10">
         <div className={`${cx} flex flex-col sm:flex-row justify-between items-center gap-4`}>
           <div className="text-[13px] text-[#555]">Built for developers who ship with Claude</div>
           <div className="flex gap-6 text-[13px]">
             <Link href="/blog" className="text-[#555] hover:text-[#ededed] transition-colors">Blog</Link>
+            <Link href="/compare" className="text-[#555] hover:text-[#ededed] transition-colors">Compare</Link>
             <a href="https://github.com/richyparr/tokemon" className="text-[#555] hover:text-[#ededed] transition-colors">GitHub</a>
             <a href="https://github.com/richyparr/tokemon/releases/latest" className="text-[#555] hover:text-[#ededed] transition-colors">Releases</a>
             <a href="https://github.com/richyparr/tokemon/issues" className="text-[#555] hover:text-[#ededed] transition-colors">Issues</a>
