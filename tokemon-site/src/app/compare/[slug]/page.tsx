@@ -112,7 +112,7 @@ export default async function ComparePostPage({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
         />
-        <BlogLayout metadata={metadata}>
+        <BlogLayout metadata={metadata} breadcrumbBase="compare">
           <Content />
         </BlogLayout>
       </>

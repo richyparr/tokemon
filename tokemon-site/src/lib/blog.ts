@@ -60,3 +60,41 @@ export async function getPosts(): Promise<BlogPost[]> {
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 }
+
+export async function getRelatedPosts(currentSlug: string, tags: string[], limit = 4): Promise<BlogPost[]> {
+  const allPosts = await getPosts();
+  const others = allPosts.filter((p) => p.slug !== currentSlug);
+
+  // Score by number of shared tags
+  const scored = others.map((post) => ({
+    post,
+    score: post.tags.filter((t) => tags.includes(t)).length,
+  }));
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, limit).map((s) => s.post);
+}
+
+export function getAllTags(): { tag: string; count: number }[] {
+  const slugs = getPostSlugs();
+  const tagCounts: Record<string, number> = {};
+
+  for (const slug of slugs) {
+    const filePath = path.join(CONTENT_DIR, `${slug}.mdx`);
+    const metadata = extractMetadata(filePath);
+    if (metadata) {
+      for (const tag of metadata.tags) {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      }
+    }
+  }
+
+  return Object.entries(tagCounts)
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+export async function getPostsByTag(tag: string): Promise<BlogPost[]> {
+  const allPosts = await getPosts();
+  return allPosts.filter((p) => p.tags.includes(tag));
+}

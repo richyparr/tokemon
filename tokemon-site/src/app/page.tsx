@@ -502,6 +502,7 @@ export default function Home() {
             <a href="https://github.com/richyparr/tokemon" className="text-[#555] hover:text-[#ededed] transition-colors">GitHub</a>
             <a href="https://github.com/richyparr/tokemon/releases/latest" className="text-[#555] hover:text-[#ededed] transition-colors">Releases</a>
             <a href="https://github.com/richyparr/tokemon/issues" className="text-[#555] hover:text-[#ededed] transition-colors">Issues</a>
+            <a href="https://buymeacoffee.com/richyparr" className="text-[#555] hover:text-[#ededed] transition-colors">Buy Me a Coffee</a>
           </div>
         </div>
       </footer>

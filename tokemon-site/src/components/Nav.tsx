@@ -11,6 +11,7 @@ export function Nav() {
         </div>
         <div className="flex items-center gap-8 text-sm">
           <Link href="/blog" className="text-secondary-text hover:text-[#ededed] transition-colors hidden sm:inline">Blog</Link>
+          <Link href="/compare" className="text-secondary-text hover:text-[#ededed] transition-colors hidden sm:inline">Compare</Link>
           <a href="https://github.com/richyparr/tokemon" className="text-secondary-text hover:text-[#ededed] transition-colors hidden sm:inline">GitHub</a>
           <a href="https://github.com/richyparr/tokemon/releases/latest" className="bg-[#ededed] text-black px-4 py-1.5 rounded-lg text-[13px] font-medium hover:opacity-85 transition-opacity">Download</a>
         </div>

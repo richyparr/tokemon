@@ -7,6 +7,7 @@ export function Footer() {
           <a href="https://github.com/richyparr/tokemon" className="text-secondary-text hover:text-[#ededed] transition-colors">GitHub</a>
           <a href="https://github.com/richyparr/tokemon/releases/latest" className="text-secondary-text hover:text-[#ededed] transition-colors">Releases</a>
           <a href="https://github.com/richyparr/tokemon/issues" className="text-secondary-text hover:text-[#ededed] transition-colors">Issues</a>
+          <a href="https://buymeacoffee.com/richyparr" className="text-secondary-text hover:text-[#ededed] transition-colors">Buy Me a Coffee</a>
         </div>
       </div>
     </footer>

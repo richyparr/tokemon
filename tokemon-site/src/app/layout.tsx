@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -132,6 +133,7 @@ export default function RootLayout({
         style={{ margin: 0, background: "radial-gradient(ellipse 80% 50% at 50% 0%, #0a0a0a, #000 50%)" }}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getPostSlugs } from "@/lib/blog";
+import { getPostSlugs, getRelatedPosts } from "@/lib/blog";
 import type { BlogPostMetadata } from "@/lib/blog";
 import BlogLayout from "@/components/BlogLayout";
 
@@ -41,6 +41,14 @@ export async function generateMetadata({
   }
 }
 
+// Slugs that are tutorial/how-to style and should get HowTo schema
+const HOW_TO_SLUGS = [
+  "how-to-track-claude-code-usage",
+  "avoid-claude-rate-limits",
+  "reduce-claude-api-costs",
+  "claude-token-monitoring-guide",
+];
+
 export default async function BlogPostPage({
   params,
 }: {
@@ -52,6 +60,8 @@ export default async function BlogPostPage({
     const mod = await import(`../../../../content/blog/${slug}.mdx`);
     const Content = mod.default;
     const metadata = mod.metadata as BlogPostMetadata;
+
+    const relatedPosts = await getRelatedPosts(slug, metadata.tags);
 
     const articleJsonLd = {
       "@context": "https://schema.org",
@@ -102,6 +112,24 @@ export default async function BlogPostPage({
       ],
     };
 
+    // HowTo schema for tutorial-style posts
+    const howToJsonLd = HOW_TO_SLUGS.includes(slug)
+      ? {
+          "@context": "https://schema.org",
+          "@type": "HowTo",
+          name: metadata.title,
+          description: metadata.description,
+          author: {
+            "@type": "Person",
+            name: "Richard Parr",
+          },
+          tool: {
+            "@type": "HowToTool",
+            name: "Tokemon",
+          },
+        }
+      : null;
+
     return (
       <>
         <script
@@ -112,7 +140,13 @@ export default async function BlogPostPage({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
         />
-        <BlogLayout metadata={metadata}>
+        {howToJsonLd && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+          />
+        )}
+        <BlogLayout metadata={metadata} slug={slug} relatedPosts={relatedPosts}>
           <Content />
         </BlogLayout>
       </>

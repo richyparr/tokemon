@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
-import { getPosts } from "@/lib/blog";
+import { getPosts, getAllTags } from "@/lib/blog";
 import { getComparePages } from "@/lib/compare";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getPosts();
   const comparePages = await getComparePages();
+  const tags = getAllTags();
 
   return [
     {
@@ -36,6 +37,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(page.date),
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    ...tags.map(({ tag }) => ({
+      url: `https://tokemon.ai/blog/tag/${encodeURIComponent(tag)}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.5,
     })),
   ];
 }
