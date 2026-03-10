@@ -29,7 +29,7 @@ struct PopoverContentView: View {
             .preferredColorScheme(themeColors.colorSchemeOverride)
             .onAppear {
                 floatingWindowVisible = FloatingWindowController.shared.isVisible
-                if let window = NSApp.windows.first(where: { $0.className.contains("StatusBarWindow") || $0.className.contains("MenuBarExtra") }) {
+                if let window = NSApp.windows.first(where: { $0.className.contains("MenuBarExtra") && !$0.className.contains("StatusBar") }) {
                     if themeColors.isGlass {
                         // Transparent window so glass can sample the desktop
                         window.backgroundColor = .clear

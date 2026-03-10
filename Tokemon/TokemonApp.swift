@@ -196,7 +196,7 @@ final class StatusItemManager {
            let style = MenuBarIconStyle(rawValue: raw) {
             return style
         }
-        return .percentage
+        return .trafficLight
     }()
 
     /// Whether monochrome mode is enabled -- read from UserDefaults
@@ -224,7 +224,7 @@ final class StatusItemManager {
            let style = MenuBarIconStyle(rawValue: raw) {
             currentStyle = style
         } else {
-            currentStyle = .percentage
+            currentStyle = .trafficLight
         }
         isMonochrome = UserDefaults.standard.bool(forKey: "menuBarMonochrome")
     }

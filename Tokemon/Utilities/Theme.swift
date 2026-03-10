@@ -3,10 +3,10 @@ import AppKit
 
 /// Available application themes.
 enum AppTheme: String, CaseIterable, Identifiable {
+    case liquidGlass = "Liquid Glass"
     case native = "Native macOS"
     case light = "Light"
     case dark = "Dark"
-    case liquidGlass = "Liquid Glass"
 
     var id: String { rawValue }
 }
@@ -112,7 +112,7 @@ struct ThemeColors {
 @MainActor
 final class ThemeManager {
     /// The currently selected theme.
-    var selectedTheme: AppTheme = .native {
+    var selectedTheme: AppTheme = .liquidGlass {
         didSet {
             UserDefaults.standard.set(selectedTheme.rawValue, forKey: "selectedTheme")
             // Recreate floating window — style mask differs between glass and non-glass

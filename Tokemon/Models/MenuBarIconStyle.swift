@@ -3,7 +3,10 @@ import Foundation
 /// Defines the available menu bar icon display styles.
 /// Each style represents a different visual way to communicate usage in the menu bar.
 enum MenuBarIconStyle: String, CaseIterable, Identifiable {
-    /// Text-only percentage display (e.g., "42%") -- the original default behavior
+    /// Colored circle (traffic light) with percentage text (e.g., "● 42%")
+    case trafficLight
+
+    /// Text-only percentage display (e.g., "42%")
     case percentage
 
     /// Horizontal battery icon that fills based on usage
@@ -17,9 +20,6 @@ enum MenuBarIconStyle: String, CaseIterable, Identifiable {
 
     /// Abbreviated percentage text without the % sign (e.g., "42")
     case compact
-
-    /// Colored circle (traffic light) with percentage text (e.g., "● 42%")
-    case trafficLight
 
     var id: String { rawValue }
 
