@@ -115,6 +115,11 @@ final class ThemeManager {
     var selectedTheme: AppTheme = .native {
         didSet {
             UserDefaults.standard.set(selectedTheme.rawValue, forKey: "selectedTheme")
+            // Recreate floating window — style mask differs between glass and non-glass
+            if FloatingWindowController.shared.isVisible {
+                FloatingWindowController.shared.hideFloatingWindow()
+                FloatingWindowController.shared.showFloatingWindow()
+            }
         }
     }
 

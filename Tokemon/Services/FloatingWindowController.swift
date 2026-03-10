@@ -162,10 +162,18 @@ final class FloatingWindowController {
     /// Show the floating window, creating it if necessary.
     /// Position is restored from UserDefaults if previously saved.
     func showFloatingWindow() {
-        // If panel already exists, just bring it forward (without stealing key/focus)
+        let isGlassNeeded = themeManager?.selectedTheme == .liquidGlass
+
+        // If panel exists, check if its style matches the current theme
         if let existingPanel = panel {
-            existingPanel.orderFront(nil)
-            return
+            let panelIsGlass = !existingPanel.styleMask.contains(.titled)
+            if isGlassNeeded == panelIsGlass {
+                existingPanel.orderFront(nil)
+                return
+            }
+            // Style mismatch — destroy and recreate
+            existingPanel.close()
+            panel = nil
         }
 
         guard let monitor = monitor else {
@@ -185,9 +193,9 @@ final class FloatingWindowController {
 
         let rows = activeRows
         let height = windowHeight(for: rows.count)
-        let isGlass = themeManager.selectedTheme == .liquidGlass
+        let isGlass = isGlassNeeded
 
-        // Glass: borderless panel with NSGlassEffectView wrapping content
+        // Glass: borderless panel with .glassEffect() rendering
         // Non-glass: titled panel with standard window chrome
         let styleMask: NSWindow.StyleMask = isGlass
             ? [.fullSizeContentView, .nonactivatingPanel]
@@ -234,14 +242,18 @@ final class FloatingWindowController {
         self.panel = newPanel
         newPanel.orderFront(nil)
 
-        // Watch for close-button (X) clicks so we nil out our reference
+        // Watch for close-button (X) clicks so we nil out our reference.
+        // Capture the panel identity to avoid race with theme-change recreation.
+        let panelRef = newPanel
         NotificationCenter.default.addObserver(
             forName: NSWindow.willCloseNotification,
             object: newPanel,
             queue: .main
         ) { [weak self] _ in
             Task { @MainActor in
-                self?.panel = nil
+                if self?.panel === panelRef {
+                    self?.panel = nil
+                }
             }
         }
     }
