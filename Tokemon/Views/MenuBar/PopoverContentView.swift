@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import ObjectiveC
 
 /// Main popover layout displayed when clicking the menu bar icon.
 /// Composes UsageHeaderView, UsageDetailView, ErrorBannerView, and RefreshStatusView
@@ -14,6 +15,9 @@ struct PopoverContentView: View {
     // Setting for showing usage trend (stored in UserDefaults)
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
 
+    // Track floating window visibility for menu label (not reactive on FloatingWindowController)
+    @State private var floatingWindowVisible = false
+
 
     /// Computed theme colors based on current theme and color scheme
     private var themeColors: ThemeColors {
@@ -24,13 +28,16 @@ struct PopoverContentView: View {
         popoverContent
             .preferredColorScheme(themeColors.colorSchemeOverride)
             .onAppear {
+                floatingWindowVisible = FloatingWindowController.shared.isVisible
                 if let window = NSApp.windows.first(where: { $0.className.contains("StatusBarWindow") || $0.className.contains("MenuBarExtra") }) {
                     if themeColors.isGlass {
                         // Transparent window so glass can sample the desktop
                         window.backgroundColor = .clear
                         window.isOpaque = false
-                        // Make the NSHostingView transparent so .glassEffect() can show through
-                        makeHostingViewsTransparent(in: window.contentView)
+                        // Delay to ensure view hierarchy is fully built before patching
+                        DispatchQueue.main.async {
+                            makeHostingViewsTransparent(in: window.contentView)
+                        }
                     } else if let override = themeColors.colorSchemeOverride {
                         window.appearance = NSAppearance(named: override == .light ? .aqua : .darkAqua)
                     } else {
@@ -148,8 +155,9 @@ struct PopoverContentView: View {
 
                 // Settings/More menu - combines settings and quit
                 Menu {
-                    Button(FloatingWindowController.shared.isVisible ? "Hide Floating Window" : "Show Floating Window") {
+                    Button(floatingWindowVisible ? "Hide Floating Window" : "Show Floating Window") {
                         FloatingWindowController.shared.toggleFloatingWindow()
+                        floatingWindowVisible = FloatingWindowController.shared.isVisible
                     }
                     .keyboardShortcut("f", modifiers: .command)
 
@@ -198,13 +206,29 @@ struct PopoverContentView: View {
         SettingsWindowController.shared.showSettings()
     }
 
-    /// Recursively find NSHostingView instances and make them transparent.
-    /// NSHostingView.isOpaque is read-only (returns true), so we force transparency
-    /// via the layer instead. This lets .glassEffect() sample the desktop behind.
+    /// Recursively find NSHostingView instances and override isOpaque at runtime.
+    /// NSHostingView.isOpaque is read-only and returns true, which draws an opaque
+    /// background covering glass effects. We dynamically create a subclass that
+    /// overrides isOpaque → false, then swap the view's class at runtime.
     private func makeHostingViewsTransparent(in view: NSView?) {
         guard let view = view else { return }
         let className = String(describing: type(of: view))
-        if className.contains("NSHostingView") || className.contains("_NSHostingView") {
+        if className.contains("HostingView") {
+            let originalClass: AnyClass = type(of: view)
+            let subclassName = "Transparent_\(NSStringFromClass(originalClass))"
+
+            if let existingClass = objc_getClass(subclassName) as? AnyClass {
+                object_setClass(view, existingClass)
+            } else if let subclass = objc_allocateClassPair(originalClass, subclassName, 0) {
+                let block: @convention(block) (AnyObject) -> Bool = { _ in false }
+                let imp = imp_implementationWithBlock(block)
+                if let method = class_getInstanceMethod(NSView.self, #selector(getter: NSView.isOpaque)) {
+                    class_addMethod(subclass, #selector(getter: NSView.isOpaque), imp, method_getTypeEncoding(method))
+                }
+                objc_registerClassPair(subclass)
+                object_setClass(view, subclass)
+            }
+
             view.wantsLayer = true
             view.layer?.isOpaque = false
             view.layer?.backgroundColor = .clear

@@ -78,8 +78,9 @@ class FloatingPanel: NSPanel {
         self.animationBehavior = .utilityWindow
     }
 
-    // Allow becoming key for any interactive elements
-    override var canBecomeKey: Bool { true }
+    // Prevent key window status — avoids focus ring artifact on borderless glass panels.
+    // The floating window has no interactive controls that require key window.
+    override var canBecomeKey: Bool { false }
 }
 
 /// Manages the floating usage window lifecycle.
@@ -218,6 +219,7 @@ final class FloatingWindowController {
             // sample the desktop content behind the window
             newPanel.backgroundColor = .clear
             newPanel.isOpaque = false
+            newPanel.hasShadow = false
 
             let hostingView = TransparentHostingView(rootView: contentView)
             hostingView.wantsLayer = true
