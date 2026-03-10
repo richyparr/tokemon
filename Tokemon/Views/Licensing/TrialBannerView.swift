@@ -29,11 +29,8 @@ struct UpgradeBannerView: View {
         }
         .padding(10)
         .background {
-            if !themeColors.isGlass {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.blue.opacity(0.1))
-            }
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.blue.opacity(0.1))
         }
-        .glassEffect(themeColors.isGlass ? .regular.tint(.blue) : .identity, in: RoundedRectangle(cornerRadius: 8))
     }
 }

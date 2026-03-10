@@ -70,12 +70,9 @@ struct ErrorBannerView: View {
         }
         .padding(10)
         .background {
-            if !themeColors.isGlass {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.orange.opacity(0.1))
-            }
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.orange.opacity(0.1))
         }
-        .glassEffect(themeColors.isGlass ? .regular.tint(.orange) : .identity, in: RoundedRectangle(cornerRadius: 8))
     }
 
     // MARK: - Error Messages
