@@ -24,10 +24,14 @@ struct PopoverContentView: View {
         popoverContent
             .preferredColorScheme(themeColors.colorSchemeOverride)
             .onAppear {
-                guard !themeColors.isGlass else { return }
-                // Set window appearance for Light/Dark themes
                 if let window = NSApp.windows.first(where: { $0.className.contains("StatusBarWindow") || $0.className.contains("MenuBarExtra") }) {
-                    if let override = themeColors.colorSchemeOverride {
+                    if themeColors.isGlass {
+                        // Transparent window so glass can sample the desktop
+                        window.backgroundColor = .clear
+                        window.isOpaque = false
+                        // Make the NSHostingView transparent so .glassEffect() can show through
+                        makeHostingViewsTransparent(in: window.contentView)
+                    } else if let override = themeColors.colorSchemeOverride {
                         window.appearance = NSAppearance(named: override == .light ? .aqua : .darkAqua)
                     } else {
                         window.appearance = nil
@@ -175,7 +179,8 @@ struct PopoverContentView: View {
         }
         .padding(16)
         .frame(width: 320)
-        .background(themeColors.isGlass ? .clear : themeColors.primaryBackground)
+        .background(themeColors.isGlass ? .clear : themeColors.primaryBackground, in: RoundedRectangle(cornerRadius: 12))
+        .glassEffect(themeColors.isGlass ? .regular : .identity, in: RoundedRectangle(cornerRadius: 12))
         .tint(themeColors.primaryAccent)
     }
 
@@ -191,5 +196,21 @@ struct PopoverContentView: View {
     /// Open settings window using our custom controller
     private func openSettingsWindow() {
         SettingsWindowController.shared.showSettings()
+    }
+
+    /// Recursively find NSHostingView instances and make them transparent.
+    /// NSHostingView.isOpaque is read-only (returns true), so we force transparency
+    /// via the layer instead. This lets .glassEffect() sample the desktop behind.
+    private func makeHostingViewsTransparent(in view: NSView?) {
+        guard let view = view else { return }
+        let className = String(describing: type(of: view))
+        if className.contains("NSHostingView") || className.contains("_NSHostingView") {
+            view.wantsLayer = true
+            view.layer?.isOpaque = false
+            view.layer?.backgroundColor = .clear
+        }
+        for subview in view.subviews {
+            makeHostingViewsTransparent(in: subview)
+        }
     }
 }

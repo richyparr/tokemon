@@ -33,6 +33,21 @@ enum FloatingWindowRow: String, CaseIterable, Codable, Hashable {
     }
 }
 
+/// Transparent NSHostingView subclass that overrides isOpaque.
+/// NSHostingView.isOpaque is read-only and returns true, which draws an opaque
+/// background that covers any glass effect behind it. This subclass forces
+/// transparency so SwiftUI .glassEffect() can sample the desktop beneath.
+class TransparentHostingView<Content: View>: NSHostingView<Content> {
+    override var isOpaque: Bool { false }
+
+    override var wantsUpdateLayer: Bool { true }
+
+    override func updateLayer() {
+        layer?.backgroundColor = .clear
+        layer?.isOpaque = false
+    }
+}
+
 /// Custom NSPanel configured for floating, always-on-top behavior.
 /// Stays visible when app loses focus, doesn't steal focus when clicked.
 class FloatingPanel: NSPanel {
@@ -41,7 +56,7 @@ class FloatingPanel: NSPanel {
                   backing backingStoreType: NSWindow.BackingStoreType,
                   defer flag: Bool) {
         super.init(contentRect: contentRect,
-                   styleMask: [.titled, .closable, .fullSizeContentView, .nonactivatingPanel],
+                   styleMask: style,
                    backing: backingStoreType,
                    defer: flag)
 
@@ -51,9 +66,11 @@ class FloatingPanel: NSPanel {
         self.hidesOnDeactivate = false  // CRITICAL: Stay visible when app loses focus
         self.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
 
-        // Visual configuration
-        self.titleVisibility = .hidden
-        self.titlebarAppearsTransparent = true
+        // Visual configuration (title bar only relevant when .titled)
+        if style.contains(.titled) {
+            self.titleVisibility = .hidden
+            self.titlebarAppearsTransparent = true
+        }
         self.isMovableByWindowBackground = true
         self.isReleasedWhenClosed = false  // Keep in memory for reuse
 
@@ -167,11 +184,18 @@ final class FloatingWindowController {
 
         let rows = activeRows
         let height = windowHeight(for: rows.count)
+        let isGlass = themeManager.selectedTheme == .liquidGlass
+
+        // Glass: borderless panel with NSGlassEffectView wrapping content
+        // Non-glass: titled panel with standard window chrome
+        let styleMask: NSWindow.StyleMask = isGlass
+            ? [.fullSizeContentView, .nonactivatingPanel]
+            : [.titled, .closable, .fullSizeContentView, .nonactivatingPanel]
 
         // Create panel with compact size
         let newPanel = FloatingPanel(
             contentRect: NSRect(x: 0, y: 0, width: 160, height: height),
-            styleMask: [.titled, .closable, .fullSizeContentView, .nonactivatingPanel],
+            styleMask: styleMask,
             backing: .buffered,
             defer: false
         )
@@ -184,19 +208,26 @@ final class FloatingWindowController {
             newPanel.setPosition(vertical: .top, horizontal: .right, padding: 20)
         }
 
-        // Configure panel for glass theme (clear background lets glass show through)
-        if themeManager.selectedTheme == .liquidGlass {
-            newPanel.backgroundColor = .clear
-            newPanel.isOpaque = false
-        }
-
         let contentView = FloatingWindowView(rows: rows)
             .environment(monitor)
             .environment(alertManager)
             .environment(themeManager)
 
-        let hostingController = NSHostingController(rootView: contentView)
-        newPanel.contentViewController = hostingController
+        if isGlass {
+            // Transparent window + transparent hosting view so .glassEffect() can
+            // sample the desktop content behind the window
+            newPanel.backgroundColor = .clear
+            newPanel.isOpaque = false
+
+            let hostingView = TransparentHostingView(rootView: contentView)
+            hostingView.wantsLayer = true
+            hostingView.layer?.backgroundColor = .clear
+            hostingView.layer?.isOpaque = false
+            newPanel.contentView = hostingView
+        } else {
+            let hostingController = NSHostingController(rootView: contentView)
+            newPanel.contentViewController = hostingController
+        }
 
         self.panel = newPanel
         newPanel.orderFront(nil)

@@ -133,3 +133,19 @@ final class ThemeManager {
         ThemeColors(theme: selectedTheme, colorScheme: colorScheme)
     }
 }
+
+/// NSViewRepresentable wrapper for NSGlassEffectView.
+/// Use as a `.background { GlassBackgroundView() }` for true Liquid Glass.
+struct GlassBackgroundView: NSViewRepresentable {
+    var cornerRadius: CGFloat = 0
+    var style: NSGlassEffectView.Style = .regular
+
+    func makeNSView(context: Context) -> NSGlassEffectView {
+        let view = NSGlassEffectView()
+        view.style = style
+        view.cornerRadius = cornerRadius
+        return view
+    }
+
+    func updateNSView(_ nsView: NSGlassEffectView, context: Context) {}
+}

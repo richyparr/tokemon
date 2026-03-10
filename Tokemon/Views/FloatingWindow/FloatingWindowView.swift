@@ -37,8 +37,8 @@ struct FloatingWindowView: View {
         }
         .padding(EdgeInsets(top: 12, leading: 12, bottom: 16, trailing: 12))
         .frame(minWidth: 120, minHeight: 60)
-        .glassEffect(themeColors.isGlass ? .regular : .identity, in: RoundedRectangle(cornerRadius: 12))
         .background(themeColors.isGlass ? .clear : themeColors.primaryBackground)
+        .glassEffect(themeColors.isGlass ? .regular : .identity, in: RoundedRectangle(cornerRadius: 12))
         .tint(themeColors.primaryAccent)
         .preferredColorScheme(themeColors.colorSchemeOverride)
     }
