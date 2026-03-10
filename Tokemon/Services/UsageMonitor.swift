@@ -48,6 +48,10 @@ final class UsageMonitor {
     @ObservationIgnored
     private var lastOAuthFetchTime: Date?
 
+    /// Consecutive 429 count for backoff calculation
+    @ObservationIgnored
+    private var rateLimitHits: Int = 0
+
     /// Maximum age (in seconds) for cached OAuth data before falling through to JSONL on rate limit.
     /// The usage API rate limits to ~1 request per 2 minutes, so cached data within 10 minutes
     /// is still reasonably accurate. The alternative (JSONL) shows only token counts with no percentage.
@@ -247,6 +251,11 @@ final class UsageMonitor {
                 oauthRetryCount = 0
                 retryCount = 0
                 oauthFailureNotified = false
+                // Reset rate limit backoff — restore normal polling
+                if rateLimitHits > 0 {
+                    rateLimitHits = 0
+                    startPolling()
+                }
                 // Notify status item, alert manager, and statusline exporter
                 onUsageChanged?(currentUsage)
                 onAlertCheck?(currentUsage)
@@ -261,17 +270,23 @@ final class UsageMonitor {
                 return
             } catch OAuthClient.OAuthError.rateLimited {
                 // Rate limited (429) -- common during active Claude Code sessions.
+                rateLimitHits += 1
+
+                // Back off: 5min, 10min, capped at 10min
+                let backoffSeconds = min(600, TimeInterval(rateLimitHits) * 300)
+                print("[Tokemon] Rate limited (\(rateLimitHits)x), backing off to \(Int(backoffSeconds))s")
+                startPolling(interval: backoffSeconds)
+
                 // Only keep cached data if it's recent enough to still be accurate.
                 let cachedAge = lastOAuthFetchTime.map { Date().timeIntervalSince($0) }
                 if let age = cachedAge, currentUsage.source == .oauth, age < maxCachedDataAge {
-                    print("[Tokemon] Rate limited, keeping cached OAuth data (\(Int(age))s old)")
-                    // Don't update lastUpdated -- the data itself hasn't changed
+                    print("[Tokemon] Keeping cached OAuth data (\(Int(age))s old)")
                     error = .oauthRateLimited
                     return
                 }
                 // Cached data is stale or doesn't exist -- fall through to JSONL
                 let ageStr = cachedAge.map { "\(Int($0))s" } ?? "none"
-                print("[Tokemon] Rate limited, cached data too old (\(ageStr)), trying JSONL")
+                print("[Tokemon] Cached data too old (\(ageStr)), trying JSONL")
                 oauthState = .failed("Rate limited")
             } catch {
                 print("[Tokemon] OAuth failed: \(error) — \(error.localizedDescription)")
