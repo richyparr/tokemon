@@ -24,12 +24,13 @@ struct PopoverContentView: View {
         popoverContent
             .preferredColorScheme(themeColors.colorSchemeOverride)
             .onAppear {
+                guard !themeColors.isGlass else { return }
                 // Set window appearance for Light/Dark themes
                 if let window = NSApp.windows.first(where: { $0.className.contains("StatusBarWindow") || $0.className.contains("MenuBarExtra") }) {
                     if let override = themeColors.colorSchemeOverride {
                         window.appearance = NSAppearance(named: override == .light ? .aqua : .darkAqua)
                     } else {
-                        window.appearance = nil  // Follow system
+                        window.appearance = nil
                     }
                 }
             }
@@ -138,7 +139,7 @@ struct PopoverContentView: View {
                     Image(systemName: "arrow.clockwise")
                         .foregroundStyle(.secondary)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.glass)
                 .help("Refresh Now")
 
                 // Settings/More menu - combines settings and quit
@@ -174,7 +175,7 @@ struct PopoverContentView: View {
         }
         .padding(16)
         .frame(width: 320)
-        .background(themeColors.primaryBackground.ignoresSafeArea())
+        .background(themeColors.isGlass ? .clear : themeColors.primaryBackground)
         .tint(themeColors.primaryAccent)
     }
 

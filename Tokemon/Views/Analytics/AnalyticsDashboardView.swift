@@ -106,7 +106,7 @@ struct AnalyticsDashboardView: View {
         } label: {
             Label(title, systemImage: icon)
         }
-        .buttonStyle(.bordered)
+        .buttonStyle(.glass)
         .controlSize(.regular)
         .disabled(isExporting)
     }

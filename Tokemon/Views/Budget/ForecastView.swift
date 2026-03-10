@@ -120,9 +120,7 @@ struct ForecastView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background {
-            Color.secondary.opacity(0.1)
-        }
+        .background(.quaternary)
         .cornerRadius(8)
     }
 

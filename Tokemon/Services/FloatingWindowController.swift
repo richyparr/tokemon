@@ -184,6 +184,12 @@ final class FloatingWindowController {
             newPanel.setPosition(vertical: .top, horizontal: .right, padding: 20)
         }
 
+        // Configure panel for glass theme (clear background lets glass show through)
+        if themeManager.selectedTheme == .liquidGlass {
+            newPanel.backgroundColor = .clear
+            newPanel.isOpaque = false
+        }
+
         let contentView = FloatingWindowView(rows: rows)
             .environment(monitor)
             .environment(alertManager)

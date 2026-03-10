@@ -152,7 +152,7 @@ struct StatuslineSettings: View {
                         Button("Add to \(shellConfigPath)") {
                             installToShellConfig()
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.glassProminent)
                     }
 
                     Text("Then add $(tokemon_statusline) to your PS1 or PROMPT variable.")

@@ -1,10 +1,10 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 import PackageDescription
 
 let package = Package(
     name: "Tokemon",
     platforms: [
-        .macOS(.v14)
+        .macOS(.v26)
     ],
     dependencies: [
         .package(url: "https://github.com/orchetect/MenuBarExtraAccess.git", from: "1.2.2"),

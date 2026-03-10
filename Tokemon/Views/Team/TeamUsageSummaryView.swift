@@ -68,9 +68,7 @@ struct TeamUsageSummaryView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background {
-            color.opacity(0.1)
-        }
+        .background(.quaternary)
         .cornerRadius(8)
     }
 

@@ -37,7 +37,8 @@ struct FloatingWindowView: View {
         }
         .padding(EdgeInsets(top: 12, leading: 12, bottom: 16, trailing: 12))
         .frame(minWidth: 120, minHeight: 60)
-        .background(themeColors.primaryBackground)
+        .glassEffect(themeColors.isGlass ? .regular : .identity, in: RoundedRectangle(cornerRadius: 12))
+        .background(themeColors.isGlass ? .clear : themeColors.primaryBackground)
         .tint(themeColors.primaryAccent)
         .preferredColorScheme(themeColors.colorSchemeOverride)
     }
@@ -105,7 +106,7 @@ struct FloatingWindowView: View {
             }
             switch level {
             case .critical: return "Limit reached"
-            case .warning: return "Approaching limit"
+            case .warning: return "Above threshold"
             case .normal: return row.label
             }
         }

@@ -76,14 +76,14 @@ struct ExportDialogView: View {
                 Button("Cancel") {
                     onCancel()
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.glass)
 
                 Spacer()
 
                 Button("Next") {
                     step = .selectDateRange
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.glassProminent)
             }
         }
         .padding(20)
@@ -173,14 +173,14 @@ struct ExportDialogView: View {
                 Button("Cancel") {
                     onCancel()
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.glass)
 
                 Spacer()
 
                 Button("Export") {
                     startExport()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.glassProminent)
             }
         }
         .padding(20)
@@ -211,7 +211,7 @@ struct ExportDialogView: View {
                     Button("Cancel") {
                         onCancel()
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.glass)
 
                     Spacer()
 
@@ -219,7 +219,7 @@ struct ExportDialogView: View {
                         exportError = nil
                         startExport()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.glassProminent)
                 }
             } else {
                 VStack(spacing: 16) {
@@ -242,7 +242,7 @@ struct ExportDialogView: View {
                     exportTask?.cancel()
                     onCancel()
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.glass)
             }
         }
         .padding(20)

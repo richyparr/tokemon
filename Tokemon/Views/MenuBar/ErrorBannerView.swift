@@ -7,7 +7,13 @@ struct ErrorBannerView: View {
     let onRetry: () -> Void
     let requiresManualRetry: Bool
 
+    @Environment(ThemeManager.self) private var themeManager
+    @Environment(\.colorScheme) private var colorScheme
     @State private var showingDetails = false
+
+    private var themeColors: ThemeColors {
+        themeManager.colors(for: colorScheme)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -58,15 +64,18 @@ struct ErrorBannerView: View {
                 Button("Retry") {
                     onRetry()
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.glassProminent)
                 .controlSize(.small)
             }
         }
         .padding(10)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.orange.opacity(0.1))
-        )
+        .background {
+            if !themeColors.isGlass {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.orange.opacity(0.1))
+            }
+        }
+        .glassEffect(themeColors.isGlass ? .regular.tint(.orange) : .identity, in: RoundedRectangle(cornerRadius: 8))
     }
 
     // MARK: - Error Messages

@@ -4,6 +4,13 @@ import SwiftUI
 struct UpgradeBannerView: View {
     let onPurchase: () -> Void
 
+    @Environment(ThemeManager.self) private var themeManager
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var themeColors: ThemeColors {
+        themeManager.colors(for: colorScheme)
+    }
+
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "star.fill")
@@ -17,13 +24,16 @@ struct UpgradeBannerView: View {
             Button("Upgrade") {
                 onPurchase()
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.glassProminent)
             .controlSize(.small)
         }
         .padding(10)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.blue.opacity(0.1))
-        )
+        .background {
+            if !themeColors.isGlass {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.blue.opacity(0.1))
+            }
+        }
+        .glassEffect(themeColors.isGlass ? .regular.tint(.blue) : .identity, in: RoundedRectangle(cornerRadius: 8))
     }
 }

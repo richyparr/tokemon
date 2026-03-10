@@ -4,6 +4,12 @@ import SwiftUI
 /// Displays version and button to download.
 struct UpdateBannerView: View {
     @Environment(UpdateManager.self) private var updateManager
+    @Environment(ThemeManager.self) private var themeManager
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var themeColors: ThemeColors {
+        themeManager.colors(for: colorScheme)
+    }
 
     var body: some View {
         if updateManager.updateAvailable {
@@ -26,12 +32,17 @@ struct UpdateBannerView: View {
                 Button("Update") {
                     updateManager.downloadUpdate()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.glassProminent)
                 .controlSize(.small)
             }
             .padding(12)
-            .background(.blue.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .background {
+                if !themeColors.isGlass {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color.blue.opacity(0.1))
+                }
+            }
+            .glassEffect(themeColors.isGlass ? .regular.tint(.blue) : .identity, in: RoundedRectangle(cornerRadius: 8))
         }
     }
 }

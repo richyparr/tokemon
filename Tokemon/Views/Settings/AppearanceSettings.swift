@@ -18,6 +18,8 @@ struct AppearanceSettings: View {
             return "Always light appearance"
         case .dark:
             return "Warm tones with orange accents"
+        case .liquidGlass:
+            return "Translucent Liquid Glass effects (macOS 26)"
         }
     }
 

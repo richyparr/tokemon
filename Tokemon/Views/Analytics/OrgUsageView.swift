@@ -144,9 +144,7 @@ struct OrgUsageView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background {
-            Color.green.opacity(0.1)
-        }
+        .background(.quaternary)
         .cornerRadius(8)
     }
 
@@ -169,13 +167,7 @@ struct OrgUsageView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background {
-            if highlight {
-                Color.green.opacity(0.1)
-            } else {
-                Color.secondary.opacity(0.1)
-            }
-        }
+        .background(.quaternary)
         .cornerRadius(8)
     }
 
