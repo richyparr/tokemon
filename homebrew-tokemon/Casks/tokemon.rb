@@ -1,6 +1,6 @@
 cask "tokemon" do
-  version "4.1.1"
-  sha256 "1b64495a2494064f84107f47f1aa5b022c8231726a8bd7975910e34cce786b07"
+  version "4.1.2"
+  sha256 "92285c6aa756c8c674aae612f108acc3989f876888c78f8e50afd84b74059df8"
 
   url "https://github.com/richyparr/tokemon/releases/download/v#{version}/Tokemon.zip"
   name "Tokemon"
