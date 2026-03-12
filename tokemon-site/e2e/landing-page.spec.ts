@@ -217,7 +217,7 @@ test.describe("CTA section", () => {
   test("has dual install commands (macOS + Raycast)", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
-    await expect(page.getByText("brew install --cask tokemon")).toBeVisible();
+    await expect(page.getByText("brew install --cask richyparr/tokemon/tokemon")).toBeVisible();
     await expect(page.locator("text=npm run dev").last()).toBeVisible();
   });
 });

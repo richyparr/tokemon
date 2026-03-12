@@ -47,7 +47,7 @@ export function Hero() {
         </div>
 
         <div className="font-mono text-[13px] text-secondary-text mt-4">
-          <span className="text-accent">$</span> brew tap richyparr/tokemon && brew install --cask tokemon
+          <span className="text-accent">$</span> brew install --cask richyparr/tokemon/tokemon
         </div>
 
         <div className="mt-16">

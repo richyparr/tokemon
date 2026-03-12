@@ -15,7 +15,7 @@ export function TerminalInstall() {
       {/* Command */}
       <div className="px-5 py-4 font-mono text-[13px] whitespace-nowrap overflow-x-hidden">
         <TextType
-          text="brew tap richyparr/tokemon && brew install --cask tokemon"
+          text="brew install --cask richyparr/tokemon/tokemon"
           typingSpeed={35}
           loop={false}
           showCursor={true}

@@ -29,3 +29,4 @@ dist/
 out/
 .vercel/
 test-results/
+config.bat
