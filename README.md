@@ -2,7 +2,7 @@
 
 A macOS menu bar app that monitors your Claude usage in real-time so you never hit a rate limit by surprise.
 
-![macOS 14+](https://img.shields.io/badge/macOS-14.0%2B-blue)
+![macOS 26+](https://img.shields.io/badge/macOS-26.0%2B-blue)
 ![Swift 6](https://img.shields.io/badge/Swift-6.0-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -16,7 +16,7 @@ Tokemon sits in your menu bar and shows your current Claude usage at a glance. I
 
 ### Menu bar monitoring
 - Live usage percentage in your menu bar with color-coded severity (green/orange/red)
-- 5 icon styles: percentage text, battery, progress bar, icon + bar, compact number
+- 6 icon styles: traffic light (default), percentage text, battery, progress bar, icon + bar, compact number
 - Optional monochrome mode to match native macOS menu bar styling
 - Click to see detailed usage breakdown with reset timer
 
@@ -27,7 +27,7 @@ Tokemon sits in your menu bar and shows your current Claude usage at a glance. I
 - Toggle from the right-click context menu
 
 ### Alerts & notifications
-- Configurable warning thresholds (50–90%)
+- Configurable warning thresholds (50-90%)
 - macOS system notifications when approaching limits
 - Session reset notifications when usage drops back to 0%
 - Webhook alerts to **Slack** and **Discord** with customizable templates
@@ -58,12 +58,26 @@ Tokemon sits in your menu bar and shows your current Claude usage at a glance. I
 - One-click shell integration (zsh/bash)
 
 ### Theming
-- Native (follows system light/dark), Light, or Dark theme
-- Dark theme with warm orange accents
+- **Liquid Glass** (default) — translucent glass effect using native macOS 26 Liquid Glass APIs
+- **Native** — follows system light/dark appearance
+- **Light** — clean light theme
+- **Dark** — warm orange accents
+
+### Auto-updates
+- Built-in update checking via Sparkle
+- One-click updates from the app
 
 ## Installation
 
-### Download (recommended)
+### Homebrew (recommended)
+
+```bash
+brew install --cask richyparr/tokemon/tokemon
+```
+
+This handles downloading, installation, and future updates via `brew upgrade`.
+
+### Manual download
 
 1. Download `Tokemon.zip` from the [latest release](https://github.com/richyparr/tokemon/releases/latest)
 2. Unzip and move `Tokemon.app` to `/Applications`
@@ -75,7 +89,7 @@ Tokemon sits in your menu bar and shows your current Claude usage at a glance. I
 
 ### Build from source
 
-Requires Xcode 15+ and [XcodeGen](https://github.com/yonaskolb/XcodeGen).
+Requires Xcode 16+ and [XcodeGen](https://github.com/yonaskolb/XcodeGen).
 
 ```bash
 git clone https://github.com/richyparr/tokemon.git
@@ -98,7 +112,7 @@ No data leaves your machine except calls to the usage endpoint. No telemetry, no
 
 ## Requirements
 
-- macOS 14.0 (Sonoma) or later
+- macOS 26.0 (Tahoe) or later
 - A Claude Pro, Team, or Enterprise subscription
 - For budget/team features: an Admin API key
 
