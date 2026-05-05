@@ -15,14 +15,20 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>4.1.4</string>
+	<string>4.1.5</string>
 	<key>CFBundleVersion</key>
-	<string>4.1.4</string>
+	<string>4.1.5</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.developer-tools</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>26.0</string>
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright 2026 Tokemon contributors</string>
+	<key>SUFeedURL</key>
+	<string>https://www.tokemon.ai/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>Y0xNOKOX9Nfp3PqHgS5r/1eF25ZGRjYtwW7Fk1EutDs=</string>
 </dict>
 </plist>

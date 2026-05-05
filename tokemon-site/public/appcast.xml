@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Tokemon</title>
+    <link>https://www.tokemon.ai/appcast.xml</link>
+    <description>Tokemon release feed</description>
+    <language>en</language>
+    <item>
+      <title>Version 4.1.5</title>
+      <link>https://github.com/richyparr/tokemon/releases/tag/v4.1.5</link>
+      <sparkle:version>4.1.5</sparkle:version>
+      <sparkle:shortVersionString>4.1.5</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <pubDate>Tue, 05 May 2026 16:07:49 +0800</pubDate>
+      <enclosure url="https://github.com/richyparr/tokemon/releases/download/v4.1.5/Tokemon.zip"
+                 type="application/octet-stream"
+                 sparkle:edSignature="egwWwxp0T/eAEZhmyLeHqu1Njis5KWkXgySJbZuywDiRI806GdBP2m7DNq2tTWptbtUbdXeQ0i1E+U9PnIP8AQ==" length="3647137" />
+    </item>
+  </channel>
+</rss>

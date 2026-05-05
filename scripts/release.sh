@@ -105,15 +105,75 @@ spctl --assess --type execute --verbose "$APP_PATH" 2>&1 || true
 
 SHA256=$(shasum -a 256 "$ZIP_PATH" | awk '{print $1}')
 SIZE=$(du -h "$ZIP_PATH" | awk '{print $1}')
+SIZE_BYTES=$(stat -f%z "$ZIP_PATH")
+
+# 9. Sign with Sparkle EdDSA and update appcast.xml
+echo "==> Signing release with Sparkle EdDSA..."
+SIGN_UPDATE=$(find "${HOME}/Library/Developer/Xcode/DerivedData" -name sign_update -path "*artifacts/sparkle/Sparkle/bin/*" 2>/dev/null | head -1)
+if [ -z "$SIGN_UPDATE" ] || [ ! -x "$SIGN_UPDATE" ]; then
+    echo "ERROR: sign_update not found in DerivedData. Open the project in Xcode once to fetch Sparkle artifacts."
+    exit 1
+fi
+
+ED_SIGNATURE_LINE=$("$SIGN_UPDATE" "$ZIP_PATH")
+echo "  $ED_SIGNATURE_LINE"
+
+APPCAST_PATH="${PROJECT_DIR}/tokemon-site/public/appcast.xml"
+PUB_DATE=$(LC_ALL=en_US.UTF-8 date "+%a, %d %b %Y %H:%M:%S %z")
+
+ITEM_XML="    <item>
+      <title>Version ${VERSION}</title>
+      <link>https://github.com/richyparr/tokemon/releases/tag/v${VERSION}</link>
+      <sparkle:version>${VERSION}</sparkle:version>
+      <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <pubDate>${PUB_DATE}</pubDate>
+      <enclosure url=\"https://github.com/richyparr/tokemon/releases/download/v${VERSION}/Tokemon.zip\"
+                 type=\"application/octet-stream\"
+                 ${ED_SIGNATURE_LINE} />
+    </item>"
+
+if [ ! -f "$APPCAST_PATH" ]; then
+    echo "==> Creating new appcast.xml at $APPCAST_PATH"
+    cat > "$APPCAST_PATH" <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Tokemon</title>
+    <link>https://www.tokemon.ai/appcast.xml</link>
+    <description>Tokemon release feed</description>
+    <language>en</language>
+${ITEM_XML}
+  </channel>
+</rss>
+EOF
+else
+    echo "==> Prepending v${VERSION} entry to existing appcast.xml"
+    python3 - "$APPCAST_PATH" "$ITEM_XML" <<'PY'
+import sys, pathlib
+path = pathlib.Path(sys.argv[1])
+new_item = sys.argv[2]
+text = path.read_text()
+marker = "    <language>en</language>"
+if marker not in text:
+    sys.exit(f"marker not found in {path}")
+text = text.replace(marker, marker + "\n" + new_item, 1)
+path.write_text(text)
+PY
+fi
+
+echo "==> Appcast updated: $APPCAST_PATH"
 
 echo ""
 echo "=================================================="
 echo "  Release ready: $ZIP_PATH"
 echo "  Version:      $VERSION"
-echo "  Size:         $SIZE"
+echo "  Size:         $SIZE ($SIZE_BYTES bytes)"
 echo "  SHA256:       $SHA256"
+echo "  Appcast:      $APPCAST_PATH"
 echo "=================================================="
 echo ""
 echo "Next:"
 echo "  gh release create v${VERSION} \"$ZIP_PATH\" --title \"v${VERSION}\" --generate-notes"
 echo "  Update homebrew-tokemon/Casks/tokemon.rb sha256 to: $SHA256"
+echo "  Commit + deploy tokemon-site/public/appcast.xml"
