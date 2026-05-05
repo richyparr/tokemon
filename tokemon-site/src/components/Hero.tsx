@@ -50,6 +50,14 @@ export function Hero() {
           <span className="text-accent">$</span> brew install --cask richyparr/tokemon/tokemon
         </div>
 
+        <div className="mt-3 inline-flex items-center gap-1.5 text-[12px] text-secondary-text/70">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 1l5.5 2v4.5C13.5 11 11 13.5 8 15c-3-1.5-5.5-4-5.5-7.5V3L8 1z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+            <path d="M5.5 8l1.8 1.8L10.5 6.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          Signed and notarized by Apple
+        </div>
+
         <div className="mt-16">
           <Image
             src="/ss-bg-2.png"
