@@ -1,0 +1,40 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-05-05T13:28:31.791Z",
+  "phase": null,
+  "phase_name": "release-engineering-maintenance",
+  "phase_dir": null,
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "complete",
+  "completed_tasks": [
+    {"id": 1, "name": "Delete stale feature/liquid-glass-redesign branch", "status": "done"},
+    {"id": 2, "name": "Set up Apple Developer ID cert and notarytool keychain profile", "status": "done"},
+    {"id": 3, "name": "Build scripts/release.sh and scripts/ExportOptions.plist for Developer ID signing pipeline", "status": "done"},
+    {"id": 4, "name": "Ship v4.1.4 — first signed and notarized release", "status": "done", "commit": "69ce172"},
+    {"id": 5, "name": "Remove xattr quarantine workaround from README", "status": "done", "commit": "bd15999"},
+    {"id": 6, "name": "Generate Sparkle EdDSA keys, add SUPublicEDKey + SUFeedURL + LSApplicationCategoryType to Info.plist", "status": "done"},
+    {"id": 7, "name": "Fix appcast URL tokemon.app → www.tokemon.ai in Constants.swift", "status": "done"},
+    {"id": 8, "name": "Extend release.sh to sign with sign_update and auto-update appcast.xml", "status": "done"},
+    {"id": 9, "name": "Ship v4.1.5 with Sparkle infrastructure fix", "status": "done", "commit": "ba10701"},
+    {"id": 10, "name": "Remove broken 15s update-check timeout in UpdateManager.swift", "status": "done"},
+    {"id": 11, "name": "Ship v4.1.6 — Sparkle now functional end-to-end", "status": "done", "commit": "96ada93"},
+    {"id": 12, "name": "Simplify CI to lint-only until macOS 26 runners GA", "status": "done", "commit": "5713bd1"},
+    {"id": 13, "name": "Add 'Signed and notarized by Apple' badge to landing page Hero", "status": "done", "commit": "5713bd1"},
+    {"id": 14, "name": "Deploy tokemon-site to Vercel production with new appcast and badge", "status": "done"}
+  ],
+  "remaining_tasks": [],
+  "blockers": [],
+  "human_actions_pending": [],
+  "decisions": [
+    {"decision": "Keep ZIP distribution format (not DMG) for Homebrew compatibility", "rationale": "Existing cask expects Tokemon.zip; notarization works on either format; one less moving part"},
+    {"decision": "Use xcodebuild archive (not SPM build-release.sh) for release pipeline", "rationale": "Already-shipping flow; Sparkle.framework is wired through the Xcode project"},
+    {"decision": "Reduce CI to lint-only and document why", "rationale": "Package.swift requires swift-tools 6.2 / Xcode 26 / macOS 26 SDK; GitHub Actions runners do not yet provide this. Honest red→green by removing jobs we cannot actually verify"},
+    {"decision": "Did not rotate the app-specific password exposed in chat (kpcu-zabg-tipv-vwgg)", "rationale": "User explicitly declined ('not needed.'). Credential is stored in keychain profile tokemon-notary"},
+    {"decision": "Removed the homegrown 15s timeout from UpdateManager rather than extending it", "rationale": "Sparkle's SPUStandardUpdaterController already shows a UI dialog and fires didFindValidUpdate / updaterDidNotFindUpdate / didAbortWithError delegates; the parallel timer was redundant noise that fired even when the network call succeeded"}
+  ],
+  "uncommitted_files": [],
+  "next_action": "No active work. If returning later, candidate items: (1) re-enable build/test CI jobs once GitHub Actions ships macos-26 runners, (2) optional Sparkle EdDSA key rotation cadence, (3) add a SwiftLint config to make the lint-only CI more meaningful.",
+  "context_notes": "Session was end-to-end release engineering: stale branch cleanup → Apple Developer ID setup → signed/notarized release pipeline → Sparkle auto-update fix → CI cleanup → website badge. Three releases shipped (4.1.4, 4.1.5, 4.1.6). Sparkle now works end-to-end (verified by user after install). Cask is at 4.1.6. Appcast live at https://www.tokemon.ai/appcast.xml. Site deployed. All commits on main pushed."
+}
