@@ -81,11 +81,9 @@ This handles downloading, installation, and future updates via `brew upgrade`.
 
 1. Download `Tokemon.zip` from the [latest release](https://github.com/richyparr/tokemon/releases/latest)
 2. Unzip and move `Tokemon.app` to `/Applications`
-3. The app is not yet notarized, so you need to remove the quarantine flag:
-   ```bash
-   xattr -cr /Applications/Tokemon.app
-   ```
-4. Double-click to open
+3. Double-click to open
+
+Tokemon is signed with an Apple Developer ID and notarized by Apple, so it opens without Gatekeeper warnings.
 
 ### Build from source
 
