@@ -6,6 +6,17 @@
     <description>Tokemon release feed</description>
     <language>en</language>
     <item>
+      <title>Version 4.1.9</title>
+      <link>https://github.com/richyparr/tokemon/releases/tag/v4.1.9</link>
+      <sparkle:version>4.1.9</sparkle:version>
+      <sparkle:shortVersionString>4.1.9</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <pubDate>Thu, 07 May 2026 22:16:23 +0800</pubDate>
+      <enclosure url="https://github.com/richyparr/tokemon/releases/download/v4.1.9/Tokemon.zip"
+                 type="application/octet-stream"
+                 sparkle:edSignature="fMLHwDsQUwaeCSaeU97KqA00//89W647KamhBa7b3VANzhn4eUlXN67gAp3qzJ18SRuJOpi7uuH/TAlTRNwvAg==" length="3654877" />
+    </item>
+    <item>
       <title>Version 4.1.8</title>
       <link>https://github.com/richyparr/tokemon/releases/tag/v4.1.8</link>
       <sparkle:version>4.1.8</sparkle:version>

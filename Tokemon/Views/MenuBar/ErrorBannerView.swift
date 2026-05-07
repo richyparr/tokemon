@@ -72,8 +72,8 @@ struct ErrorBannerView: View {
             // Direct recovery action for the keychain ACL case.
             if case .keychainAccessDenied = error {
                 HStack(spacing: 8) {
-                    Button("Open Keychain Access") {
-                        openKeychainAccess()
+                    Button("Show Me How") {
+                        startKeychainAccessRecovery(onRetry: onRetry)
                     }
                     .buttonStyle(.glassProminent)
                     .controlSize(.small)
@@ -156,6 +156,61 @@ struct ErrorBannerView: View {
             return .green
         default:
             return .blue
+        }
+    }
+
+    /// Guided keychain ACL recovery. Copies the item name to the clipboard so the
+    /// user can paste it into Keychain Access search, opens Keychain Access, then
+    /// shows a numbered step-by-step alert that stays on screen while they work.
+    /// When they click "I've added Tokemon", we trigger Tokemon's retry path.
+    private func startKeychainAccessRecovery(onRetry: @escaping () -> Void) {
+        // Copy the keychain item name so step 1 is paste, not type.
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString("Claude Code-credentials", forType: .string)
+
+        // Launch Keychain Access (resolved via LaunchServices so we don't hardcode
+        // a path that moves between macOS versions).
+        openKeychainAccess()
+
+        // Bring our process forward so the alert isn't lost behind Keychain Access.
+        NSApp.activate(ignoringOtherApps: true)
+
+        let alert = NSAlert()
+        alert.messageText = "Add Tokemon to Keychain Access"
+        alert.informativeText = """
+        Tokemon needs permission to read the 'Claude Code-credentials' keychain item. \
+        This is a one-time setup — Claude Code recreates the entry on each /login and \
+        you'll only need to redo this if that happens.
+
+        I've copied 'Claude Code-credentials' to your clipboard. In the Keychain Access \
+        window that just opened:
+
+        1.  Click 'login' under Default Keychains in the sidebar.
+        2.  Paste into the search box (top right) — Cmd+V.
+        3.  Right-click the entry that appears → Get Info.
+        4.  Click the 'Access Control' tab.
+        5.  Click the + button at the bottom of the access list.
+        6.  In the picker, press Cmd+Shift+G, paste:  /Applications/Tokemon.app
+        7.  Press Return, then click 'Add'.
+        8.  Click 'Save Changes'. Enter your login password if asked.
+        9.  Click 'I've added Tokemon' below.
+        """
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "I've added Tokemon — Retry")
+        alert.addButton(withTitle: "Open Help Online")
+        alert.addButton(withTitle: "Cancel")
+
+        let response = alert.runModal()
+        switch response {
+        case .alertFirstButtonReturn:
+            onRetry()
+        case .alertSecondButtonReturn:
+            if let helpURL = URL(string: "https://tokemon.ai/keychain-access") {
+                NSWorkspace.shared.open(helpURL)
+            }
+        default:
+            break
         }
     }
 
