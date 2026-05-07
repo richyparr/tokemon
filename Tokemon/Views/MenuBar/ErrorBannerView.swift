@@ -187,14 +187,15 @@ struct ErrorBannerView: View {
         window that just opened:
 
         1.  Click 'login' under Default Keychains in the sidebar.
-        2.  Paste into the search box (top right) — Cmd+V.
-        3.  Right-click the entry that appears → Get Info.
-        4.  Click the 'Access Control' tab.
-        5.  Click the + button at the bottom of the access list.
-        6.  In the picker, press Cmd+Shift+G, paste:  /Applications/Tokemon.app
-        7.  Press Return, then click 'Add'.
-        8.  Click 'Save Changes'. Enter your login password if asked.
-        9.  Click 'I've added Tokemon' below.
+        2.  Click the 'All Items' tab at the top (not 'My Certificates').
+        3.  Paste into the search box (top right) — Cmd+V.
+        4.  Right-click the entry that appears → Get Info.
+        5.  Click the 'Access Control' tab.
+        6.  Click the + button at the bottom of the access list.
+        7.  In the picker, press Cmd+Shift+G, paste:  /Applications/Tokemon.app
+        8.  Press Return, then click 'Add'.
+        9.  Click 'Save Changes'. Enter your login password if asked.
+        10. Click 'I've added Tokemon' below.
         """
         alert.alertStyle = .informational
         alert.addButton(withTitle: "I've added Tokemon — Retry")

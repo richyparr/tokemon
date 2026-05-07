@@ -56,6 +56,7 @@ export default function KeychainAccessHelpPage() {
           {[
             ["Open Keychain Access", "If it isn't already open, press Cmd+Space and type 'Keychain Access'. The Tokemon banner's 'Show Me How' button does this for you automatically."],
             ["Select the login keychain", "In the left sidebar under Default Keychains, click 'login'. (Items live in the login keychain — the iCloud one will be empty.)"],
+            ["Click the 'All Items' tab", "At the top of the window there's a row of category tabs. Click 'All Items' (not 'My Certificates' — Claude Code stores credentials as a generic password, which 'My Certificates' filters out)."],
             ["Search for the entry", "In the search box at the top right, paste 'Claude Code-credentials'. Tokemon copies this to your clipboard automatically."],
             ["Open Get Info", "Right-click the entry that appears and choose 'Get Info'. (Or select it and press Cmd+I.)"],
             ["Open the Access Control tab", "In the info window, click the 'Access Control' tab — usually the rightmost or second-to-last tab."],
@@ -84,7 +85,7 @@ export default function KeychainAccessHelpPage() {
               <span className="text-[#666] group-open:rotate-45 transition-transform">+</span>
             </summary>
             <p className="mt-3 text-sm text-[#aaa] leading-relaxed">
-              You&apos;re probably looking at the iCloud keychain. Click <strong className="text-[#ededed]">login</strong> in the left sidebar and try again. If it&apos;s still empty, run <code className="font-mono text-[#f0a060]">claude /login</code> in your terminal — Claude Code creates the entry the first time you authenticate.
+              The most common cause: you&apos;re on the <strong className="text-[#ededed]">My Certificates</strong> tab. Switch to <strong className="text-[#ededed]">All Items</strong> at the top of the window — Claude Code stores the credentials as a generic password, not a certificate, so the My Certificates filter hides them. If All Items is also empty, you&apos;re probably on the iCloud keychain — click <strong className="text-[#ededed]">login</strong> in the sidebar. If it&apos;s still empty, run <code className="font-mono text-[#f0a060]">claude /login</code> in your terminal to create the entry.
             </p>
           </details>
           <details className="group bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
