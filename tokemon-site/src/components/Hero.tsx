@@ -14,7 +14,13 @@ export function Hero() {
           Free &amp; open source for macOS
         </div>
 
-        <h1 className="text-[clamp(40px,6vw,72px)] font-bold leading-[1.08] tracking-[-0.03em] mb-6">
+        <h1 className="sr-only">
+          Tokemon — Claude Code Usage Tracker & Monitor for macOS
+        </h1>
+        <p
+          aria-hidden="true"
+          className="text-[clamp(40px,6vw,72px)] font-bold leading-[1.08] tracking-[-0.03em] mb-6"
+        >
           Never hit a{" "}
           <span className="bg-gradient-to-br from-accent to-[#f0a060] bg-clip-text text-transparent">
             <TextType
@@ -31,7 +37,7 @@ export function Hero() {
             />
           </span>
           <br />by surprise again
-        </h1>
+        </p>
 
         <p className="text-lg text-secondary-text max-w-[540px] mx-auto mb-12 leading-relaxed">
           Tokemon floats on your screen showing Claude usage in real-time. Track session limits, weekly utilization, burn rate, project costs, and team budgets — all from your menu bar.

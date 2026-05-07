@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "Understanding Claude Rate Limits: The Complete 2026 Guide",
+  title: "Claude Rate Limits Explained: Complete 2026 Guide",
   description:
-    "Everything you need to know about Claude rate limits in 2026. How the 5-hour rolling window works, per-model limits, what happens when you hit them, and how to monitor your usage in real-time.",
+    "Claude rate limits in 2026: the 5-hour rolling window, weekly rate limit, session limit, per-model caps, and how to monitor usage in real time.",
   date: "2026-03-07",
   author: "Richard Parr",
   tags: ["claude rate limits", "rate limiting", "claude usage", "5-hour window", "token limits", "anthropic rate limits"],
@@ -44,6 +44,28 @@ Anthropic does not publish the exact formula, but rate limit consumption is base
 - **Computational cost** (some operations are weighted more heavily)
 
 Longer conversations with large context windows burn through your limit faster than short, focused requests.
+
+## Claude Session Limit vs Rate Limit: What's the Difference?
+
+The terms "Claude session limit" and "Claude rate limit" are used interchangeably online, but they refer to slightly different things:
+
+- **Claude session limit** — the cap that applies to a single 5-hour usage window. When people say "I hit my session limit," they mean they exhausted their allowance for the current rolling window.
+- **Claude rate limit** — the umbrella term that covers all enforcement: the 5-hour session cap, the new weekly cap (see below), and the per-minute / per-day API limits.
+
+A common question is *"when does my Claude session reset?"* The answer is that there is no clean reset. Each individual request expires 5 hours after it was made, so your usable headroom rebuilds gradually as old requests fall off the rolling window. If you made a heavy burst of requests at 9 AM, that capacity comes back at 2 PM — not all at once at midnight.
+
+## Claude's Weekly Rate Limit (2026)
+
+In 2026 Anthropic added a **weekly rate limit** on top of the 5-hour rolling window. The weekly cap is meant to prevent the heaviest users from monopolizing capacity, but it is the most common cause of "I hit a rate limit even though my session window was clear" reports.
+
+Key facts about the Claude weekly rate limit:
+
+- It uses a 7-day rolling window, not a fixed Monday-to-Sunday week.
+- It applies in addition to the 5-hour session limit — both have to be under their thresholds for you to keep working.
+- Claude Pro and Max plans have different weekly caps; the Max $200 tier gets a substantially higher allowance.
+- It is enforced per account; using a second account to bypass it violates Anthropic's terms.
+
+If you are seeing rate limit errors that do not match what your 5-hour window estimate predicts, the weekly cap is almost always the cause. The only reliable way to anticipate the weekly limit is real-time monitoring of *both* windows.
 
 ## Pro vs Max vs Team: Consumer Plan Limits
 

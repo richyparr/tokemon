@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "How to Avoid Claude Rate Limits: A Developer's Guide",
+  title: "How to Avoid Claude Rate Limits in 2026",
   description:
-    "Practical strategies to avoid Claude rate limits, understand the 5-hour rolling window, and monitor your usage in real-time so you never get locked out mid-session.",
+    "Avoid Claude rate limits in 2026. Strategies for the 5-hour rolling window, the new weekly rate limit, session limits, and real-time usage monitoring.",
   date: "2026-03-12",
   author: "Richard Parr",
   tags: ["claude-code", "rate-limits", "tips"],
@@ -20,6 +20,28 @@ Anthropic enforces usage limits on Claude Pro and Max plans based on a **5-hour 
 - **Claude Max ($200/month):** 20x the Pro limits, for teams and power users
 
 The limits are not measured in a simple token count. Anthropic uses a composite metric that factors in input tokens, output tokens, and the computational cost of your requests.
+
+## Claude's New Weekly Rate Limit (2026)
+
+In addition to the 5-hour rolling window, Anthropic introduced a **weekly rate limit** in 2026 that applies on top of the per-session cap. The weekly limit is designed to prevent the heaviest power users from consuming a disproportionate share of capacity, but it catches a lot of regular Claude Code users by surprise.
+
+What the Claude weekly rate limit means in practice:
+
+- The weekly cap resets on a 7-day rolling window, not a fixed Monday-to-Sunday week.
+- Once you hit the weekly limit, you are locked out until enough usage rolls off — even if your 5-hour window has plenty of headroom.
+- Claude Pro and Max plans have different weekly caps; Max gets a substantially higher allowance.
+- The weekly limit is per-account, so creating a second account to dodge it violates the terms of service.
+
+If you have started seeing rate limit errors that do not match your 5-hour window estimate, the weekly cap is the most likely culprit. Real-time monitoring is the only reliable way to see your weekly burn before you hit the wall.
+
+## Session Limit vs Rate Limit: What's the Difference?
+
+People use "Claude session limit" and "Claude rate limit" interchangeably, but they are different things:
+
+- **Claude session limit** — the cap on a single 5-hour usage window. Once your active session crosses the threshold, you are locked out for the remainder of that window.
+- **Claude rate limit** — the umbrella term covering all enforcement: the 5-hour session cap, the weekly cap, and per-model API tiers.
+
+When someone asks "when does my Claude session reset?", the answer is "5 hours from when your earliest counted request was made" — not from when you started coding. Because the window is rolling, sessions never reset cleanly; usage just decays as old requests pass the 5-hour mark.
 
 ## What a Rate Limit Looks Like
 

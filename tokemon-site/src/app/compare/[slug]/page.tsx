@@ -23,7 +23,7 @@ export async function generateMetadata({
     const metadata = mod.metadata as CompareMetadata;
 
     return {
-      title: `${metadata.title} | Tokemon`,
+      title: metadata.title,
       description: metadata.description,
       alternates: {
         canonical: `https://tokemon.ai/compare/${slug}`,

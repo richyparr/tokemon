@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Claude Code Cost Calculator: How Much Does Claude Code Really Cost?",
+  title: "Claude Code Cost Calculator: Real Pricing in 2026",
   description:
     "Calculate your real Claude Code costs based on usage patterns. Understand token pricing for Opus, Sonnet, and Haiku models, plus how prompt caching and extended thinking affect your bill.",
   date: "2026-03-06",
@@ -148,3 +148,17 @@ brew install --cask richyparr/tokemon/tokemon
 ```
 
 Free, native to macOS, and built for developers who want to know exactly where their tokens are going. Stop estimating. Start measuring.
+
+## Frequently Asked Questions
+
+### How much does Claude Code cost?
+
+Claude Code on the API is billed per token. Opus 4 costs $15 per million input tokens and $75 per million output tokens. Sonnet 4 is $3/$15. Haiku is the cheapest at roughly $0.80/$4. A typical day of intensive coding ranges from $5 to $40 in API spend depending on model mix and prompt-caching usage.
+
+### Does prompt caching reduce Claude API cost?
+
+Yes. Prompt caching cuts repeat-context costs significantly. Cache writes cost 25 percent more than a normal input token, but cache reads cost 90 percent less. For long-running coding sessions where the same context is reused across many requests, caching can reduce total spend by 30-70 percent.
+
+### What's the cheapest way to use Claude Code?
+
+Subscribe to Claude Pro or Max instead of using the API directly. Claude Pro is $20/month flat with a generous 5-hour rolling window, and Max gives you 5x or 20x that for $100 or $200. For most individual developers a subscription is cheaper than per-token API billing.

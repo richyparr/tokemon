@@ -15,20 +15,22 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://tokemon.ai"),
-  title: "Tokemon — Claude Usage Monitor for macOS & Raycast",
+  title: "Tokemon — Claude Code Usage Tracker & Monitor for macOS",
   description:
-    "Free, open-source Claude usage monitor for macOS and Raycast. Track token limits, burn rate, per-project costs, and team budgets in real-time from your menu bar. Get alerts before you hit rate limits.",
+    "Free Claude usage tracker for macOS & Raycast. Real-time burn rate, per-project costs, team budgets, and rate-limit alerts — right in your menu bar.",
   keywords: [
-    "Claude usage monitor",
-    "Claude rate limit tracker",
-    "Claude Code usage",
-    "Claude token tracker",
-    "Anthropic usage monitor",
-    "Claude menu bar",
-    "Claude macOS app",
-    "Claude Raycast extension",
-    "AI token usage",
-    "Claude burn rate",
+    "claude usage tracker",
+    "claude code usage tracker",
+    "claude usage monitor",
+    "claude code usage monitor",
+    "claude code cost",
+    "claude rate limit",
+    "claude session limit",
+    "claude statusline",
+    "claude token tracker",
+    "anthropic api usage",
+    "claude menu bar",
+    "claude macos app",
   ],
   alternates: {
     canonical: "https://tokemon.ai",
@@ -36,9 +38,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Tokemon",
-    title: "Tokemon — Claude Usage Monitor for macOS & Raycast",
+    title: "Tokemon — Claude Code Usage Tracker & Monitor for macOS",
     description:
-      "Free, open-source Claude usage monitor. Track token limits, burn rate, per-project costs, and team budgets in real-time. Never hit a rate limit by surprise.",
+      "Free Claude usage tracker for macOS & Raycast. Real-time burn rate, per-project costs, team budgets, and rate-limit alerts — right in your menu bar.",
     url: "https://tokemon.ai",
     images: [
       {
@@ -51,9 +53,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tokemon — Claude Usage Monitor for macOS & Raycast",
+    title: "Tokemon — Claude Code Usage Tracker & Monitor for macOS",
     description:
-      "Free, open-source Claude usage monitor. Track token limits, burn rate, per-project costs, and team budgets in real-time.",
+      "Free Claude usage tracker for macOS & Raycast. Real-time burn rate, per-project costs, team budgets, and rate-limit alerts.",
     images: ["/og.png"],
   },
   icons: { icon: "/icon.png", apple: "/icon.png" },

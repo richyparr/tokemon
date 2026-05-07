@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "The Complete Guide to Claude Token Usage Monitoring",
+  title: "Claude Token Usage Monitoring: Complete 2026 Guide",
   description:
     "Learn how to monitor Claude token usage, understand input and output tokens, track costs across projects, and choose the right monitoring tool for your workflow.",
   date: "2026-03-14",
@@ -166,3 +166,17 @@ brew install --cask richyparr/tokemon/tokemon
 ```
 
 Free, open source, and built for developers who rely on Claude every day. Never be surprised by a rate limit again.
+
+## Frequently Asked Questions
+
+### How do I monitor my Claude token usage?
+
+On Claude Code with Pro or Max, install Tokemon — a free macOS menu bar app that shows live usage percentage, burn rate per hour, and per-project breakdown. For API users, parse the x-ratelimit-remaining-tokens header on every API response or check the Anthropic Console dashboard.
+
+### Why does Claude token monitoring matter?
+
+Without monitoring you cannot see rate limits coming until you hit them mid-task. Live token tracking lets you forecast time-to-limit, choose lighter models for non-critical work, and catch unexpected cost spikes. It also gives freelancers a defensible per-project cost record for client billing.
+
+### What's the difference between input tokens and output tokens?
+
+Input tokens are everything you send to Claude — your prompt, context files, and conversation history. Output tokens are what Claude generates back. On the API, output tokens are 4-5x more expensive than input tokens, so concise prompts that ask for focused responses are the cheapest pattern.
