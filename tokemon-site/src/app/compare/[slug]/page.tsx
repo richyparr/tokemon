@@ -22,6 +22,7 @@ export async function generateMetadata({
     const mod = await import(`../../../../content/compare/${slug}.mdx`);
     const metadata = mod.metadata as CompareMetadata;
 
+    const ogImage = `/api/og?title=${encodeURIComponent(metadata.title)}&kicker=Tokemon%20vs`;
     return {
       title: metadata.title,
       description: metadata.description,
@@ -34,6 +35,13 @@ export async function generateMetadata({
         description: metadata.description,
         publishedTime: metadata.date,
         authors: [metadata.author],
+        images: [{ url: ogImage, width: 1200, height: 630 }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: metadata.title,
+        description: metadata.description,
+        images: [ogImage],
       },
     };
   } catch {

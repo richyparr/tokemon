@@ -15,6 +15,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
+      url: "https://tokemon.ai/claude-code-cost",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: "https://tokemon.ai/claude-statusline",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: "https://tokemon.ai/blog",
       lastModified: new Date(),
       changeFrequency: "weekly",
