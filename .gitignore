@@ -17,6 +17,7 @@ xcuserdata/
 # Build artifacts
 build/
 .build-xcode/
+*.profraw
 
 # App bundle (build artifact)
 *.app/
