@@ -73,7 +73,7 @@ struct ErrorBannerView: View {
             if case .keychainAccessDenied = error {
                 HStack(spacing: 8) {
                     Button("Open Keychain Access") {
-                        NSWorkspace.shared.open(URL(fileURLWithPath: "/System/Applications/Utilities/Keychain Access.app"))
+                        openKeychainAccess()
                     }
                     .buttonStyle(.glassProminent)
                     .controlSize(.small)
@@ -157,5 +157,22 @@ struct ErrorBannerView: View {
         default:
             return .blue
         }
+    }
+
+    /// Resolve and launch Keychain Access. The system path moved between macOS
+    /// versions (12-14: /Applications/Utilities; 15-25: /System/Applications/Utilities;
+    /// 26+: /System/Library/CoreServices/Applications), so resolve via LaunchServices
+    /// using the bundle identifier and fall back to a shell `open -b` if needed.
+    private func openKeychainAccess() {
+        let bundleId = "com.apple.keychainaccess"
+        if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleId) {
+            NSWorkspace.shared.openApplication(at: url, configuration: NSWorkspace.OpenConfiguration())
+            return
+        }
+        // Fallback: spawn `open -b com.apple.keychainaccess`
+        let task = Process()
+        task.launchPath = "/usr/bin/open"
+        task.arguments = ["-b", bundleId]
+        try? task.run()
     }
 }
