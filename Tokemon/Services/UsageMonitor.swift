@@ -163,6 +163,9 @@ final class UsageMonitor {
         case bothSourcesFailed(String)
         case tokenExpired
         case insufficientScope
+        /// Tokemon is missing from the keychain ACL on the Claude Code-credentials entry.
+        /// Recovery: Keychain Access.app → find item → Access Control tab → add Tokemon.
+        case keychainAccessDenied
     }
 
     // MARK: - Initialization
@@ -288,6 +291,16 @@ final class UsageMonitor {
                 let ageStr = cachedAge.map { "\(Int($0))s" } ?? "none"
                 print("[Tokemon] Cached data too old (\(ageStr)), trying JSONL")
                 oauthState = .failed("Rate limited")
+            } catch TokenManager.TokenError.keychainAccessDenied,
+                    TokenManager.TokenError.keychainAccessTimedOut {
+                // Recoverable user-action error: Tokemon is missing from the credential's
+                // keychain ACL. Surface a dedicated banner instead of falling back to JSONL —
+                // the user must add Tokemon to Keychain Access before OAuth can work again.
+                print("[Tokemon] Keychain ACL excludes Tokemon; surfacing re-authorize banner")
+                oauthState = .failed("keychain access denied")
+                self.error = .keychainAccessDenied
+                onUsageChanged?(currentUsage)
+                return
             } catch {
                 print("[Tokemon] OAuth failed: \(error) — \(error.localizedDescription)")
                 oauthState = .failed(error.localizedDescription)

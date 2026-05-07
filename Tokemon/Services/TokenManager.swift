@@ -1,5 +1,6 @@
 import Foundation
 import KeychainAccess
+import Security
 
 /// Stateless utility for reading, validating, and refreshing Claude Code OAuth credentials
 /// stored in the macOS Keychain under the "Claude Code-credentials" service.
@@ -14,6 +15,13 @@ struct TokenManager {
         case refreshFailed
         case insufficientScope
         case decodingError(Error)
+        /// Keychain ACL excludes Tokemon. macOS would prompt the user, but we have
+        /// disabled prompts (LSUIElement apps can't show them). User must add Tokemon
+        /// to the credential's Access Control list via Keychain Access.app.
+        case keychainAccessDenied
+        /// Keychain access did not return within the deadline. Defense in depth in case
+        /// `SecKeychainSetUserInteractionAllowed(false)` ever fails to take effect.
+        case keychainAccessTimedOut
 
         var errorDescription: String? {
             switch self {
@@ -27,7 +35,25 @@ struct TokenManager {
                 return "OAuth token missing required 'user:profile' scope"
             case .decodingError(let error):
                 return "Failed to decode credentials: \(error.localizedDescription)"
+            case .keychainAccessDenied:
+                return "Tokemon is not authorized to read the Claude Code credentials. Open Keychain Access, find 'Claude Code-credentials', and add Tokemon to its Access Control list."
+            case .keychainAccessTimedOut:
+                return "Reading Claude Code credentials timed out. Open Keychain Access, find 'Claude Code-credentials', and add Tokemon to its Access Control list."
             }
+        }
+    }
+
+    // MARK: - Startup hardening
+
+    /// Disable interactive keychain prompts process-wide. Tokemon is LSUIElement
+    /// (no main window), so a queued SecurityAgent prompt would never display and
+    /// `SecItemCopyMatching` would block the calling thread forever. With prompts
+    /// disabled, denied ACLs return `errSecInteractionNotAllowed` immediately and
+    /// we surface a re-authorize banner in the popover instead. Call once at app launch.
+    static func disableInteractiveKeychainPrompts() {
+        let status = SecKeychainSetUserInteractionAllowed(false)
+        if status != errSecSuccess {
+            print("[Tokemon] SecKeychainSetUserInteractionAllowed failed: \(status)")
         }
     }
 
@@ -65,18 +91,52 @@ struct TokenManager {
     // MARK: - Credential Access
 
     /// Read and decode Claude Code credentials from the macOS Keychain.
+    ///
+    /// The keychain query runs on a background queue with a 5-second deadline. If the
+    /// underlying `SecItemCopyMatching` ever blocks (e.g. an interactive prompt slipped
+    /// past `SecKeychainSetUserInteractionAllowed(false)`), we throw
+    /// `TokenError.keychainAccessTimedOut` instead of hanging the polling Task.
+    /// `errSecInteractionNotAllowed` and `errSecAuthFailed` are mapped to
+    /// `TokenError.keychainAccessDenied` so the popover can show a re-authorize banner.
     /// - Returns: Decoded `ClaudeCredentials` containing OAuth tokens and metadata.
-    /// - Throws: `TokenError.noCredentials` if no entry found, `.decodingError` if JSON is malformed.
+    /// - Throws: See `TokenError`.
     static func getCredentials() throws -> ClaudeCredentials {
         let keychain = Keychain(service: Constants.keychainService)
-
-        // Claude Code stores credentials under the current user's username as account
         let username = NSUserName()
 
+        // Run the synchronous keychain call on a background queue with a deadline so a
+        // hung Mach call can't freeze the MainActor that owns UsageMonitor.refresh().
+        let semaphore = DispatchSemaphore(value: 0)
+        var result: Result<String?, Error>!
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                result = .success(try keychain.getString(username))
+            } catch {
+                result = .failure(error)
+            }
+            semaphore.signal()
+        }
+
+        switch semaphore.wait(timeout: .now() + 5.0) {
+        case .timedOut:
+            throw TokenError.keychainAccessTimedOut
+        case .success:
+            break
+        }
+
         let credentialsJSON: String?
-        do {
-            credentialsJSON = try keychain.getString(username)
-        } catch {
+        switch result! {
+        case .success(let value):
+            credentialsJSON = value
+        case .failure(let error):
+            // Map ACL/auth denials so the UI can show the re-authorize banner.
+            // KeychainAccess wraps the OSStatus; check the NSError code path first.
+            let nsError = error as NSError
+            if nsError.code == Int(errSecInteractionNotAllowed)
+                || nsError.code == Int(errSecAuthFailed)
+                || nsError.code == Int(errSecMissingEntitlement) {
+                throw TokenError.keychainAccessDenied
+            }
             throw TokenError.decodingError(error)
         }
 

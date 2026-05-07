@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 /// Error banner with user-friendly message and "Show details" expander.
 /// Appears in the popover when an error state is active.
@@ -67,6 +68,21 @@ struct ErrorBannerView: View {
                 .buttonStyle(.glassProminent)
                 .controlSize(.small)
             }
+
+            // Direct recovery action for the keychain ACL case.
+            if case .keychainAccessDenied = error {
+                HStack(spacing: 8) {
+                    Button("Open Keychain Access") {
+                        NSWorkspace.shared.open(URL(fileURLWithPath: "/System/Applications/Utilities/Keychain Access.app"))
+                    }
+                    .buttonStyle(.glassProminent)
+                    .controlSize(.small)
+
+                    Button("Retry") { onRetry() }
+                        .buttonStyle(.glass)
+                        .controlSize(.small)
+                }
+            }
         }
         .padding(10)
         .background {
@@ -91,6 +107,8 @@ struct ErrorBannerView: View {
             return "Authentication expired"
         case .insufficientScope:
             return "Re-authentication needed"
+        case .keychainAccessDenied:
+            return "Tokemon needs Keychain access"
         }
     }
 
@@ -108,6 +126,8 @@ struct ErrorBannerView: View {
             return "OAuth access token has expired. Run /exit then /login in Claude Code to refresh credentials."
         case .insufficientScope:
             return "Claude Code needs to be re-authenticated with /login to grant usage data access."
+        case .keychainAccessDenied:
+            return "Tokemon is not on the Access Control list for the 'Claude Code-credentials' keychain item. Open Keychain Access, find the entry, and add Tokemon. This usually happens after Claude Code rewrites the entry on /login."
         }
     }
 
@@ -117,6 +137,8 @@ struct ErrorBannerView: View {
             return "exclamationmark.triangle.fill"
         case .tokenExpired, .insufficientScope:
             return "key.fill"
+        case .keychainAccessDenied:
+            return "lock.shield.fill"
         case .oauthRateLimited:
             return "bolt.fill"
         default:
@@ -126,7 +148,7 @@ struct ErrorBannerView: View {
 
     private var errorIconColor: Color {
         switch error {
-        case .bothSourcesFailed:
+        case .bothSourcesFailed, .keychainAccessDenied:
             return .orange
         case .tokenExpired, .insufficientScope:
             return .yellow

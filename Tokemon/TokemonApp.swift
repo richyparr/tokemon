@@ -22,6 +22,12 @@ struct TokemonApp: App {
     @AppStorage("showUsageTrend") private var showUsageTrend: Bool = false
 
     init() {
+        // Disable interactive keychain prompts process-wide. Tokemon is LSUIElement so
+        // a queued SecurityAgent prompt would never display and SecItemCopyMatching would
+        // block forever. With prompts disabled, denied ACLs return errSecInteractionNotAllowed
+        // immediately and we show a re-authorize banner in the popover instead.
+        TokenManager.disableInteractiveKeychainPrompts()
+
         // Set notification delegate to handle notifications while app is "active"
         // (Menu bar apps are always considered active)
         // Note: UNUserNotificationCenter requires a proper app bundle - skip when running as SPM executable
