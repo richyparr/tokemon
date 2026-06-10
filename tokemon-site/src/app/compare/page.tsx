@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getComparePages } from "@/lib/compare";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 
 export const metadata: Metadata = {
   title: "Compare Tokemon vs Alternatives | Tokemon",
@@ -21,8 +23,9 @@ export default async function CompareIndex() {
   const pages = await getComparePages();
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      <div className="max-w-4xl mx-auto px-6 pt-28 pb-24">
+    <div className="min-h-screen">
+      <SiteNav />
+      <div id="main" className="max-w-4xl mx-auto px-6 pt-28 pb-24">
         <h1 className="text-4xl font-bold tracking-tight text-white mb-4">
           Tokemon vs Alternatives
         </h1>
@@ -31,7 +34,7 @@ export default async function CompareIndex() {
         </p>
 
         {pages.length === 0 ? (
-          <p className="text-[#666]">No comparisons yet. Check back soon!</p>
+          <p className="text-[#8a8a8a]">No comparisons yet. Check back soon!</p>
         ) : (
           <div className="space-y-6">
             {pages.map((page) => {
@@ -58,7 +61,7 @@ export default async function CompareIndex() {
                   </p>
                   <time
                     dateTime={page.date}
-                    className="text-sm text-[#666]"
+                    className="text-sm text-[#8a8a8a]"
                   >
                     {formattedDate}
                   </time>
@@ -67,7 +70,22 @@ export default async function CompareIndex() {
             })}
           </div>
         )}
+
+        <div className="mt-16 rounded-xl bg-[#111] border border-[#222] p-8 text-center">
+          <h2 className="text-xl font-semibold text-white mb-2">Try Tokemon Free</h2>
+          <p className="text-[#999] mb-6 max-w-md mx-auto">
+            Monitor your Claude usage in real-time from your macOS menu bar.
+            Open-source and always free.
+          </p>
+          <Link
+            href="/#install"
+            className="inline-flex items-center gap-2 bg-[#e8853b] hover:bg-[#d4742f] text-white font-medium px-6 py-3 rounded-lg transition-colors"
+          >
+            Download Tokemon
+          </Link>
+        </div>
       </div>
+      <SiteFooter />
     </div>
   );
 }

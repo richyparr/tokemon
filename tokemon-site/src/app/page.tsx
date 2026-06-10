@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 import { HeroTyping } from "./HeroTyping";
 import { HeroBackground } from "./HeroBackground";
 import { HeroCTA } from "./HeroCTA";
@@ -165,37 +167,10 @@ export default function Home() {
       />
 
       {/* ── Nav ── */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 border-b border-[#1a1a1a]"
-        style={{ backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", background: "rgba(0,0,0,0.8)" }}
-      >
-        <div className={`${cx} flex justify-between items-center h-14`}>
-          <div className="flex items-center gap-2.5 text-base font-semibold">
-            <Image src="/icon.png" alt="Tokemon" width={24} height={24} className="rounded-[5px]" />
-            tokemon
-          </div>
-          <div className="flex items-center gap-8 text-sm">
-            <Link href="/blog" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">
-              Blog
-            </Link>
-            <Link href="/compare" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">
-              Compare
-            </Link>
-            <a href="https://github.com/richyparr/tokemon" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">
-              GitHub
-            </a>
-            <a
-              href="https://github.com/richyparr/tokemon/releases/latest"
-              className="bg-[#ededed] text-black px-4 py-1.5 rounded-lg text-[13px] font-medium hover:opacity-85 transition-opacity"
-            >
-              Download
-            </a>
-          </div>
-        </div>
-      </nav>
+      <SiteNav />
 
       {/* ── Hero ── */}
-      <section className="relative pt-32 md:pt-36 pb-10 text-center md:text-left overflow-hidden">
+      <section id="main" className="relative pt-32 md:pt-36 pb-10 text-center md:text-left overflow-hidden">
         <HeroBackground />
         <div className={`${cx} relative z-10`}>
           <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-8 md:gap-12 items-center">
@@ -514,19 +489,7 @@ export default function Home() {
       <div className={divider} />
 
       {/* ── Footer ── */}
-      <footer className="border-t border-[#1a1a1a] py-10">
-        <div className={`${cx} flex flex-col sm:flex-row justify-between items-center gap-4`}>
-          <div className="text-[13px] text-[#555]">Built for developers who ship with Claude</div>
-          <div className="flex gap-6 text-[13px]">
-            <Link href="/blog" className="text-[#555] hover:text-[#ededed] transition-colors">Blog</Link>
-            <Link href="/compare" className="text-[#555] hover:text-[#ededed] transition-colors">Compare</Link>
-            <a href="https://github.com/richyparr/tokemon" className="text-[#555] hover:text-[#ededed] transition-colors">GitHub</a>
-            <a href="https://github.com/richyparr/tokemon/releases/latest" className="text-[#555] hover:text-[#ededed] transition-colors">Releases</a>
-            <a href="https://github.com/richyparr/tokemon/issues" className="text-[#555] hover:text-[#ededed] transition-colors">Issues</a>
-            <a href="https://buymeacoffee.com/richyparr" className="text-[#555] hover:text-[#ededed] transition-colors">Buy Me a Coffee</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

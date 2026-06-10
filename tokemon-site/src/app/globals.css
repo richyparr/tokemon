@@ -5,3 +5,15 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
+
+@theme {
+  --color-border-subtle: #1a1a1a;
+  --color-border-default: #252525;
+  --color-border-strong: #333333;
+  --color-card: #111111;
+  --color-card-hover: #151515;
+  --color-accent: #e8853b;
+  --color-accent-soft: #f0a060;
+  --color-text-secondary: #999999;
+  --color-text-tertiary: #8a8a8a;
+}

@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { BlogPostMetadata } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog";
+import { slugifyTag } from "@/lib/blog";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 
 export default function BlogLayout({
   metadata,
@@ -19,13 +22,15 @@ export default function BlogLayout({
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   });
 
   const breadcrumbLabel = breadcrumbBase === "compare" ? "Compare" : "Blog";
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      <div className="max-w-3xl mx-auto px-6 pt-28 pb-24">
+    <div className="min-h-screen">
+      <SiteNav />
+      <div id="main" className="max-w-3xl mx-auto px-6 pt-28 pb-24">
         {/* Visual breadcrumb */}
         <nav aria-label="Breadcrumb" className="mb-10">
           <ol className="flex items-center gap-2 text-sm text-[#999]">
@@ -50,24 +55,39 @@ export default function BlogLayout({
               <span>{metadata.author}</span>
               <span className="text-[#444]">&middot;</span>
               <time dateTime={metadata.date}>{formattedDate}</time>
+              {metadata.readingTime ? (
+                <>
+                  <span className="text-[#444]">&middot;</span>
+                  <span>{metadata.readingTime} min read</span>
+                </>
+              ) : null}
             </div>
-            {/* Tags */}
+            {/* Tags — compare-page tags are not part of the blog tag taxonomy, so don't link them */}
             {metadata.tags && metadata.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-4">
-                {metadata.tags.map((tag) => (
-                  <Link
-                    key={tag}
-                    href={`/blog/tag/${encodeURIComponent(tag)}`}
-                    className="text-xs px-2.5 py-1 rounded-full bg-[#1a1a1a] border border-[#333] text-[#999] hover:text-[#e8853b] hover:border-[#e8853b]/50 transition-colors"
-                  >
-                    {tag}
-                  </Link>
-                ))}
+                {metadata.tags.map((tag) =>
+                  breadcrumbBase === "compare" ? (
+                    <span
+                      key={tag}
+                      className="text-xs px-2.5 py-1 rounded-full bg-[#1a1a1a] border border-[#333] text-[#999]"
+                    >
+                      {tag}
+                    </span>
+                  ) : (
+                    <Link
+                      key={tag}
+                      href={`/blog/tag/${slugifyTag(tag)}`}
+                      className="text-xs px-2.5 py-1 rounded-full bg-[#1a1a1a] border border-[#333] text-[#999] hover:text-[#e8853b] hover:border-[#e8853b]/50 transition-colors"
+                    >
+                      {tag}
+                    </Link>
+                  )
+                )}
               </div>
             )}
           </header>
 
-          <div className="prose prose-invert prose-orange max-w-none">
+          <div className="prose prose-invert prose-orange max-w-none [&_:is(h1,h2,h3,h4)_a]:no-underline [&_:is(h1,h2,h3,h4)_a]:text-inherit [&_:is(h1,h2,h3,h4)_a]:font-inherit">
             {children}
           </div>
         </article>
@@ -75,7 +95,7 @@ export default function BlogLayout({
         {/* Related Posts */}
         {relatedPosts && relatedPosts.length > 0 && (
           <div className="mt-16 pt-8 border-t border-[#222]">
-            <h3 className="text-lg font-semibold text-white mb-6">Related Posts</h3>
+            <h2 className="text-lg font-semibold text-white mb-6">Related Posts</h2>
             <div className="grid gap-4 sm:grid-cols-2">
               {relatedPosts.slice(0, 4).map((post) => (
                 <Link
@@ -83,10 +103,10 @@ export default function BlogLayout({
                   href={`/blog/${post.slug}`}
                   className="group block rounded-xl border border-[#222] bg-[#111] p-5 transition-colors hover:border-[#e8853b]/50 hover:bg-[#141414]"
                 >
-                  <h4 className="text-sm font-medium text-white group-hover:text-[#e8853b] transition-colors mb-1 line-clamp-2">
+                  <h3 className="text-sm font-medium text-white group-hover:text-[#e8853b] transition-colors mb-1 line-clamp-2">
                     {post.title}
-                  </h4>
-                  <p className="text-xs text-[#666] line-clamp-2">
+                  </h3>
+                  <p className="text-xs text-[#8a8a8a] line-clamp-2">
                     {post.description}
                   </p>
                 </Link>
@@ -97,22 +117,24 @@ export default function BlogLayout({
 
         <div className="mt-16 pt-8 border-t border-[#222]">
           <div className="rounded-xl bg-[#111] border border-[#222] p-8 text-center">
-            <h3 className="text-xl font-semibold text-white mb-2">
+            <h2 className="text-xl font-semibold text-white mb-2">
               Try Tokemon Free
-            </h3>
+            </h2>
             <p className="text-[#999] mb-6 max-w-md mx-auto">
               Monitor your Claude usage in real-time from your macOS menu bar.
               Open-source and always free.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/"
+                href="/#install"
                 className="inline-flex items-center gap-2 bg-[#e8853b] hover:bg-[#d4742f] text-white font-medium px-6 py-3 rounded-lg transition-colors"
               >
                 Download Tokemon
               </Link>
               <a
                 href="https://buymeacoffee.com/richyparr"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-[#FFDD00] hover:bg-[#FFE840] text-black font-medium px-6 py-3 rounded-lg transition-colors"
               >
                 Buy me a coffee
@@ -121,6 +143,7 @@ export default function BlogLayout({
           </div>
         </div>
       </div>
+      <SiteFooter />
     </div>
   );
 }

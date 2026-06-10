@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 
 const URL = "https://tokemon.ai/claude-code-cost";
 
 export const metadata: Metadata = {
   title: "Claude Code Cost — Real Pricing for Opus, Sonnet & Haiku (2026)",
   description:
-    "What does Claude Code actually cost in 2026? Per-token pricing for Opus, Sonnet, and Haiku, prompt caching savings, Pro/Max/Team comparison, and a real-world calculator.",
+    "What does Claude Code actually cost in 2026? Per-token pricing for Opus, Sonnet, and Haiku, prompt caching savings, real-world daily examples, and a Pro/Max/Team comparison.",
   keywords: [
     "claude code cost",
     "claude code pricing",
@@ -18,7 +19,6 @@ export const metadata: Metadata = {
     "claude sonnet cost",
     "claude haiku cost",
     "claude prompt caching cost",
-    "claude code cost calculator",
   ],
   alternates: { canonical: URL },
   openGraph: {
@@ -50,7 +50,7 @@ const faqs: { q: string; a: string }[] = [
   },
   {
     q: "What is the per-token cost of Claude Opus, Sonnet, and Haiku?",
-    a: "Claude Opus 4 is $15 per million input tokens and $75 per million output tokens. Claude Sonnet 4 is $3 per million input and $15 per million output. Claude Haiku is the cheapest at roughly $0.80 per million input and $4 per million output. Output tokens are 4-5x more expensive than input across all three.",
+    a: "Claude Opus 4.8 is $5 per million input tokens and $25 per million output tokens. Claude Sonnet 4.6 is $3 per million input and $15 per million output. Claude Haiku 4.5 is the cheapest at $1 per million input and $5 per million output. Output tokens are 5x more expensive than input across all three.",
   },
   {
     q: "Does prompt caching reduce Claude Code cost?",
@@ -97,26 +97,10 @@ export default function ClaudeCodeCostPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 border-b border-[#1a1a1a]"
-        style={{ backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", background: "rgba(0,0,0,0.8)" }}
-      >
-        <div className={`${cx} flex justify-between items-center h-14`}>
-          <Link href="/" className="flex items-center gap-2.5 text-base font-semibold">
-            <Image src="/icon.png" alt="Tokemon" width={24} height={24} className="rounded-[5px]" />
-            tokemon
-          </Link>
-          <div className="flex items-center gap-8 text-sm">
-            <Link href="/blog" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">Blog</Link>
-            <Link href="/compare" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">Compare</Link>
-            <a href="https://github.com/richyparr/tokemon" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">GitHub</a>
-            <a href="https://github.com/richyparr/tokemon/releases/latest" className="px-3 py-1.5 rounded-md bg-[#ededed] text-black text-sm font-medium hover:opacity-85 transition-opacity">Download</a>
-          </div>
-        </div>
-      </nav>
+      <SiteNav />
 
       {/* Hero */}
-      <section className="pt-40 pb-12 text-center relative">
+      <section id="main" className="pt-40 pb-12 text-center relative">
         <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[radial-gradient(ellipse,rgba(240,160,96,0.15)_0%,transparent_70%)] pointer-events-none z-0" />
         <div className={`${cx} relative z-10`}>
           <div className="inline-block text-xs font-semibold uppercase tracking-[0.08em] text-[#f0a060] mb-5">
@@ -137,23 +121,23 @@ export default function ClaudeCodeCostPage() {
           <h2 className="text-3xl md:text-[40px] font-bold tracking-tight mb-2">Claude API pricing by model</h2>
           <p className="text-[#aaa] mb-8 max-w-[640px]">All prices in USD per million tokens. Output tokens are charged at 4-5x the input rate, so writing-heavy use cases cost more than reading-heavy ones.</p>
 
-          <div className="overflow-hidden border border-[#1a1a1a] rounded-2xl">
-            <table className="w-full text-sm">
+          <div className="border border-[#1a1a1a] rounded-2xl overflow-x-auto">
+            <table className="w-full text-sm min-w-[640px]">
               <thead className="bg-[#0f0f0f] text-[#aaa] text-left">
                 <tr>
-                  <th className="px-5 py-4 font-medium">Model</th>
-                  <th className="px-5 py-4 font-medium">Input</th>
-                  <th className="px-5 py-4 font-medium">Output</th>
-                  <th className="px-5 py-4 font-medium">Cache write</th>
-                  <th className="px-5 py-4 font-medium">Cache read</th>
-                  <th className="px-5 py-4 font-medium">Best for</th>
+                  <th scope="col" className="px-5 py-4 font-medium">Model</th>
+                  <th scope="col" className="px-5 py-4 font-medium">Input</th>
+                  <th scope="col" className="px-5 py-4 font-medium">Output</th>
+                  <th scope="col" className="px-5 py-4 font-medium">Cache write</th>
+                  <th scope="col" className="px-5 py-4 font-medium">Cache read</th>
+                  <th scope="col" className="px-5 py-4 font-medium">Best for</th>
                 </tr>
               </thead>
               <tbody>
                 {[
-                  ["Claude Opus 4", "$15.00", "$75.00", "$18.75", "$1.50", "Hardest reasoning, complex refactors"],
-                  ["Claude Sonnet 4", "$3.00", "$15.00", "$3.75", "$0.30", "Daily coding work, default for Claude Code"],
-                  ["Claude Haiku", "$0.80", "$4.00", "$1.00", "$0.08", "High-throughput / cheap classification"],
+                  ["Claude Opus 4.8", "$5.00", "$25.00", "$6.25", "$0.50", "Hardest reasoning, complex refactors"],
+                  ["Claude Sonnet 4.6", "$3.00", "$15.00", "$3.75", "$0.30", "Daily coding work, speed/intelligence balance"],
+                  ["Claude Haiku 4.5", "$1.00", "$5.00", "$1.25", "$0.10", "High-throughput / cheap classification"],
                 ].map((row, i) => (
                   <tr key={row[0]} className={i % 2 ? "bg-[#0a0a0a]" : "bg-[#070707]"}>
                     {row.map((cell, j) => (
@@ -166,7 +150,7 @@ export default function ClaudeCodeCostPage() {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-[#666] mt-3">Prices reflect current public pricing. Verify on the <a href="https://www.anthropic.com/pricing" className="underline hover:text-[#aaa]">Anthropic pricing page</a> before locking in a budget.</p>
+          <p className="text-xs text-[#8a8a8a] mt-3">Last updated: June 2026. Prices reflect current public pricing. Verify on the <a href="https://www.anthropic.com/pricing" className="underline hover:text-[#ddd]">Anthropic pricing page</a> before locking in a budget.</p>
         </div>
       </section>
 
@@ -201,10 +185,10 @@ export default function ClaudeCodeCostPage() {
 
           <div className="space-y-4">
             {[
-              { title: "Light day — small refactors, mostly reading code", inp: "120K", out: "20K", model: "Sonnet 4 with caching", cost: "$0.55", note: "Cache reads dominate; output volume small." },
-              { title: "Average day — feature work, multi-file edits", inp: "850K", out: "180K", model: "Sonnet 4 with caching", cost: "$5.10", note: "Most developers fall here. ~6 hours of focused coding." },
-              { title: "Heavy day — large refactor with Opus escalation", inp: "2.4M", out: "650K", model: "Sonnet baseline + Opus for hard sub-tasks", cost: "$38.20", note: "Opus output tokens drive most of the cost." },
-              { title: "Production batch — codebase-wide migration", inp: "8.2M", out: "1.1M", model: "Sonnet 4 with aggressive caching", cost: "$42.80", note: "Caching saved an estimated $90 vs naive replay." },
+              { title: "Light day — small refactors, mostly reading code", inp: "120K", out: "20K", model: "Sonnet 4.6 with caching", cost: "$0.55", note: "Cache reads dominate; output volume small." },
+              { title: "Average day — feature work, multi-file edits", inp: "850K", out: "180K", model: "Sonnet 4.6 with caching", cost: "$5.10", note: "Most developers fall here. ~6 hours of focused coding." },
+              { title: "Heavy day — large refactor with Opus escalation", inp: "2.4M", out: "650K", model: "Sonnet baseline + Opus 4.8 for hard sub-tasks", cost: "$19.40", note: "Opus output tokens drive most of the cost." },
+              { title: "Production batch — codebase-wide migration", inp: "8.2M", out: "1.1M", model: "Sonnet 4.6 with aggressive caching", cost: "$42.80", note: "Caching saved an estimated $90 vs naive replay." },
             ].map((row) => (
               <div key={row.title} className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-5 grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 items-center">
                 <div>
@@ -281,7 +265,7 @@ export default function ClaudeCodeCostPage() {
               <details key={f.q} className="group bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
                 <summary className="cursor-pointer flex justify-between items-center gap-4">
                   <span className="font-semibold text-[15px]">{f.q}</span>
-                  <span className="text-[#666] group-open:rotate-45 transition-transform">+</span>
+                  <span aria-hidden="true" className="text-[#8a8a8a] group-open:rotate-45 transition-transform">+</span>
                 </summary>
                 <p className="mt-3 text-sm text-[#aaa] leading-relaxed">{f.a}</p>
               </details>
@@ -309,17 +293,7 @@ export default function ClaudeCodeCostPage() {
         </div>
       </section>
 
-      <footer className="border-t border-[#1a1a1a] py-10 mt-10">
-        <div className={`${cx} flex flex-wrap gap-6 justify-between text-sm text-[#666]`}>
-          <div>© 2026 Tokemon · MIT</div>
-          <div className="flex gap-6">
-            <Link href="/" className="hover:text-[#ededed] transition-colors">Home</Link>
-            <Link href="/blog" className="hover:text-[#ededed] transition-colors">Blog</Link>
-            <Link href="/compare" className="hover:text-[#ededed] transition-colors">Compare</Link>
-            <a href="https://github.com/richyparr/tokemon" className="hover:text-[#ededed] transition-colors">GitHub</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }
