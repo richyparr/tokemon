@@ -44,6 +44,7 @@ export default async function CompareIndex() {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
+                  timeZone: "UTC",
                 }
               );
 

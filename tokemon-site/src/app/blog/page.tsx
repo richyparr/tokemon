@@ -44,6 +44,7 @@ export default async function BlogIndex() {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
+                  timeZone: "UTC",
                 }
               );
 
@@ -59,12 +60,10 @@ export default async function BlogIndex() {
                   <p className="text-[#999] mb-3 line-clamp-2">
                     {post.description}
                   </p>
-                  <time
-                    dateTime={post.date}
-                    className="text-sm text-[#8a8a8a]"
-                  >
-                    {formattedDate}
-                  </time>
+                  <div className="text-sm text-[#8a8a8a]">
+                    <time dateTime={post.date}>{formattedDate}</time>
+                    {post.readingTime ? <span> &middot; {post.readingTime} min read</span> : null}
+                  </div>
                 </Link>
               );
             })}

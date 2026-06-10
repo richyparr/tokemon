@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { APP_VERSION } from "@/lib/version";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -80,7 +81,7 @@ const jsonLd = [
       "Open-source Claude usage monitor for macOS and Raycast. Track token limits, burn rate, per-project costs, and team budgets in real-time.",
     url: "https://tokemon.ai",
     downloadUrl: "https://github.com/richyparr/tokemon/releases/latest",
-    softwareVersion: "4.0.0",
+    softwareVersion: APP_VERSION,
     author: {
       "@type": "Person",
       name: "Richard Parr",
@@ -109,11 +110,6 @@ const jsonLd = [
     "@type": "WebSite",
     name: "Tokemon",
     url: "https://tokemon.ai",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: "https://tokemon.ai/blog?q={search_term_string}",
-      "query-input": "required name=search_term_string",
-    },
   },
 ];
 
