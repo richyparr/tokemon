@@ -1,33 +1,34 @@
-# Swift Package Manager
-.build/
-.swiftpm/
-
-# Xcode
-*.xcodeproj/xcuserdata/
-*.xcworkspace/xcuserdata/
-DerivedData/
-xcuserdata/
-*.xcscmblueprint
-
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Build artifacts
-build/
-.build-xcode/
-*.profraw
-
-# App bundle (build artifact)
-*.app/
-*.dmg
-
-# Node.js (raycast extension & landing site)
-node_modules/
-dist/
-.next/
-out/
-.vercel/
-test-results/
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Xcode
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+xcuserdata/
+*.xcscmblueprint
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Build artifacts
+build/
+.build-xcode/
+*.profraw
+
+# App bundle (build artifact)
+*.app/
+*.dmg
+
+# Node.js (raycast extension & landing site)
+node_modules/
+dist/
+.next/
+out/
+.vercel/
+test-results/
 config.bat
+.env

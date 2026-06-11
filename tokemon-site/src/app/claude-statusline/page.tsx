@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 
 const PRIMARY_KW = "Claude Statusline";
 const URL = "https://tokemon.ai/claude-statusline";
@@ -91,26 +92,10 @@ export default function ClaudeStatuslinePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 border-b border-[#1a1a1a]"
-        style={{ backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", background: "rgba(0,0,0,0.8)" }}
-      >
-        <div className={`${cx} flex justify-between items-center h-14`}>
-          <Link href="/" className="flex items-center gap-2.5 text-base font-semibold">
-            <Image src="/icon.png" alt="Tokemon" width={24} height={24} className="rounded-[5px]" />
-            tokemon
-          </Link>
-          <div className="flex items-center gap-8 text-sm">
-            <Link href="/blog" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">Blog</Link>
-            <Link href="/compare" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">Compare</Link>
-            <a href="https://github.com/richyparr/tokemon" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">GitHub</a>
-            <a href="https://github.com/richyparr/tokemon/releases/latest" className="px-3 py-1.5 rounded-md bg-[#ededed] text-black text-sm font-medium hover:opacity-85 transition-opacity">Download</a>
-          </div>
-        </div>
-      </nav>
+      <SiteNav />
 
       {/* Hero */}
-      <section className="pt-40 pb-16 text-center relative">
+      <section id="main" className="pt-40 pb-16 text-center relative">
         <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[radial-gradient(ellipse,rgba(240,160,96,0.15)_0%,transparent_70%)] pointer-events-none z-0" />
         <div className={`${cx} relative z-10`}>
           <div className="inline-block text-xs font-semibold uppercase tracking-[0.08em] text-[#f0a060] mb-5">
@@ -178,7 +163,9 @@ export default function ClaudeStatuslinePage() {
             </Step>
             <Step n={3} title="Wire it into your prompt">
               <p className="text-[#aaa] text-sm leading-relaxed mb-3">Add to your <code className="font-mono text-[#f0a060]">.zshrc</code> or <code className="font-mono text-[#f0a060]">.bashrc</code>:</p>
-              <pre className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-lg p-4 text-sm font-mono overflow-x-auto"><code className="text-[#aaa]"><span className="text-[#666]"># Tokemon Claude statusline</span>{"\n"}source ~/.tokemon/tokemon-statusline.sh{"\n"}<span className="text-[#666]"># zsh:</span>{"\n"}PROMPT=<span className="text-[#4ade80]">{"'$(tokemon_statusline) %~ %# '"}</span>{"\n"}<span className="text-[#666]"># bash:</span>{"\n"}PS1=<span className="text-[#4ade80]">{"'$(tokemon_statusline) \\w \\$ '"}</span></code></pre>
+              <pre className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-lg p-4 text-sm font-mono overflow-x-auto"><code className="text-[#aaa]"><span className="text-[#8a8a8a]"># Tokemon Claude statusline</span>{"\n"}source ~/.tokemon/tokemon-statusline.sh{"\n"}<span className="text-[#8a8a8a]"># zsh:</span>{"\n"}PROMPT=<span className="text-[#4ade80]">{"'$(tokemon_statusline) %~ %# '"}</span>{"\n"}<span className="text-[#8a8a8a]"># bash:</span>{"\n"}PS1=<span className="text-[#4ade80]">{"'$(tokemon_statusline) \\w \\$ '"}</span></code></pre>
+              <p className="text-[#aaa] text-sm leading-relaxed mt-3">Using <code className="font-mono text-[#f0a060]">fish</code>? Read the file directly in your prompt function — no sourcing needed:</p>
+              <pre className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-lg p-4 text-sm font-mono overflow-x-auto mt-2"><code className="text-[#aaa]"><span className="text-[#8a8a8a]"># ~/.config/fish/functions/fish_prompt.fish</span>{"\n"}function fish_prompt{"\n"}    cat ~/.tokemon/statusline 2&gt;/dev/null{"\n"}    echo -n <span className="text-[#4ade80]">{"' '"}</span>(prompt_pwd)<span className="text-[#4ade80]">{"' $ '"}</span>{"\n"}end</code></pre>
             </Step>
           </div>
         </div>
@@ -226,7 +213,7 @@ export default function ClaudeStatuslinePage() {
               <details key={f.q} className="group bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
                 <summary className="cursor-pointer flex justify-between items-center gap-4">
                   <span className="font-semibold text-[15px]">{f.q}</span>
-                  <span className="text-[#666] group-open:rotate-45 transition-transform">+</span>
+                  <span aria-hidden="true" className="text-[#8a8a8a] group-open:rotate-45 transition-transform">+</span>
                 </summary>
                 <p className="mt-3 text-sm text-[#aaa] leading-relaxed">{f.a}</p>
               </details>
@@ -249,17 +236,7 @@ export default function ClaudeStatuslinePage() {
         </div>
       </section>
 
-      <footer className="border-t border-[#1a1a1a] py-10 mt-10">
-        <div className={`${cx} flex flex-wrap gap-6 justify-between text-sm text-[#666]`}>
-          <div>© 2026 Tokemon · MIT</div>
-          <div className="flex gap-6">
-            <Link href="/" className="hover:text-[#ededed] transition-colors">Home</Link>
-            <Link href="/blog" className="hover:text-[#ededed] transition-colors">Blog</Link>
-            <Link href="/compare" className="hover:text-[#ededed] transition-colors">Compare</Link>
-            <a href="https://github.com/richyparr/tokemon" className="hover:text-[#ededed] transition-colors">GitHub</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

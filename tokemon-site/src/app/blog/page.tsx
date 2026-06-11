@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getPosts } from "@/lib/blog";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 
 export const metadata: Metadata = {
   title: "Blog | Tokemon",
@@ -21,8 +23,9 @@ export default async function BlogIndex() {
   const posts = await getPosts();
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      <div className="max-w-4xl mx-auto px-6 pt-28 pb-24">
+    <div className="min-h-screen">
+      <SiteNav />
+      <div id="main" className="max-w-4xl mx-auto px-6 pt-28 pb-24">
         <h1 className="text-4xl font-bold tracking-tight text-white mb-4">
           Blog
         </h1>
@@ -31,7 +34,7 @@ export default async function BlogIndex() {
         </p>
 
         {posts.length === 0 ? (
-          <p className="text-[#666]">No posts yet. Check back soon!</p>
+          <p className="text-[#8a8a8a]">No posts yet. Check back soon!</p>
         ) : (
           <div className="space-y-6">
             {posts.map((post) => {
@@ -41,6 +44,7 @@ export default async function BlogIndex() {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
+                  timeZone: "UTC",
                 }
               );
 
@@ -56,18 +60,17 @@ export default async function BlogIndex() {
                   <p className="text-[#999] mb-3 line-clamp-2">
                     {post.description}
                   </p>
-                  <time
-                    dateTime={post.date}
-                    className="text-sm text-[#666]"
-                  >
-                    {formattedDate}
-                  </time>
+                  <div className="text-sm text-[#8a8a8a]">
+                    <time dateTime={post.date}>{formattedDate}</time>
+                    {post.readingTime ? <span> &middot; {post.readingTime} min read</span> : null}
+                  </div>
                 </Link>
               );
             })}
           </div>
         )}
       </div>
+      <SiteFooter />
     </div>
   );
 }

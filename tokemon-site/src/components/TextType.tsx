@@ -2,6 +2,7 @@
 
 import { ElementType, useEffect, useRef, useState, createElement, useMemo, useCallback } from 'react';
 import { gsap } from 'gsap';
+import { useReducedMotion } from '@/lib/useReducedMotion';
 
 interface TextTypeProps {
   className?: string;
@@ -54,6 +55,7 @@ const TextType = ({
   const containerRef = useRef<HTMLElement>(null);
 
   const textArray = useMemo(() => (Array.isArray(text) ? text : [text]), [text]);
+  const reducedMotion = useReducedMotion();
 
   const getRandomSpeed = useCallback(() => {
     if (!variableSpeed) return typingSpeed;
@@ -98,7 +100,7 @@ const TextType = ({
   }, [showCursor, cursorBlinkDuration]);
 
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible || reducedMotion) return;
 
     let timeout: ReturnType<typeof setTimeout>;
 
@@ -162,6 +164,7 @@ const TextType = ({
     loop,
     initialDelay,
     isVisible,
+    reducedMotion,
     reverseMode,
     variableSpeed,
     onSentenceComplete
@@ -172,14 +175,16 @@ const TextType = ({
 
   return createElement(
     Component,
+    // eslint-disable-next-line react-hooks/refs -- createElement treats `ref` as a special prop; it is not read during render
     {
       ref: containerRef,
       className: `inline-block whitespace-pre-wrap tracking-tight ${className}`,
       ...props
     },
     <span className="inline" style={{ color: getCurrentTextColor() || 'inherit' }}>
-      {displayedText}
+      {reducedMotion ? textArray[0] : displayedText}
     </span>,
+    !reducedMotion &&
     showCursor && (
       <span
         ref={cursorRef}
