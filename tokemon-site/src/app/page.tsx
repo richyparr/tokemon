@@ -150,7 +150,7 @@ const faqs: { q: string; a: string }[] = [
   },
   {
     q: "How do I install Tokemon?",
-    a: "You can install Tokemon via Homebrew with 'brew install --cask richyparr/tokemon/tokemon', or download the latest release from GitHub. The Raycast extension can be installed from the Raycast Store.",
+    a: "You can install Tokemon via Homebrew with 'brew install --cask richyparr/tokemon/tokemon', or download the latest release from GitHub. The Raycast extension lives in the same repo — clone it and run 'npm run dev' inside tokemon-raycast to add it to Raycast.",
   },
   {
     q: "Can Tokemon track team or organization usage?",
@@ -348,7 +348,7 @@ export default function Home() {
           </div>
 
           <div className="text-center">
-            <p className="text-sm text-[#8a8a8a] mb-3">Install from the Raycast Store, or clone and build locally:</p>
+            <p className="text-sm text-[#8a8a8a] mb-3">Clone the repo and build the extension locally &mdash; it installs straight into Raycast:</p>
             <div className="inline-block max-w-full rounded-lg border border-[#252525] bg-[#0a0a0a] px-5 py-3 font-mono text-[13px] max-sm:text-[11px] text-[#999] overflow-x-auto whitespace-nowrap">
               <span className="text-[#28c840]">~</span>
               <span className="text-[#8a8a8a] mx-1.5">$</span>
