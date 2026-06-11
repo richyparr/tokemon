@@ -24,7 +24,7 @@ brew untap AverageHelper/tokemon
 
 ## About
 
-Tokemon shows your Claude Code session usage, alerts before hitting limits, and helps you pace your work. It runs as a lightweight menu bar app on macOS 14+.
+Tokemon shows your Claude Code session usage, alerts before hitting limits, and helps you pace your work. It runs as a lightweight menu bar app on macOS 26+.
 
 - Real-time token usage in your menu bar
 - Configurable alerts before hitting limits
@@ -35,7 +35,7 @@ Tokemon shows your Claude Code session usage, alerts before hitting limits, and 
 
 ## Requirements
 
-- macOS 14.0 (Sonoma) or later
+- macOS 26.0 (Tahoe) or later
 
 ## Troubleshooting
 

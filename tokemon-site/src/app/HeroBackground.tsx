@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import PixelBlast from "@/components/PixelBlast";
+import dynamic from "next/dynamic";
+import { useReducedMotion } from "@/lib/useReducedMotion";
+
+const PixelBlast = dynamic(() => import("@/components/PixelBlast"), { ssr: false });
 
 const MOBILE_BREAKPOINT = 768;
 
 export function HeroBackground() {
   const [isMobile, setIsMobile] = useState(false);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
@@ -15,7 +19,7 @@ export function HeroBackground() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  if (!isMobile) return null;
+  if (!isMobile || reducedMotion) return null;
 
   return (
     <div

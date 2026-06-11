@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getPostSlugs, getRelatedPosts } from "@/lib/blog";
+import { getPostSlugs, getPostMetadata, getRelatedPosts } from "@/lib/blog";
 import type { BlogPostMetadata } from "@/lib/blog";
 import BlogLayout from "@/components/BlogLayout";
 
@@ -48,14 +48,6 @@ export async function generateMetadata({
     return {};
   }
 }
-
-// Slugs that are tutorial/how-to style and should get HowTo schema
-const HOW_TO_SLUGS = [
-  "how-to-track-claude-code-usage",
-  "avoid-claude-rate-limits",
-  "reduce-claude-api-costs",
-  "claude-token-monitoring-guide",
-];
 
 // FAQ entries per slug — keep answers tight (40-80 words) so they're
 // eligible for People Also Ask snippets. Questions and answers must
@@ -109,7 +101,7 @@ const FAQ_MAP: Record<string, { question: string; answer: string }[]> = {
     {
       question: "How much does Claude Code cost?",
       answer:
-        "Claude Code on the API is billed per token. Opus 4 costs $15 per million input tokens and $75 per million output tokens. Sonnet 4 is $3/$15. Haiku is the cheapest at roughly $0.80/$4. A typical day of intensive coding ranges from $5 to $40 in API spend depending on model mix and prompt-caching usage.",
+        "Claude Code on the API is billed per token. Opus 4.8 costs $5 per million input tokens and $25 per million output tokens. Sonnet 4.6 is $3/$15. Haiku 4.5 is the cheapest at $1/$5. A typical day of intensive coding ranges from $5 to $40 in API spend depending on model mix and prompt-caching usage.",
     },
     {
       question: "Does prompt caching reduce Claude API cost?",
@@ -151,7 +143,8 @@ export default async function BlogPostPage({
   try {
     const mod = await import(`../../../../content/blog/${slug}.mdx`);
     const Content = mod.default;
-    const metadata = mod.metadata as BlogPostMetadata;
+    // getPostMetadata enriches the MDX-exported metadata with readingTime
+    const metadata = (getPostMetadata(slug) ?? mod.metadata) as BlogPostMetadata;
 
     const relatedPosts = await getRelatedPosts(slug, metadata.tags);
 
@@ -161,7 +154,7 @@ export default async function BlogPostPage({
       headline: metadata.title,
       description: metadata.description,
       datePublished: metadata.date,
-      dateModified: metadata.date,
+      dateModified: metadata.updated ?? metadata.date,
       author: {
         "@type": "Person",
         name: "Richard Parr",
@@ -204,24 +197,6 @@ export default async function BlogPostPage({
       ],
     };
 
-    // HowTo schema for tutorial-style posts
-    const howToJsonLd = HOW_TO_SLUGS.includes(slug)
-      ? {
-          "@context": "https://schema.org",
-          "@type": "HowTo",
-          name: metadata.title,
-          description: metadata.description,
-          author: {
-            "@type": "Person",
-            name: "Richard Parr",
-          },
-          tool: {
-            "@type": "HowToTool",
-            name: "Tokemon",
-          },
-        }
-      : null;
-
     // FAQPage schema for posts with curated FAQ entries (eligible for PAA snippets)
     const faqEntries = FAQ_MAP[slug];
     const faqJsonLd = faqEntries
@@ -249,12 +224,6 @@ export default async function BlogPostPage({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
         />
-        {howToJsonLd && (
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
-          />
-        )}
         {faqJsonLd && (
           <script
             type="application/ld+json"

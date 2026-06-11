@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 
 const URL = "https://tokemon.ai/keychain-access";
 
@@ -17,23 +17,9 @@ const cx = "max-w-[820px] mx-auto px-6";
 export default function KeychainAccessHelpPage() {
   return (
     <>
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 border-b border-[#1a1a1a]"
-        style={{ backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", background: "rgba(0,0,0,0.8)" }}
-      >
-        <div className="max-w-[1080px] mx-auto px-6 flex justify-between items-center h-14">
-          <Link href="/" className="flex items-center gap-2.5 text-base font-semibold">
-            <Image src="/icon.png" alt="Tokemon" width={24} height={24} className="rounded-[5px]" />
-            tokemon
-          </Link>
-          <div className="flex items-center gap-8 text-sm">
-            <Link href="/blog" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">Blog</Link>
-            <a href="https://github.com/richyparr/tokemon" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">GitHub</a>
-          </div>
-        </div>
-      </nav>
+      <SiteNav />
 
-      <article className={`${cx} pt-32 pb-24`}>
+      <article id="main" className={`${cx} pt-32 pb-24`}>
         <div className="inline-block text-xs font-semibold uppercase tracking-[0.08em] text-[#f0a060] mb-4">
           Recovery guide
         </div>
@@ -82,7 +68,7 @@ export default function KeychainAccessHelpPage() {
           <details className="group bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
             <summary className="cursor-pointer flex justify-between items-center gap-4">
               <span className="font-semibold text-[15px]">Search returns no results</span>
-              <span className="text-[#666] group-open:rotate-45 transition-transform">+</span>
+              <span aria-hidden="true" className="text-[#8a8a8a] group-open:rotate-45 transition-transform">+</span>
             </summary>
             <p className="mt-3 text-sm text-[#aaa] leading-relaxed">
               The most common cause: you&apos;re on the <strong className="text-[#ededed]">My Certificates</strong> tab. Switch to <strong className="text-[#ededed]">All Items</strong> at the top of the window — Claude Code stores the credentials as a generic password, not a certificate, so the My Certificates filter hides them. If All Items is also empty, you&apos;re probably on the iCloud keychain — click <strong className="text-[#ededed]">login</strong> in the sidebar. If it&apos;s still empty, run <code className="font-mono text-[#f0a060]">claude /login</code> in your terminal to create the entry.
@@ -91,7 +77,7 @@ export default function KeychainAccessHelpPage() {
           <details className="group bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
             <summary className="cursor-pointer flex justify-between items-center gap-4">
               <span className="font-semibold text-[15px]">macOS keeps prompting after I click Save</span>
-              <span className="text-[#666] group-open:rotate-45 transition-transform">+</span>
+              <span aria-hidden="true" className="text-[#8a8a8a] group-open:rotate-45 transition-transform">+</span>
             </summary>
             <p className="mt-3 text-sm text-[#aaa] leading-relaxed">
               That&apos;s your login password — not a yes/no prompt. Type your Mac account password and click Allow. macOS only asks once per Get Info session.
@@ -100,16 +86,16 @@ export default function KeychainAccessHelpPage() {
           <details className="group bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
             <summary className="cursor-pointer flex justify-between items-center gap-4">
               <span className="font-semibold text-[15px]">It still shows the banner after Retry</span>
-              <span className="text-[#666] group-open:rotate-45 transition-transform">+</span>
+              <span aria-hidden="true" className="text-[#8a8a8a] group-open:rotate-45 transition-transform">+</span>
             </summary>
             <p className="mt-3 text-sm text-[#aaa] leading-relaxed">
-              Verify Tokemon is actually on the list — open Get Info on the entry again and check the Access Control tab. If Tokemon isn&apos;t there, the Save didn&apos;t go through; redo step 6 and make sure you click <strong className="text-[#ededed]">Save Changes</strong>, not just close the window. If Tokemon is there but Retry still fails, quit Tokemon entirely (right-click menu bar icon → Quit) and relaunch.
+              Verify Tokemon is actually on the list — open Get Info on the entry again and check the Access Control tab. If Tokemon isn&apos;t there, the Save didn&apos;t go through; redo steps 6–8 and make sure you click <strong className="text-[#ededed]">Save Changes</strong>, not just close the window. If Tokemon is there but Retry still fails, quit Tokemon entirely (right-click menu bar icon → Quit) and relaunch.
             </p>
           </details>
           <details className="group bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
             <summary className="cursor-pointer flex justify-between items-center gap-4">
               <span className="font-semibold text-[15px]">Will I have to do this every time?</span>
-              <span className="text-[#666] group-open:rotate-45 transition-transform">+</span>
+              <span aria-hidden="true" className="text-[#8a8a8a] group-open:rotate-45 transition-transform">+</span>
             </summary>
             <p className="mt-3 text-sm text-[#aaa] leading-relaxed">
               Only if Claude Code recreates the keychain entry — which usually means a fresh <code className="font-mono text-[#f0a060]">/login</code>. Routine token refreshes preserve the access list, so once you&apos;ve set this up Tokemon should keep working through normal Claude usage.
@@ -128,16 +114,7 @@ export default function KeychainAccessHelpPage() {
         </div>
       </article>
 
-      <footer className="border-t border-[#1a1a1a] py-10">
-        <div className="max-w-[1080px] mx-auto px-6 flex flex-wrap gap-6 justify-between text-sm text-[#666]">
-          <div>© 2026 Tokemon · MIT</div>
-          <div className="flex gap-6">
-            <Link href="/" className="hover:text-[#ededed] transition-colors">Home</Link>
-            <Link href="/blog" className="hover:text-[#ededed] transition-colors">Blog</Link>
-            <a href="https://github.com/richyparr/tokemon" className="hover:text-[#ededed] transition-colors">GitHub</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

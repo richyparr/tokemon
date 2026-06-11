@@ -205,15 +205,17 @@ function DemoFloatingWindow({ usage }: { usage: number }) {
 /* ═══════════════════════════════════════════════════════════
    Popover
    ═══════════════════════════════════════════════════════════ */
-function DemoPopover({ usage, onClose }: { usage: number; onClose: () => void }) {
-  const color = usageColor(usage);
-
-  const Row = ({ label, value, valueColor }: { label: string; value: string; valueColor?: string }) => (
+function Row({ label, value, valueColor }: { label: string; value: string; valueColor?: string }) {
+  return (
     <div className="flex justify-between items-center py-[3px]">
       <span className="text-[#999]">{label}</span>
       <span className="font-medium tabular-nums" style={valueColor ? { color: valueColor } : undefined}>{value}</span>
     </div>
   );
+}
+
+function DemoPopover({ usage, onClose }: { usage: number; onClose: () => void }) {
+  const color = usageColor(usage);
 
   return (
     <>
@@ -324,7 +326,8 @@ export function InteractiveDemo() {
     return () => obs.disconnect();
   }, []);
 
-  // Run animation cycle
+  // Run animation cycle (self-restarting via ref to avoid use-before-declare)
+  const runCycleRef = useRef<() => void>(() => {});
   const runCycle = useCallback(() => {
     // Clear previous
     timeoutsRef.current.forEach(clearTimeout);
@@ -352,13 +355,24 @@ export function InteractiveDemo() {
     const restartDelay = cumulative + 5000;
     const restart = setTimeout(() => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      runCycle();
+      runCycleRef.current();
     }, restartDelay);
     timeoutsRef.current.push(restart);
   }, []);
 
   useEffect(() => {
+    runCycleRef.current = runCycle;
+  }, [runCycle]);
+
+  useEffect(() => {
     if (!isVisible) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // Show the final frame instead of the animated cycle
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time static frame for reduced motion, no cascade
+      setLineCount(LINES.length);
+      setUsage(45);
+      return;
+    }
     runCycle();
     return () => {
       timeoutsRef.current.forEach(clearTimeout);
@@ -381,7 +395,7 @@ export function InteractiveDemo() {
         aspectRatio: "16 / 10",
         boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 120px rgba(232,133,59,0.12)",
       }}
-      role="img"
+      role="region"
       aria-label="Interactive demo of Tokemon monitoring Claude Code usage on macOS"
     >
       {/* Desktop wallpaper */}
@@ -413,7 +427,7 @@ export function InteractiveDemo() {
       </div>
 
       {/* Hint */}
-      <div className="absolute top-[30px] left-0 right-0 text-center text-[9px] text-white/25 z-10 pointer-events-none">
+      <div className="absolute top-[30px] left-0 right-0 text-center text-xs text-white/60 z-10 pointer-events-none">
         Click the menu bar icon to see the popover
       </div>
     </div>

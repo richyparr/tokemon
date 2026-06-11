@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
-
 const ACCENT = "#f0a060";
 const ACCENT_2 = "#e88838";
 const BG = "#000";

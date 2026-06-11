@@ -23,14 +23,14 @@ If you are tracking Claude Code usage, you have probably come across two popular
 | Feature | Tokemon | ccusage |
 |---|---|---|
 | **Interface** | GUI (menu bar + popover) | CLI |
-| **Real-time monitoring** | Yes — live updates every 30s | No — analyzes logs after the fact |
+| **Real-time monitoring** | Yes — live updates every 30s, always visible | Limited — `ccusage blocks --live` terminal dashboard |
 | **Menu bar integration** | Yes — always visible | No |
 | **Raycast integration** | Yes — dedicated extension | No |
 | **Per-project breakdown** | Yes | Yes |
 | **Team features** | Yes — multi-profile, team budgets | No |
 | **Export & reporting** | Yes — CSV, JSON, charts | Limited — table and JSON output |
 | **Cost tracking** | Yes — dollar amounts and budgets | Yes — token counts with cost estimates |
-| **Burn rate & time remaining** | Yes | No |
+| **Burn rate & time remaining** | Yes — in the menu bar | Limited — shown in the `blocks --live` view |
 | **Budget alerts** | Yes — configurable thresholds | No |
 | **Platform** | macOS | Cross-platform (macOS, Linux, Windows) |
 | **Price** | Free & open source | Free & open source |
@@ -41,7 +41,7 @@ ccusage is the better choice if you:
 
 - **Work on Linux or Windows** — Tokemon is macOS-only, while ccusage runs everywhere
 - **Prefer CLI tools** — If you live in the terminal and want to pipe output into other tools, ccusage fits naturally into that workflow
-- **Want post-session analysis** — After a long coding session, run `ccusage` to get a detailed breakdown of what happened
+- **Want post-session analysis** — After a long coding session, run `ccusage` to get a detailed breakdown of what happened (and `ccusage blocks --live` gives you a live terminal dashboard during one)
 - **Need conversation-level detail** — ccusage parses individual JSONL log files, giving you per-conversation token counts
 
 ## When to Use Tokemon
@@ -70,4 +70,4 @@ brew install --cask richyparr/tokemon/tokemon
 
 It is free, open-source, and takes less than a minute to set up. Your usage data stays entirely on your Mac — nothing is sent to any third-party server.
 
-[Download Tokemon](https://tokemon.ai) and never hit a Claude rate limit by surprise again.
+[Download Tokemon](/#install) and never hit a Claude rate limit by surprise again.

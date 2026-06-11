@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 import { HeroTyping } from "./HeroTyping";
 import { HeroBackground } from "./HeroBackground";
 import { HeroCTA } from "./HeroCTA";
@@ -90,13 +92,28 @@ const features: {
   },
 ];
 
+const gridIcons: Record<string, React.ReactNode> = {
+  bell: (
+    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0" />
+  ),
+  terminal: <path d="m4 17 6-6-6-6M12 19h8" />,
+  chart: <path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3" />,
+  users: (
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+  ),
+  palette: (
+    <path d="M12 22a10 10 0 1 1 10-10c0 1.7-1.3 3-3 3h-2a2 2 0 0 0-2 2c0 .6.2 1 .6 1.4.4.4.6.9.6 1.4a2 2 0 0 1-2 2.2ZM7.5 11.5h.01M11.5 7.5h.01M16.5 9.5h.01" />
+  ),
+  moon: <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />,
+};
+
 const grid: [string, string, string][] = [
-  ["\u{1F514}", "Slack & Discord alerts", "Webhook notifications before you hit limits. Set thresholds at 50%, 70%, 90% \u2014 get a ping in your team channel, not a surprise in your IDE."],
-  ["\u{25B6}\u{FE0E}", "Terminal statusline", "Live in the terminal? Export usage to your shell prompt via ~/.tokemon/statusline. One-click zsh/bash setup with ANSI color coding."],
-  ["\u{1F4CA}", "Usage summaries by period", "Filter analytics by 24h, 7 days, 30 days, or 90 days. See how your usage patterns change over time and identify high-consumption periods."],
-  ["\u{1F465}", "Multi-profile support", "Manage personal and work accounts with independent credentials and alert thresholds. Switch between profiles instantly."],
-  ["\u{1F3A8}", "6 menu bar styles", "Percentage, battery, progress bar, icon + bar, compact number, or traffic light. Optional monochrome mode to match native macOS styling."],
-  ["\u{1F317}", "Three themes", "Native macOS (follows system), Light, or Dark with warm orange accents. Your choice across every window and panel."],
+  ["bell", "Slack & Discord alerts", "Webhook notifications before you hit limits. Set thresholds at 50%, 70%, 90% \u2014 get a ping in your team channel, not a surprise in your IDE."],
+  ["terminal", "Terminal statusline", "Live in the terminal? Export usage to your shell prompt via ~/.tokemon/statusline. One-click zsh/bash setup with ANSI color coding."],
+  ["chart", "Usage summaries by period", "Filter analytics by 24h, 7 days, 30 days, or 90 days. See how your usage patterns change over time and identify high-consumption periods."],
+  ["users", "Multi-profile support", "Manage personal and work accounts with independent credentials and alert thresholds. Switch between profiles instantly."],
+  ["palette", "6 menu bar styles", "Percentage, battery, progress bar, icon + bar, compact number, or traffic light. Optional monochrome mode to match native macOS styling."],
+  ["moon", "Three themes", "Native macOS (follows system), Light, or Dark with warm orange accents. Your choice across every window and panel."],
 ];
 
 const raycastFeatures = [
@@ -133,7 +150,7 @@ const faqs: { q: string; a: string }[] = [
   },
   {
     q: "How do I install Tokemon?",
-    a: "You can install Tokemon via Homebrew with 'brew install --cask richyparr/tokemon/tokemon', or download the latest release from GitHub. The Raycast extension can be installed from the Raycast Store.",
+    a: "You can install Tokemon via Homebrew with 'brew install --cask richyparr/tokemon/tokemon', or download the latest release from GitHub. The Raycast extension lives in the same repo — clone it and run 'npm run dev' inside tokemon-raycast to add it to Raycast.",
   },
   {
     q: "Can Tokemon track team or organization usage?",
@@ -165,37 +182,10 @@ export default function Home() {
       />
 
       {/* ── Nav ── */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 border-b border-[#1a1a1a]"
-        style={{ backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", background: "rgba(0,0,0,0.8)" }}
-      >
-        <div className={`${cx} flex justify-between items-center h-14`}>
-          <div className="flex items-center gap-2.5 text-base font-semibold">
-            <Image src="/icon.png" alt="Tokemon" width={24} height={24} className="rounded-[5px]" />
-            tokemon
-          </div>
-          <div className="flex items-center gap-8 text-sm">
-            <Link href="/blog" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">
-              Blog
-            </Link>
-            <Link href="/compare" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">
-              Compare
-            </Link>
-            <a href="https://github.com/richyparr/tokemon" className="text-[#777] hover:text-[#ededed] transition-colors hidden sm:inline">
-              GitHub
-            </a>
-            <a
-              href="https://github.com/richyparr/tokemon/releases/latest"
-              className="bg-[#ededed] text-black px-4 py-1.5 rounded-lg text-[13px] font-medium hover:opacity-85 transition-opacity"
-            >
-              Download
-            </a>
-          </div>
-        </div>
-      </nav>
+      <SiteNav />
 
       {/* ── Hero ── */}
-      <section className="relative pt-32 md:pt-36 pb-10 text-center md:text-left overflow-hidden">
+      <section id="main" className="relative pt-32 md:pt-36 pb-10 text-center md:text-left overflow-hidden">
         <HeroBackground />
         <div className={`${cx} relative z-10`}>
           <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-8 md:gap-12 items-center">
@@ -204,7 +194,7 @@ export default function Home() {
               <div className="inline-block text-[13px] text-[#777] border border-[#1a1a1a] px-4 py-1.5 rounded-full mb-8 tracking-wide bg-black shadow-[0_0_0_20px_black,0_0_40px_30px_black]">
                 Free &amp; open source for macOS &amp; Raycast
               </div>
-              <h1 className="text-4xl sm:text-5xl md:text-[42px] lg:text-5xl font-bold leading-[1.08] tracking-tight mb-5 h-[130px] sm:h-[155px] md:h-[140px] lg:h-[160px]">
+              <h1 className="text-4xl sm:text-5xl md:text-[42px] lg:text-5xl font-bold leading-[1.08] tracking-tight mb-5 min-h-[3.3em]">
                 Never hit a{" "}
                 <HeroTyping />
                 <br />
@@ -219,7 +209,7 @@ export default function Home() {
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                   <path d="M8 1l2.245 4.55 5.02.73-3.633 3.54.858 5L8 12.67 3.51 15.82l.858-5L.735 7.28l5.02-.73L8 1z" fill="#e8853b"/>
                 </svg>
-                Open source &mdash; loved by developers who ship with Claude
+                Free &amp; open source under the MIT license
               </div>
               <HeroCTA />
             </div>
@@ -239,7 +229,7 @@ export default function Home() {
               />
             </div>
           </div>
-          <div className="mt-8 text-center">
+          <div id="install" className="mt-8 text-center">
             <TerminalInstall />
           </div>
         </div>
@@ -279,7 +269,11 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#1a1a1a] border border-[#1a1a1a] rounded-2xl overflow-hidden">
             {grid.map(([icon, title, desc]) => (
               <div key={title} className="bg-[#111] p-8 transition-colors duration-200 hover:bg-[#151515] border-t-2 border-t-[#e8853b]/10">
-                <div className="text-xl mb-3" aria-hidden="true">{icon}</div>
+                <div className="mb-3 text-[#e8853b]" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    {gridIcons[icon]}
+                  </svg>
+                </div>
                 <h3 className="text-[15px] font-semibold mb-2">{title}</h3>
                 <p className="text-sm text-[#777] leading-relaxed">{desc}</p>
               </div>
@@ -324,7 +318,7 @@ export default function Home() {
       <div className={divider} />
 
       {/* ── Raycast ── */}
-      <section className="py-24 relative overflow-hidden">
+      <section id="raycast" className="py-24 relative overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -354,11 +348,11 @@ export default function Home() {
           </div>
 
           <div className="text-center">
-            <p className="text-sm text-[#555] mb-3">Install from the Raycast Store, or clone and build locally:</p>
-            <div className="inline-block rounded-lg border border-[#252525] bg-[#0a0a0a] px-5 py-3 font-mono text-[13px] text-[#999]">
+            <p className="text-sm text-[#8a8a8a] mb-3">Clone the repo and build the extension locally &mdash; it installs straight into Raycast:</p>
+            <div className="inline-block max-w-full rounded-lg border border-[#252525] bg-[#0a0a0a] px-5 py-3 font-mono text-[13px] max-sm:text-[11px] text-[#999] overflow-x-auto whitespace-nowrap">
               <span className="text-[#28c840]">~</span>
-              <span className="text-[#555] mx-1.5">$</span>
-              git clone &amp;&amp; cd tokemon-raycast &amp;&amp; npm i &amp;&amp; npm run dev
+              <span className="text-[#8a8a8a] mx-1.5">$</span>
+              git clone https://github.com/richyparr/tokemon &amp;&amp; cd tokemon/tokemon-raycast &amp;&amp; npm i &amp;&amp; npm run dev
             </div>
           </div>
         </div>
@@ -450,15 +444,15 @@ export default function Home() {
               View on GitHub
             </a>
           </div>
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 justify-center items-center font-mono text-[13px] text-[#555]">
-            <div>
-              <span className="text-[#777] mr-2">macOS</span>
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 justify-center items-center font-mono text-[13px] max-sm:text-[11px] text-[#8a8a8a]">
+            <div className="max-w-full overflow-x-auto whitespace-nowrap">
+              <span className="text-[#999] mr-2">macOS</span>
               <span className="text-[#e8853b]">$</span> brew install --cask richyparr/tokemon/tokemon
             </div>
             <div className="hidden sm:block text-[#252525]">|</div>
             <div>
-              <span className="text-[#777] mr-2">Raycast</span>
-              <span className="text-[#e8853b]">$</span> npm run dev
+              <span className="text-[#999] mr-2">Raycast</span>
+              <a href="#raycast" className="underline hover:text-[#ededed] transition-colors font-sans">See install options above</a>
             </div>
           </div>
         </div>
@@ -514,19 +508,7 @@ export default function Home() {
       <div className={divider} />
 
       {/* ── Footer ── */}
-      <footer className="border-t border-[#1a1a1a] py-10">
-        <div className={`${cx} flex flex-col sm:flex-row justify-between items-center gap-4`}>
-          <div className="text-[13px] text-[#555]">Built for developers who ship with Claude</div>
-          <div className="flex gap-6 text-[13px]">
-            <Link href="/blog" className="text-[#555] hover:text-[#ededed] transition-colors">Blog</Link>
-            <Link href="/compare" className="text-[#555] hover:text-[#ededed] transition-colors">Compare</Link>
-            <a href="https://github.com/richyparr/tokemon" className="text-[#555] hover:text-[#ededed] transition-colors">GitHub</a>
-            <a href="https://github.com/richyparr/tokemon/releases/latest" className="text-[#555] hover:text-[#ededed] transition-colors">Releases</a>
-            <a href="https://github.com/richyparr/tokemon/issues" className="text-[#555] hover:text-[#ededed] transition-colors">Issues</a>
-            <a href="https://buymeacoffee.com/richyparr" className="text-[#555] hover:text-[#ededed] transition-colors">Buy Me a Coffee</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }
