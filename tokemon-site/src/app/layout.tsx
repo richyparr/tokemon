@@ -71,7 +71,7 @@ const jsonLd = [
     "@type": "SoftwareApplication",
     name: "Tokemon",
     applicationCategory: "DeveloperApplication",
-    operatingSystem: "macOS 14+",
+    operatingSystem: "macOS 26+",
     offers: {
       "@type": "Offer",
       price: "0",
