@@ -130,8 +130,8 @@ struct AnalyticsDashboardView: View {
 
         let range = config.dateRange
 
-        var adminUsageData: AdminUsageResponse? = nil
-        var adminCostData: AdminCostResponse? = nil
+        var adminUsageData: AdminUsageResponse?
+        var adminCostData: AdminCostResponse?
         var localWeeklySummaries: [UsageSummary] = []
         var localMonthlySummaries: [UsageSummary] = []
         var localProjectBreakdown: [ProjectUsage] = []

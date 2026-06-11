@@ -30,7 +30,7 @@ final class BudgetManager {
     var isLoading: Bool = false
 
     /// Error message from last fetch attempt
-    var errorMessage: String? = nil
+    var errorMessage: String?
 
     // MARK: - Private State
 
@@ -74,7 +74,7 @@ final class BudgetManager {
     /// Called from the UsageMonitor refresh cycle; rate-limited to avoid hammering the Admin API.
     func refreshIfNeeded() async {
         guard config.isEnabled else { return }
-        guard lastCostFetch == nil || Date().timeIntervalSince(lastCostFetch!) >= costRefreshInterval else { return }
+        if let lastCostFetch, Date().timeIntervalSince(lastCostFetch) < costRefreshInterval { return }
         await fetchCurrentMonthCost()
         lastCostFetch = Date()
     }

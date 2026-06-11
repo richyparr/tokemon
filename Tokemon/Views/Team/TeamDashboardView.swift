@@ -111,11 +111,11 @@ struct TeamDashboardView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 20)
-        } else if members.isEmpty && errorMessage != nil {
+        } else if members.isEmpty, let errorMessage {
             HStack {
                 Image(systemName: "exclamationmark.triangle")
                     .foregroundStyle(.orange)
-                Text(errorMessage!)
+                Text(errorMessage)
                     .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity)

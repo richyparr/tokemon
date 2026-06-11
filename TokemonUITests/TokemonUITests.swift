@@ -2,6 +2,8 @@ import XCTest
 
 final class TokemonUITests: XCTestCase {
 
+    // Standard XCTest setUp pattern
+    // swiftlint:disable:next implicitly_unwrapped_optional
     var app: XCUIApplication!
 
     override func setUpWithError() throws {

@@ -3,9 +3,9 @@ import AppKit
 
 /// Rows available in the floating window, each showing a different usage metric.
 enum FloatingWindowRow: String, CaseIterable, Codable, Hashable {
-    case fiveHour = "fiveHour"
-    case sevenDay = "sevenDay"
-    case sevenDaySonnet = "sevenDaySonnet"
+    case fiveHour
+    case sevenDay
+    case sevenDaySonnet
 
     var label: String {
         switch self {

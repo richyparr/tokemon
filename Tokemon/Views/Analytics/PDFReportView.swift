@@ -376,6 +376,7 @@ struct PDFReportPage: View {
 @MainActor
 struct PDFReportBuilder {
 
+    // swiftlint:disable function_parameter_count
     /// Build pages for an export with adaptive date granularity.
     /// - Returns: Array of AnyView pages ready for multi-page PDF rendering
     static func buildPages(
@@ -388,6 +389,7 @@ struct PDFReportBuilder {
         localMonthlySummaries: [UsageSummary],
         localProjectBreakdown: [ProjectUsage]
     ) -> [AnyView] {
+        // swiftlint:enable function_parameter_count
         var pages: [AnyView] = []
 
         let isAdminMode = adminUsageData != nil
@@ -477,6 +479,7 @@ struct PDFReportBuilder {
 
     // MARK: - Page Building Helpers
 
+    // swiftlint:disable:next function_parameter_count
     private static func buildSummaryPage(
         accountName: String,
         generatedDate: Date,
@@ -611,6 +614,7 @@ struct PDFReportBuilder {
         }
     }
 
+    // swiftlint:disable:next function_parameter_count
     private static func buildLocalSummaryPage(
         accountName: String,
         generatedDate: Date,

@@ -265,7 +265,7 @@ final class StatusItemManager {
         // Determine if we need error/alert indicators
         var isErrorState = false
         var isCriticalState = false
-        var suffix: String? = nil
+        var suffix: String?
 
         if case .bothSourcesFailed = error {
             isErrorState = true
@@ -304,7 +304,7 @@ final class StatusItemManager {
                 }
                 let errorAttrs: [NSAttributedString.Key: Any] = [
                     .font: NSFont.monospacedDigitSystemFont(ofSize: 10, weight: .bold),
-                    .foregroundColor: errorColor,
+                    .foregroundColor: errorColor
                 ]
                 button.attributedTitle = NSAttributedString(string: "!", attributes: errorAttrs)
                 button.imagePosition = .imageLeft

@@ -24,7 +24,7 @@ final class BurnRateCalculatorTests: XCTestCase {
         let now = Date()
         let points = [
             UsageDataPoint(timestamp: now.addingTimeInterval(-3600), primaryPercentage: 40.0),
-            UsageDataPoint(timestamp: now, primaryPercentage: 50.0),
+            UsageDataPoint(timestamp: now, primaryPercentage: 50.0)
         ]
 
         let result = BurnRateCalculator.calculateBurnRate(from: points)
@@ -38,7 +38,7 @@ final class BurnRateCalculatorTests: XCTestCase {
         let now = Date()
         let points = [
             UsageDataPoint(timestamp: now.addingTimeInterval(-3600), primaryPercentage: 60.0),
-            UsageDataPoint(timestamp: now, primaryPercentage: 40.0),
+            UsageDataPoint(timestamp: now, primaryPercentage: 40.0)
         ]
 
         let result = BurnRateCalculator.calculateBurnRate(from: points)
