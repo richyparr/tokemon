@@ -3,6 +3,8 @@ import XCTest
 /// Tests for UI layout, sizing, and overflow issues
 final class TokemonLayoutTests: XCTestCase {
 
+    // Standard XCTest setUp pattern
+    // swiftlint:disable:next implicitly_unwrapped_optional
     var app: XCUIApplication!
 
     override func setUpWithError() throws {
@@ -176,17 +178,15 @@ final class TokemonLayoutTests: XCTestCase {
             NSPredicate(format: "label CONTAINS '%'")
         ).allElementsBoundByIndex
 
-        for text in percentTexts {
-            if text.exists {
-                // Percentage should be visible and not truncated (contains full number + %)
-                let label = text.label
-                XCTAssertTrue(label.contains("%"), "Percentage text incomplete: '\(label)'")
+        for text in percentTexts where text.exists {
+            // Percentage should be visible and not truncated (contains full number + %)
+            let label = text.label
+            XCTAssertTrue(label.contains("%"), "Percentage text incomplete: '\(label)'")
 
-                // Should have a number before the %
-                let beforePercent = label.components(separatedBy: "%").first ?? ""
-                let containsNumber = beforePercent.contains(where: { $0.isNumber })
-                XCTAssertTrue(containsNumber, "Percentage missing number: '\(label)'")
-            }
+            // Should have a number before the %
+            let beforePercent = label.components(separatedBy: "%").first ?? ""
+            let containsNumber = beforePercent.contains(where: { $0.isNumber })
+            XCTAssertTrue(containsNumber, "Percentage missing number: '\(label)'")
         }
     }
 

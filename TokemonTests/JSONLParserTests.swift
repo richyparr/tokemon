@@ -77,11 +77,11 @@ final class JSONLParserTests: XCTestCase {
     func testJSONLError_Descriptions() {
         let dirError = JSONLParser.JSONLError.noProjectsDirectory
         XCTAssertNotNil(dirError.errorDescription)
-        XCTAssertTrue(dirError.errorDescription!.contains("projects directory"))
+        XCTAssertTrue(dirError.errorDescription?.contains("projects directory") ?? false)
 
         let sessionError = JSONLParser.JSONLError.noSessionFiles
         XCTAssertNotNil(sessionError.errorDescription)
-        XCTAssertTrue(sessionError.errorDescription!.contains("session files"))
+        XCTAssertTrue(sessionError.errorDescription?.contains("session files") ?? false)
     }
 
     // MARK: - Parse Session Tests (empty file)

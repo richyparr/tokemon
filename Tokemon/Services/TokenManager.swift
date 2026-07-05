@@ -107,7 +107,7 @@ struct TokenManager {
         // Run the synchronous keychain call on a background queue with a deadline so a
         // hung Mach call can't freeze the MainActor that owns UsageMonitor.refresh().
         let semaphore = DispatchSemaphore(value: 0)
-        var result: Result<String?, Error>!
+        var result: Result<String?, Error>?
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 result = .success(try keychain.getString(username))
@@ -124,8 +124,10 @@ struct TokenManager {
             break
         }
 
+        guard let result else { throw TokenError.keychainAccessTimedOut }
+
         let credentialsJSON: String?
-        switch result! {
+        switch result {
         case .success(let value):
             credentialsJSON = value
         case .failure(let error):
@@ -238,7 +240,7 @@ struct TokenManager {
         let body: [String: String] = [
             "grant_type": "refresh_token",
             "refresh_token": refreshToken,
-            "client_id": Constants.oauthClientId,
+            "client_id": Constants.oauthClientId
         ]
 
         request.httpBody = try JSONSerialization.data(withJSONObject: body)

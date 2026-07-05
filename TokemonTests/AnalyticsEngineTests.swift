@@ -26,7 +26,7 @@ final class AnalyticsEngineTests: XCTestCase {
         let points = [
             UsageDataPoint(timestamp: now, primaryPercentage: 40.0),
             UsageDataPoint(timestamp: now.addingTimeInterval(-3600), primaryPercentage: 60.0),
-            UsageDataPoint(timestamp: now.addingTimeInterval(-7200), primaryPercentage: 80.0),
+            UsageDataPoint(timestamp: now.addingTimeInterval(-7200), primaryPercentage: 80.0)
         ]
 
         let summaries = AnalyticsEngine.weeklySummaries(from: points, weeks: 1)

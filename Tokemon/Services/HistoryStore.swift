@@ -15,20 +15,17 @@ actor HistoryStore {
 
     /// Legacy file URL for single-account storage
     private var legacyFileURL: URL {
-        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let appSupport = URL.applicationSupportDirectory
         let appDir = appSupport.appendingPathComponent("Tokemon", isDirectory: true)
         return appDir.appendingPathComponent("usage_history.json")
     }
 
     /// Sentinel UUID for legacy single-account data
-    private let legacyUUID = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+    private let legacyUUID = UUID(uuid: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
     init() {
         // Create app directory if needed (for legacy compatibility)
-        let appSupport = FileManager.default.urls(
-            for: .applicationSupportDirectory,
-            in: .userDomainMask
-        ).first!
+        let appSupport = URL.applicationSupportDirectory
         let appDir = appSupport.appendingPathComponent("Tokemon", isDirectory: true)
         try? FileManager.default.createDirectory(at: appDir, withIntermediateDirectories: true)
     }
@@ -36,7 +33,7 @@ actor HistoryStore {
     private func fileURL(for accountId: UUID) -> URL {
         if let cached = fileURLs[accountId] { return cached }
 
-        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let appSupport = URL.applicationSupportDirectory
         let historyDir = appSupport.appendingPathComponent("Tokemon/history", isDirectory: true)
         try? FileManager.default.createDirectory(at: historyDir, withIntermediateDirectories: true)
 
