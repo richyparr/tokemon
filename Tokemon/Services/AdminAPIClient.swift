@@ -71,7 +71,7 @@ actor AdminAPIClient {
             URLQueryItem(name: "starting_at", value: formatter.string(from: startingAt)),
             URLQueryItem(name: "ending_at", value: formatter.string(from: endingAt)),
             URLQueryItem(name: "bucket_width", value: bucketWidth),
-            URLQueryItem(name: "limit", value: "31"), // Max daily buckets per request
+            URLQueryItem(name: "limit", value: "31") // Max daily buckets per request
         ]
 
         if let page = page {
@@ -124,7 +124,7 @@ actor AdminAPIClient {
         onPageFetched: (@Sendable (Int) -> Void)? = nil
     ) async throws -> AdminUsageResponse {
         var allBuckets: [AdminUsageResponse.UsageBucket] = []
-        var nextPage: String? = nil
+        var nextPage: String?
         var pageCount = 0
 
         repeat {
@@ -176,7 +176,7 @@ actor AdminAPIClient {
         }
 
         var allMembers: [TeamMember] = []
-        var afterId: String? = nil
+        var afterId: String?
 
         repeat {
             guard var components = URLComponents(string: "\(baseURL)/users") else {
@@ -250,7 +250,7 @@ actor AdminAPIClient {
         formatter.formatOptions = [.withInternetDateTime]
 
         var allBuckets: [AdminUsageResponse.UsageBucket] = []
-        var nextPage: String? = nil
+        var nextPage: String?
 
         repeat {
             guard var components = URLComponents(string: "\(baseURL)/usage_report/messages") else {
@@ -261,7 +261,7 @@ actor AdminAPIClient {
                 URLQueryItem(name: "starting_at", value: formatter.string(from: startingAt)),
                 URLQueryItem(name: "ending_at", value: formatter.string(from: endingAt)),
                 URLQueryItem(name: "bucket_width", value: bucketWidth),
-                URLQueryItem(name: "limit", value: "31"),
+                URLQueryItem(name: "limit", value: "31")
             ]
 
             if let page = nextPage {
@@ -343,7 +343,7 @@ actor AdminAPIClient {
             URLQueryItem(name: "starting_at", value: formatter.string(from: startingAt)),
             URLQueryItem(name: "ending_at", value: formatter.string(from: endingAt)),
             URLQueryItem(name: "bucket_width", value: bucketWidth),
-            URLQueryItem(name: "limit", value: "31"),
+            URLQueryItem(name: "limit", value: "31")
         ]
 
         if let page = page {
@@ -405,7 +405,7 @@ actor AdminAPIClient {
 
         while currentDate < endingAt {
             let dateString = dateFormatter.string(from: currentDate)
-            var nextPage: String? = nil
+            var nextPage: String?
 
             repeat {
                 guard var components = URLComponents(string: "\(baseURL)/usage_report/claude_code") else {
@@ -414,7 +414,7 @@ actor AdminAPIClient {
 
                 var queryItems = [
                     URLQueryItem(name: "starting_at", value: dateString),
-                    URLQueryItem(name: "limit", value: "1000"),
+                    URLQueryItem(name: "limit", value: "1000")
                 ]
                 if let page = nextPage {
                     queryItems.append(URLQueryItem(name: "page", value: page))
@@ -485,7 +485,7 @@ actor AdminAPIClient {
         onPageFetched: (@Sendable (Int) -> Void)? = nil
     ) async throws -> AdminCostResponse {
         var allBuckets: [AdminCostResponse.CostBucket] = []
-        var nextPage: String? = nil
+        var nextPage: String?
         var pageCount = 0
 
         repeat {
@@ -540,7 +540,7 @@ actor AdminAPIClient {
         formatter.formatOptions = [.withInternetDateTime]
 
         var allBuckets: [AdminCostResponse.CostBucket] = []
-        var nextPage: String? = nil
+        var nextPage: String?
 
         repeat {
             guard var components = URLComponents(string: "\(baseURL)/cost_report") else {
@@ -552,7 +552,7 @@ actor AdminAPIClient {
                 URLQueryItem(name: "ending_at", value: formatter.string(from: endingAt)),
                 URLQueryItem(name: "bucket_width", value: bucketWidth),
                 URLQueryItem(name: "group_by[]", value: "workspace_id"),
-                URLQueryItem(name: "limit", value: "31"),
+                URLQueryItem(name: "limit", value: "31")
             ]
 
             if let page = nextPage {

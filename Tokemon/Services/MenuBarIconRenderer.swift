@@ -59,7 +59,7 @@ struct MenuBarIconRenderer {
         let color = GradientColors.nsColor(for: percentage, isMonochrome: isMonochrome)
         let attributes: [NSAttributedString.Key: Any] = [
             .font: NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .medium),
-            .foregroundColor: color,
+            .foregroundColor: color
         ]
         return (image: nil, title: NSAttributedString(string: text, attributes: attributes))
     }
@@ -221,7 +221,7 @@ struct MenuBarIconRenderer {
 
         let textAttributes: [NSAttributedString.Key: Any] = [
             .font: NSFont.monospacedDigitSystemFont(ofSize: 11, weight: .medium),
-            .foregroundColor: color,
+            .foregroundColor: color
         ]
         result.append(NSAttributedString(string: text, attributes: textAttributes))
 
@@ -243,7 +243,7 @@ struct MenuBarIconRenderer {
 
         let attributes: [NSAttributedString.Key: Any] = [
             .font: NSFont.monospacedDigitSystemFont(ofSize: 11, weight: .medium),
-            .foregroundColor: color,
+            .foregroundColor: color
         ]
         return (image: nil, title: NSAttributedString(string: text, attributes: attributes))
     }
@@ -288,7 +288,7 @@ struct MenuBarIconRenderer {
 
         let textAttributes: [NSAttributedString.Key: Any] = [
             .font: NSFont.monospacedDigitSystemFont(ofSize: 13, weight: .medium),
-            .foregroundColor: color,
+            .foregroundColor: color
         ]
         result.append(NSAttributedString(string: text, attributes: textAttributes))
 

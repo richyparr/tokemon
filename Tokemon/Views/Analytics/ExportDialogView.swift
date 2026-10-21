@@ -286,7 +286,7 @@ struct ExportDialogView: View {
         LazyVGrid(columns: [
             GridItem(.flexible()),
             GridItem(.flexible()),
-            GridItem(.flexible()),
+            GridItem(.flexible())
         ], spacing: 8) {
             ForEach(DatePreset.allCases, id: \.self) { preset in
                 presetButton(preset)

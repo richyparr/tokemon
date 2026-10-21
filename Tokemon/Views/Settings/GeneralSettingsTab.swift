@@ -15,7 +15,7 @@ struct GeneralSettingsTab: View {
         ("2.5 minutes", 150),
         ("3 minutes", 180),
         ("5 minutes", 300),
-        ("10 minutes", 600),
+        ("10 minutes", 600)
     ]
 
     var body: some View {

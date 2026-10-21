@@ -3,6 +3,8 @@ import XCTest
 /// Tests for accessibility compliance and VoiceOver support
 final class TokemonAccessibilityTests: XCTestCase {
 
+    // Standard XCTest setUp pattern
+    // swiftlint:disable:next implicitly_unwrapped_optional
     var app: XCUIApplication!
 
     override func setUpWithError() throws {
@@ -148,7 +150,7 @@ final class TokemonAccessibilityTests: XCTestCase {
         let buttons = popover.buttons.allElementsBoundByIndex
 
         // Popover should have meaningful content
-        let hasContent = staticTexts.count > 0 || buttons.count > 0
+        let hasContent = !staticTexts.isEmpty || !buttons.isEmpty
         XCTAssertTrue(hasContent, "Popover should have accessible content")
     }
 

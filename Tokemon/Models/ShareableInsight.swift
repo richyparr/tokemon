@@ -2,10 +2,10 @@ import Foundation
 
 /// Types of shareable insight cards derived from local usage data.
 enum InsightCardType: String, CaseIterable, Sendable {
-    case streak = "streak"
-    case growth = "growth"
-    case pattern = "pattern"
-    case milestone = "milestone"
+    case streak
+    case growth
+    case pattern
+    case milestone
 
     var emoji: String {
         switch self {

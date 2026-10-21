@@ -41,7 +41,7 @@ struct OAuthClient {
                 return "OAuth token missing required scope for usage data"
             case .rateLimited:
                 return "Usage API rate limited (common during active Claude Code sessions)"
-            case .httpError(let code, let body):
+            case let .httpError(code, body):
                 if let body = body {
                     return "HTTP \(code): \(body)"
                 }

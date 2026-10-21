@@ -254,6 +254,7 @@ struct UsageSummaryView: View {
         displayFormatter.dateFormat = "MMM d"
 
         // Parse buckets into date -> tokens mapping
+        // swiftlint:disable:next large_tuple
         var dailyData: [(date: Date, input: Int, output: Int, cacheRead: Int)] = []
         for bucket in response.data {
             if let date = dateFormatter.date(from: bucket.startingAt) {
@@ -262,6 +263,7 @@ struct UsageSummaryView: View {
         }
 
         // Group by week
+        // swiftlint:disable:next large_tuple
         var weekGroups: [DateInterval: [(input: Int, output: Int, cacheRead: Int)]] = [:]
         for day in dailyData {
             if let weekInterval = calendar.dateInterval(of: .weekOfYear, for: day.date) {
@@ -307,6 +309,7 @@ struct UsageSummaryView: View {
         displayFormatter.dateFormat = "MMMM yyyy"
 
         // Parse buckets
+        // swiftlint:disable:next large_tuple
         var dailyData: [(date: Date, input: Int, output: Int, cacheRead: Int)] = []
         for bucket in response.data {
             if let date = dateFormatter.date(from: bucket.startingAt) {
@@ -315,6 +318,7 @@ struct UsageSummaryView: View {
         }
 
         // Group by month
+        // swiftlint:disable:next large_tuple
         var monthGroups: [DateInterval: [(input: Int, output: Int, cacheRead: Int)]] = [:]
         for day in dailyData {
             if let monthInterval = calendar.dateInterval(of: .month, for: day.date) {
